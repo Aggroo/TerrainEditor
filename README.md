@@ -1,17 +1,16 @@
-# lab-env
-C++11 based application base for developing apps.
+# Terrain Editor
+C++11 based application for a terrain editor.
 
 # Requirements
 1. CMake 3+.
 2. Compiler with support for lambda functions (C++11), such as VS 2013.
   
 # Instructions
-Put your laboration in the folder titled 'projects'. It must be accompanied with its own CMakeLists.txt which is used to generate a project/solution. Then run CMake in the root of the project, there should be a target in your project matching the name of your lab.
+Only tested on windows!
+Run CMake in the root of the project. 
+Open the build using VS.
+Set terrain_proj as the startup project
   
 # Usage
-The lab environment contains two classes, Window and App. Override the App class for your project to implement your own update loop. The Window class is used to open a window and connect input handlers to it. 
-
-This is done by assigning a lambda function to a callback matching the input you require. It is possible to have more than one window open at a time, although one must select which window to render to using the function called Window::MakeCurrent prior to doing any GL calls.
+Not yet documented!
   
-# Example
-The example project is simply an example implementation which displays a colored triangle on a grey background.
