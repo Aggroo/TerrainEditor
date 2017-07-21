@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Nebula3 version="4">
+    <Model name="Units/Unit_Footman" bboxcenter="-0.024233,1.507019,0.771959,1.000000" bboxextents="1.972586,1.497878,1.319685,0.000000">
+        <CharacterNodes>
+            <CharacterNode name="Unit_Footman_ch" animation="ani:Units/Unit_Footman.nax3">
+                <Skinlist name="Unit_Footman">
+                    <Skin name="mesh" />
+                </Skinlist>
+                <Joint name="Root" index="0" parent="-1" position="0.000000,0.000000,0.000000,0.000000" rotation="0.000000,0.000000,0.000000,1.000000" scale="1.000000,1.000000,1.000000,0.000000" />
+                <Joint name="Hip" index="1" parent="0" position="0.000000,1.179660,-0.029045,0.000000" rotation="-0.490021,-0.509784,0.490021,0.509784" scale="1.000000,1.000000,1.000000,0.000000" />
+                <Joint name="Chest" index="2" parent="1" position="0.621273,-0.000000,0.000000,0.000000" rotation="0.000000,0.000000,0.152574,0.988292" scale="1.000000,1.000000,1.000000,0.000000" />
+                <Joint name="Neck" index="3" parent="2" position="0.545390,-0.000000,0.000000,0.000000" rotation="0.000000,0.000000,-0.304359,0.952557" scale="1.000000,1.000000,1.000000,0.000000" />
+                <Joint name="Face" index="4" parent="3" position="0.407222,0.000000,0.000000,0.000000" rotation="0.404812,0.579765,-0.404812,0.579765" scale="1.000000,1.000000,1.000000,0.000000" />
+                <Joint name="Left_Shoulder" index="5" parent="2" position="0.516932,0.033052,-0.317650,0.000000" rotation="-0.429808,0.584113,0.469327,0.503795" scale="1.000000,1.000000,1.000000,0.000000" />
+                <Joint name="Left_Elbow" index="6" parent="5" position="0.657097,-0.000000,-0.000000,0.000000" rotation="-0.000000,0.023144,-0.000000,0.999732" scale="1.000001,1.000000,1.000000,0.000000" />
+                <Joint name="Left_Hand" index="7" parent="6" position="0.819000,0.000000,-0.000000,0.000000" rotation="0.997789,-0.054195,0.008256,-0.037572" scale="0.999999,1.000000,1.000000,0.000000" />
+                <Joint name="Left_ShoulderPad" index="8" parent="5" position="0.215034,-0.249575,-0.004766,0.000000" rotation="0.995880,-0.072873,0.037934,-0.038382" scale="1.000000,0.999999,1.000001,0.000000" />
+                <Joint name="Right_Shoulder" index="9" parent="2" position="0.516938,0.033050,0.317649,0.000000" rotation="0.584265,0.429642,-0.503943,0.469131" scale="1.000000,1.000000,1.000000,0.000000" />
+                <Joint name="Right_Elbow" index="10" parent="9" position="-0.657099,0.000000,0.000013,0.000000" rotation="-0.000000,0.023144,-0.000000,0.999732" scale="1.000000,1.000000,1.000000,0.000000" />
+                <Joint name="Right_Hand" index="11" parent="10" position="-0.818997,0.000000,-0.000005,0.000000" rotation="0.997801,-0.054202,0.008272,-0.037239" scale="1.000000,1.000001,1.000000,0.000000" />
+                <Joint name="Right_ShoulderPad" index="12" parent="9" position="-0.223089,0.242288,0.008731,0.000000" rotation="0.038271,-0.028203,-0.056658,0.997261" scale="1.000000,1.000000,1.000000,0.000000" />
+                <Joint name="Right_Leg" index="13" parent="1" position="-0.000075,0.046265,0.215829,0.000000" rotation="0.013853,-0.700838,0.713047,-0.014094" scale="1.000000,1.000000,1.000000,0.000000" />
+                <Joint name="Right_Knee" index="14" parent="13" position="0.610266,-0.000000,0.000000,0.000000" rotation="0.000000,0.000000,-0.000000,1.000000" scale="1.000000,1.000000,1.000000,0.000000" />
+                <Joint name="Right_Foot" index="15" parent="14" position="0.455946,-0.000000,-0.000000,0.000000" rotation="0.547063,-0.438279,0.445913,0.556593" scale="1.000000,1.000000,1.000000,0.000000" />
+                <Joint name="Right_Toe" index="16" parent="15" position="0.305476,0.000000,0.000000,0.000000" rotation="-0.077595,0.702836,0.077595,0.702836" scale="1.000000,1.000000,1.000000,0.000000" />
+                <Joint name="Left_Leg" index="17" parent="1" position="-0.000075,0.046265,-0.215828,0.000000" rotation="-0.014220,0.719413,-0.694301,0.013724" scale="1.000000,1.000000,1.000000,0.000000" />
+                <Joint name="Left_Knee" index="18" parent="17" position="0.610266,-0.000000,0.000000,0.000000" rotation="-0.000000,0.000000,-0.000000,1.000000" scale="1.000000,1.000000,1.000000,0.000000" />
+                <Joint name="Left_Foot" index="19" parent="18" position="0.455946,0.000000,-0.000000,0.000000" rotation="0.561562,-0.449895,0.434191,0.541960" scale="1.000000,1.000000,1.000000,0.000000" />
+                <Joint name="Left_Toe" index="20" parent="19" position="0.305476,0.000000,0.000000,0.000000" rotation="-0.077595,0.702836,0.077595,0.702836" scale="1.000000,1.000000,1.000000,0.000000" />
+            </CharacterNode>
+        </CharacterNodes>
+        <Skins>
+            <Skin name="mesh" type="skeletal" path="mesh" bboxcenter="-0.024233,1.507019,0.771959,1.000000" bboxextents="1.972586,1.497878,1.319685,0.000000" position="0.000000,0.000000,0.000000,1.000000" rotation="0.000000,0.000000,0.000000,1.000000" scale="1.000000,1.000000,1.000000,0.000000" mesh="msh:Units/Unit_Footman.nvx2">
+                <Fragment name="mesh_0" path="mesh/mesh_0" primitive="0">
+                    <Joints>19, 18, 17, 0, 20, 15, 13, 1, 12, 9, 2, 10, 3, 11, 14, 16, 4, 5, 8, 6, 7
+                    </Joints>
+                </Fragment>
+            </Skin>
+        </Skins>
+    </Model>
+</Nebula3>

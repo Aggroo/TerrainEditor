@@ -1,0 +1,20 @@
+#--------------------------------------------------------------------------
+# terrain project
+#--------------------------------------------------------------------------
+
+PROJECT(terrain_proj)
+
+SET(files_terrain 
+code/CGLab.cc 
+code/CGLab.h
+code/main.cc
+code/terrain.h
+code/terrain.cpp
+)
+SOURCE_GROUP("terraineditor" FILES ${files_terrain})
+
+ADD_EXECUTABLE(terrain_proj ${files_terrain})
+TARGET_LINK_LIBRARIES(terrain_proj core render)
+ADD_DEPENDENCIES(terrain_proj core render)
+
+SET_TARGET_PROPERTIES(terrain_proj PROPERTIES FOLDER "terraineditor/projects")

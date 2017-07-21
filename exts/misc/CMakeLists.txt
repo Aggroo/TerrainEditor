@@ -1,0 +1,11 @@
+project (misc)
+set (MISC_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+
+set(MISC_HEAD 
+	${MISC_DIR}/tinyxml2.h)
+	
+set(MISC_SRC
+	${MISC_DIR}/tinyxml2.cpp
+)
+
+add_library (misc STATIC ${MISC_SRC} ${MISC_HEAD})
