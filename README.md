@@ -1,6 +1,8 @@
 # Terrain Editor
 C++11 based application for a terrain editor.
 
+![alt text](https://github.com/Aggroo/TerrainEditor/blob/master/terrain.png)
+
 # Requirements
 1. CMake 3+.
 2. Compiler with support for lambda functions (C++11), such as VS 2013.
