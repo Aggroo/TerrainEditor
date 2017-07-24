@@ -45,9 +45,14 @@ public:
 	void GenerateBuffer();
 	void DrawTerrain();
 
+	float GetHeightScale();
+
 private:
 	int terrainWidth;
 	int terrainHeight;
+
+	float heightScale;
+
 	HeightmapValues* heightMap;
 
 ///Rendering values

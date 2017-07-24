@@ -1,5 +1,5 @@
 #version 430
-//layout(location=0) in vec3 fragPos;
+layout(location=0) in vec3 fragPos;
 layout(location=1) in vec2 uv;
 
 in vec3 o_normal;
@@ -8,7 +8,7 @@ in vec3 o_toCamera;
 
 layout(location = 0) out vec4 resColor;
 //layout(location = 1) out vec3 normalColor;
-uniform sampler2D AlbedoMap;
+uniform sampler2D textures[4];
 //uniform sampler2D NormalMap;
 
 // parameters of the light and possible values
@@ -64,9 +64,58 @@ void main()
     vec3 Idif = diffuseLighting(N, L);
     vec3 Ispe = specularLighting(N, L, V);
 	
-	vec3 Color = texture(AlbedoMap, vec2(uv.x,1.0-uv.y)).rgb;
+	vec4 vTexColor = vec4(0.0);
+   
+	float fScale = fragPos.y/60.0f;
+
+	const float fRange1 = 0.01f;
+	const float fRange2 = 0.02f;
+	const float fRange3 = 0.12f;
+	const float fRange4 = 0.2f;
+	const float fRange5 = 0.42f;
+	const float fRange6 = 0.5f;
+
+	if(fScale >= 0.0 && fScale <= fRange1)vTexColor = texture2D(textures[0], uv);
+	else if(fScale <= fRange2)
+	{
+	  fScale -= fRange1;
+	  fScale /= (fRange2-fRange1);
+	  
+	  float fScale2 = fScale;
+	  fScale = 1.0-fScale; 
+	  
+	  vTexColor += texture2D(textures[0], uv)*fScale;
+	  vTexColor += texture2D(textures[1], uv)*fScale2;
+	}
+	else if(fScale <= fRange3) vTexColor = texture2D(textures[1], uv);
+	else if(fScale <= fRange4)
+	{
+	  fScale -= fRange3;
+	  fScale /= (fRange4-fRange3);
+	  
+	  float fScale2 = fScale;
+	  fScale = 1.0-fScale; 
+	  
+	  vTexColor += texture2D(textures[1], uv)*fScale;
+	  vTexColor += texture2D(textures[2], uv)*fScale2;      
+	}
+	else if(fScale <= fRange5) vTexColor = texture2D(textures[2], uv); 
+	else if(fScale <= fRange6)
+	{
+	  fScale -= fRange5;
+	  fScale /= (fRange6-fRange5);
+	  
+	  float fScale2 = fScale;
+	  fScale = 1.0-fScale; 
+	  
+	  vTexColor += texture2D(textures[2], uv)*fScale;
+	  vTexColor += texture2D(textures[3], uv)*fScale2;     
+	}
+	else vTexColor = texture2D(textures[3], uv); 
 	
-	resColor.xyz = Color*(Iamb+Idif+Ispe);
+	//vec3 Color = texture(AlbedoMap, vec2(uv.x,1.0-uv.y)).rgb;
+	
+	resColor.xyz = vTexColor.xyz*(Iamb+Idif+Ispe);
 	resColor.a = 1;
 	//normalColor = N;
 }

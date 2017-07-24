@@ -29,10 +29,10 @@ bool Terrain::CreateTerrain(const char* filename, float widthMultiplier, float h
 
 	if (image == nullptr)
 	{
-		printf("Failed to load texture");
+		std::cerr << "Could not read file " << filename << ". File does not exist." << std::endl;
 		return false;
 	}
-
+	this->heightScale = heightMultiplier;
 	heightMap = new HeightmapValues[terrainWidth*terrainHeight];
 
 	float heightVal;
@@ -72,7 +72,6 @@ bool Terrain::CreateTerrain(const char* filename, float widthMultiplier, float h
 	}
 
 	SmoothenTerrain();
-	//SmoothenTerrain();
 
 	// Initialize the index to the vertex buffer.
 	index = 0;
@@ -257,5 +256,10 @@ void Terrain::DrawTerrain()
 	
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo[0]);
 	glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, NULL);
+}
+
+float Terrain::GetHeightScale()
+{
+	return this->heightScale;
 }
 }

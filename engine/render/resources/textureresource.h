@@ -24,15 +24,13 @@ namespace CGMath
 		TextureResource();
 		~TextureResource();
 
-		void LoadAlbedoFile(const char * filename);
-		void LoadNormalFile(const char * filename);
+		void LoadTextureFile(const char * filename);
 		void LoadFromRasterizer(Rasterizer rast);
-		void bindTex();
+		void bindTex(GLuint slot);
 
 	private:
 
-		GLuint a_texture;
-		GLuint n_texture;
+		GLuint m_texture;
         unsigned char ttf_buffer[1<<20];
         unsigned char temp_bitmap[512*512];
         std::vector<CGMath::textVert> textMesh;

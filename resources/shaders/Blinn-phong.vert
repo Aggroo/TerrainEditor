@@ -5,7 +5,7 @@ layout(location=2) in vec3 inNormal;
 layout(location=3) in vec3 tangent;
 layout(location=4) in vec3 binormal;
 
-//layout(location=0) out vec3 fragPos;
+layout(location=0) out vec3 fragPos;
 layout(location=1) out vec2 texCoord;
 
 out vec3 o_normal;
@@ -23,7 +23,7 @@ void main()
 {
 	vec4 worldpos = transMatrix*pos;
 	
-	//fragPos = worldpos.xyz;
+	fragPos = worldpos.xyz;
 	
 	mat3 model33 = mat3(transMatrix);
 		

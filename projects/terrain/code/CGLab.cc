@@ -191,7 +191,7 @@ CGLab::Open()
 	{
 
 		std::shared_ptr<CGMath::MeshResources> mesh = std::make_shared<CGMath::MeshResources>();
-		std::shared_ptr<CGMath::TextureResource> tex = std::make_shared<CGMath::TextureResource>();
+		//std::shared_ptr<CGMath::TextureResource> tex = std::make_shared<CGMath::TextureResource>();
 		std::shared_ptr<CGMath::ShaderObject> shaders = std::make_shared<CGMath::ShaderObject>();
 		std::shared_ptr<TerrainEditor::Terrain> terrain = std::make_shared<TerrainEditor::Terrain>();
 		
@@ -201,7 +201,7 @@ CGLab::Open()
 		
 		matrix4D perspective = matrix4D::perspectiveMatrix();
 
-		terrain->CreateTerrain("resources/textures/heightmap.jpg", 1.0f, 30.0f);
+		terrain->CreateTerrain("resources/textures/heightmap3.jpg", 1.0f, 60.0f);
 		terrain->GenerateBuffer();
 
 		//mesh->createQuad();
@@ -224,19 +224,31 @@ CGLab::Open()
         shaders->setupUniformFloat("u_matShininess", 64.0f);
 		shaders->setupMatrix4fv("transMatrix", modelMat);
 
+		textures.push_back(std::make_shared<CGMath::TextureResource>());
+		textures.push_back(std::make_shared<CGMath::TextureResource>());
+		textures.push_back(std::make_shared<CGMath::TextureResource>());
+		textures.push_back(std::make_shared<CGMath::TextureResource>());
 
-        tex->LoadAlbedoFile("resources/textures/grass.jpg");
+		textures[0]->LoadTextureFile("resources/textures/water.jpg");
+		textures[1]->LoadTextureFile("resources/textures/sand.jpg");
+		textures[2]->LoadTextureFile("resources/textures/grass.jpg");
+		textures[3]->LoadTextureFile("resources/textures/rock.jpg");
 		//tex->LoadNormalFile("resources/textures/nm_heightmap.png");
 
-        tex->bindTex();
+		textures[0]->bindTex(0);
+		textures[1]->bindTex(1);
+		textures[2]->bindTex(2);
+		textures[3]->bindTex(3);
 
-		shaders->setupUniformInt("AlbedoMap", 0);
-		shaders->setupUniformInt("NormalMap", 1);
+		shaders->setupUniformInt("textures[0]", 0);
+		shaders->setupUniformInt("textures[1]", 1);
+		shaders->setupUniformInt("textures[2]", 2);
+		shaders->setupUniformInt("textures[3]", 3);
 
 		//gN.setMesh(mesh);
 		gN.setTerrain(terrain);
 		gN.setShaders(shaders);
-		gN.setTex(tex);
+		gN.setTex(textures);
 
         std::chrono::high_resolution_clock::time_point before = std::chrono::high_resolution_clock::now();
 

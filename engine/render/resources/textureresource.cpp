@@ -20,11 +20,10 @@ namespace CGMath
 
 	TextureResource::~TextureResource()
 	{
-		glDeleteTextures(1, &a_texture);
-		glDeleteTextures(1, &n_texture);
+		glDeleteTextures(1, &m_texture);
 	}
 
-	void TextureResource::LoadAlbedoFile(const char * filename)
+	void TextureResource::LoadTextureFile(const char * filename)
 	{
 		int w, h, n;
 		unsigned char *image = stbi_load(filename, &w, &h, &n, 0);
@@ -32,8 +31,8 @@ namespace CGMath
 		if (image == nullptr)
 			throw(std::string("Failed to load texture"));
 
-		glGenTextures(1, &a_texture);
-		glBindTexture(GL_TEXTURE_2D, a_texture);
+		glGenTextures(1, &m_texture);
+		glBindTexture(GL_TEXTURE_2D, m_texture);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
@@ -43,34 +42,7 @@ namespace CGMath
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
 
 		glGenerateMipmap(GL_TEXTURE_2D);
-		glGenerateTextureMipmap(a_texture);
-
-		glBindTexture(GL_TEXTURE_2D, 0);
-
-		stbi_image_free(image);
-
-	}
-
-	void TextureResource::LoadNormalFile(const char * filename)
-	{
-		int w, h, n;
-		unsigned char *image = stbi_load(filename, &w, &h, &n, 0);
-
-		if (image == nullptr)
-			throw(std::string("Failed to load texture"));
-
-		glGenTextures(1, &n_texture);
-		glBindTexture(GL_TEXTURE_2D, n_texture);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-		if (n == 3)
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-		else if (n == 4)
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-
-		glGenerateMipmap(GL_TEXTURE_2D);
-		glGenerateTextureMipmap(n_texture);
+		glGenerateTextureMipmap(m_texture);
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -81,8 +53,8 @@ namespace CGMath
 	void TextureResource::LoadFromRasterizer(Rasterizer rast)
 	{
 		//stbi_write_bmp("blorf2.bmp", rast.width, rast.height, 3, &rast.getPixels()[0]);
-		glGenTextures(1, &a_texture);
-		glBindTexture(GL_TEXTURE_2D, a_texture);
+		glGenTextures(1, &m_texture);
+		glBindTexture(GL_TEXTURE_2D, m_texture);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
@@ -95,18 +67,10 @@ namespace CGMath
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	void TextureResource::bindTex()
+	void TextureResource::bindTex(GLuint slot)
 	{
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, a_texture);
-
-		if (n_texture != 0)
-		{
-			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, n_texture);
-		}
-		
-		
+		glActiveTexture(GL_TEXTURE0+slot);
+		glBindTexture(GL_TEXTURE_2D, m_texture);
 	}
 
 

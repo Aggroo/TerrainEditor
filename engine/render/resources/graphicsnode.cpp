@@ -39,12 +39,12 @@ namespace CGMath
 		return this->mesh;
 	}
 
-	void GraphicsNode::setTex(std::shared_ptr<TextureResource> newTex)
+	void GraphicsNode::setTex(std::vector<std::shared_ptr<TextureResource>> newTex)
 	{
 		this->tex = newTex;
 	}
 
-	std::shared_ptr<TextureResource> GraphicsNode::getTex()
+	std::vector<std::shared_ptr<TextureResource>> GraphicsNode::getTex()
 	{
 		return this->tex;
 	}
@@ -93,7 +93,8 @@ namespace CGMath
 	void GraphicsNode::draw()
 	{
 		this->shader->useProgram();
-		this->tex->bindTex();
+		for (int i = 0; i < tex.size(); ++i)
+			this->tex[i]->bindTex(i);
 		this->shader->setupMatrix4fv("transMatrix", this->transMat);
 		this->shader->setupMatrix4fv("Vmat", this->viewMat);
 		this->shader->setupMatrix4fv("Pmat", this->projMat);
@@ -107,7 +108,8 @@ namespace CGMath
 	void GraphicsNode::drawSkinned()
 	{
 		this->shader->useProgram();
-		this->tex->bindTex();
+		for (int i = 0; i < tex.size(); ++i)
+			this->tex[i]->bindTex(i);
 		this->shader->setupMatrix4fv("transMatrix", this->transMat);
 		this->mesh->drawSkinnedMesh();
 	}
