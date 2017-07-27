@@ -18,6 +18,7 @@ namespace CGMath
 		~ShaderObject();
 
 		void setupShaders(const char* vertexFile, const char* fragmentFile);
+		void ReloadShaders();
 		void useProgram();
 		void setupMatrix4fv(const GLchar* name, matrix4D mat);
         void setupMatrix4fv(const GLchar* name, std::vector<matrix4D> mat, GLint count);
@@ -36,6 +37,9 @@ namespace CGMath
 		GLuint vertexShader;
 		GLuint fragmentShader;
 		GLuint program;
+
+		std::string vertexFileName;
+		std::string fragmentFileName;
 	};
 
 }

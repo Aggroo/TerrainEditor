@@ -19,6 +19,8 @@ SET(files_render_resources
 	resources/shaderobject.cpp
 	resources/textureresource.h
 	resources/textureresource.cpp
+	resources/texturenode.h
+	resources/texturenode.cpp
 	resources/rasterizer.h
 	resources/rasterizer.cpp
 	resources/stb_image.h

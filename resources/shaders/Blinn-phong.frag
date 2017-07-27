@@ -8,8 +8,8 @@ in vec3 o_toCamera;
 
 layout(location = 0) out vec4 resColor;
 //layout(location = 1) out vec3 normalColor;
-uniform sampler2D textures[4];
-//uniform sampler2D NormalMap;
+uniform sampler2D textures[5];
+uniform sampler2D pathtex;
 
 // parameters of the light and possible values
 uniform vec3 u_lightAmbientIntensity; // = vec3(0.6, 0.3, 0);
@@ -21,7 +21,6 @@ uniform vec3 u_matAmbientReflectance; // = vec3(1, 1, 1);
 uniform vec3 u_matDiffuseReflectance; // = vec3(1, 1, 1);
 uniform vec3 u_matSpecularReflectance; // = vec3(1, 1, 1);
 uniform float u_matShininess; // = 64;
-
 
 vec3 ambientLighting()
 {
@@ -70,52 +69,117 @@ void main()
 
 	const float fRange1 = 0.01f;
 	const float fRange2 = 0.02f;
-	const float fRange3 = 0.12f;
-	const float fRange4 = 0.2f;
-	const float fRange5 = 0.42f;
-	const float fRange6 = 0.5f;
+	const float fRange3 = 0.05f;
+	const float fRange4 = 0.15f;
+	const float fRange5 = 0.16f;
+	const float fRange6 = 0.3f;
 
-	if(fScale >= 0.0 && fScale <= fRange1)vTexColor = texture2D(textures[0], uv);
+	//float blendAmount;
+	//float slope = 1.0-o_normal.y;
+	vec3 uvwPos = 0.1f * fragPos;
+	vec3 weights = o_normal * o_normal;
+	
+	if(fScale >= 0.0 && fScale <= fRange1)
+	{
+		vec3 blendedColor = weights.xxx * texture2D(textures[0], uvwPos.yz).rgb +
+							weights.yyy * texture2D(textures[0], uvwPos.zx).rgb +
+							weights.zzz * texture2D(textures[0], uvwPos.xy).rgb;
+		vTexColor = vec4(blendedColor, 1.0);
+	}
 	else if(fScale <= fRange2)
 	{
-	  fScale -= fRange1;
-	  fScale /= (fRange2-fRange1);
-	  
-	  float fScale2 = fScale;
-	  fScale = 1.0-fScale; 
-	  
-	  vTexColor += texture2D(textures[0], uv)*fScale;
-	  vTexColor += texture2D(textures[1], uv)*fScale2;
+		fScale -= fRange1;
+		fScale /= (fRange2-fRange1);
+
+		float fScale2 = fScale;
+		fScale = 1.0-fScale;
+
+		vec3 blendedColor = weights.xxx * texture2D(textures[0], uvwPos.yz).rgb +
+							weights.yyy * texture2D(textures[0], uvwPos.zx).rgb +
+							weights.zzz * texture2D(textures[0], uvwPos.xy).rgb;
+		vTexColor += vec4(blendedColor, 1.0)*fScale;
+		
+		blendedColor =  weights.xxx * texture2D(textures[1], uvwPos.yz).rgb +
+						weights.yyy * texture2D(textures[1], uvwPos.zx).rgb +
+						weights.zzz * texture2D(textures[1], uvwPos.xy).rgb;
+		vTexColor += vec4(blendedColor, 1.0)*fScale2;
 	}
-	else if(fScale <= fRange3) vTexColor = texture2D(textures[1], uv);
+	else if(fScale <= fRange3) 
+	{		
+		vec3 blendedColor = weights.xxx * texture2D(textures[1], uvwPos.yz).rgb +
+							weights.yyy * texture2D(textures[1], uvwPos.zx).rgb +
+							weights.zzz * texture2D(textures[1], uvwPos.xy).rgb;
+		vTexColor = vec4(blendedColor, 1.0);	
+	}
 	else if(fScale <= fRange4)
 	{
-	  fScale -= fRange3;
-	  fScale /= (fRange4-fRange3);
-	  
-	  float fScale2 = fScale;
-	  fScale = 1.0-fScale; 
-	  
-	  vTexColor += texture2D(textures[1], uv)*fScale;
-	  vTexColor += texture2D(textures[2], uv)*fScale2;      
+		fScale -= fRange3;
+		fScale /= (fRange4-fRange3);
+
+		float fScale2 = fScale;
+		fScale = 1.0-fScale; 
+
+		vec3 blendedColor = weights.xxx * texture2D(textures[1], uvwPos.yz).rgb +
+							weights.yyy * texture2D(textures[1], uvwPos.zx).rgb +
+							weights.zzz * texture2D(textures[1], uvwPos.xy).rgb;
+		vTexColor += vec4(blendedColor, 1.0)*fScale;
+		
+		blendedColor =  weights.xxx * texture2D(textures[2], uvwPos.yz).rgb +
+						weights.yyy * texture2D(textures[2], uvwPos.zx).rgb +
+						weights.zzz * texture2D(textures[2], uvwPos.xy).rgb;
+							
+		vTexColor += vec4(blendedColor, 1.0)*fScale2;
+
 	}
-	else if(fScale <= fRange5) vTexColor = texture2D(textures[2], uv); 
+	else if(fScale <= fRange5)
+	{
+		vec3 blendedColor = weights.xxx * texture2D(textures[2], uvwPos.yz).rgb +
+							weights.yyy * texture2D(textures[2], uvwPos.zx).rgb +
+							weights.zzz * texture2D(textures[2], uvwPos.xy).rgb;
+		vTexColor = vec4(blendedColor, 1.0);
+	}
 	else if(fScale <= fRange6)
 	{
-	  fScale -= fRange5;
-	  fScale /= (fRange6-fRange5);
-	  
-	  float fScale2 = fScale;
-	  fScale = 1.0-fScale; 
-	  
-	  vTexColor += texture2D(textures[2], uv)*fScale;
-	  vTexColor += texture2D(textures[3], uv)*fScale2;     
+		fScale -= fRange5;
+		fScale /= (fRange6-fRange5);
+
+		float fScale2 = fScale;
+		fScale = 1.0-fScale; 
+
+		vec3 blendedColor = weights.xxx * texture2D(textures[2], uvwPos.yz).rgb +
+							weights.yyy * texture2D(textures[2], uvwPos.zx).rgb +
+							weights.zzz * texture2D(textures[2], uvwPos.xy).rgb;
+		vTexColor += vec4(blendedColor, 1.0)*fScale;
+		
+		blendedColor = weights.xxx * texture2D(textures[3], uvwPos.yz).rgb +
+							weights.yyy * texture2D(textures[3], uvwPos.zx).rgb +
+							weights.zzz * texture2D(textures[3], uvwPos.xy).rgb;
+							
+		vTexColor += vec4(blendedColor, 1.0)*fScale2;
 	}
-	else vTexColor = texture2D(textures[3], uv); 
+	else
+	{
+		vec3 blendedColor = weights.xxx * texture2D(textures[3], uvwPos.yz).rgb +
+							weights.yyy * texture2D(textures[3], uvwPos.zx).rgb +
+							weights.zzz * texture2D(textures[3], uvwPos.xy).rgb;
+		vTexColor = vec4(blendedColor, 1.0);
+	}
+		 
+	
+	vec2 vPathCoord = vec2(uv.x/10.0f, 1.0-(uv.y/10.0f));
+	vec4 vPathIntensity = texture2D(pathtex, vPathCoord); // Black color means there is a path
+	fScale = vPathIntensity.x;
+
+	vec3 blendedColor = weights.xxx * texture2D(textures[4], uvwPos.yz).rgb +
+						weights.yyy * texture2D(textures[4], uvwPos.zx).rgb +
+						weights.zzz * texture2D(textures[4], uvwPos.xy).rgb;
+	vec4 vPathColor = vec4(blendedColor, 1.0);
+	
+	vec4 vFinalTexColor = fScale*vTexColor+(1-fScale)*vPathColor;
 	
 	//vec3 Color = texture(AlbedoMap, vec2(uv.x,1.0-uv.y)).rgb;
 	
-	resColor.xyz = vTexColor.xyz*(Iamb+Idif+Ispe);
+	resColor.xyz = vFinalTexColor.xyz*(Iamb+Idif+Ispe);
 	resColor.a = 1;
 	//normalColor = N;
 }

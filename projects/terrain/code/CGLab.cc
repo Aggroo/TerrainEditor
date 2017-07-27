@@ -120,6 +120,23 @@ CGLab::Open()
 			lNode.setIntensity(0.5f, 0.5f, 1.0f);
 			lNode.apply();
 		}
+		else if (key == GLFW_KEY_F5 && action == GLFW_PRESS)
+		{
+			shaders->ReloadShaders();
+			shaders->setupVector3f("u_matAmbientReflectance", 1.0f, 1.0f, 1.0f);
+			shaders->setupVector3f("u_matDiffuseReflectance", 1.0f, 1.0f, 1.0f);
+			shaders->setupVector3f("u_matSpecularReflectance", 1.0f, 1.0f, 1.0f);
+			shaders->setupUniformFloat("u_matShininess", 64.0f);
+
+			shaders->setupUniformInt("textures[0]", 0);
+			shaders->setupUniformInt("textures[1]", 1);
+			shaders->setupUniformInt("textures[2]", 2);
+			shaders->setupUniformInt("textures[3]", 3);
+			shaders->setupUniformInt("pathtex", 4);
+			shaders->setupUniformInt("textures[4]", 5);
+
+			lNode.apply();
+		}
 		
 
 	});
@@ -192,7 +209,7 @@ CGLab::Open()
 
 		std::shared_ptr<CGMath::MeshResources> mesh = std::make_shared<CGMath::MeshResources>();
 		//std::shared_ptr<CGMath::TextureResource> tex = std::make_shared<CGMath::TextureResource>();
-		std::shared_ptr<CGMath::ShaderObject> shaders = std::make_shared<CGMath::ShaderObject>();
+		shaders = std::make_shared<CGMath::ShaderObject>();
 		std::shared_ptr<TerrainEditor::Terrain> terrain = std::make_shared<TerrainEditor::Terrain>();
 		
 		vec = vector4D(0, 0, 0);
@@ -201,7 +218,7 @@ CGLab::Open()
 		
 		matrix4D perspective = matrix4D::perspectiveMatrix();
 
-		terrain->CreateTerrain("resources/textures/heightmap3.jpg", 1.0f, 60.0f);
+		terrain->CreateTerrain("resources/textures/heightmap2.jpg", 1.0f, 50.0f);
 		terrain->GenerateBuffer();
 
 		//mesh->createQuad();
@@ -224,31 +241,26 @@ CGLab::Open()
         shaders->setupUniformFloat("u_matShininess", 64.0f);
 		shaders->setupMatrix4fv("transMatrix", modelMat);
 
-		textures.push_back(std::make_shared<CGMath::TextureResource>());
-		textures.push_back(std::make_shared<CGMath::TextureResource>());
-		textures.push_back(std::make_shared<CGMath::TextureResource>());
-		textures.push_back(std::make_shared<CGMath::TextureResource>());
+		textures.AddTexture("resources/textures/water.jpg");
+		textures.AddTexture("resources/textures/sand.jpg");
+		textures.AddTexture("resources/textures/grass.jpg");
+		textures.AddTexture("resources/textures/rock.jpg");
 
-		textures[0]->LoadTextureFile("resources/textures/water.jpg");
-		textures[1]->LoadTextureFile("resources/textures/sand.jpg");
-		textures[2]->LoadTextureFile("resources/textures/grass.jpg");
-		textures[3]->LoadTextureFile("resources/textures/rock.jpg");
+		textures.AddTexture("resources/textures/pathway.jpg");
+		textures.AddTexture("resources/textures/road.jpg");
 		//tex->LoadNormalFile("resources/textures/nm_heightmap.png");
-
-		textures[0]->bindTex(0);
-		textures[1]->bindTex(1);
-		textures[2]->bindTex(2);
-		textures[3]->bindTex(3);
 
 		shaders->setupUniformInt("textures[0]", 0);
 		shaders->setupUniformInt("textures[1]", 1);
 		shaders->setupUniformInt("textures[2]", 2);
 		shaders->setupUniformInt("textures[3]", 3);
+		shaders->setupUniformInt("pathtex", 4);
+		shaders->setupUniformInt("textures[4]", 5);
 
 		//gN.setMesh(mesh);
 		gN.setTerrain(terrain);
 		gN.setShaders(shaders);
-		gN.setTex(textures);
+		gN.setTex(std::make_shared<CGMath::TextureNode>(textures));
 
         std::chrono::high_resolution_clock::time_point before = std::chrono::high_resolution_clock::now();
 

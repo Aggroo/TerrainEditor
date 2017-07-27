@@ -50,7 +50,8 @@ private:
 	CGMath::GraphicsNode gN;
 	CGMath::LightNode lNode;
 
-	std::vector<std::shared_ptr<CGMath::TextureResource>> textures;
+	CGMath::TextureNode textures;
+	std::shared_ptr<CGMath::ShaderObject> shaders;
 	float mouseX, mouseY;
 	
 	//GLuint shaderTransMatrix;

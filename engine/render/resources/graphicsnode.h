@@ -7,6 +7,7 @@
 
 #include <memory>
 #include "../../../projects/terrain/code/terrain.h"
+#include "texturenode.h"
 
 namespace CGMath
 {
@@ -23,8 +24,8 @@ namespace CGMath
 		void setMesh(std::shared_ptr<MeshResources> newMesh);
 		std::shared_ptr<MeshResources> getMesh();
 
-		void setTex(std::vector<std::shared_ptr<TextureResource>> newTex);
-		std::vector<std::shared_ptr<TextureResource>> getTex();
+		void setTex(std::shared_ptr<TextureNode> newTex);
+		std::shared_ptr<TextureNode> getTex();
 
 		void setTerrain(std::shared_ptr<TerrainEditor::Terrain> newTerrain);
 		std::shared_ptr<TerrainEditor::Terrain> getTerrain();
@@ -44,7 +45,7 @@ namespace CGMath
 	private:
 		std::shared_ptr<ShaderObject> shader;
 		std::shared_ptr<MeshResources> mesh;
-		std::vector<std::shared_ptr<TextureResource>> tex;
+		std::shared_ptr<TextureNode> tex;
 		std::shared_ptr<TerrainEditor::Terrain> terr;
 		matrix4D transMat;
 		matrix4D viewMat;

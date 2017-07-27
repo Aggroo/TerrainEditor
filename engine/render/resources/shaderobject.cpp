@@ -21,6 +21,9 @@ namespace CGMath
 
 	void ShaderObject::setupShaders(const char* vertexFile, const char* fragmentFile)
 	{
+		vertexFileName = vertexFile;
+		fragmentFileName = fragmentFile;
+
 		std::string vert;
 		std::ifstream vertStream(vertexFile, std::ios::in);
 
@@ -103,9 +106,87 @@ namespace CGMath
 			printf("[PROGRAM LINK ERROR]: %s", buf);
 			delete[] buf;
 		}
-		
-		
 
+	}
+
+	void ShaderObject::ReloadShaders()
+	{
+
+		std::string vert;
+		std::ifstream vertStream(vertexFileName, std::ios::in);
+
+		if (!vertStream.is_open()) {
+			std::cerr << "Could not read file " << vertexFileName << ". File does not exist." << std::endl;
+
+		}
+
+		std::string vertline = "";
+		while (!vertStream.eof()) {
+			std::getline(vertStream, vertline);
+			vert.append(vertline + "\n");
+		}
+		vert.append("\0");
+		vertStream.close();
+
+		const char* vs = vert.c_str();
+
+		std::string frag;
+		std::ifstream fragStream(fragmentFileName, std::ios::in);
+
+		if (!fragStream.is_open()) {
+			std::cerr << "Could not read file " << fragmentFileName << ". File does not exist." << std::endl;
+
+		}
+
+		std::string fragline = "";
+		while (!fragStream.eof()) {
+			std::getline(fragStream, fragline);
+			frag.append(fragline + "\n");
+		}
+		frag.append("\0");
+		fragStream.close();
+
+		const char* fs = frag.c_str();
+
+		GLint length = std::strlen(vs);
+		glShaderSource(this->vertexShader, 1, &vs, &length);
+		glCompileShader(this->vertexShader);
+
+		// get error log
+		GLint shaderLogSize;
+		glGetShaderiv(this->vertexShader, GL_INFO_LOG_LENGTH, &shaderLogSize);
+		if (shaderLogSize > 0)
+		{
+			GLchar* buf = new GLchar[shaderLogSize];
+			glGetShaderInfoLog(this->vertexShader, shaderLogSize, NULL, buf);
+			printf("[SHADER COMPILE ERROR]: %s", buf);
+			delete[] buf;
+		}
+
+		// setup fragment shader
+		length = std::strlen(fs);
+		glShaderSource(this->fragmentShader, 1, &fs, &length);
+		glCompileShader(this->fragmentShader);
+
+		// get error log
+		glGetShaderiv(this->fragmentShader, GL_INFO_LOG_LENGTH, &shaderLogSize);
+		if (shaderLogSize > 0)
+		{
+			GLchar* buf = new GLchar[shaderLogSize];
+			glGetShaderInfoLog(this->fragmentShader, shaderLogSize, NULL, buf);
+			printf("[SHADER COMPILE ERROR]: %s", buf);
+			delete[] buf;
+		}
+
+		glLinkProgram(this->program);
+		glGetProgramiv(this->program, GL_INFO_LOG_LENGTH, &shaderLogSize);
+		if (shaderLogSize > 0)
+		{
+			GLchar* buf = new GLchar[shaderLogSize];
+			glGetProgramInfoLog(this->program, shaderLogSize, NULL, buf);
+			printf("[PROGRAM LINK ERROR]: %s", buf);
+			delete[] buf;
+		}
 	}
 
 	void ShaderObject::useProgram()

@@ -100,32 +100,26 @@ bool Terrain::CreateTerrain(const char* filename, float widthMultiplier, float h
 			index4 = (terrainHeight * (y + 1)) + (x + 1);  // Upper right.
 
 			// Upper left.
-			//mesh.push_back(TerrainVertex(CGMath::vector3D(heightMap[index3].x, heightMap[index3].y, heightMap[index3].z), CGMath::vector2D(x*uDiv, -y*vDiv)));
 			indices[index] = index3;
 			index++;
 
 			// Upper right.
-			//mesh.push_back(TerrainVertex(CGMath::vector3D(heightMap[index4].x, heightMap[index4].y, heightMap[index4].z), CGMath::vector2D(x*uDiv, -y*vDiv)));
 			indices[index] = index4;
 			index++;
 
 			// Bottom left.
-			//mesh.push_back(TerrainVertex( CGMath::vector3D(heightMap[index1].x, heightMap[index1].y, heightMap[index1].z), CGMath::vector2D(x*uDiv, -y*vDiv) ));
 			indices[index] = index1;
 			index++;
 
 			// Bottom left.
-			//mesh.push_back(TerrainVertex( CGMath::vector3D(heightMap[index1].x, heightMap[index1].y, heightMap[index1].z), CGMath::vector2D(x*uDiv, -y*vDiv) ));
 			indices[index] = index1;
 			index++;
 
 			// Upper right.
-			//mesh.push_back(TerrainVertex(CGMath::vector3D(heightMap[index4].x, heightMap[index4].y, heightMap[index4].z), CGMath::vector2D(x*uDiv, -y*vDiv)));
 			indices[index] = index4;
 			index++;
 
 			// Bottom right.
-			//mesh.push_back(TerrainVertex(CGMath::vector3D(heightMap[index2].x, heightMap[index2].y, heightMap[index2].z), CGMath::vector2D(x*uDiv, -y*vDiv)));
 			indices[index] = index2;
 			index++;
 
@@ -150,24 +144,6 @@ bool Terrain::CreateTerrain(const char* filename, float widthMultiplier, float h
 	for (int i = 0; i < vertexCount; ++i)
 	{
 		mesh[i].norm = CGMath::vector3D::Normalize(mesh[i].norm);
-
-		CGMath::vector3D tangent;
-
-		CGMath::vector3D c1 = CGMath::vector3D::Cross(mesh[i].norm, CGMath::vector3D(0.f, 0.f, 1.f));
-		CGMath::vector3D c2 = CGMath::vector3D::Cross(mesh[i].norm, CGMath::vector3D(0.f, 1.f, 0.f));
-
-		if (c1.vecLength() >c2.vecLength())
-		{
-			tangent = c1;
-		}
-		else
-		{
-			tangent = c2;
-		}
-
-		mesh[i].tangent = CGMath::vector3D::Normalize(tangent);
-		mesh[i].binormal = CGMath::vector3D::Cross(mesh[i].norm, tangent);
-		mesh[i].binormal = CGMath::vector3D::Normalize(mesh[i].binormal);
 	}
 
 	return true;
@@ -232,14 +208,10 @@ void Terrain::GenerateBuffer()
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
-	glEnableVertexAttribArray(3);
-	glEnableVertexAttribArray(4);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 14, NULL);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float32) * 14, (GLvoid*)(sizeof(float32) * 3));
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 14, (GLvoid*)(sizeof(float32) * 5));
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 14, (GLvoid*)(sizeof(float32) * 8));
-	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 14, (GLvoid*)(sizeof(float32) * 11));
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 8, NULL);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float32) * 8, (GLvoid*)(sizeof(float32) * 3));
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 8, (GLvoid*)(sizeof(float32) * 5));
 
 	glGenBuffers(1, &ibo[0]);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo[0]);

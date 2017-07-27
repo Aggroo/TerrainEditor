@@ -18,8 +18,7 @@ struct TerrainVertex
 	CGMath::vector3D pos;
 	CGMath::vector2D uv;
 	CGMath::vector3D norm;
-	CGMath::vector3D tangent;
-	CGMath::vector3D binormal;
+
 };
 
 struct HeightmapValues
