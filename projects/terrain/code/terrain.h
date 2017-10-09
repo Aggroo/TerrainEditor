@@ -36,10 +36,7 @@ public:
 
 	bool CreateTerrain(const char* filename, float widthMultiplier, float heightMultiplier);
 
-	void SmoothenTerrain();
 	HeightmapValues Average(int x, int y);
-
-	bool inBounds(int x, int y);
 
 	void GenerateBuffer();
 	void DrawTerrain();
@@ -47,6 +44,10 @@ public:
 	float GetHeightScale();
 
 private:
+	void SmoothenTerrain();
+	bool inBounds(int x, int y);
+	void GenerateNormals();
+
 	int terrainWidth;
 	int terrainHeight;
 

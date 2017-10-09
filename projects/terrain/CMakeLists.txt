@@ -10,6 +10,9 @@ code/CGLab.h
 code/main.cc
 code/terrain.h
 code/terrain.cpp
+code/userinterface.h
+code/userinterface.cpp
+code/imguiextra.h
 )
 SOURCE_GROUP("terraineditor" FILES ${files_terrain})
 

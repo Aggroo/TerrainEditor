@@ -126,25 +126,7 @@ bool Terrain::CreateTerrain(const char* filename, float widthMultiplier, float h
 		}
 	}
 
-	CGMath::vector3D p;
-	int a, b, c;
-	for (i = 0; i < (indexCount-3); i += 3)
-	{
-		a = indices[i];
-		b = indices[i + 1];
-		c = indices[i + 2];
-
-		p = CGMath::vector3D::Cross(mesh[b].pos - mesh[a].pos, mesh[c].pos - mesh[a].pos);
-
-		mesh[indices[i]].norm += p;
-		mesh[indices[i + 1]].norm += p;
-		mesh[indices[i + 2]].norm += p;
-	}
-
-	for (int i = 0; i < vertexCount; ++i)
-	{
-		mesh[i].norm = CGMath::vector3D::Normalize(mesh[i].norm);
-	}
+	GenerateNormals();
 
 	return true;
 }
@@ -233,5 +215,28 @@ void Terrain::DrawTerrain()
 float Terrain::GetHeightScale()
 {
 	return this->heightScale;
+}
+
+void Terrain::GenerateNormals()
+{
+	CGMath::vector3D p;
+	int a, b, c;
+	for (int i = 0; i < (indexCount - 3); i += 3)
+	{
+		a = indices[i];
+		b = indices[i + 1];
+		c = indices[i + 2];
+
+		p = CGMath::vector3D::Cross(mesh[b].pos - mesh[a].pos, mesh[c].pos - mesh[a].pos);
+
+		mesh[indices[i]].norm += p;
+		mesh[indices[i + 1]].norm += p;
+		mesh[indices[i + 2]].norm += p;
+	}
+
+	for (int i = 0; i < vertexCount; ++i)
+	{
+		mesh[i].norm = CGMath::vector3D::Normalize(mesh[i].norm);
+	}
 }
 }

@@ -55,6 +55,9 @@ public:
 	/// set window resize function callback
 	void SetWindowResizeFunction(const std::function<void(int32, int32)>& func);
 
+	/// set optional UI render function
+	void SetUiRender(const std::function<void()>& func);
+
 private:
 
 	/// static key press callback
@@ -89,6 +92,8 @@ private:
 	std::function<void(float64, float64)> mouseScrollCallback;
 	/// function for window resize callbacks
 	std::function<void(int32, int32)> windowResizeCallback;
+	/// function for ui rendering callback
+	std::function<void()> uiFunc;
 
 	int32 width;
 	int32 height;
@@ -179,4 +184,14 @@ Window::SetWindowResizeFunction(const std::function<void(int32, int32)>& func)
 {
 	this->windowResizeCallback = func;
 }
+
+//------------------------------------------------------------------------------
+/**
+*/
+inline void
+Window::SetUiRender(const std::function<void()>& func)
+{
+	this->uiFunc = func;
+}
+
 } // namespace Display

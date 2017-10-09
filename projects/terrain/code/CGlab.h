@@ -15,6 +15,8 @@
 #include "render/resources/shaderobject.h"
 #include <chrono>
 
+class UserInterface;
+
 namespace Example
 {
 class CGLab : public Core::App
@@ -27,9 +29,14 @@ public:
 
 	/// open app
 	bool Open();
+	void RenderUI();
 	/// run app
 	void Run();
+
+	Display::Window* GetWindow(){ return window; }
 private:
+
+	std::shared_ptr<UserInterface> UI;
 
 	GLuint program;
 	GLuint vertexShader;

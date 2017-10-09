@@ -286,7 +286,17 @@ Window::Update()
 void
 Window::SwapBuffers()
 {
-	glfwSwapBuffers(this->window);
+	if (this->window)
+	{
+		if (nullptr != this->uiFunc)
+		{
+			ImGui_ImplGlfwGL3_NewFrame();
+			this->uiFunc();
+			ImGui::Render();
+		}
+
+		glfwSwapBuffers(this->window);
+	}
 }
 
 } // namespace Display

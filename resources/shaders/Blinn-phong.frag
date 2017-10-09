@@ -71,12 +71,12 @@ void main()
 	const float fRange2 = 0.02f;
 	const float fRange3 = 0.05f;
 	const float fRange4 = 0.15f;
-	const float fRange5 = 0.16f;
-	const float fRange6 = 0.3f;
+	const float fRange5 = 0.45f;
+	const float fRange6 = 0.52f;
 
 	//float blendAmount;
 	//float slope = 1.0-o_normal.y;
-	vec3 uvwPos = 0.1f * fragPos;
+	vec3 uvwPos = 0.015f * fragPos;
 	vec3 weights = o_normal * o_normal;
 	
 	if(fScale >= 0.0 && fScale <= fRange1)
@@ -165,7 +165,7 @@ void main()
 		vTexColor = vec4(blendedColor, 1.0);
 	}
 		 
-	
+	uvwPos = 0.08f * fragPos;
 	vec2 vPathCoord = vec2(uv.x/10.0f, 1.0-(uv.y/10.0f));
 	vec4 vPathIntensity = texture2D(pathtex, vPathCoord); // Black color means there is a path
 	fScale = vPathIntensity.x;
