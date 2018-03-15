@@ -34,6 +34,7 @@ public:
 	Terrain();
 	~Terrain();
 
+	///Generates the terrain from a Heightmap
 	bool CreateTerrain(const char* filename, float widthMultiplier, float heightMultiplier);
 
 	HeightmapValues Average(int x, int y);

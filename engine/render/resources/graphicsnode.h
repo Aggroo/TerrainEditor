@@ -1,5 +1,4 @@
 #pragma once
-#include "GL/glew.h"
 #include "foundation/math/matrix4D.h"
 #include "shaderobject.h"
 #include "textureresource.h"

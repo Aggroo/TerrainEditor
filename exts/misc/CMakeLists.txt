@@ -2,7 +2,8 @@ project (misc)
 set (MISC_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 set(MISC_HEAD 
-	${MISC_DIR}/tinyxml2.h)
+	${MISC_DIR}/tinyxml2.h
+	${MISC_DIR}/json.hpp)
 	
 set(MISC_SRC
 	${MISC_DIR}/tinyxml2.cpp

@@ -2,15 +2,12 @@
 #include "GL/glew.h"
 #include "foundation/math/vector2D.h"
 #include "foundation/math/vector3D.h"
-#include "foundation/math/vector4D.h"
 #include <map>
 #include <vector>
 
 
 namespace CGMath
-{
-	struct Vertex;
-	
+{	
 	struct Face
 	{
 		std::vector<GLuint> verts;

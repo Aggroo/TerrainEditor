@@ -76,10 +76,10 @@ void main()
 
 	//float blendAmount;
 	//float slope = 1.0-o_normal.y;
-	vec3 uvwPos = 0.015f * fragPos;
+	vec3 uvwPos = 0.1f * fragPos;
 	vec3 weights = o_normal * o_normal;
 	
-	if(fScale >= 0.0 && fScale <= fRange1)
+	/* if(fScale >= 0.0 && fScale <= fRange1)
 	{
 		vec3 blendedColor = weights.xxx * texture2D(textures[0], uvwPos.yz).rgb +
 							weights.yyy * texture2D(textures[0], uvwPos.zx).rgb +
@@ -163,9 +163,45 @@ void main()
 							weights.yyy * texture2D(textures[3], uvwPos.zx).rgb +
 							weights.zzz * texture2D(textures[3], uvwPos.xy).rgb;
 		vTexColor = vec4(blendedColor, 1.0);
+	} */
+	
+	float slope = 1.0-o_normal.y;
+	vec4 g1 = vec4(weights.xxx * texture2D(textures[0], uvwPos.yz).rgb +
+					weights.yyy * texture2D(textures[0], uvwPos.zx).rgb +
+					weights.zzz * texture2D(textures[0], uvwPos.xy).rgb,1);
+					
+	vec4 g2 = vec4(weights.xxx * texture2D(textures[1], uvwPos.yz).rgb +
+					weights.yyy * texture2D(textures[1], uvwPos.zx).rgb +
+					weights.zzz * texture2D(textures[1], uvwPos.xy).rgb,1);
+					
+	vec4 g3 = vec4(weights.xxx * texture2D(textures[2], uvwPos.yz).rgb +
+					weights.yyy * texture2D(textures[2], uvwPos.zx).rgb +
+					weights.zzz * texture2D(textures[2], uvwPos.xy).rgb,1);
+					
+	vec4 g4= vec4(weights.xxx * texture2D(textures[3], uvwPos.yz).rgb +
+					weights.yyy * texture2D(textures[3], uvwPos.zx).rgb +
+					weights.zzz * texture2D(textures[3], uvwPos.xy).rgb,1);
+
+	
+	if(fragPos.y < 0.05)
+	{
+		vTexColor = g1;
 	}
+	else if(fragPos.y < 1.0)
+	{
+		vTexColor = g1;
+		vTexColor=mix(g1,g2, smoothstep(0.0,0.2,slope));
+	}
+	else
+	{
+		vTexColor = g3;
+	}
+	
+	vTexColor = mix(vTexColor,g2,smoothstep(0.0,0.3,slope));
+	vTexColor = mix(vTexColor,g3,smoothstep(0.01,0.5,slope));
+	vTexColor = mix(vTexColor,g4,smoothstep(0.1,0.26,slope));
 		 
-	uvwPos = 0.08f * fragPos;
+	uvwPos = 0.1f * fragPos;
 	vec2 vPathCoord = vec2(uv.x/10.0f, 1.0-(uv.y/10.0f));
 	vec4 vPathIntensity = texture2D(pathtex, vPathCoord); // Black color means there is a path
 	fScale = vPathIntensity.x;

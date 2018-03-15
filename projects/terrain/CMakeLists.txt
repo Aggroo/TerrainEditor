@@ -17,7 +17,7 @@ code/imguiextra.h
 SOURCE_GROUP("terraineditor" FILES ${files_terrain})
 
 ADD_EXECUTABLE(terrain_proj ${files_terrain})
-TARGET_LINK_LIBRARIES(terrain_proj core render)
-ADD_DEPENDENCIES(terrain_proj core render)
+TARGET_LINK_LIBRARIES(terrain_proj core render foundation)
+ADD_DEPENDENCIES(terrain_proj core render foundation)
 
 SET_TARGET_PROPERTIES(terrain_proj PROPERTIES FOLDER "terraineditor/projects")

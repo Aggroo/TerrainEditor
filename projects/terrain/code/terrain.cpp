@@ -32,6 +32,7 @@ bool Terrain::CreateTerrain(const char* filename, float widthMultiplier, float h
 		std::cerr << "Could not read file " << filename << ". File does not exist." << std::endl;
 		return false;
 	}
+
 	this->heightScale = heightMultiplier;
 	heightMap = new HeightmapValues[terrainWidth*terrainHeight];
 
@@ -130,6 +131,7 @@ bool Terrain::CreateTerrain(const char* filename, float widthMultiplier, float h
 
 	return true;
 }
+
 
 void Terrain::SmoothenTerrain()
 {

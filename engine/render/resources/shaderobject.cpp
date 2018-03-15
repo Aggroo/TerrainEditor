@@ -111,7 +111,6 @@ namespace CGMath
 
 	void ShaderObject::ReloadShaders()
 	{
-
 		std::string vert;
 		std::ifstream vertStream(vertexFileName, std::ios::in);
 

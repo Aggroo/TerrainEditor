@@ -14,6 +14,7 @@
 #include <atomic>
 #include <xmmintrin.h>
 #include <assert.h>
+#include <emmintrin.h>
 
 typedef uint32_t	uint32;
 typedef int32_t		int32;
@@ -42,6 +43,9 @@ typedef __m128d		dvec4;
 
 #define j_min(x, y) x < y ? x : y
 #define j_max(x, y) x > y ? x : y
+
+#define ZERO_MEM(a) memset(a, 0, sizeof(a))
+#define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
 
 #ifdef NULL
 #undef NULL

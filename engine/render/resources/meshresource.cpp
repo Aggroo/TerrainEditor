@@ -70,8 +70,7 @@ void MeshResources::genSkinnedBuffer(size_t vertexSize, uchar* vertexPtr, size_t
 }
 
 bool MeshResources::loadObj(const char* filename)
-{
-		
+{		
 	struct FaceVertex
 	{
 		int pos = 0;
@@ -285,9 +284,6 @@ void MeshResources::createQuad2()
 void MeshResources::drawMesh()
 {
 	glBindVertexArray(vao[0]);
-
-	/*glBindBuffer(GL_ARRAY_BUFFER, ibo[0]);
-	glDrawArrays(GL_TRIANGLES, 0, mesh.size());*/
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo[0]);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, NULL);
