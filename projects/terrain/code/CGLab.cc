@@ -46,11 +46,11 @@ CGLab::Open()
 
 	if (this->window->Open())
 	{
-		render = std::make_shared<Render::Render>();
+		render = std::make_shared<Renderer::DeferredRenderer>();
 		shaders = std::make_shared<CGMath::ShaderObject>();
 		input = std::make_shared<Input::InputManager>(this->window, shaders.get(), &lNode);
 
-		render->Init(this->GetWindow()->GetWidth(), this->GetWindow()->GetHeight());
+		//render->Init(this->GetWindow()->GetWidth(), this->GetWindow()->GetHeight());
 
 		input->InitKeyPress();
 		input->InitMouse();

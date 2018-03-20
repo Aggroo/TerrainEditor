@@ -27,8 +27,8 @@ SET(files_render_resources
 	resources/stb_image_write.h
 	resources/inputmanager.h
 	resources/inputmanager.cpp
-	resources/render.h
-	resources/render.cpp
+	resources/deferredrenderer.h
+	resources/deferredrenderer.cpp
 	)
 
 SOURCE_GROUP("display" FILES ${files_render_display})

@@ -12,7 +12,7 @@
 #include "render/resources/lightnode.h"
 #include "render/resources/shaderobject.h"
 #include "render/resources/inputmanager.h"
-#include "render/resources/render.h"
+#include "render/resources/deferredrenderer.h"
 #include <chrono>
 
 class UserInterface;
@@ -50,7 +50,7 @@ private:
 	CGMath::TextureNode textures;
 	std::shared_ptr<Input::InputManager> input;
 	std::shared_ptr<CGMath::ShaderObject> shaders;
-	std::shared_ptr<Render::Render> render;
+	std::shared_ptr<Renderer::DeferredRenderer> render;
 	float mouseX, mouseY;
 	
 	//GLuint shaderTransMatrix;
