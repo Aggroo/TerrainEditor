@@ -1,11 +1,11 @@
 #ifndef HALFEDGEMESH_H
 #define HALFEDGEMESH_H
-#include "foundation/math/vector3D.h"
-#include "foundation/math/vector2D.h"
+#include "foundation/math/vec3.h"
+#include "foundation/math/vec2.h"
 #include "meshresource.h"
 #include <map>
 
-using namespace CGMath;
+using namespace Math;
 
 namespace HalfEdges
 {
@@ -27,9 +27,9 @@ struct Face
 
 struct Vertex
 {
-	vector3D pos;
-	vector2D uv;
-	vector3D norm;
+	vec3 pos;
+	vec2 uv;
+	vec3 norm;
 	int idx;
 	HalfEdge* edge;
 };
@@ -37,7 +37,7 @@ struct Vertex
 struct heMesh
 {
 	std::vector<GLuint> indices;
-	std::vector<CGMath::Vertex> mesh;
+	std::vector<Math::Vertex> mesh;
 };
 
 class HalfEdgeMesh

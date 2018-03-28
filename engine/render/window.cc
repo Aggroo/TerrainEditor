@@ -239,8 +239,12 @@ Window::Open()
 	glfwSetWindowSizeCallback(this->window, Window::StaticWindowResizeCallback);
 
 	// setup imgui implementation
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+
 	ImGui_ImplGlfwGL3_Init(this->window, false);
-	glfwSetCharCallback(window, ImGui_ImplGlfwGL3_CharCallback);
+	glfwSetCharCallback(window, ImGui_ImplGlfw_CharCallback);
+
 
 	// increase window count and return result
 	Window::WindowCount++;
@@ -293,6 +297,7 @@ Window::SwapBuffers()
 			ImGui_ImplGlfwGL3_NewFrame();
 			this->uiFunc();
 			ImGui::Render();
+			ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 		}
 
 		glfwSwapBuffers(this->window);

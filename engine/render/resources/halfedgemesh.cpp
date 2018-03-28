@@ -2,7 +2,8 @@
 #include "halfedgemesh.h"
 #include <chrono>
 #include <cstring>
-using namespace CGMath;
+#include <iostream>
+using namespace Math;
 
 namespace HalfEdges
 {
@@ -25,7 +26,7 @@ namespace HalfEdges
 	{
 		for(int i = 0; i < mesh->GetMesh().size(); i++)
 		{
-			CGMath::Vertex meshVert = mesh->GetMesh()[i];
+			Math::Vertex meshVert = mesh->GetMesh()[i];
 			HalfEdges::Vertex* vert = new HalfEdges::Vertex();
 			vert->pos = meshVert.pos;
 			vert->uv = meshVert.uv;
@@ -133,7 +134,7 @@ namespace HalfEdges
 		{
 			HalfEdges::Vertex* vert = vertices[i];
 			heMeshIndices[(uintptr_t) vert] = i;
-			CGMath::Vertex bufVert;
+			Math::Vertex bufVert;
 			//std::memcpy(&bufVert, vert, sizeof(HalfEdges::Vertex)-sizeof(uintptr_t));
 			bufVert.pos = vert->pos;
 			bufVert.uv = vert->uv;
@@ -169,7 +170,7 @@ namespace HalfEdges
 		for(int iterationCount = 0; iterationCount < iterations; ++iterationCount)
 		{
 			std::chrono::high_resolution_clock::time_point before = std::chrono::high_resolution_clock::now();
-			std::vector<vector3D> original_pos;
+			std::vector<vec3> original_pos;
 			int vertSize = vertices.size();
 			for(int i = 0; i < vertSize; ++i)
 			{
@@ -190,12 +191,12 @@ namespace HalfEdges
 				
 				HalfEdges::Vertex* facePoint = new HalfEdges::Vertex();
 				vertices.push_back(facePoint);
-				vector3D vecPos = (face->faceEdge->vert->pos + face->faceEdge->nextEdge->vert->pos + face->faceEdge->nextEdge->nextEdge->vert->pos + face->faceEdge->nextEdge->nextEdge->nextEdge->vert->pos)*0.25f;
-				vector2D vecUV = (face->faceEdge->vert->uv + face->faceEdge->nextEdge->vert->uv + face->faceEdge->nextEdge->nextEdge->vert->uv + face->faceEdge->nextEdge->nextEdge->nextEdge->vert->uv)*0.25f;
-				vector3D vecNorm = (face->faceEdge->vert->norm + face->faceEdge->nextEdge->vert->norm + face->faceEdge->nextEdge->nextEdge->vert->norm + face->faceEdge->nextEdge->nextEdge->nextEdge->vert->norm)*0.25f;
+				vec3 vecPos = (face->faceEdge->vert->pos + face->faceEdge->nextEdge->vert->pos + face->faceEdge->nextEdge->nextEdge->vert->pos + face->faceEdge->nextEdge->nextEdge->nextEdge->vert->pos)*0.25f;
+				vec2 vecUV = (face->faceEdge->vert->uv + face->faceEdge->nextEdge->vert->uv + face->faceEdge->nextEdge->nextEdge->vert->uv + face->faceEdge->nextEdge->nextEdge->nextEdge->vert->uv)*0.25f;
+				vec3 vecNorm = (face->faceEdge->vert->norm + face->faceEdge->nextEdge->vert->norm + face->faceEdge->nextEdge->nextEdge->vert->norm + face->faceEdge->nextEdge->nextEdge->nextEdge->vert->norm)*0.25f;
 				facePoint->pos = vecPos;
 				facePoint->uv = vecUV;
-				facePoint->norm = vector3D::Normalize(vecNorm);
+				facePoint->norm = vec3::Normalize(vecNorm);
 				facePoint->idx = vertices.size()-1;
 				
 				
@@ -237,7 +238,7 @@ namespace HalfEdges
 					edgePointTop = edgeTopLeft->oppositeEdge->nextEdge->oppositeEdge->nextEdge->vert;
 					edgePointTop->pos = edgePointTop->pos+(facePoint->pos *0.25f);
 					edgePointTop->uv = edgePointTop->uv+(facePoint->uv*0.25f);
-					edgePointTop->norm = vector3D::Normalize((edgePointTop->norm + (facePoint->norm *0.25f)));
+					edgePointTop->norm = vec3::Normalize((edgePointTop->norm + (facePoint->norm *0.25f)));
 					edgeTopRight->oppositeEdge = edgeTopLeft->oppositeEdge;
 					edgeTopLeft->oppositeEdge->oppositeEdge = edgeTopRight;
 					edgeTopLeft->oppositeEdge = edgeTopRight->oppositeEdge->nextEdge->oppositeEdge->nextEdge;
@@ -248,9 +249,9 @@ namespace HalfEdges
 					edgePointTop = new HalfEdges::Vertex();
 					vertices.push_back(edgePointTop);
 					edgePointTop->edge = edgeTopRight;
-					vector3D vecPosTop = (edgeTopLeft->vert->pos + edgeTopLeft->nextEdge->vert->pos + facePoint->pos)*0.25f;
-					vector2D vecUVTop = (edgeTopLeft->vert->uv + edgeTopLeft->nextEdge->vert->uv + facePoint->uv)*0.25f;
-					vector3D vecNormTop = (edgeTopLeft->vert->norm + edgeTopLeft->nextEdge->vert->norm + facePoint->norm)*0.25f;
+					vec3 vecPosTop = (edgeTopLeft->vert->pos + edgeTopLeft->nextEdge->vert->pos + facePoint->pos)*0.25f;
+					vec2 vecUVTop = (edgeTopLeft->vert->uv + edgeTopLeft->nextEdge->vert->uv + facePoint->uv)*0.25f;
+					vec3 vecNormTop = (edgeTopLeft->vert->norm + edgeTopLeft->nextEdge->vert->norm + facePoint->norm)*0.25f;
 					edgePointTop->pos = vecPosTop;
 					edgePointTop->uv = vecUVTop;
 					edgePointTop->norm = vecNormTop;
@@ -262,7 +263,7 @@ namespace HalfEdges
 					edgePointRight = edgeRightTop->oppositeEdge->nextEdge->oppositeEdge->nextEdge->vert;
 					edgePointRight->pos = edgePointRight->pos+(facePoint->pos *0.25f);
 					edgePointRight->uv = edgePointRight->uv+(facePoint->uv*0.25f);
-					edgePointRight->norm = vector3D::Normalize((edgePointRight->norm + (facePoint->norm *0.25f)));
+					edgePointRight->norm = vec3::Normalize((edgePointRight->norm + (facePoint->norm *0.25f)));
 					edgeRightBot->oppositeEdge = edgeRightTop->oppositeEdge;
 					edgeRightTop->oppositeEdge->oppositeEdge = edgeRightBot;
 					edgeRightTop->oppositeEdge = edgeRightBot->oppositeEdge->nextEdge->oppositeEdge->nextEdge;
@@ -273,9 +274,9 @@ namespace HalfEdges
 					edgePointRight = new HalfEdges::Vertex();
 					vertices.push_back(edgePointRight);
 					edgePointRight->edge = edgeRightBot;
-					vector3D vecPosRight = (edgeRightTop->vert->pos + edgeRightTop->nextEdge->vert->pos + facePoint->pos)*0.25f;
-					vector2D vecUVRight = (edgeRightTop->vert->uv + edgeRightTop->nextEdge->vert->uv + facePoint->uv)*0.25f;
-					vector3D vecNormRight = (edgeRightTop->vert->norm + edgeRightTop->nextEdge->vert->norm + facePoint->norm)*0.25f;
+					vec3 vecPosRight = (edgeRightTop->vert->pos + edgeRightTop->nextEdge->vert->pos + facePoint->pos)*0.25f;
+					vec2 vecUVRight = (edgeRightTop->vert->uv + edgeRightTop->nextEdge->vert->uv + facePoint->uv)*0.25f;
+					vec3 vecNormRight = (edgeRightTop->vert->norm + edgeRightTop->nextEdge->vert->norm + facePoint->norm)*0.25f;
 					edgePointRight->pos = vecPosRight;
 					edgePointRight->uv = vecUVRight;
 					edgePointRight->norm = vecNormRight;
@@ -286,7 +287,7 @@ namespace HalfEdges
 					edgePointBot = edgeBotRight->oppositeEdge->nextEdge->oppositeEdge->nextEdge->vert;
 					edgePointBot->pos = edgePointBot->pos+(facePoint->pos *0.25f);
 					edgePointBot->uv = edgePointBot->uv+(facePoint->uv*0.25f);
-					edgePointBot->norm = vector3D::Normalize((edgePointBot->norm + (facePoint->norm *0.25f)));
+					edgePointBot->norm = vec3::Normalize((edgePointBot->norm + (facePoint->norm *0.25f)));
 					edgeBotLeft->oppositeEdge = edgeBotRight->oppositeEdge;
 					edgeBotRight->oppositeEdge->oppositeEdge = edgeBotLeft;
 					edgeBotRight->oppositeEdge = edgeBotLeft->oppositeEdge->nextEdge->oppositeEdge->nextEdge;
@@ -297,9 +298,9 @@ namespace HalfEdges
 					edgePointBot = new HalfEdges::Vertex();
 					vertices.push_back(edgePointBot);
 					edgePointBot->edge = edgeBotLeft;
-					vector3D vecPosBot = (edgeBotRight->vert->pos + edgeBotRight->nextEdge->vert->pos + facePoint->pos)*0.25f;
-					vector2D vecUVBot = (edgeBotRight->vert->uv + edgeBotRight->nextEdge->vert->uv + facePoint->uv)*0.25f;
-					vector3D vecNormBot = (edgeBotRight->vert->norm + edgeBotRight->nextEdge->vert->norm + facePoint->norm)*0.25f;
+					vec3 vecPosBot = (edgeBotRight->vert->pos + edgeBotRight->nextEdge->vert->pos + facePoint->pos)*0.25f;
+					vec2 vecUVBot = (edgeBotRight->vert->uv + edgeBotRight->nextEdge->vert->uv + facePoint->uv)*0.25f;
+					vec3 vecNormBot = (edgeBotRight->vert->norm + edgeBotRight->nextEdge->vert->norm + facePoint->norm)*0.25f;
 					edgePointBot->pos = vecPosBot;
 					edgePointBot->uv = vecUVBot;
 					edgePointBot->norm = vecNormBot;
@@ -310,7 +311,7 @@ namespace HalfEdges
 					edgePointLeft = edgeLeftBot->oppositeEdge->nextEdge->oppositeEdge->nextEdge->vert;
 					edgePointLeft->pos = edgePointLeft->pos+(facePoint->pos *0.25f);
 					edgePointLeft->uv = edgePointLeft->uv+(facePoint->uv*0.25f);
-					edgePointLeft->norm = vector3D::Normalize((edgePointLeft->norm + (facePoint->norm *0.25f)));
+					edgePointLeft->norm = vec3::Normalize((edgePointLeft->norm + (facePoint->norm *0.25f)));
 					edgeLeftTop->oppositeEdge = edgeLeftBot->oppositeEdge;
 					edgeLeftBot->oppositeEdge->oppositeEdge = edgeLeftTop;
 					edgeLeftBot->oppositeEdge = edgeLeftTop->oppositeEdge->nextEdge->oppositeEdge->nextEdge;
@@ -322,9 +323,9 @@ namespace HalfEdges
 					edgePointLeft = new HalfEdges::Vertex();
 					vertices.push_back(edgePointLeft);
 					edgePointLeft->edge = edgeLeftTop;
-					vector3D vecPosLeft = (edgeLeftBot->vert->pos + edgeLeftBot->nextEdge->vert->pos + facePoint->pos)*0.25f;
-					vector2D vecUVLeft = (edgeLeftBot->vert->uv + edgeLeftBot->nextEdge->vert->uv + facePoint->uv)*0.25f;
-					vector3D vecNormLeft = (edgeLeftBot->vert->norm + edgeLeftBot->nextEdge->vert->norm + facePoint->norm)*0.25f;
+					vec3 vecPosLeft = (edgeLeftBot->vert->pos + edgeLeftBot->nextEdge->vert->pos + facePoint->pos)*0.25f;
+					vec2 vecUVLeft = (edgeLeftBot->vert->uv + edgeLeftBot->nextEdge->vert->uv + facePoint->uv)*0.25f;
+					vec3 vecNormLeft = (edgeLeftBot->vert->norm + edgeLeftBot->nextEdge->vert->norm + facePoint->norm)*0.25f;
 					edgePointLeft->pos = vecPosLeft;
 					edgePointLeft->uv = vecUVLeft;
 					edgePointLeft->norm = vecNormLeft;
@@ -417,8 +418,8 @@ namespace HalfEdges
 			for(int i = 0; i < original_pos.size(); ++i)
 			{
 				
-				vector3D avg_pos;
-				vector3D avgPoint_pos;
+				vec3 avg_pos;
+				vec3 avgPoint_pos;
 				
 				if(i < 8)
 				{

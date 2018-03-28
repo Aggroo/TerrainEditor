@@ -1,16 +1,15 @@
 #pragma once
-#include <iostream>
 #include <math.h>
-#include "vector3D.h"
-#include "matrix4D.h"
+#include "vec3.h"
+#include "mat4.h"
 
 
-namespace CGMath
+namespace Math
 {
-	class matrix3D
+	class mat3
 	{
 	public:
-		inline matrix3D()
+		inline mat3()
 		{
 
 			for (int y = 0; y < 3; y++)
@@ -21,14 +20,14 @@ namespace CGMath
 				}
 			}
 		}
-		inline ~matrix3D()
+		inline ~mat3()
 		{
 
 		}
 
-		inline matrix3D operator*(matrix3D rhs)
+		inline mat3 operator*(mat3 rhs)
 		{
-			matrix3D new_matrix;
+			mat3 new_matrix;
 
 			float value = 0;
 			for (int y = 0; y < 3; y++)
@@ -46,9 +45,9 @@ namespace CGMath
 			return new_matrix;
 		}
 
-		inline vector3D operator*(vector3D rhs)
+		inline vec3 operator*(vec3 rhs)
 		{
-			vector3D new_vec;
+			vec3 new_vec;
 
 			float value = 0;
 			for (int y = 0; y < 3; y++)
@@ -63,9 +62,9 @@ namespace CGMath
 			return new_vec;
 		}
 
-		inline matrix3D operator!()
+		inline mat3 operator!()
 		{
-			matrix3D new_matrix;
+			mat3 new_matrix;
 			for (int y = 0; y < 3; y++)
 			{
 				for (int x = 0; x < 3; x++)
@@ -81,9 +80,9 @@ namespace CGMath
 			return matrice[pos];
 		}
 
-		inline static matrix3D identity()
+		inline static mat3 identity()
 		{
-			matrix3D identityMatrix;
+			mat3 identityMatrix;
 
 			identityMatrix[0] = 1; identityMatrix[1] = 0; identityMatrix[2] = 0;
 			identityMatrix[3] = 0; identityMatrix[4] = 1; identityMatrix[5] = 0;
@@ -92,11 +91,11 @@ namespace CGMath
 			return identityMatrix;
 		}
 
-		inline matrix3D invert()
+		inline mat3 invert()
 		{
 			float determinant, invDeterminant;
 			float tmp[9];
-			matrix3D new_matrix;
+			mat3 new_matrix;
 
 			tmp[0] = matrice[4] * matrice[8] - matrice[5] * matrice[7];
 			tmp[1] = matrice[2] * matrice[7] - matrice[1] * matrice[8];
@@ -126,18 +125,18 @@ namespace CGMath
 			return new_matrix;
 		}
 
-		inline static matrix3D vectorScaling(float sX, float sY, float sZ)
+		inline static mat3 vectorScaling(float sX, float sY, float sZ)
 		{
-			matrix3D scaleMatrix;
+			mat3 scaleMatrix;
 
 			scaleMatrix[0] = sX; scaleMatrix[4] = sY; scaleMatrix[8] = sZ;
 
 			return scaleMatrix;
 		}
 
-		inline static matrix3D rotX(float angle)
+		inline static mat3 rotX(float angle)
 		{
-			matrix3D rotMatrix;
+			mat3 rotMatrix;
 			float c = cos(angle);
 			float s = sin(angle);
 
@@ -149,9 +148,9 @@ namespace CGMath
 
 		}
 
-		inline static matrix3D rotY(float angle)
+		inline static mat3 rotY(float angle)
 		{
-			matrix3D rotMatrix;
+			mat3 rotMatrix;
 			float c = cos(angle);
 			float s = sin(angle);
 
@@ -162,9 +161,9 @@ namespace CGMath
 			return rotMatrix;
 		}
 
-		inline static matrix3D rotZ(float angle)
+		inline static mat3 rotZ(float angle)
 		{
-			matrix3D rotMatrix;
+			mat3 rotMatrix;
 			float c = cos(angle);
 			float s = sin(angle);
 
@@ -175,10 +174,10 @@ namespace CGMath
 			return rotMatrix;
 		}
 
-		inline static matrix3D vecRot(float angle, float vecX, float vecY, float vecZ)
+		inline static mat3 vecRot(float angle, float vecX, float vecY, float vecZ)
 		{
-			vector3D rotVec;
-			matrix3D rotMatrix;
+			vec3 rotVec;
+			mat3 rotMatrix;
 
 			rotVec.x() = vecX;
 			rotVec.y() = vecY;
@@ -200,9 +199,9 @@ namespace CGMath
 			return rotMatrix;
 		}
 
-		inline static matrix3D vecRot(float angle, vector3D rotVec)
+		inline static mat3 vecRot(float angle, vec3 rotVec)
 		{
-			matrix3D rotMatrix;
+			mat3 rotMatrix;
 
 			float c = cos(angle);
 			float s = sin(angle);
@@ -220,9 +219,9 @@ namespace CGMath
 			return rotMatrix;
 		}
 
-		inline static matrix3D Transpose(matrix3D m)
+		inline static mat3 Transpose(mat3 m)
 		{
-			matrix3D mat;
+			mat3 mat;
 
 			mat[1] = m[3];
 			mat[2] = m[6];
@@ -235,9 +234,9 @@ namespace CGMath
 
 		}
 
-		inline static matrix3D fromMatrix4D(matrix4D mat4)
+		inline static mat3 fromMatrix4D(mat4 mat4)
 		{
-			matrix3D newMat;
+			mat3 newMat;
 			newMat[0] = mat4[0]; 
 			newMat[1] = mat4[1]; 
 			newMat[2] = mat4[2];
@@ -257,24 +256,10 @@ namespace CGMath
 			return matrice;
 		}
 
-		inline friend std::ostream& operator<<(std::ostream& stream, const matrix3D& mat)
-		{
-
-			for (int y = 0; y < 3; y++)
-			{
-				for (int x = 0; x < 3; x++)
-				{
-					stream << mat.matrice[y*3 + x] << " ";
-				}
-				std::cout << std::endl;
-			}
-			return stream;
-		}
-
 	private:
 		float matrice[9];
 	};
 
-	typedef CGMath::matrix3D mat3;
+	typedef Math::mat3 mat3;
 }
 

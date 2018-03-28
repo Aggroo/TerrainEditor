@@ -1,21 +1,21 @@
 #pragma once
 #include "GL/glew.h"
-#include "foundation/math/vector2D.h"
+#include "foundation/math/vec2.h"
 #include "rasterizer.h"
 #include <vector>
 #include "stb_truetype.h"
 
-namespace CGMath
+namespace Math
 {
     struct textVert
     {
-        textVert(vector2D p,vector2D t)
+        textVert(vec2 p,vec2 t)
         {
             pos = p;
             tex = t;
         }
-        CGMath::vector2D pos;
-        CGMath::vector2D tex;
+        Math::vec2 pos;
+        Math::vec2 tex;
     };
 
 	class TextureResource
@@ -33,7 +33,7 @@ namespace CGMath
 		GLuint m_texture;
         unsigned char ttf_buffer[1<<20];
         unsigned char temp_bitmap[512*512];
-        std::vector<CGMath::textVert> textMesh;
+        std::vector<Math::textVert> textMesh;
 
         stbtt_bakedchar cdata[96]; // ASCII 32..126 is 95 glyphs
         GLuint ftex;

@@ -4,16 +4,33 @@
 #include "render/window.h"
 #include "shaderobject.h"
 #include "lightnode.h"
+#include "render/render/renderer.h"
+#include "render/camera/camera.h"
 
 namespace Input
 {
 
-InputManager::InputManager() : window(nullptr)
+InputManager::InputManager() 
+	: window(nullptr),
+	mRightCheck(false), 
+	mLeftCheck(false), 
+	shiftFlag(false), 
+	wFlag(false), 
+	sFlag(false), 
+	dFlag(false), 
+	aFlag(false)
 {
 		
 }
 
-InputManager::InputManager(Display::Window* window, CGMath::ShaderObject* shaders, CGMath::LightNode* lNode)
+InputManager::InputManager(Display::Window* window, Math::ShaderObject* shaders, Math::LightNode* lNode) 
+	: mRightCheck(false), 
+	mLeftCheck(false), 
+	shiftFlag(false), 
+	wFlag(false), 
+	sFlag(false), 
+	dFlag(false), 
+	aFlag(false)
 {
 	this->window = window;
 	this->shaders = shaders;
@@ -150,11 +167,18 @@ void InputManager::InitMouse()
 		}
 
 	});
+
+	window->SetWindowResizeFunction([this](int32 x, int32 y)
+	{
+		Render::Renderer::Instance()->SetRenderResolution(x, y);
+		Graphics::MainCamera::Instance()->UpdateProjectionMatrix();
+	});
 }
 
 void InputManager::Update()
 {
-	movement = CGMath::vector4D();
+
+	movement = Math::vec4();
 	if (wFlag == true)
 	{
 		if (shiftFlag)
@@ -205,7 +229,7 @@ GLfloat InputManager::GetOldY()
 	return oldY;
 }
 
-	CGMath::vector4D InputManager::GetMovement()
+Math::vec4 InputManager::GetMovement()
 {
 	return movement;
 }

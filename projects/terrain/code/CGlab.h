@@ -12,8 +12,9 @@
 #include "render/resources/lightnode.h"
 #include "render/resources/shaderobject.h"
 #include "render/resources/inputmanager.h"
-#include "render/resources/deferredrenderer.h"
+#include "render/render/renderer.h"
 #include <chrono>
+#include "UserInterface.h"
 
 class UserInterface;
 
@@ -33,7 +34,11 @@ public:
 	/// run app
 	void Run();
 
+	void CameraMovement();
+
 	Display::Window* GetWindow(){ return window; }
+
+	void Shutdown(bool shutdown);
 private:
 
 	std::shared_ptr<UserInterface> UI;
@@ -41,17 +46,19 @@ private:
 	GLuint program;
 	GLuint vertexShader;
 	GLuint pixelShader;
-	CGMath::vector4D vec;
+	Math::vec4 vec;
 
 	Display::Window* window;
-	CGMath::GraphicsNode gN;
-	CGMath::LightNode lNode;
+	Math::GraphicsNode gN;
+	Math::LightNode lNode;
 
-	CGMath::TextureNode textures;
+	Math::TextureNode textures;
 	std::shared_ptr<Input::InputManager> input;
-	std::shared_ptr<CGMath::ShaderObject> shaders;
-	std::shared_ptr<Renderer::DeferredRenderer> render;
+	std::shared_ptr<Math::ShaderObject> shaders;
+
 	float mouseX, mouseY;
+
+	bool shutdown;
 	
 	//GLuint shaderTransMatrix;
 	

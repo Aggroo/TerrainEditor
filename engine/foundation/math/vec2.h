@@ -1,14 +1,13 @@
 #pragma once
-#include <iostream>
 #include <math.h>
 
-namespace CGMath
+namespace Math
 {
-	class vector2D
+	class vec2
 	{
 	public:
 		//Konstruktor
-		inline vector2D()
+		inline vec2()
 		{
 
 			vec[0] = 0;
@@ -16,34 +15,34 @@ namespace CGMath
 
 		}
 
-		inline vector2D(int x, int y)
+		inline vec2(int x, int y)
 		{
 			vec[0] = x;
 			vec[1] = y;
 		}
 
-		inline vector2D(float x, float y)
+		inline vec2(float x, float y)
 		{
 			vec[0] = x;
 			vec[1] = y;
 		}
 
-		inline vector2D(float* arr)
+		inline vec2(float* arr)
 		{
 			vec[0] = arr[0];
 			vec[1] = arr[1];
 		}
 
 		//Dekonstruktor
-		inline ~vector2D()
+		inline ~vec2()
 		{
 
 		}
 
 		//vector + vector operators �verlagring
-		inline vector2D operator+(vector2D vect)
+		inline vec2 operator+(vec2 vect)
 		{
-			vector2D new_vec;
+			vec2 new_vec;
 
 			new_vec[0] = vec[0] + vect[0];
 			new_vec[1] = vec[1] + vect[1];
@@ -51,9 +50,9 @@ namespace CGMath
 			return new_vec;
 		}
 
-		inline vector2D operator-(vector2D& vect)
+		inline vec2 operator-(vec2& vect)
 		{
-			vector2D new_vec;
+			vec2 new_vec;
 
 			new_vec[0] = vec[0] - vect[0];
 			new_vec[1] = vec[1] - vect[1];
@@ -61,9 +60,9 @@ namespace CGMath
 			return new_vec;
 		}
 
-		inline vector2D operator*(const float& constant)
+		inline vec2 operator*(const float& constant)
 		{
-			vector2D new_vec;
+			vec2 new_vec;
 
 			new_vec[0] = vec[0] * constant;
 			new_vec[1] = vec[1] * constant;
@@ -71,9 +70,9 @@ namespace CGMath
 			return new_vec;
 		}
 
-		inline vector2D operator/(const float& constant)
+		inline vec2 operator/(const float& constant)
 		{
-			vector2D new_vec;
+			vec2 new_vec;
 
 			new_vec[0] = vec[0] / constant;
 			new_vec[1] = vec[1] / constant;
@@ -96,9 +95,9 @@ namespace CGMath
 		}
 		
 
-		inline vector2D vecMult(float constant)
+		inline vec2 vecMult(float constant)
 		{
-			vector2D new_vec;
+			vec2 new_vec;
 
 			new_vec[0] = vec[0] * constant;
 			new_vec[1] = vec[1] * constant;
@@ -119,9 +118,9 @@ namespace CGMath
 			return length;
 		}
 
-		inline vector2D vecNorm()
+		inline vec2 vecNorm()
 		{
-			vector2D new_vec;
+			vec2 new_vec;
 
 			new_vec[0] = vec[0] / vecLength();
 			new_vec[1] = vec[1] / vecLength();
@@ -129,7 +128,7 @@ namespace CGMath
 			return new_vec;
 		}
 
-		inline float dotProd(vector2D vect)
+		inline float dotProd(vec2 vect)
 		{
 			float result = 0;
 
@@ -140,20 +139,10 @@ namespace CGMath
 		}
 
 
-		inline friend std::ostream& operator<<(std::ostream& stream, const vector2D& vect)
-		{
-			stream << vect.vec[0] << " ";
-			stream << vect.vec[1] << " ";
-
-			std::cout << std::endl;
-			return stream;
-		}
-
-
 	private:
 		float vec[2];
 	
 	};
 }
 
-typedef CGMath::vector2D vec2;
+typedef Math::vec2 vec2;

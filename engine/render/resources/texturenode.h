@@ -3,7 +3,7 @@
 #include <vector>
 #include "textureresource.h"
 
-namespace CGMath
+namespace Math
 {
 class TextureNode
 {

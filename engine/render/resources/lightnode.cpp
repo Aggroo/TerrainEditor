@@ -5,7 +5,7 @@
 #include <string>
 
 
-namespace CGMath
+namespace Math
 {
 	LightNode::LightNode()
 	{
@@ -18,26 +18,26 @@ namespace CGMath
 	}
 	
 
-	void LightNode::setPos(vector4D pos)
+	void LightNode::setPos(vec4 pos)
 	{
 		this->pos = pos;
 	}
 
 	void LightNode::setPos(GLfloat x, GLfloat y, GLfloat z)
 	{
-		vector4D vec(x,y,z);
+		vec4 vec(x,y,z);
 
 		this->pos = vec;
 	}
 
-	vector4D LightNode::getPos()
+	vec4 LightNode::getPos()
 	{
 		return this->pos;
 	}
 
 	void LightNode::setColour(GLfloat r, GLfloat g, GLfloat b)
 	{
-		vector3D cV;
+		vec3 cV;
 		cV.x() = r;
 		cV.y() = g;
 		cV.z() = b;
@@ -45,19 +45,19 @@ namespace CGMath
 		this->colour = cV;
 	}
 
-	vector3D LightNode::getColour()
+	vec3 LightNode::getColour()
 	{
 		return this->colour;
 	}
 
 	void LightNode::setIntensity(GLfloat a, GLfloat b, GLfloat c)
 	{
-		vector3D cV(a,b,c);
+		vec3 cV(a,b,c);
 
 		this->intensity = cV;
 	}
 
-	vector3D LightNode::getIntensity()
+	vec3 LightNode::getIntensity()
 	{
 		return this->intensity;
 	}

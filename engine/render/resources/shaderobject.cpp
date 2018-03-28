@@ -5,7 +5,7 @@
 #include <string>
 #include <cstring>
 
-namespace CGMath
+namespace Math
 {
 	ShaderObject::ShaderObject()
 	{
@@ -193,7 +193,7 @@ namespace CGMath
 		glUseProgram(this->program);
 	}
 
-	void ShaderObject::setupMatrix4fv(const GLchar* name, matrix4D mat)
+	void ShaderObject::setupMatrix4fv(const GLchar* name, mat4 mat)
 	{
 		std::string temp = name;
 		if (uMap.find(temp) == uMap.end())
@@ -206,7 +206,7 @@ namespace CGMath
 		glUniformMatrix4fv(uMap[temp], 1, GL_FALSE, (!mat).getPointer());
 	}
 
-	void ShaderObject::setupMatrix4fvt(const GLchar* name, matrix4D mat)
+	void ShaderObject::setupMatrix4fvt(const GLchar* name, mat4 mat)
 	{
 		std::string temp = name;
 		if (uMap.find(temp) == uMap.end())
@@ -218,7 +218,7 @@ namespace CGMath
 		this->useProgram();
 		glUniformMatrix4fv(uMap[temp], 1, GL_TRUE, (!mat).getPointer());
 	}
-    void ShaderObject::setupMatrix4fv(const GLchar* name, std::vector<matrix4D> mat, GLint count)
+    void ShaderObject::setupMatrix4fv(const GLchar* name, std::vector<mat4> mat, GLint count)
     {
         std::string temp = name;
         if (uMap.find(temp) == uMap.end())
@@ -231,7 +231,7 @@ namespace CGMath
         glUniformMatrix4fv(uMap[temp], count, GL_TRUE, (float*)&mat[0]);
     }
 
-	void ShaderObject::setupMatrix3fv(const GLchar* name, matrix3D mat)
+	void ShaderObject::setupMatrix3fv(const GLchar* name, mat3 mat)
 	{
 		std::string temp = name;
 		if (uMap.find(temp) == uMap.end())
@@ -257,7 +257,7 @@ namespace CGMath
 		glUniform4f(uMap[temp], x, y, z, w);
 	}
 
-	void ShaderObject::setupVector4f(const GLchar* name, vector4D vec)
+	void ShaderObject::setupVector4f(const GLchar* name, vec4 vec)
 	{
 		GLfloat x, y, z, w;
 
@@ -292,7 +292,7 @@ namespace CGMath
 		glUniform3f(uMap[temp], x, y, z);
 	}
 
-	void ShaderObject::setupVector3f(const GLchar* name, vector3D vec)
+	void ShaderObject::setupVector3f(const GLchar* name, vec3 vec)
 	{
 		std::string temp = name;
 		if (uMap.find(temp) == uMap.end())

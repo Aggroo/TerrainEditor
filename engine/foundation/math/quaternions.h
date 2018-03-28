@@ -1,10 +1,10 @@
 #ifndef quaternionsS_H
 #define quaternionsS_H
-#include "vector3D.h"
-#include "vector4D.h"
+#include "vec3.h"
+#include "vec4.h"
 
 
-namespace CGMath
+namespace Math
 {
 class quaternions
 {
@@ -256,9 +256,9 @@ public:
 		return q;
 	}
 
-	inline static vector4D quaternionsToVec4(quaternions quat)
+	inline static vec4 quaternionsToVec4(quaternions quat)
 	{
-		vector4D vec;
+		vec4 vec;
 		vec[0] = quat.x;
 		vec[1] = quat.y;
 		vec[2] = quat.z;

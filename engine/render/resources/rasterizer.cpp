@@ -8,7 +8,7 @@
 
 
 
-namespace CGMath
+namespace Math
 {
 	Rasterizer::Rasterizer()
 	{
@@ -40,7 +40,7 @@ namespace CGMath
 		Y = y;
 	}
 
-	Rasterizer::Edge::Edge(vector4D v1, vector4D v2)
+	Rasterizer::Edge::Edge(vec4 v1, vec4 v2)
 	{
 		if (v1.y() < v2.y())
 		{
@@ -102,7 +102,7 @@ namespace CGMath
 		for (int x = scanl.startX; x <= scanl.endX; x++)
 		{
 			float u, v, w;
-			barycentric(vector2D(x,scanl.Y), vector2D(vertex1.x(),vertex1.y()), vector2D(vertex2.x(),vertex2.y()), vector2D(vertex3.x(),vertex3.y()), u, v, w);
+			barycentric(vec2(x,scanl.Y), vec2(vertex1.x(),vertex1.y()), vec2(vertex2.x(),vertex2.y()), vec2(vertex3.x(),vertex3.y()), u, v, w);
 			float corrW = (u*w1 + v*w2 + w*w3);
 			float pixelZ = ((vertex1.z()*u) + (vertex2.z()*v) + (vertex3.z()*w));
 			
@@ -117,9 +117,9 @@ namespace CGMath
 			zDepth[index] = pixelZ;
 
 			
-			vector2D tex = ((uv1*u)*w1 + (uv2*v)*w2 + (uv3*w)*w3)/corrW;
-			vector3D norm = ((norm1*u)*w1 + (norm2*v)*w2 + (norm3*w)*w3)/corrW;
-			vector3D diff = ((diffuseColor1*u)*w1 + (diffuseColor2*v)*w2 + (diffuseColor3*w)*w3)/corrW;
+			vec2 tex = ((uv1*u)*w1 + (uv2*v)*w2 + (uv3*w)*w3)/corrW;
+			vec3 norm = ((norm1*u)*w1 + (norm2*v)*w2 + (norm3*w)*w3)/corrW;
+			vec3 diff = ((diffuseColor1*u)*w1 + (diffuseColor2*v)*w2 + (diffuseColor3*w)*w3)/corrW;
 
 			Color clr = fragments({ tex[0], 1 - tex[1] }, norm, image, this->w, h, n);
 			
@@ -203,7 +203,7 @@ namespace CGMath
 		return this->pixels;
 	}
 
-	void Rasterizer::rasterize(vector4D v1, vector4D v2, vector4D v3)
+	void Rasterizer::rasterize(vec4 v1, vec4 v2, vec4 v3)
 	{
 		Edge edges[3] = {
 			Edge(v1, v2),
@@ -259,9 +259,9 @@ namespace CGMath
 		
 	}
 
-	void Rasterizer::barycentric(vector2D p, vector2D a, vector2D b, vector2D c, float &u, float &v, float &w)
+	void Rasterizer::barycentric(vec2 p, vec2 a, vec2 b, vec2 c, float &u, float &v, float &w)
 	{
-		vector2D v0 = b - a, v1 = c - a, v2 = p - a;
+		vec2 v0 = b - a, v1 = c - a, v2 = p - a;
 		float d00 = v0.dotProd(v0);
 		float d01 = v0.dotProd(v1);
 		float d11 = v1.dotProd(v1);
@@ -273,24 +273,24 @@ namespace CGMath
 		u = 1.0f - v - w;
 	}
 
-	void Rasterizer::draw(matrix4D pMat, matrix4D tMat)
+	void Rasterizer::draw(mat4 pMat, mat4 tMat)
 	{
 		meshData = mesh->GetMesh();
 		indices = mesh->getIndices();
 
 		for (int i = 0; i < indices.size(); i += 3)
 		{
-			vector4D v1(meshData[indices[i]].pos.x(), meshData[indices[i]].pos.y(), meshData[indices[i]].pos.z());
-			vector4D v2(meshData[indices[i + 1]].pos.x(), meshData[indices[i + 1]].pos.y(), meshData[indices[i + 1]].pos.z());
-			vector4D v3(meshData[indices[i + 2]].pos.x(), meshData[indices[i + 2]].pos.y(), meshData[indices[i + 2]].pos.z());
+			vec4 v1(meshData[indices[i]].pos.x(), meshData[indices[i]].pos.y(), meshData[indices[i]].pos.z());
+			vec4 v2(meshData[indices[i + 1]].pos.x(), meshData[indices[i + 1]].pos.y(), meshData[indices[i + 1]].pos.z());
+			vec4 v3(meshData[indices[i + 2]].pos.x(), meshData[indices[i + 2]].pos.y(), meshData[indices[i + 2]].pos.z());
 
-			vector2D u1(meshData[indices[i]].uv.x(), meshData[indices[i]].uv.y());
-			vector2D u2(meshData[indices[i + 1]].uv.x(), meshData[indices[i + 1]].uv.y());
-			vector2D u3(meshData[indices[i + 2]].uv.x(), meshData[indices[i + 2]].uv.y());
+			vec2 u1(meshData[indices[i]].uv.x(), meshData[indices[i]].uv.y());
+			vec2 u2(meshData[indices[i + 1]].uv.x(), meshData[indices[i + 1]].uv.y());
+			vec2 u3(meshData[indices[i + 2]].uv.x(), meshData[indices[i + 2]].uv.y());
 
- 			vector3D n1(meshData[indices[i]].norm.x(), meshData[indices[i]].norm.y(), meshData[indices[i]].norm.z());
-			vector3D n2(meshData[indices[i + 1]].norm.x(), meshData[indices[i + 1]].norm.y(), meshData[indices[i + 1]].norm.z());
-			vector3D n3(meshData[indices[i + 2]].norm.x(), meshData[indices[i + 2]].norm.y(), meshData[indices[i + 2]].norm.z());
+ 			vec3 n1(meshData[indices[i]].norm.x(), meshData[indices[i]].norm.y(), meshData[indices[i]].norm.z());
+			vec3 n2(meshData[indices[i + 1]].norm.x(), meshData[indices[i + 1]].norm.y(), meshData[indices[i + 1]].norm.z());
+			vec3 n3(meshData[indices[i + 2]].norm.x(), meshData[indices[i + 2]].norm.y(), meshData[indices[i + 2]].norm.z());
 
 			vertex1 = pMat*tMat*v1;
 			vertex2 = pMat*tMat*v2;
@@ -314,14 +314,14 @@ namespace CGMath
 		}
 	}
 
-	void Rasterizer::fragment(const std::function<Color(vector2D tex, vector3D norm, unsigned char* image, int w, int h, int n)>& func)
+	void Rasterizer::fragment(const std::function<Color(vec2 tex, vec3 norm, unsigned char* image, int w, int h, int n)>& func)
 	{
 		this->fragments = func;
 	}
 
 
 
-	void Rasterizer::vertexShader(const std::function<vector3D(vector3D pos, vector3D norm, matrix4D nMat)>& func)
+	void Rasterizer::vertexShader(const std::function<vec3(vec3 pos, vec3 norm, mat4 nMat)>& func)
 	{
 		this->vertShader = func;
 	}
@@ -331,7 +331,7 @@ namespace CGMath
 		this->image = stbi_load(filename, &w, &h, &n, 0);
 	}
 
-	void Rasterizer::perspective(vector4D& v1, vector4D& v2, vector4D& v3)
+	void Rasterizer::perspective(vec4& v1, vec4& v2, vec4& v3)
 	{
 		w1 = 1 / v1.w();
 		w2 = 1 / v2.w();

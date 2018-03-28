@@ -1,9 +1,9 @@
 #pragma once
 #include "GL/glew.h"
-#include "foundation/math/vector4D.h"
+#include "foundation/math/vec4.h"
 #include <memory>
 
-namespace CGMath {
+namespace Math {
 	class LightNode;
 	class ShaderObject;
 }
@@ -20,7 +20,7 @@ class InputManager
 {
 public:
 	InputManager();
-	InputManager(Display::Window* window, CGMath::ShaderObject* shaders, CGMath::LightNode* lNode);
+	InputManager(Display::Window* window, Math::ShaderObject* shaders, Math::LightNode* lNode);
 	~InputManager();
 
 	void InitKeyPress();
@@ -34,7 +34,7 @@ public:
 	GLfloat GetOldX();
 	GLfloat GetOldY();
 
-	CGMath::vector4D GetMovement();
+	Math::vec4 GetMovement();
 
 private:
 	Display::Window* window;
@@ -49,10 +49,10 @@ private:
 	GLfloat lightScroll = 0;
 	GLfloat indexScroll = 0;
 
-	CGMath::vector4D movement;
+	Math::vec4 movement;
 
-	CGMath::ShaderObject* shaders;
-	CGMath::LightNode* lNode;
+	Math::ShaderObject* shaders;
+	Math::LightNode* lNode;
 
 	GLboolean wFlag, sFlag, dFlag, aFlag, shiftFlag, mLeftCheck, mRightCheck;
 };

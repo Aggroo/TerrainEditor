@@ -2,11 +2,11 @@
 #	Foundation
 #-----------------
 SET(files_foundation_math
-	math/matrix3D.h	
-	math/matrix4D.h	
-	math/vector2D.h
-	math/vector3D.h
-	math/vector4D.h
+	math/mat3.h	
+	math/mat4.h	
+	math/vec2.h
+	math/vec3.h
+	math/vec4.h
 	math/quaternions.h
 	)
 	

@@ -1,12 +1,12 @@
 #pragma once
 #include "GL/glew.h"
-#include "foundation/math/vector2D.h"
-#include "foundation/math/vector3D.h"
+#include "foundation/math/vec2.h"
+#include "foundation/math/vec3.h"
 #include <map>
 #include <vector>
 
 
-namespace CGMath
+namespace Math
 {	
 	struct Face
 	{
@@ -15,16 +15,16 @@ namespace CGMath
 	
 	struct Vertex
 	{
-		vector3D pos;
-		vector2D uv;
-		vector3D norm;
+		vec3 pos;
+		vec2 uv;
+		vec3 norm;
 	};
 	
 	class MeshResources
 	{
 	public:
 		MeshResources();
-		MeshResources(std::vector<CGMath::Vertex>, std::vector<GLuint>);
+		MeshResources(std::vector<Math::Vertex>, std::vector<GLuint>);
 		~MeshResources();
 
 		void genBuffer();
@@ -37,11 +37,11 @@ namespace CGMath
 
 		//Used to concatenating three ints to a string
 		std::string FaceKey(int pos,int uv,int norm) const;
-		std::vector<CGMath::Vertex> GetMesh();
-		std::vector<CGMath::Face>& GetMeshFaces();
+		std::vector<Math::Vertex> GetMesh();
+		std::vector<Math::Face>& GetMeshFaces();
 		std::vector<GLuint> getIndices();
 		
-		std::vector<CGMath::Vertex> mesh;
+		std::vector<Math::Vertex> mesh;
 		std::vector<GLuint> indices;
 		std::vector<Face> meshFaces;
 

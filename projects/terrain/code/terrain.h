@@ -1,23 +1,23 @@
 #pragma once
 #include "GL/glew.h"
-#include "foundation/math/vector3D.h"
-#include "foundation/math/vector2D.h"
+#include "foundation/math/vec3.h"
+#include "foundation/math/vec2.h"
 #include <vector>
 
 namespace TerrainEditor
 {
 struct TerrainVertex
 {
-	TerrainVertex(CGMath::vector3D pos, CGMath::vector2D uv, CGMath::vector3D norm)
+	TerrainVertex(Math::vec3 pos, Math::vec2 uv, Math::vec3 norm)
 	{
 		this->pos = pos;
 		this->uv = uv;
 		this->norm = norm;
 	}
 
-	CGMath::vector3D pos;
-	CGMath::vector2D uv;
-	CGMath::vector3D norm;
+	Math::vec3 pos;
+	Math::vec2 uv;
+	Math::vec3 norm;
 
 };
 

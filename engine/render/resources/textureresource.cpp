@@ -11,7 +11,7 @@
 #include "stb_truetype.h"
 
 
-namespace CGMath
+namespace Math
 {
 	TextureResource::TextureResource()
 	{

@@ -1,35 +1,34 @@
 #pragma once
-#include <iostream>
 #include <math.h>
 
 
-namespace CGMath
+namespace Math
 {
-	class vector3D
+	class vec3
 	{
 	public:
 		//Konstruktor
-		inline vector3D()
+		inline vec3()
 		{
 			vec[0] = 0.f;
 			vec[1] = 0.f;
 			vec[2] = 0.f;
 		}
-		inline vector3D(int x, int y, int z)
+		inline vec3(int x, int y, int z)
 		{
 			vec[0] = x;
 			vec[1] = y;
 			vec[2] = z;
 		}
 
-		inline vector3D(float x, float y, float z)
+		inline vec3(float x, float y, float z)
 		{
 			vec[0] = x;
 			vec[1] = y;
 			vec[2] = z;
 		}
 
-		inline vector3D(float* arr)
+		inline vec3(float* arr)
 		{
 			vec[0] = arr[0];
 			vec[1] = arr[1];
@@ -37,15 +36,15 @@ namespace CGMath
 		}
 
 		//Dekonstruktor
-		inline ~vector3D()
+		inline ~vec3()
 		{
 
 		}
 
 		//Vector + vector operators �verlagring
-		inline vector3D operator+(const vector3D& vect) const
+		inline vec3 operator+(const vec3& vect) const
 		{
-			vector3D new_vec;
+			vec3 new_vec;
 
 			new_vec[0] = vec[0] + vect[0];
 			new_vec[1] = vec[1] + vect[1];
@@ -53,9 +52,9 @@ namespace CGMath
 			
 			return new_vec;
 		}
-		inline vector3D operator-(const vector3D& vect) const
+		inline vec3 operator-(const vec3& vect) const
 		{
-			vector3D new_vec;
+			vec3 new_vec;
 
 			new_vec[0] = vec[0] - vect[0];
 			new_vec[1] = vec[1] - vect[1];
@@ -65,9 +64,9 @@ namespace CGMath
 			return new_vec;
 		}
 
-		inline vector3D operator*(float constant) const
+		inline vec3 operator*(float constant) const
 		{
-			vector3D new_vec;
+			vec3 new_vec;
 
 
 			new_vec[0] = vec[0] * constant;
@@ -77,9 +76,9 @@ namespace CGMath
 			return new_vec;
 		}
 
-		inline vector3D operator/(float constant) const
+		inline vec3 operator/(float constant) const
 		{
-			vector3D new_vec; 
+			vec3 new_vec; 
 
 			new_vec[0] = vec[0] / constant;
 			new_vec[1] = vec[1] / constant;
@@ -89,7 +88,7 @@ namespace CGMath
 		}
 
 		//Vector += vector operators overload
-		inline vector3D operator+=(const vector3D& vect)
+		inline vec3 operator+=(const vec3& vect)
 		{
 			this->vec[0] = vec[0] + vect[0];
 			this->vec[1] = vec[1] + vect[1];
@@ -134,14 +133,14 @@ namespace CGMath
 			return vec[2];
 		}
 
-		inline vector3D Negative() const
+		inline vec3 Negative() const
 		{
-			return vector3D(-vec[0],-vec[1],-vec[2]);
+			return vec3(-vec[0],-vec[1],-vec[2]);
 		}
 
-		inline vector3D vecMult(const float& constant)
+		inline vec3 vecMult(const float& constant)
 		{
-			vector3D new_vec;
+			vec3 new_vec;
 
 			for (int i = 0; i < 3; i++)
 			{
@@ -165,9 +164,9 @@ namespace CGMath
 			return length;
 		}
 
-		inline static vector3D Normalize(vector3D v)
+		inline static vec3 Normalize(vec3 v)
 		{
-			vector3D new_vec;
+			vec3 new_vec;
 			float norm = 1 / v.vecLength();
 			
 			new_vec[0] = v[0] * norm;
@@ -177,7 +176,7 @@ namespace CGMath
 			return new_vec;
 		}
 
-		inline static float Dot(vector3D vec,vector3D vect)
+		inline static float Dot(vec3 vec,vec3 vect)
 		{
 			float result = 0;
 
@@ -188,9 +187,9 @@ namespace CGMath
 			return result;
 		}
 
-		inline static vector3D Cross(vector3D vec, vector3D vect)
+		inline static vec3 Cross(vec3 vec, vec3 vect)
 		{
-			vector3D new_vec;
+			vec3 new_vec;
 
 			new_vec[0] = vec[1] * vect[2] - vec[2] * vect[1];
 			new_vec[1] = vec[2] * vect[0] - vec[0] * vect[2];
@@ -199,22 +198,12 @@ namespace CGMath
 			return new_vec;
 		}
 
-		inline friend std::ostream& operator<<(std::ostream& stream, const vector3D& vect)
-		{
-			for (int y = 0; y < 3; y++)
-			{
-				stream << vect.vec[y] << " ";
-
-			}
-			std::cout << std::endl;
-			return stream;
-		}
 
 	private:
 		float vec[3];
 	
 	};
-	typedef CGMath::vector3D vec3;
+	typedef Math::vec3 vec3;
 }
 
 

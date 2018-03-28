@@ -2,6 +2,7 @@
 #include "render/resources/stb_image.h"
 #include <assert.h>
 #include "config.h"
+#include <iostream>
 
 namespace TerrainEditor
 {
@@ -86,7 +87,7 @@ bool Terrain::CreateTerrain(const char* filename, float widthMultiplier, float h
 		for (int x = 0; x < (terrainWidth); ++x)
 		{
 			i = (terrainHeight * y) + x;
-			mesh.push_back(TerrainVertex(CGMath::vector3D(heightMap[i].x, heightMap[i].y, heightMap[i].z), CGMath::vector2D(x*uDiv, -y*vDiv), CGMath::vector3D()));
+			mesh.push_back(TerrainVertex(Math::vec3(heightMap[i].x, heightMap[i].y, heightMap[i].z), Math::vec2(x*uDiv, -y*vDiv), Math::vec3()));
 		}
 	}
 
@@ -221,7 +222,7 @@ float Terrain::GetHeightScale()
 
 void Terrain::GenerateNormals()
 {
-	CGMath::vector3D p;
+	Math::vec3 p;
 	int a, b, c;
 	for (int i = 0; i < (indexCount - 3); i += 3)
 	{
@@ -229,7 +230,7 @@ void Terrain::GenerateNormals()
 		b = indices[i + 1];
 		c = indices[i + 2];
 
-		p = CGMath::vector3D::Cross(mesh[b].pos - mesh[a].pos, mesh[c].pos - mesh[a].pos);
+		p = Math::vec3::Cross(mesh[b].pos - mesh[a].pos, mesh[c].pos - mesh[a].pos);
 
 		mesh[indices[i]].norm += p;
 		mesh[indices[i + 1]].norm += p;
@@ -238,7 +239,7 @@ void Terrain::GenerateNormals()
 
 	for (int i = 0; i < vertexCount; ++i)
 	{
-		mesh[i].norm = CGMath::vector3D::Normalize(mesh[i].norm);
+		mesh[i].norm = Math::vec3::Normalize(mesh[i].norm);
 	}
 }
 }

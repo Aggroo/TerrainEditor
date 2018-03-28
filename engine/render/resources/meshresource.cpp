@@ -5,13 +5,13 @@
 #include <string>
 #include <cstring>
 
-namespace CGMath
+namespace Math
 {
 MeshResources::MeshResources() : tSize(0), iSize(0), vertexSize(0), vertexPtr(nullptr), indexSize(0), indexPtr(nullptr) 
 {
 }
 
-MeshResources::MeshResources(std::vector<CGMath::Vertex> mesh, std::vector<GLuint> indices) : tSize(0), iSize(0), vertexSize(0), vertexPtr(nullptr), indexSize(0), indexPtr(nullptr)
+MeshResources::MeshResources(std::vector<Math::Vertex> mesh, std::vector<GLuint> indices) : tSize(0), iSize(0), vertexSize(0), vertexPtr(nullptr), indexSize(0), indexPtr(nullptr)
 {
 	this->mesh = mesh;
 	this->indices = indices;
@@ -31,7 +31,7 @@ void MeshResources::genBuffer()
 
 	glGenBuffers(1, &vbo[0]);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(CGMath::Vertex)*mesh.size(), &mesh[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Math::Vertex)*mesh.size(), &mesh[0], GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
@@ -81,9 +81,9 @@ bool MeshResources::loadObj(const char* filename)
 	typedef std::vector<FaceVertex> Faces;
 
 	std::vector<unsigned int> vertexIndices, uvIndices, normalIndices;
-	std::vector<vector3D> temp_vertices;
-	std::vector<vector2D> temp_uvs;
-	std::vector<vector3D> temp_normals;
+	std::vector<vec3> temp_vertices;
+	std::vector<vec2> temp_uvs;
+	std::vector<vec3> temp_normals;
 
 
 	std::vector<Faces> faces;
@@ -162,7 +162,7 @@ bool MeshResources::loadObj(const char* filename)
 	//Loop through all faces
 	for (int i = 0; i < faces.size(); ++i)
 	{
-		CGMath::Face faceVertList = Face();
+		Math::Face faceVertList = Face();
 		for (int j = 0; j < faces[i].size(); ++j)
 		{
 			int pos = faces[i][j].pos;
@@ -171,7 +171,7 @@ bool MeshResources::loadObj(const char* filename)
 			std::string key = this->FaceKey(pos, uv, norm);
 			if (this->vertexMap.find(key) == this->vertexMap.end())
 			{
-				CGMath::Vertex tempVertex;
+				Math::Vertex tempVertex;
 
 				tempVertex.pos = temp_vertices[pos];
 				tempVertex.uv = temp_uvs[uv];
@@ -312,7 +312,7 @@ std::string MeshResources::FaceKey(int pos, int uv, int norm) const
 	return result;	
 }
 	
-std::vector< CGMath::Face >& MeshResources::GetMeshFaces()
+std::vector< Math::Face >& MeshResources::GetMeshFaces()
 {
 	return this->meshFaces;
 }

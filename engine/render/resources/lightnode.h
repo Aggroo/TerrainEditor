@@ -1,11 +1,11 @@
 #pragma once
 #include "GL/glew.h"
-#include "foundation/math/matrix4D.h"
+#include "foundation/math/mat4.h"
 #include "shaderobject.h"
 
 #include <memory>
 
-namespace CGMath
+namespace Math
 {
 	class LightNode
 	{
@@ -13,15 +13,15 @@ namespace CGMath
 		LightNode();
 		~LightNode();
 
-		void setPos(vector4D pos);
+		void setPos(vec4 pos);
 		void setPos(GLfloat x, GLfloat y, GLfloat z);
-		vector4D getPos();
+		vec4 getPos();
 
 		void setColour(GLfloat r, GLfloat g, GLfloat b);
-		vector3D getColour();
+		vec3 getColour();
 
 		void setIntensity(GLfloat a, GLfloat b, GLfloat c);
-		vector3D getIntensity();
+		vec3 getIntensity();
 
 		void setShaders(std::shared_ptr<ShaderObject> newShader);
 		std::shared_ptr<ShaderObject> getShaders();
@@ -31,9 +31,9 @@ namespace CGMath
 	private:
 		std::shared_ptr<ShaderObject> shaders;
 
-		vector4D pos;
-		vector3D colour;
-		vector3D intensity;
+		vec4 pos;
+		vec3 colour;
+		vec3 intensity;
 
 		
 	};

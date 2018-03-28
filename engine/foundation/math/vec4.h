@@ -1,14 +1,13 @@
 #pragma once
-#include <iostream>
 #include <math.h>
-#include "vector3D.h"
+#include "vec3.h"
 
-namespace CGMath
+namespace Math
 {
-	class vector4D
+	class vec4
 	{
 	public:
-		inline vector4D()
+		inline vec4()
 		{
 
 			vec[0] = 0;
@@ -17,14 +16,14 @@ namespace CGMath
 
 			vec[3] = 1;
 		}
-		inline vector4D(int x, int y, int z)
+		inline vec4(int x, int y, int z)
 		{
 			vec[0] = x;
 			vec[1] = y;
 			vec[2] = z;
 			vec[3] = 1;
 		}
-		inline vector4D(float x, float y, float z)
+		inline vec4(float x, float y, float z)
 		{
 			vec[0] = x;
 			vec[1] = y;
@@ -32,28 +31,28 @@ namespace CGMath
 			vec[3] = 1;
 		}
 
-		inline vector4D(vector3D v)
+		inline vec4(vec3 v)
 		{
 			vec[0] = v.x();
 			vec[1] = v.y();
 			vec[2] = v.z();
 			vec[3] = 1;
 		}
-		inline vector4D(float x, float y, float z , float w)
+		inline vec4(float x, float y, float z , float w)
 		{
 			vec[0] = x;
 			vec[1] = y;
 			vec[2] = z;
 			vec[3] = w;
 		}
-		inline ~vector4D()
+		inline ~vec4()
 		{
 
 		}
 
-		inline vector4D operator+(vector4D vect)
+		inline vec4 operator+(vec4 vect)
 		{
-			vector4D new_vec;
+			vec4 new_vec;
 
 			new_vec[0] = vec[0] + vect[0];
 			new_vec[1] = vec[1] + vect[1];
@@ -62,23 +61,23 @@ namespace CGMath
 			return new_vec;
 		}
 
-		inline void operator+=(vector4D vect)
+		inline void operator+=(vec4 vect)
 		{
 			vec[0] += vect[0];
 			vec[1] += vect[1];
 			vec[2] += vect[2];
 		}
 
-        inline void operator=(vector3D vect)
+        inline void operator=(vec3 vect)
         {
             vec[0] = vect[0];
             vec[1] = vect[1];
             vec[2] = vect[2];
         }
 
-		inline vector4D operator-(const vector4D& vect) const
+		inline vec4 operator-(const vec4& vect) const
 		{
-			vector4D new_vec;
+			vec4 new_vec;
 
 			new_vec[0] = vec[0] - vect.vec[0];
 			new_vec[1] = vec[1] - vect.vec[1];
@@ -87,9 +86,9 @@ namespace CGMath
 			return new_vec;
 		}
 
-        inline vector4D operator-(const float& constant) const
+        inline vec4 operator-(const float& constant) const
         {
-            vector4D new_vec;
+            vec4 new_vec;
 
             new_vec[0] = vec[0] - constant;
             new_vec[1] = vec[1] - constant;
@@ -98,9 +97,9 @@ namespace CGMath
             return new_vec;
         }
 
-		inline vector4D operator*(const vector4D& vect) const
+		inline vec4 operator*(const vec4& vect) const
 		{
-			vector4D new_vec;
+			vec4 new_vec;
 
 			new_vec[0] = vec[0] * vect.vec[0];
 			new_vec[1] = vec[1] * vect.vec[1];
@@ -109,9 +108,9 @@ namespace CGMath
 			return new_vec;
 		}
 
-		inline vector4D operator*(int& constant)
+		inline vec4 operator*(int& constant)
 		{
-			vector4D new_vec;
+			vec4 new_vec;
 
 			new_vec[0] = vec[0] * constant;
 			new_vec[1] = vec[1] * constant;
@@ -120,9 +119,9 @@ namespace CGMath
 			return new_vec;
 		}
 
-		inline vector4D operator*(float& constant)
+		inline vec4 operator*(float& constant)
 		{
-			vector4D new_vec;
+			vec4 new_vec;
 
 			new_vec[0] = vec[0] * constant;
 			new_vec[1] = vec[1] * constant;
@@ -131,14 +130,14 @@ namespace CGMath
 			return new_vec;
 		}
 
-		inline bool operator==(const vector4D &other) const
+		inline bool operator==(const vec4 &other) const
 		{
 			return (vec[0] == other.vec[0] && vec[1] == other.vec[1] && vec[2] == other.vec[2]);
 		}
 
-		inline vector4D operator*(const float& constant) const
+		inline vec4 operator*(const float& constant) const
 		{
-			vector4D new_vec;
+			vec4 new_vec;
 
 			new_vec[0] = vec[0] * constant;
 			new_vec[1] = vec[1] * constant;
@@ -147,9 +146,9 @@ namespace CGMath
 			return new_vec;
 		}
 
-		inline vector4D operator/(vector4D& vect)
+		inline vec4 operator/(vec4& vect)
 		{
-			vector4D new_vec;
+			vec4 new_vec;
 
 			new_vec[0] = vec[0] / vect[0];
 			new_vec[1] = vec[1] / vect[1];
@@ -158,9 +157,9 @@ namespace CGMath
 			return new_vec;
 		}
 
-		inline vector4D operator/(const float& constant) const
+		inline vec4 operator/(const float& constant) const
 		{
-			vector4D new_vec;
+			vec4 new_vec;
 
 			new_vec[0] = vec[0] / constant;
 			new_vec[1] = vec[1] / constant;
@@ -193,6 +192,11 @@ namespace CGMath
 		{
 			return vec[pos];
 		}
+
+		inline const float &operator[](int pos) const
+		{
+			return vec[pos];
+		}
 		
 		inline float x() const
 		{
@@ -212,9 +216,9 @@ namespace CGMath
 			return vec[3];
 		}
 
-		inline vector3D ToVec3()
+		inline vec3 ToVec3()
 		{
-			vector3D new_vec;
+			vec3 new_vec;
 
 			new_vec[0] = vec[0];
 			new_vec[1] = vec[1];
@@ -223,9 +227,9 @@ namespace CGMath
 			return new_vec;
 		}
 
-		inline vector4D Negative() const
+		inline vec4 Negative() const
 		{
-			return vector4D(-vec[0],-vec[1],-vec[2]);
+			return vec4(-vec[0],-vec[1],-vec[2]);
 		}
 
 		inline float vecLength()
@@ -242,9 +246,9 @@ namespace CGMath
 			return length;
 		}
 
-		inline static vector4D Normalize(vector4D vec)
+		inline static vec4 Normalize(vec4 vec)
 		{
-			vector4D new_vec;
+			vec4 new_vec;
 			float norm = 1/vec.vecLength();
 
 			new_vec[0] = vec[0] * norm;
@@ -254,7 +258,7 @@ namespace CGMath
 			return new_vec;
 		}
 
-		inline static float Dot(vector4D vec, vector4D vect)
+		inline static float Dot(vec4 vec, vec4 vect)
 		{
 			float result = 0;
 
@@ -265,9 +269,9 @@ namespace CGMath
 			return result;
 		}
 
-		inline static vector4D Cross(vector4D vec, vector4D vect)
+		inline static vec4 Cross(vec4 vec, vec4 vect)
 		{
-			vector4D new_vec;
+			vec4 new_vec;
 
 			new_vec[0] = vec[1] * vect[2] - vec[2] * vect[1];
 			new_vec[1] = vec[2] * vect[0] - vec[0] * vect[2];
@@ -278,22 +282,11 @@ namespace CGMath
 		}
 
 
-		inline friend std::ostream& operator<<(std::ostream& stream, const vector4D& vect)
-		{
-			stream << vect.vec[0] << " ";
-			stream << vect.vec[1] << " ";
-			stream << vect.vec[2] << " ";
-
-			std::cout << std::endl;
-			return stream;
-		}
-
-
 	private:
 		float vec[4];
 	
 	};
 	
-	typedef CGMath::vector4D vec4;
+	typedef Math::vec4 vec4;
 }
 

@@ -21,7 +21,6 @@ SET_TARGET_PROPERTIES(misc PROPERTIES FOLDER "exts/misc")
 TARGET_INCLUDE_DIRECTORIES(exts INTERFACE misc)
 
 ADD_LIBRARY(imgui STATIC 
-			imgui/imconfig.h 
 			imgui/imgui.cpp 
 			imgui/imgui_demo.cpp 
 			imgui/imgui_draw.cpp 
@@ -31,13 +30,9 @@ ADD_LIBRARY(imgui STATIC
 			imgui/stb_textedit.h 
 			imgui/stb_truetype.h 
 			imgui/examples/opengl3_example/imgui_impl_glfw_gl3.h
-			imgui/examples/opengl3_example/imgui_impl_glfw_gl3.cpp			
-			imgui/imgui_dock.h
+			imgui/examples/opengl3_example/imgui_impl_glfw_gl3.cpp
 			imgui/imgui_dock.cpp
-			imgui/imgui_user.h
-			imgui/imgui_user.inl
-			imgui/imgui_color_gradient.h
-			imgui/imgui_color_gradient.cpp
+			imgui/imgui_dock.h
 			)
 
 TARGET_LINK_LIBRARIES(imgui PUBLIC exts)

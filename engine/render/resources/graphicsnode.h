@@ -1,5 +1,5 @@
 #pragma once
-#include "foundation/math/matrix4D.h"
+#include "foundation/math/mat4.h"
 #include "shaderobject.h"
 #include "textureresource.h"
 #include "meshresource.h"
@@ -8,7 +8,7 @@
 #include "../../../projects/terrain/code/terrain.h"
 #include "texturenode.h"
 
-namespace CGMath
+namespace Math
 {
 	
 	class GraphicsNode
@@ -29,14 +29,14 @@ namespace CGMath
 		void setTerrain(std::shared_ptr<TerrainEditor::Terrain> newTerrain);
 		std::shared_ptr<TerrainEditor::Terrain> getTerrain();
 		
-		void setTransMat(matrix4D newTransMat);
-		matrix4D getTransMat();
+		void setTransMat(mat4 newTransMat);
+		mat4 getTransMat();
 
-		void SetViewMat(matrix4D newViewMat);
-		matrix4D GetViewMat();
+		void SetViewMat(mat4 newViewMat);
+		mat4 GetViewMat();
 
-		void SetProjectionMat(matrix4D newProjectionMat);
-		matrix4D GetProjectionMat();
+		void SetProjectionMat(mat4 newProjectionMat);
+		mat4 GetProjectionMat();
 
 		void draw();
 		void drawSkinned();
@@ -46,9 +46,9 @@ namespace CGMath
 		std::shared_ptr<MeshResources> mesh;
 		std::shared_ptr<TextureNode> tex;
 		std::shared_ptr<TerrainEditor::Terrain> terr;
-		matrix4D transMat;
-		matrix4D viewMat;
-		matrix4D projMat;
+		mat4 transMat;
+		mat4 viewMat;
+		mat4 projMat;
 		
 	};
 

@@ -3,9 +3,10 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include "render/camera/camera.h"
 
 
-namespace CGMath
+namespace Math
 {
 	GraphicsNode::GraphicsNode()
 	{
@@ -59,32 +60,32 @@ namespace CGMath
 		return this->terr;
 	}
 
-	void GraphicsNode::setTransMat(matrix4D newTransMat)
+	void GraphicsNode::setTransMat(mat4 newTransMat)
 	{
 		this->transMat = newTransMat;
 	}
 
-	CGMath::matrix4D GraphicsNode::getTransMat()
+	Math::mat4 GraphicsNode::getTransMat()
 	{
 		return this->transMat;
 	}
 
-	void GraphicsNode::SetViewMat(matrix4D newViewMat)
+	void GraphicsNode::SetViewMat(mat4 newViewMat)
 	{
 		this->viewMat = newViewMat;
 	}
 
-	matrix4D GraphicsNode::GetViewMat()
+	mat4 GraphicsNode::GetViewMat()
 	{
 		return this->viewMat;
 	}
 
-	void GraphicsNode::SetProjectionMat(matrix4D newProjectionMat)
+	void GraphicsNode::SetProjectionMat(mat4 newProjectionMat)
 	{
 		this->projMat = newProjectionMat;
 	}
 
-	matrix4D GraphicsNode::GetProjectionMat()
+	mat4 GraphicsNode::GetProjectionMat()
 	{
 		return this->projMat;
 	}
@@ -95,9 +96,9 @@ namespace CGMath
 		this->shader->useProgram();
 		this->tex->BindTextures();
 		this->shader->setupMatrix4fv("transMatrix", this->transMat);
-		this->shader->setupMatrix4fv("Vmat", this->viewMat);
-		this->shader->setupMatrix4fv("Pmat", this->projMat);
-		//this->shader->setupMatrix3fv("normalMat", matrix3D::Transpose(matrix3D::fromMatrix4D(this->transMat).invert()));
+		this->shader->setupMatrix4fv("Vmat", Graphics::MainCamera::Instance()->GetView());
+		this->shader->setupMatrix4fv("Pmat", Graphics::MainCamera::Instance()->GetPerspective());
+		this->shader->setupMatrix3fv("normalMat", mat3::Transpose(mat3::fromMatrix4D(this->transMat).invert()));
 		if(this->terr != nullptr)
 			this->terr->DrawTerrain();
 		if (this->mesh != nullptr)
