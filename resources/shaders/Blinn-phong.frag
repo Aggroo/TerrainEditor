@@ -1,4 +1,4 @@
-#version 430
+
 layout(location=0) in vec3 fragPos;
 layout(location=1) in vec2 uv;
 
@@ -78,93 +78,7 @@ void main()
 	//float slope = 1.0-o_normal.y;
 	vec3 uvwPos = 0.1f * fragPos;
 	vec3 weights = o_normal * o_normal;
-	
-	/* if(fScale >= 0.0 && fScale <= fRange1)
-	{
-		vec3 blendedColor = weights.xxx * texture2D(textures[0], uvwPos.yz).rgb +
-							weights.yyy * texture2D(textures[0], uvwPos.zx).rgb +
-							weights.zzz * texture2D(textures[0], uvwPos.xy).rgb;
-		vTexColor = vec4(blendedColor, 1.0);
-	}
-	else if(fScale <= fRange2)
-	{
-		fScale -= fRange1;
-		fScale /= (fRange2-fRange1);
 
-		float fScale2 = fScale;
-		fScale = 1.0-fScale;
-
-		vec3 blendedColor = weights.xxx * texture2D(textures[0], uvwPos.yz).rgb +
-							weights.yyy * texture2D(textures[0], uvwPos.zx).rgb +
-							weights.zzz * texture2D(textures[0], uvwPos.xy).rgb;
-		vTexColor += vec4(blendedColor, 1.0)*fScale;
-		
-		blendedColor =  weights.xxx * texture2D(textures[1], uvwPos.yz).rgb +
-						weights.yyy * texture2D(textures[1], uvwPos.zx).rgb +
-						weights.zzz * texture2D(textures[1], uvwPos.xy).rgb;
-		vTexColor += vec4(blendedColor, 1.0)*fScale2;
-	}
-	else if(fScale <= fRange3) 
-	{		
-		vec3 blendedColor = weights.xxx * texture2D(textures[1], uvwPos.yz).rgb +
-							weights.yyy * texture2D(textures[1], uvwPos.zx).rgb +
-							weights.zzz * texture2D(textures[1], uvwPos.xy).rgb;
-		vTexColor = vec4(blendedColor, 1.0);	
-	}
-	else if(fScale <= fRange4)
-	{
-		fScale -= fRange3;
-		fScale /= (fRange4-fRange3);
-
-		float fScale2 = fScale;
-		fScale = 1.0-fScale; 
-
-		vec3 blendedColor = weights.xxx * texture2D(textures[1], uvwPos.yz).rgb +
-							weights.yyy * texture2D(textures[1], uvwPos.zx).rgb +
-							weights.zzz * texture2D(textures[1], uvwPos.xy).rgb;
-		vTexColor += vec4(blendedColor, 1.0)*fScale;
-		
-		blendedColor =  weights.xxx * texture2D(textures[2], uvwPos.yz).rgb +
-						weights.yyy * texture2D(textures[2], uvwPos.zx).rgb +
-						weights.zzz * texture2D(textures[2], uvwPos.xy).rgb;
-							
-		vTexColor += vec4(blendedColor, 1.0)*fScale2;
-
-	}
-	else if(fScale <= fRange5)
-	{
-		vec3 blendedColor = weights.xxx * texture2D(textures[2], uvwPos.yz).rgb +
-							weights.yyy * texture2D(textures[2], uvwPos.zx).rgb +
-							weights.zzz * texture2D(textures[2], uvwPos.xy).rgb;
-		vTexColor = vec4(blendedColor, 1.0);
-	}
-	else if(fScale <= fRange6)
-	{
-		fScale -= fRange5;
-		fScale /= (fRange6-fRange5);
-
-		float fScale2 = fScale;
-		fScale = 1.0-fScale; 
-
-		vec3 blendedColor = weights.xxx * texture2D(textures[2], uvwPos.yz).rgb +
-							weights.yyy * texture2D(textures[2], uvwPos.zx).rgb +
-							weights.zzz * texture2D(textures[2], uvwPos.xy).rgb;
-		vTexColor += vec4(blendedColor, 1.0)*fScale;
-		
-		blendedColor = weights.xxx * texture2D(textures[3], uvwPos.yz).rgb +
-							weights.yyy * texture2D(textures[3], uvwPos.zx).rgb +
-							weights.zzz * texture2D(textures[3], uvwPos.xy).rgb;
-							
-		vTexColor += vec4(blendedColor, 1.0)*fScale2;
-	}
-	else
-	{
-		vec3 blendedColor = weights.xxx * texture2D(textures[3], uvwPos.yz).rgb +
-							weights.yyy * texture2D(textures[3], uvwPos.zx).rgb +
-							weights.zzz * texture2D(textures[3], uvwPos.xy).rgb;
-		vTexColor = vec4(blendedColor, 1.0);
-	} */
-	
 	float slope = 1.0-o_normal.y;
 	vec4 g1 = vec4(weights.xxx * texture2D(textures[0], uvwPos.yz).rgb +
 					weights.yyy * texture2D(textures[0], uvwPos.zx).rgb +

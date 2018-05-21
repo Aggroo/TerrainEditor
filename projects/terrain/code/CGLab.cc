@@ -13,6 +13,7 @@
 #include "UserInterface.h"
 #include "foundation/util/JsonParser.h"
 #include "render/camera/camera.h"
+#include "render/render/renderer.h"
 
 using namespace Display;
 namespace Example
@@ -99,8 +100,6 @@ CGLab::Run()
 	vec = Math::vec4(0, 0, 0);
 
 	mat4 modelMat = mat4::translationMatrix(Math::vec4(0.0f, 0.0f, 0.0f));
-		
-	mat4 perspective = mat4::perspectiveMatrix(1.5708f, GetWindow()->GetWidth()/GetWindow()->GetHeight(), 0.05f, 1000.0f);
 
 	terrain->CreateTerrain("resources/textures/perlin2.jpg", 3.0f, 100.0f);
 	terrain->GenerateBuffer();
@@ -154,13 +153,12 @@ CGLab::Run()
 		this->window->Update();
 		input->Update();
 
-		mat4 transMat;
-
 		//float timeStamp = float(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - before).count() / 1000.0f);
 
 		CameraMovement();
 
 		gN.setTransMat(modelMat);
+		Render::Renderer::Instance()->SetupUniformBuffer(Graphics::MainCamera::Instance());
 		gN.draw();	
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);

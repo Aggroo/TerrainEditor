@@ -4,6 +4,7 @@
 #include <fstream>
 #include <string>
 #include <cstring>
+#include "render/render/shadervariables.h"
 
 namespace Math
 {
@@ -40,6 +41,9 @@ namespace Math
 		vert.append("\0");
 		vertStream.close();
 
+		vert = Render::vertexHeader + vert;
+		vert = Render::shaderHeader + vert;
+
 		const char* vs = vert.c_str();
 
 		std::string frag;
@@ -57,6 +61,9 @@ namespace Math
 		}
 		frag.append("\0");
 		fragStream.close();
+
+		frag = Render::fragmentHeader + frag;
+		frag = Render::shaderHeader + frag;
 
 		const char* fs = frag.c_str();
 
@@ -127,6 +134,9 @@ namespace Math
 		vert.append("\0");
 		vertStream.close();
 
+		vert = Render::vertexHeader + vert;
+		vert = Render::shaderHeader + vert;
+
 		const char* vs = vert.c_str();
 
 		std::string frag;
@@ -144,6 +154,9 @@ namespace Math
 		}
 		frag.append("\0");
 		fragStream.close();
+
+		frag = Render::fragmentHeader + frag;
+		frag = Render::shaderHeader + frag;
 
 		const char* fs = frag.c_str();
 

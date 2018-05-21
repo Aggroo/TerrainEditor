@@ -1,4 +1,4 @@
-#version 430
+
 layout(location=0) in vec4 pos;
 layout(location=1) in vec2 inCoord;
 layout(location=2) in vec3 inNormal;
@@ -20,6 +20,7 @@ uniform vec3 cameraPosition;
 void main()
 {
 	vec4 worldpos = transMatrix*pos;
+
 	
 	fragPos = worldpos.xyz;
 	
@@ -30,5 +31,5 @@ void main()
 	
 	texCoord = inCoord*10.0f;
 	
-	gl_Position = Pmat*Vmat*worldpos;
+	gl_Position = Projection*View*worldpos;
 }

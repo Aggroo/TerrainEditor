@@ -4,6 +4,7 @@
 #include <fstream>
 #include <string>
 #include "render/camera/camera.h"
+#include "render/render/renderer.h"
 
 
 namespace Math
@@ -97,8 +98,9 @@ namespace Math
 		this->tex->BindTextures();
 		this->shader->setupMatrix4fv("transMatrix", this->transMat);
 		this->shader->setupMatrix4fv("Vmat", Graphics::MainCamera::Instance()->GetView());
-		this->shader->setupMatrix4fv("Pmat", Graphics::MainCamera::Instance()->GetPerspective());
+		this->shader->setupMatrix4fv("Pmat", Graphics::MainCamera::Instance()->GetProjection());
 		this->shader->setupMatrix3fv("normalMat", mat3::Transpose(mat3::fromMatrix4D(this->transMat).invert()));
+
 		if(this->terr != nullptr)
 			this->terr->DrawTerrain();
 		if (this->mesh != nullptr)

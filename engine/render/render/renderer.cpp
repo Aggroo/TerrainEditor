@@ -17,14 +17,15 @@ void Renderer::Setup(Display::Window* window)
 {
 	this->window = window;
 	this->renderResolution = { window->GetWidth(), window->GetHeight() };
+	glGenBuffers(1, this->ubo);
 }
 
-Resolution Renderer::GetRenderResolution()
+const Resolution& Renderer::GetRenderResolution() const
 {
 	return this->renderResolution;
 }
 
-	void Renderer::SetRenderResolution(const Resolution& res)
+void Renderer::SetRenderResolution(const Resolution& res)
 {
 	this->renderResolution = res;
 }
@@ -34,16 +35,16 @@ void Renderer::SetRenderResolution(const int& x, const int& y)
 	SetRenderResolution({ x, y });
 }
 
-void Renderer::SetupBufferBlock(Graphics::Camera* camera)
+void Renderer::SetupUniformBuffer(Graphics::Camera* camera)
 {
-	uniformBufferBlock.View = camera->GetView();
-	uniformBufferBlock.InvView = camera->GetInvView();
+	uniformBufferBlock.View = !camera->GetView();
+	uniformBufferBlock.InvView = !camera->GetInvView();
 
-	uniformBufferBlock.Projection = camera->GetProjection();
-	uniformBufferBlock.InvProjection = camera->GetInvProjection();
+	uniformBufferBlock.Projection = !camera->GetProjection();
+	uniformBufferBlock.InvProjection = !camera->GetInvProjection();
 
-	uniformBufferBlock.ViewProjection = camera->GetViewProjection();
-	uniformBufferBlock.InvViewProjection = camera->GetInvViewProjection();
+	uniformBufferBlock.ViewProjection = !camera->GetViewProjection();
+	uniformBufferBlock.InvViewProjection = !camera->GetInvViewProjection();
 
 	uniformBufferBlock.viewToTextureSpace = camera->GetViewToTextureSpaceMatrix();
 

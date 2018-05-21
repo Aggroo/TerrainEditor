@@ -12,7 +12,6 @@
 #include "render/resources/lightnode.h"
 #include "render/resources/shaderobject.h"
 #include "render/resources/inputmanager.h"
-#include "render/render/renderer.h"
 #include <chrono>
 #include "UserInterface.h"
 

@@ -6,6 +6,7 @@
 	(C) 2015 Individual contributors, see AUTHORS file
 */
 //------------------------------------------------------------------------------
+#pragma once
 #include <GL/glew.h>
 namespace Core
 {

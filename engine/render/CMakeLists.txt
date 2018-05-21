@@ -35,7 +35,9 @@ SET(files_render_camera
 	
 SET(files_render_render
 	render/renderer.h
-	render/renderer.cpp)
+	render/renderer.cpp
+	render/shadervariables.h
+	render/shadersemantics.h)
 
 SOURCE_GROUP("display" FILES ${files_render_display})
 

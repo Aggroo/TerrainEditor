@@ -43,6 +43,7 @@ private:
 	Math::mat4 viewProjection;
 	Math::mat4 invViewProjection;
 
+	//For converting viewspace coordinates to screen pixel coordinates.
 	Math::mat4 viewToTextureSpaceMatrix;
 
 };

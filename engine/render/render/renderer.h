@@ -9,8 +9,8 @@ namespace Render
 {
 struct Resolution
 {
-	int x;
-	int y;
+	GLint x;
+	GLint y;
 };
 
 class Renderer
@@ -44,11 +44,11 @@ public:
 
 	void Setup(Display::Window* window);
 
-	Resolution GetRenderResolution();
+	const Resolution& GetRenderResolution() const;
 	void SetRenderResolution(const Resolution& res);
 	void SetRenderResolution(const int& x, const int& y);
 
-	void SetupBufferBlock(Graphics::Camera* camera);
+	void SetupUniformBuffer(Graphics::Camera* camera);
 
 private:
 	Renderer();
