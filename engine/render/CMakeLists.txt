@@ -39,6 +39,14 @@ SET(files_render_render
 	render/shadervariables.h
 	render/shadersemantics.h)
 
+SET(files_render_frames
+	frames/framepass.h
+	frames/framepass.cpp
+	frames/depthpass.h
+	frames/depthpass.cpp
+	frames/drawpass.h
+	frames/drawpass.cpp)
+
 SOURCE_GROUP("display" FILES ${files_render_display})
 
 SOURCE_GROUP("resources" FILES ${files_render_resources})
@@ -47,11 +55,14 @@ SOURCE_GROUP("camera" FILES ${files_render_camera})
 
 SOURCE_GROUP("render" FILES ${files_render_render})
 
+SOURCE_GROUP("frames" FILES ${files_render_frames})
+
 SET(files_render
 	${files_render_display}
 	${files_render_resources}
 	${files_render_camera}
 	${files_render_render}
+	${files_render_frames}
 	${files_render_pch})
 
 SET(files_pch ../config.h ../config.cc)
