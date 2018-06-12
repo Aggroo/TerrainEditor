@@ -8,7 +8,7 @@
 #include "foundation/math/mat4.h"
 #include <assert.h>
 #include "render/resources/HalfEdgeMesh.h"
-#include "terrain.h"
+#include "application/game/terrain.h"
 #include "imguiextra.h"
 #include "UserInterface.h"
 #include "foundation/util/JsonParser.h"
@@ -96,18 +96,19 @@ CGLab::Run()
 	std::shared_ptr<Math::MeshResources> mesh = std::make_shared<Math::MeshResources>();
 	std::shared_ptr<Math::TextureResource> tex = std::make_shared<Math::TextureResource>();
 	std::shared_ptr<TerrainEditor::Terrain> terrain = std::make_shared<TerrainEditor::Terrain>();
-		
+	terrain->Activate();
 	vec = Math::vec4(0, 0, 0);
+
+	UI->SetTerrain(terrain);
 
 	mat4 modelMat = mat4::translationMatrix(Math::vec4(0.0f, 0.0f, 0.0f));
 
-	terrain->CreateTerrain("resources/textures/perlin2.jpg", 3.0f, 100.0f);
-	terrain->GenerateBuffer();
+	//terrain->CreateTerrain("resources/textures/perlin2.jpg", 3.0f, 100.0f);
 
 	//mesh->createQuad();
-	mesh->loadObj("resources/models/ARC170.obj");
+	//mesh->loadObj("resources/models/ARC170.obj");
 
-	mesh->genBuffer();
+	//mesh->genBuffer();
 		
 	shaders->setupShaders("resources/shaders/Blinn-phong.vert", "resources/shaders/Blinn-phong.frag");
 
@@ -139,8 +140,7 @@ CGLab::Run()
 	shaders->setupUniformInt("textures[4]", 5);
 	shaders->setupUniformInt("pathtex", 4);
 
-	gN.setMesh(mesh);
-	gN.setTerrain(terrain);
+	gN.setMesh(terrain->GetMesh());
 	gN.setShaders(shaders);
 	gN.setTex(std::make_shared<Math::TextureNode>(textures));
 
@@ -152,7 +152,7 @@ CGLab::Run()
         
 		this->window->Update();
 		input->Update();
-
+		
 		//float timeStamp = float(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - before).count() / 1000.0f);
 
 		CameraMovement();

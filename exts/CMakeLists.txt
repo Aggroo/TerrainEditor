@@ -38,5 +38,37 @@ ADD_LIBRARY(imgui STATIC
 TARGET_LINK_LIBRARIES(imgui PUBLIC exts)
 TARGET_INCLUDE_DIRECTORIES(imgui PUBLIC imgui imgui/examples/opengl3_example)
 SET_TARGET_PROPERTIES(imgui PROPERTIES FOLDER "exts/imgui")
-
 TARGET_LINK_LIBRARIES(exts INTERFACE imgui)
+
+IF(CMAKE_COMPILER_IS_GNUCXX)
+
+	# Use the package PkgConfig to detect GTK+ headers/library files
+	find_package(PkgConfig REQUIRED)
+	pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
+	include_directories(${GTK3_INCLUDE_DIRS})
+	link_directories(${GTK3_LIBRARY_DIRS})
+	add_definitions(${GTK3_CFLAGS_OTHER})
+
+	SET(files_nativefiledialog
+	nativefiledialog/src/nfd_gtk.c
+	)
+ENDIF()
+
+IF(MSVC)
+	SET(files_nativefiledialog
+	nativefiledialog/src/nfd_win.cpp
+	)
+ENDIF()	
+
+ADD_LIBRARY(nativefiledialog STATIC
+			nativefiledialog/src/include/nfd.h
+			nativefiledialog/src/nfd_common.h
+			nativefiledialog/src/nfd_common.c
+			${files_nativefiledialog}
+			)
+			
+
+TARGET_LINK_LIBRARIES(nativefiledialog PUBLIC exts ${GTK3_LIBRARIES})
+SET_TARGET_PROPERTIES(nativefiledialog PROPERTIES FOLDER "exts/nativefiledialog")
+TARGET_INCLUDE_DIRECTORIES(exts INTERFACE nativefiledialog nativefiledialog/src/include)
+TARGET_LINK_LIBRARIES(exts INTERFACE nativefiledialog)

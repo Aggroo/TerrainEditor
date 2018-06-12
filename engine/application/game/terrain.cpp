@@ -1,13 +1,14 @@
+#include "config.h"
 #include "terrain.h"
 #include "render/resources/stb_image.h"
 #include <assert.h>
-#include "config.h"
 #include <iostream>
 
 namespace TerrainEditor
 {
 Terrain::Terrain() : terrainWidth(0), terrainHeight(0), heightMap(nullptr)
 {
+	mesh = std::make_shared<Math::MeshResources>();
 }
 
 Terrain::~Terrain()
@@ -17,14 +18,26 @@ Terrain::~Terrain()
 		delete[] heightMap;
 		heightMap = nullptr;
 	}
+}
 
-	glDeleteVertexArrays(1, &vao[0]);
-	glDeleteBuffers(1, &vbo[0]);
-	glDeleteBuffers(1, &ibo[0]);
+void Terrain::Activate()
+{
+	Entity::Activate();
+}
+
+void Terrain::Deactivate()
+{
+	Entity::Deactivate();
+}
+
+void Terrain::Update()
+{
+	mesh->drawMesh();
 }
 
 bool Terrain::CreateTerrain(const char* filename, float widthMultiplier, float heightMultiplier)
 {
+	mesh->mesh.clear();
 	int n;
 	unsigned char *image = stbi_load(filename, &terrainWidth, &terrainHeight, &n, 0);
 
@@ -64,14 +77,10 @@ bool Terrain::CreateTerrain(const char* filename, float widthMultiplier, float h
 	indexCount = vertexCount*6;
 
 	// Create the vertex array.
-	mesh.reserve(vertexCount);
+	mesh->mesh.reserve(vertexCount);
 
 	// Create the index array.
-	indices = new GLuint[indexCount];
-	if (!indices)
-	{
-		return false;
-	}
+	mesh->indices.assign(indexCount, 0);
 
 	SmoothenTerrain();
 
@@ -87,7 +96,7 @@ bool Terrain::CreateTerrain(const char* filename, float widthMultiplier, float h
 		for (int x = 0; x < (terrainWidth); ++x)
 		{
 			i = (terrainHeight * y) + x;
-			mesh.push_back(TerrainVertex(Math::vec3(heightMap[i].x, heightMap[i].y, heightMap[i].z), Math::vec2(x*uDiv, -y*vDiv), Math::vec3()));
+			mesh->mesh.push_back(Math::Vertex(Math::vec3(heightMap[i].x, heightMap[i].y, heightMap[i].z), Math::vec2(x*uDiv, -y*vDiv), Math::vec3()));
 		}
 	}
 
@@ -102,33 +111,35 @@ bool Terrain::CreateTerrain(const char* filename, float widthMultiplier, float h
 			index4 = (terrainHeight * (y + 1)) + (x + 1);  // Upper right.
 
 			// Upper left.
-			indices[index] = index3;
+			mesh->indices[index] = index3;
 			index++;
 
 			// Upper right.
-			indices[index] = index4;
+			mesh->indices[index] = index4;
 			index++;
 
 			// Bottom left.
-			indices[index] = index1;
+			mesh->indices[index] = index1;
 			index++;
 
 			// Bottom left.
-			indices[index] = index1;
+			mesh->indices[index] = index1;
 			index++;
 
 			// Upper right.
-			indices[index] = index4;
+			mesh->indices[index] = index4;
 			index++;
 
 			// Bottom right.
-			indices[index] = index2;
+			mesh->indices[index] = index2;
 			index++;
 
 		}
 	}
 
 	GenerateNormals();
+
+	mesh->genBuffer();
 
 	return true;
 }
@@ -182,38 +193,6 @@ bool Terrain::inBounds(int x, int y)
 	return ((x >= 0 && x < this->terrainWidth) && (y >= 0 && y < this->terrainHeight));
 }
 
-void Terrain::GenerateBuffer()
-{
-	glGenVertexArrays(1, &vao[0]);
-	glBindVertexArray(vao[0]);
-
-	glGenBuffers(1, &vbo[0]);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(TerrainVertex)*mesh.size(), &mesh[0], GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 8, NULL);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float32) * 8, (GLvoid*)(sizeof(float32) * 3));
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 8, (GLvoid*)(sizeof(float32) * 5));
-
-	glGenBuffers(1, &ibo[0]);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo[0]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint)*indexCount, indices, GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-}
-
-void Terrain::DrawTerrain()
-{
-	glBindVertexArray(vao[0]);
-
-	/*glBindBuffer(GL_ARRAY_BUFFER, ibo[0]);
-	glDrawArrays(GL_TRIANGLES, 0, mesh.size());*/
-	
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo[0]);
-	glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, NULL);
-}
 
 float Terrain::GetHeightScale()
 {
@@ -226,20 +205,20 @@ void Terrain::GenerateNormals()
 	int a, b, c;
 	for (int i = 0; i < (indexCount - 3); i += 3)
 	{
-		a = indices[i];
-		b = indices[i + 1];
-		c = indices[i + 2];
+		a = mesh->indices[i];
+		b = mesh->indices[i + 1];
+		c = mesh->indices[i + 2];
 
-		p = Math::vec3::Cross(mesh[b].pos - mesh[a].pos, mesh[c].pos - mesh[a].pos);
+		p = Math::vec3::Cross(mesh->mesh[b].pos - mesh->mesh[a].pos, mesh->mesh[c].pos - mesh->mesh[a].pos);
 
-		mesh[indices[i]].norm += p;
-		mesh[indices[i + 1]].norm += p;
-		mesh[indices[i + 2]].norm += p;
+		mesh->mesh[mesh->indices[i]].norm += p;
+		mesh->mesh[mesh->indices[i + 1]].norm += p;
+		mesh->mesh[mesh->indices[i + 2]].norm += p;
 	}
 
 	for (int i = 0; i < vertexCount; ++i)
 	{
-		mesh[i].norm = Math::vec3::Normalize(mesh[i].norm);
+		mesh->mesh[i].norm = Math::vec3::Normalize(mesh->mesh[i].norm);
 	}
 }
 }

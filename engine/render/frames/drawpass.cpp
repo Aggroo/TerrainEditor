@@ -1,25 +1,25 @@
 #include "config.h"
-#include "framepass.h"
+#include "drawpass.h"
 
 namespace Frames 
 {
 
-FramePass::FramePass() 
+DrawPass::DrawPass()
 {
 
 }
 
-FramePass::~FramePass()
+DrawPass::~DrawPass()
 {
 	
 }
 
-void FramePass::Setup() 
+void DrawPass::Setup()
 {
 
 }
 
-void FramePass::Execute()
+void DrawPass::Execute()
 {
 
 }

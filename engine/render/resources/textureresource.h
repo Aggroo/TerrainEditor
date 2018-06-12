@@ -28,6 +28,8 @@ namespace Math
 		void LoadFromRasterizer(Rasterizer rast);
 		void bindTex(GLuint slot);
 
+		GLuint GetTextureID() { return m_texture; }
+
 	private:
 
 		GLuint m_texture;

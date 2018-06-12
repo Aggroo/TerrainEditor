@@ -126,6 +126,11 @@ namespace Math
 			return matrice[pos];
 		}
 
+		inline float operator[](int pos) const
+		{
+			return matrice[pos];
+		}
+
 		inline static mat4 identity()
 		{
 			mat4 identityMatrix;

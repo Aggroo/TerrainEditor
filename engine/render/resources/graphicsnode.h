@@ -5,8 +5,8 @@
 #include "meshresource.h"
 
 #include <memory>
-#include "../../../projects/terrain/code/terrain.h"
 #include "texturenode.h"
+#include "application/game/terrain.h"
 
 namespace Math
 {
@@ -25,9 +25,6 @@ namespace Math
 
 		void setTex(std::shared_ptr<TextureNode> newTex);
 		std::shared_ptr<TextureNode> getTex();
-
-		void setTerrain(std::shared_ptr<TerrainEditor::Terrain> newTerrain);
-		std::shared_ptr<TerrainEditor::Terrain> getTerrain();
 		
 		void setTransMat(mat4 newTransMat);
 		mat4 getTransMat();
@@ -45,7 +42,7 @@ namespace Math
 		std::shared_ptr<ShaderObject> shader;
 		std::shared_ptr<MeshResources> mesh;
 		std::shared_ptr<TextureNode> tex;
-		std::shared_ptr<TerrainEditor::Terrain> terr;
+
 		mat4 transMat;
 		mat4 viewMat;
 		mat4 projMat;

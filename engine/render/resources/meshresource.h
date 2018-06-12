@@ -15,6 +15,18 @@ namespace Math
 	
 	struct Vertex
 	{
+		Vertex()
+		{
+			
+		}
+
+		Vertex(Math::vec3 pos, Math::vec2 uv, Math::vec3 norm)
+		{
+			this->pos = pos;
+			this->uv = uv;
+			this->norm = norm;
+		}
+
 		vec3 pos;
 		vec2 uv;
 		vec3 norm;

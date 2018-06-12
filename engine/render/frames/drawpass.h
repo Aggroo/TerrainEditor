@@ -1,9 +1,10 @@
 #pragma once
 #include <string>
+#include "framepass.h"
 
 namespace Frames
 {
-class DrawPass
+class DrawPass : public FramePass
 {
 public:
 	DrawPass();

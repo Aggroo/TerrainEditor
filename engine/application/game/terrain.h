@@ -3,23 +3,12 @@
 #include "foundation/math/vec3.h"
 #include "foundation/math/vec2.h"
 #include <vector>
+#include "application/game/entity.h"
+#include <memory>
+#include "render/resources/meshresource.h"
 
 namespace TerrainEditor
 {
-struct TerrainVertex
-{
-	TerrainVertex(Math::vec3 pos, Math::vec2 uv, Math::vec3 norm)
-	{
-		this->pos = pos;
-		this->uv = uv;
-		this->norm = norm;
-	}
-
-	Math::vec3 pos;
-	Math::vec2 uv;
-	Math::vec3 norm;
-
-};
 
 struct HeightmapValues
 {
@@ -28,21 +17,26 @@ struct HeightmapValues
 	HeightmapValues() : x(0), y(0), z(0) {}
 };
 
-class Terrain
+class Terrain : public Game::Entity
 {
 public:
 	Terrain();
 	~Terrain();
+
+	///Registers this entity to the physics server
+	void Activate();
+	void Deactivate();
+
+	void Update() override;
 
 	///Generates the terrain from a Heightmap
 	bool CreateTerrain(const char* filename, float widthMultiplier, float heightMultiplier);
 
 	HeightmapValues Average(int x, int y);
 
-	void GenerateBuffer();
-	void DrawTerrain();
-
 	float GetHeightScale();
+
+	std::shared_ptr<Math::MeshResources> GetMesh() { return mesh; }
 
 private:
 	void SmoothenTerrain();
@@ -56,16 +50,12 @@ private:
 
 	HeightmapValues* heightMap;
 
-///Rendering values
-	GLuint vbo[1];
-	GLuint vao[1];
-	GLuint ibo[1];
+///Rendering
 
 	GLuint indexCount;
 	GLuint vertexCount;
 
-	std::vector<TerrainVertex> mesh;
-	GLuint* indices;
+	std::shared_ptr<Math::MeshResources> mesh;
 
 };
 }

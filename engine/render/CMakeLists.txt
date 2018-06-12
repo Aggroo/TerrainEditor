@@ -46,6 +46,12 @@ SET(files_render_frames
 	frames/depthpass.cpp
 	frames/drawpass.h
 	frames/drawpass.cpp)
+	
+SET(files_render_material
+	material/material.h
+	material/material.cpp
+	material/materialparameter.h
+	material/materialparameter.cpp)
 
 SOURCE_GROUP("display" FILES ${files_render_display})
 
@@ -57,12 +63,15 @@ SOURCE_GROUP("render" FILES ${files_render_render})
 
 SOURCE_GROUP("frames" FILES ${files_render_frames})
 
+SOURCE_GROUP("material" FILES ${files_render_material})
+
 SET(files_render
 	${files_render_display}
 	${files_render_resources}
 	${files_render_camera}
 	${files_render_render}
 	${files_render_frames}
+	${files_render_material}
 	${files_render_pch})
 
 SET(files_pch ../config.h ../config.cc)
