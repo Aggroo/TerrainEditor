@@ -14,6 +14,7 @@
 #include "foundation/util/JsonParser.h"
 #include "render/camera/camera.h"
 #include "render/render/renderer.h"
+#include "application/basegamefeatures/entitymanager.h"
 
 using namespace Display;
 namespace Example
@@ -110,39 +111,39 @@ CGLab::Run()
 
 	//mesh->genBuffer();
 		
-	shaders->setupShaders("resources/shaders/Blinn-phong.vert", "resources/shaders/Blinn-phong.frag");
+	//shaders->setupShaders("resources/shaders/Blinn-phong.vert", "resources/shaders/Blinn-phong.frag");
 
-	lNode.setShaders(shaders);
+	lNode.setShaders(terrain->GetShader());
 	
 	lNode.setPos(0.0f, 250.0f, 0.0f);
 	lNode.setIntensity(0.6f, 0.6f, 0.6f);
 	lNode.setColour(0.2f, 0.2f, 0.2f);
     lNode.apply();
 
-    shaders->setupVector3f("u_matAmbientReflectance", 1.0f, 1.0f, 1.0f);
-    shaders->setupVector3f("u_matDiffuseReflectance", 1.0f, 1.0f, 1.0f);
-    shaders->setupVector3f("u_matSpecularReflectance", 1.0f, 1.0f, 1.0f);
-    shaders->setupUniformFloat("u_matShininess", 64.0f);
-	/*shaders->setupMatrix4fv("transMatrix", modelMat);*/
+    //shaders->setupVector3f("u_matAmbientReflectance", 1.0f, 1.0f, 1.0f);
+    //shaders->setupVector3f("u_matDiffuseReflectance", 1.0f, 1.0f, 1.0f);
+    //shaders->setupVector3f("u_matSpecularReflectance", 1.0f, 1.0f, 1.0f);
+    //shaders->setupUniformFloat("u_matShininess", 64.0f);
+	///*shaders->setupMatrix4fv("transMatrix", modelMat);*/
+	//
+	//textures.AddTexture("resources/textures/water.jpg");
+	//textures.AddTexture("resources/textures/sand.jpg");
+	//textures.AddTexture("resources/textures/grass.jpg");
+	//textures.AddTexture("resources/textures/rock.jpg");
+	//
+	//textures.AddTexture("resources/textures/pathway.jpg");
+	//textures.AddTexture("resources/textures/road.jpg");
+	//
+	//shaders->setupUniformInt("textures[0]", 0);
+	//shaders->setupUniformInt("textures[1]", 1);
+	//shaders->setupUniformInt("textures[2]", 2);
+	//shaders->setupUniformInt("textures[3]", 3);
+	//shaders->setupUniformInt("textures[4]", 5);
+	//shaders->setupUniformInt("pathtex", 4);
 
-	textures.AddTexture("resources/textures/water.jpg");
-	textures.AddTexture("resources/textures/sand.jpg");
-	textures.AddTexture("resources/textures/grass.jpg");
-	textures.AddTexture("resources/textures/rock.jpg");
-
-	textures.AddTexture("resources/textures/pathway.jpg");
-	textures.AddTexture("resources/textures/road.jpg");
-
-	shaders->setupUniformInt("textures[0]", 0);
-	shaders->setupUniformInt("textures[1]", 1);
-	shaders->setupUniformInt("textures[2]", 2);
-	shaders->setupUniformInt("textures[3]", 3);
-	shaders->setupUniformInt("textures[4]", 5);
-	shaders->setupUniformInt("pathtex", 4);
-
-	gN.setMesh(terrain->GetMesh());
-	gN.setShaders(shaders);
-	gN.setTex(std::make_shared<Math::TextureNode>(textures));
+	//gN.setMesh(terrain->GetMesh());
+	//gN.setShaders(shaders);
+	//gN.setTex(std::make_shared<Math::TextureNode>(textures));
 
     std::chrono::high_resolution_clock::time_point before = std::chrono::high_resolution_clock::now();
 
@@ -155,11 +156,13 @@ CGLab::Run()
 		
 		//float timeStamp = float(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - before).count() / 1000.0f);
 
-		CameraMovement();
+		CameraMovement(terrain);
 
-		gN.setTransMat(modelMat);
+		//gN.setTransMat(modelMat);
 		Render::Renderer::Instance()->SetupUniformBuffer(Graphics::MainCamera::Instance());
-		gN.draw();	
+		terrain->Update();
+		//BaseGameFeature::EntityManager::Instance()->Update();
+		//gN.draw();	
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -168,7 +171,7 @@ CGLab::Run()
 	this->window->Close();
 }
 
-void CGLab::CameraMovement()
+void CGLab::CameraMovement(std::shared_ptr<TerrainEditor::Terrain> terrain)
 {
 	mouseX = (input->GetOldX()*2.0f) / 1024 - 1;
 	mouseY = 1 - (input->GetOldY()*2.0f) / 768;
@@ -188,7 +191,7 @@ void CGLab::CameraMovement()
 
 	Graphics::MainCamera::Instance()->LookAt(vec + forward, up);
 
-	shaders->setupVector3f("cameraPosition", Graphics::MainCamera::Instance()->GetCameraPosition());
+	terrain->GetShader()->setupVector3f("cameraPosition", Graphics::MainCamera::Instance()->GetCameraPosition());
 }
 
 	void CGLab::Shutdown(bool shutdown)

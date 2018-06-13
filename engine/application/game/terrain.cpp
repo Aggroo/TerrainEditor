@@ -9,6 +9,7 @@ namespace TerrainEditor
 Terrain::Terrain() : terrainWidth(0), terrainHeight(0), heightMap(nullptr)
 {
 	mesh = std::make_shared<Math::MeshResources>();
+	shader = std::make_shared<Math::ShaderObject>();
 }
 
 Terrain::~Terrain()
@@ -21,7 +22,32 @@ Terrain::~Terrain()
 }
 
 void Terrain::Activate()
-{
+{	
+	shader->setupShaders("resources/shaders/Blinn-phong.vert", "resources/shaders/Blinn-phong.frag");
+
+	shader->setupVector3f("u_matAmbientReflectance", 1.0f, 1.0f, 1.0f);
+	shader->setupVector3f("u_matDiffuseReflectance", 1.0f, 1.0f, 1.0f);
+	shader->setupVector3f("u_matSpecularReflectance", 1.0f, 1.0f, 1.0f);
+	shader->setupUniformFloat("u_matShininess", 64.0f);
+	/*shaders->setupMatrix4fv("transMatrix", modelMat);*/
+
+	textures.AddTexture("resources/textures/water.jpg");
+	textures.AddTexture("resources/textures/sand.jpg");
+	textures.AddTexture("resources/textures/grass.jpg");
+	textures.AddTexture("resources/textures/rock.jpg");
+
+	textures.AddTexture("resources/textures/pathway.jpg");
+	textures.AddTexture("resources/textures/road.jpg");
+
+	shader->setupUniformInt("textures[0]", 0);
+	shader->setupUniformInt("textures[1]", 1);
+	shader->setupUniformInt("textures[2]", 2);
+	shader->setupUniformInt("textures[3]", 3);
+	shader->setupUniformInt("textures[4]", 5);
+	shader->setupUniformInt("pathtex", 4);
+
+	shader->setupUniformFloat("uvMultiplier", 0.1f);
+
 	Entity::Activate();
 }
 
@@ -32,7 +58,13 @@ void Terrain::Deactivate()
 
 void Terrain::Update()
 {
-	mesh->drawMesh();
+	this->shader->useProgram();
+	this->textures.BindTextures();
+	this->shader->setupMatrix4fv("transMatrix", this->transform);
+	this->shader->setupMatrix3fv("normalMat", Math::mat3::Transpose(Math::mat3::fromMatrix4D(this->transform).invert()));
+
+	if(mesh->mesh.size() != 0)
+		mesh->drawMesh();
 }
 
 bool Terrain::CreateTerrain(const char* filename, float widthMultiplier, float heightMultiplier)

@@ -212,16 +212,16 @@ void UserInterface::RenderDocks()
 void UserInterface::RenderTerrainSettings()
 {
 	bool open = true;
-	ImGui::Begin("Terrain Settings", &open, ImGuiWindowFlags_AlwaysAutoResize);
+	ImGui::Begin("Terrain Settings", &open);
 	{
 		ImGui::Text("Settings");
-		ImGui::BeginChild("TerrainSettings", ImVec2(250, 400));
+		ImGui::BeginChild("TerrainSettings");
 		{
 			ImGui::BeginDockspace();
 
 			if (ImGui::BeginDock("Heightmap", NULL, ImGuiWindowFlags_NoSavedSettings)) {
-				ImGui::DragFloat("Width Multiplier", &heightSettings.widthMultiplier, 0.1f, 0.0f, 100.f);
-				ImGui::DragFloat("Height Multiplier", &heightSettings.heightMultiplier, 0.01f, 0.0f, 100.f);
+				ImGui::DragFloat("Width Multiplier", &heightSettings.widthMultiplier, 0.1f, 0.0f, 1000.f);
+				ImGui::DragFloat("Height Multiplier", &heightSettings.heightMultiplier, 0.01f, 0.0f, 1000.f);
 				if (ImGui::TreeNode("Heightmap Image"))
 				{
 					if (!heightSettings.texName.IsEmpty())
@@ -245,6 +245,15 @@ void UserInterface::RenderTerrainSettings()
 						this->texturePopup = true;
 					}
 					ImGui::Image((void*)heightSettings.texture->GetTextureID(), ImVec2(ImGui::GetWindowContentRegionWidth() - 10, ImGui::GetWindowContentRegionWidth() - 10));
+
+					ImGui::TreePop();
+				}
+				if (ImGui::TreeNode("Texture Settings"))
+				{
+					if(ImGui::DragFloat("UV Multiplier", &heightSettings.uvMultiplier, 0.01f, 0.0f, 1.f))
+					{
+						terrain->GetShader()->setupUniformFloat("uvMultiplier", heightSettings.uvMultiplier);
+					}
 
 					ImGui::TreePop();
 				}

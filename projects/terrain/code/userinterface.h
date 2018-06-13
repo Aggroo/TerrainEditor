@@ -12,6 +12,8 @@ struct HeightMapSettings
 	std::shared_ptr<Math::TextureResource> texture;
 	float widthMultiplier = 1.f;
 	float heightMultiplier = 1.f;
+
+	float uvMultiplier = 0.1f;
 };
 
 struct PerlinNoiseSettings

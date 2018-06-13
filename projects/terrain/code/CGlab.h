@@ -33,7 +33,7 @@ public:
 	/// run app
 	void Run();
 
-	void CameraMovement();
+	void CameraMovement(std::shared_ptr<TerrainEditor::Terrain> terrain);
 
 	Display::Window* GetWindow(){ return window; }
 

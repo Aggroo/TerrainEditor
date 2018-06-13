@@ -6,6 +6,7 @@ namespace Game
 {
 	Entity::Entity()
 	{
+		this->transform = Math::mat4::identity();
 		this->ID = BaseGameFeature::EntityManager::Instance()->GetNewEntityID();
 	}
 

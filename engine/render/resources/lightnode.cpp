@@ -74,6 +74,7 @@ namespace Math
 
 	void LightNode::apply()
 	{
+		shaders->useProgram();
 		shaders->setupVector3f("lightPosition", pos.x(), pos.y(), pos.z());
 		shaders->setupVector3f("u_lightAmbientIntensity", colour.x()*intensity.x(), colour.y()*intensity.y(), colour.z()*intensity.z());
 		shaders->setupVector3f("u_lightDiffuseIntensity", 0.8f*intensity.x(), 0.8f*intensity.y(), 0.8f*intensity.z());

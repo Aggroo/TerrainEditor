@@ -6,6 +6,8 @@
 #include "application/game/entity.h"
 #include <memory>
 #include "render/resources/meshresource.h"
+#include "render/resources/texturenode.h"
+#include "render/resources/shaderobject.h"
 
 namespace TerrainEditor
 {
@@ -27,7 +29,7 @@ public:
 	void Activate();
 	void Deactivate();
 
-	void Update() override;
+	void Update();
 
 	///Generates the terrain from a Heightmap
 	bool CreateTerrain(const char* filename, float widthMultiplier, float heightMultiplier);
@@ -37,6 +39,7 @@ public:
 	float GetHeightScale();
 
 	std::shared_ptr<Math::MeshResources> GetMesh() { return mesh; }
+	std::shared_ptr<Math::ShaderObject> GetShader() { return shader; }
 
 private:
 	void SmoothenTerrain();
@@ -55,7 +58,9 @@ private:
 	GLuint indexCount;
 	GLuint vertexCount;
 
+	Math::TextureNode textures;
 	std::shared_ptr<Math::MeshResources> mesh;
+	std::shared_ptr<Math::ShaderObject> shader;
 
 };
 }

@@ -10,6 +10,7 @@ layout(location = 0) out vec4 resColor;
 //layout(location = 1) out vec3 normalColor;
 uniform sampler2D textures[5];
 uniform sampler2D pathtex;
+uniform float uvMultiplier;
 
 // parameters of the light and possible values
 uniform vec3 u_lightAmbientIntensity; // = vec3(0.6, 0.3, 0);
@@ -76,7 +77,7 @@ void main()
 
 	//float blendAmount;
 	//float slope = 1.0-o_normal.y;
-	vec3 uvwPos = 0.1f * fragPos;
+	vec3 uvwPos = uvMultiplier * fragPos;
 	vec3 weights = o_normal * o_normal;
 
 	float slope = 1.0-o_normal.y;
