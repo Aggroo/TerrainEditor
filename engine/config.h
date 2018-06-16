@@ -6,8 +6,18 @@
 	
 	(C) 2015 See the LICENSE file.
 */
+
 #ifdef __WIN32__
-#include "win32/pch.h"
+#undef __WIN32__
+#endif
+#ifdef WIN32
+#define __WIN32__ (1)
+#endif
+
+#ifdef __GNUC__
+#ifndef __LINUX__
+#define __LINUX__ (1)
+#endif
 #endif
 
 #include <stdint.h>
@@ -15,6 +25,10 @@
 #include <xmmintrin.h>
 #include <assert.h>
 #include <emmintrin.h>
+#include "core/types.h"
+#include "foundation/memory/memory.h"
+#include <cstdarg>
+#include "core/debug.h"
 
 typedef uint32_t	uint32;
 typedef int32_t		int32;

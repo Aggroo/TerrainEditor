@@ -52,6 +52,16 @@ vec3 specularLighting(in vec3 N, in vec3 L, in vec3 V)
    return u_matSpecularReflectance * u_lightSpecularIntensity * specularTerm;
 }
 
+void GetTexture(out vec4 texVec, int index)
+{
+	vec3 uvwPos = uvMultiplier * fragPos;
+	vec3 weights = o_normal * o_normal;
+
+	texVec = vec4(weights.xxx * texture2D(textures[index], uvwPos.yz).rgb +
+					weights.yyy * texture2D(textures[index], uvwPos.zx).rgb +
+					weights.zzz * texture2D(textures[index], uvwPos.xy).rgb,1);
+}
+
 void main()
 {
 	//vec3 normal = texture(NormalMap, vec2(uv.x/10.0, 1.0-(uv.y/10.0))).rgb;
@@ -81,9 +91,9 @@ void main()
 	vec3 weights = o_normal * o_normal;
 
 	float slope = 1.0-o_normal.y;
-	vec4 g1 = vec4(weights.xxx * texture2D(textures[0], uvwPos.yz).rgb +
-					weights.yyy * texture2D(textures[0], uvwPos.zx).rgb +
-					weights.zzz * texture2D(textures[0], uvwPos.xy).rgb,1);
+	
+	vec4 g1;					
+	GetTexture(g1, 0);
 					
 	vec4 g2 = vec4(weights.xxx * texture2D(textures[1], uvwPos.yz).rgb +
 					weights.yyy * texture2D(textures[1], uvwPos.zx).rgb +

@@ -21,6 +21,7 @@ struct HeightmapValues
 
 class Terrain : public Game::Entity
 {
+	__DeclareClass(Terrain);
 public:
 	Terrain();
 	~Terrain();
@@ -29,7 +30,7 @@ public:
 	void Activate();
 	void Deactivate();
 
-	void Update();
+	virtual void Update();
 
 	///Generates the terrain from a Heightmap
 	bool CreateTerrain(const char* filename, float widthMultiplier, float heightMultiplier);

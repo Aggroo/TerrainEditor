@@ -4,6 +4,7 @@
 
 namespace Game
 {
+	__ImplementClass(Game::Entity, 'NTTY', Core::RefCounted);
 	Entity::Entity()
 	{
 		this->transform = Math::mat4::identity();
@@ -16,7 +17,9 @@ namespace Game
 
 	void Entity::Activate()
 	{
-		BaseGameFeature::EntityManager::Instance()->RegisterEntity(std::make_shared<Game::Entity>(*this));
+		BaseGameFeature::EntityManager::Instance()->RegisterEntity(this);
+
+		this->active = true;
 	}
 
 	void Entity::Deactivate()

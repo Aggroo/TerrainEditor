@@ -1,10 +1,12 @@
 #pragma once
 #include "foundation/math/mat4.h"
+#include "core/refcounted.h"
 
 namespace Game
 {
-class Entity
+class Entity : public Core::RefCounted
 {
+	__DeclareClass(Entity);
 public:
 	Entity();
 	~Entity();

@@ -1,10 +1,12 @@
 #pragma once
 #include "foundation/math/mat4.h"
+#include "core/refcounted.h"
 
 namespace Graphics
 {
-class Camera
+class Camera : Core::RefCounted
 {
+__DeclareClass(Camera)
 public:
 	Camera();
 	~Camera();

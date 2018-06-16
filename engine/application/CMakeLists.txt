@@ -5,7 +5,10 @@ SET(files_application_game
 	game/entity.h
 	game/entity.cpp
 	game/terrain.h
-	game/terrain.cpp)
+	game/terrain.cpp
+	game/perlinnoisegenerator.h
+	game/perlinnoisegenerator.cpp
+	)
 	
 SET(files_application_basegamefeatures
 	basegamefeatures/entitymanager.h

@@ -6,6 +6,8 @@
 
 namespace TerrainEditor
 {
+__ImplementClass(TerrainEditor::Terrain, 'TETY', Core::RefCounted);
+
 Terrain::Terrain() : terrainWidth(0), terrainHeight(0), heightMap(nullptr)
 {
 	mesh = std::make_shared<Math::MeshResources>();

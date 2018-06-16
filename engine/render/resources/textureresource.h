@@ -4,6 +4,7 @@
 #include "rasterizer.h"
 #include <vector>
 #include "stb_truetype.h"
+#include "core/refcounted.h"
 
 namespace Math
 {
@@ -18,14 +19,18 @@ namespace Math
         Math::vec2 tex;
     };
 
-	class TextureResource
+	class TextureResource : public Core::RefCounted
     {
+	__DeclareClass(TextureResource)
 	public:
 		TextureResource();
 		~TextureResource();
 
 		void LoadTextureFile(const char * filename);
 		void LoadFromRasterizer(Rasterizer rast);
+		void WriteToJPG(const char * filename, int w, int h, void* data, int quality);
+		void WriteToPNG(const char * filename, int w, int h, int comp, void* data, int stride_bytes);
+		void WriteToTGA(const char * filename, int w, int h, int comp, void* data);
 		void bindTex(GLuint slot);
 
 		GLuint GetTextureID() { return m_texture; }

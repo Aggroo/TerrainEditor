@@ -8,6 +8,7 @@ SET(files_foundation_math
 	math/vec3.h
 	math/vec4.h
 	math/quaternions.h
+	math/math.h
 	)
 	
 SET(files_foundation_util
@@ -16,6 +17,12 @@ SET(files_foundation_util
 	util/string.h
 	util/string.cpp
 	util/array.h
+	util/hashtable.h
+	util/dictionary.h
+	util/fourcc.h
+	util/pair.h
+	util/fixedarray.h
+	util/list.h
 	)
 	
 IF(WIN32)

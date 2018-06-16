@@ -13,6 +13,7 @@
 
 namespace Math
 {
+__ImplementClass(Math::TextureResource, 'TXTR', Core::RefCounted);
 	TextureResource::TextureResource()
 	{
 
@@ -65,6 +66,21 @@ namespace Math
 		//glGenerateTextureMipmap(m_texture);
 
 		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+
+	void TextureResource::WriteToJPG(const char * filename, int w, int h, void* data, int quality)
+	{
+		stbi_write_jpg(filename, w, h, 3, data, quality);
+	}
+
+	void TextureResource::WriteToPNG(const char * filename, int w, int h, int comp, void* data, int stride_bytes)
+	{
+		stbi_write_png(filename, w, h, comp, data, stride_bytes);
+	}
+
+	void TextureResource::WriteToTGA(const char * filename, int w, int h, int comp, void* data)
+	{
+		stbi_write_tga(filename, w, h, comp, data);
 	}
 
 	void TextureResource::bindTex(GLuint slot)

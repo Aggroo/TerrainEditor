@@ -5,7 +5,6 @@
 #include "application/game/entity.h"
 
 
-
 namespace BaseGameFeature
 {
 
@@ -27,9 +26,9 @@ uint EntityManager::GetNewEntityID()
 	return this->entityCounter++;
 }
 
-void EntityManager::RegisterEntity(std::shared_ptr<Game::Entity> entity)
+void EntityManager::RegisterEntity(Ptr<Game::Entity> entity)
 {
-	this->entityList.insert(std::pair<int, std::shared_ptr<Game::Entity>>(entity->GetID(), entity));
+	this->entityList.insert(std::pair<int, Ptr<Game::Entity>>(entity->GetID(), entity));
 }
 
 void EntityManager::UnregisterEntity(const int& ID)
@@ -51,17 +50,17 @@ void EntityManager::Update()
 		//update last update time to current clock-ticks
 		lastUpdateTime = clock();
 
-		for (std::unordered_map<int, std::shared_ptr<Game::Entity>>::iterator it = entityList.begin(); it != entityList.end(); it++)
+		for (std::unordered_map<int, Ptr<Game::Entity>>::iterator it = entityList.begin(); it != entityList.end(); it++)
 		{
-			std::shared_ptr<Game::Entity> entity = it->second;
+			Ptr<Game::Entity> entity = it->second;
 			if (entity->IsActive())
 				entity->FixedUpdate();
 		}
 	}
 
-	for (std::unordered_map<int, std::shared_ptr<Game::Entity>>::iterator it = this->entityList.begin(); it != entityList.end(); it++)
+	for (std::unordered_map<int, Ptr<Game::Entity>>::iterator it = this->entityList.begin(); it != entityList.end(); it++)
 	{
-		std::shared_ptr<Game::Entity> entity = it->second;
+		Ptr<Game::Entity> entity = it->second;
 		if (entity->IsActive())
 			entity->Update();
 	}
@@ -79,7 +78,7 @@ double EntityManager::TimeSinceLastUpdate()
 	return (((float)clock() - lastUpdateTime) / CLOCKS_PER_SEC);
 }
 
-std::shared_ptr<Game::Entity> EntityManager::GetEntityByID(const uint& id)
+Ptr<Game::Entity> EntityManager::GetEntityByID(const uint& id)
 {
 	assert(this->entityList.count(id) > 0, "ERROR: No Entity with this ID exists!");
 	return this->entityList[id];

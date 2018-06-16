@@ -160,8 +160,7 @@ CGLab::Run()
 
 		//gN.setTransMat(modelMat);
 		Render::Renderer::Instance()->SetupUniformBuffer(Graphics::MainCamera::Instance());
-		terrain->Update();
-		//BaseGameFeature::EntityManager::Instance()->Update();
+		BaseGameFeature::EntityManager::Instance()->Update();
 		//gN.draw();	
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
