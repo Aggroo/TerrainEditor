@@ -3,6 +3,7 @@
 #include "render/resources/stb_image.h"
 #include <assert.h>
 #include <iostream>
+#include "foundation/util/curve.hpp"
 
 namespace TerrainEditor
 {
@@ -69,7 +70,7 @@ void Terrain::Update()
 		mesh->drawMesh();
 }
 
-bool Terrain::CreateTerrain(const char* filename, float widthMultiplier, float heightMultiplier)
+bool Terrain::CreateTerrain(const char* filename, float widthMultiplier, float heightMultiplier, ImVec2* points)
 {
 	mesh->mesh.clear();
 	int n;
@@ -100,7 +101,7 @@ bool Terrain::CreateTerrain(const char* filename, float widthMultiplier, float h
 			index = (terrainHeight * y) + x;
 
 			heightMap[index].x = static_cast<float>(x*widthMultiplier);
-			heightMap[index].y = static_cast<float>(heightVal*heightMultiplier);
+			heightMap[index].y = static_cast<float>(ImGui::CurveValue(heightVal, 10, points)*heightMultiplier);
 			heightMap[index].z = static_cast<float>(y*widthMultiplier);
 
 			k += 3;

@@ -8,6 +8,7 @@
 #include "render/resources/meshresource.h"
 #include "render/resources/texturenode.h"
 #include "render/resources/shaderobject.h"
+#include "imgui.h"
 
 namespace TerrainEditor
 {
@@ -33,7 +34,7 @@ public:
 	virtual void Update();
 
 	///Generates the terrain from a Heightmap
-	bool CreateTerrain(const char* filename, float widthMultiplier, float heightMultiplier);
+	bool CreateTerrain(const char* filename, float widthMultiplier, float heightMultiplier, ImVec2* points);
 
 	HeightmapValues Average(int x, int y);
 

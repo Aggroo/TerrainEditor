@@ -3,6 +3,7 @@
 #include "application/game/terrain.h"
 #include "foundation/util/string.h"
 #include "application/game/perlinnoisegenerator.h"
+#include "imgui.h"
 
 namespace Example{ class CGLab; }
 namespace Math { class TextureResource; }
@@ -75,6 +76,8 @@ private:
 	PerlinNoiseSettings perlinSettings;
 	UIIcons icons;
 	Generator::PerlinNoiseGenerator p;
+
+	ImVec2 foo[10];
 
 };
 

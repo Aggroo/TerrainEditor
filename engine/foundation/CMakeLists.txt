@@ -23,6 +23,7 @@ SET(files_foundation_util
 	util/pair.h
 	util/fixedarray.h
 	util/list.h
+	util/curve.hpp
 	)
 	
 IF(WIN32)

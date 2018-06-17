@@ -7,6 +7,7 @@
 #include "nfd.h"
 #include "render/resources/textureresource.h"
 #include "imgui_internal.h"
+#include "foundation/util/curve.hpp"
 
 UserInterface::UserInterface(Example::CGLab* app)
 {
@@ -24,6 +25,9 @@ UserInterface::UserInterface(Example::CGLab* app)
 	style.WindowBorderSize = 1.0f;
 	style.FrameBorderSize = 1.0f;
 	style.PopupBorderSize = 1.0f;
+
+
+	foo[0].x = -1; // init data so editor knows to take it from here
 
 	ImGui::InitDock();
 }
@@ -256,7 +260,7 @@ void UserInterface::RenderTerrainSettings()
 				ImGui::Indent(10);
 				if (ImGui::Button("Generate", ImVec2(ImGui::GetWindowContentRegionWidth() - 20, 25)))
 				{
-					terrain->CreateTerrain(heightSettings.texName.AsCharPtr(), heightSettings.widthMultiplier, heightSettings.heightMultiplier);
+					terrain->CreateTerrain(heightSettings.texName.AsCharPtr(), heightSettings.widthMultiplier, heightSettings.heightMultiplier, foo);
 				}
 				ImGui::Unindent(10);
 
@@ -303,6 +307,11 @@ void UserInterface::RenderTerrainSettings()
 					}
 
 				}
+				if (ImGui::Curve("Height Curve", ImVec2(ImGui::GetWindowContentRegionWidth()-10 , 200), 10, foo))
+				{
+					// curve changed
+				}
+
 
 			}
 			ImGui::EndDock();
@@ -331,6 +340,7 @@ void UserInterface::RenderTerrainSettings()
 					ImGui::DragFloat("Lacunarity", &perlinSettings.lacunarity, 0.1f, 0.0001f, 1000.f);
 
 				}
+				
 			}
 			ImGui::EndDock();
 
@@ -396,7 +406,7 @@ void UserInterface::ModalWindows()
 			p.GenerateNoiseMap(perlinSettings.name.AsCharPtr(), perlinSettings.width, perlinSettings.height, perlinSettings.scale, perlinSettings.octaves, perlinSettings.persistance, perlinSettings.lacunarity);
 			p.GetTexture()->LoadTextureFile(perlinSettings.name.AsCharPtr());
 
-			terrain->CreateTerrain(perlinSettings.name.AsCharPtr(), heightSettings.widthMultiplier, heightSettings.heightMultiplier);
+			terrain->CreateTerrain(perlinSettings.name.AsCharPtr(), heightSettings.widthMultiplier, perlinSettings.scale, foo);
 
 			this->openPopup = false;
 			free(outpath);
