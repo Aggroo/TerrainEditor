@@ -23,13 +23,13 @@ namespace Math
 		void setIntensity(GLfloat a, GLfloat b, GLfloat c);
 		vec3 getIntensity();
 
-		void setShaders(std::shared_ptr<ShaderObject> newShader);
-		std::shared_ptr<ShaderObject> getShaders();
+		void setShaders(Ptr<ShaderObject> newShader);
+		Ptr<ShaderObject> getShaders();
 
 		void apply();
 		
 	private:
-		std::shared_ptr<ShaderObject> shaders;
+		Ptr<ShaderObject> shaders;
 
 		vec4 pos;
 		vec3 colour;

@@ -1,22 +1,34 @@
 #pragma once
-#include "rasterizer.h"
-#include <vector>
 #include "textureresource.h"
 
-namespace Math
+namespace Render
 {
-class TextureNode
+enum class TextureIndex
 {
+	albedo0,
+	albedo1,
+	albedo2,
+	normal0,
+	normal1,
+	normal2,
+	splat,
+};
+class TextureNode : public Core::RefCounted
+{
+__DeclareClass(TextureNode)
+
 public:
 	TextureNode();
 	~TextureNode();
 
-	void AddTexture(const char * filename);
-	void BindTextures();
+	void AddTexture(TextureIndex index, const char * filename);
+	void UpdateTexture(TextureIndex index, const char * filename) const;
+	Ptr<Math::TextureResource> GetTexture(TextureIndex index) const;
+	void BindTextures() const;
 
 private:
 
-    std::vector<std::shared_ptr<TextureResource>> textures;
+	Util::Dictionary<TextureIndex,Ptr<Math::TextureResource>> textures;
 
 };
 

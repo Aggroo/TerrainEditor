@@ -78,8 +78,8 @@ namespace Math
 		vec3 norm1, norm2, norm3;
 		vec3 diffuseColor1, diffuseColor2, diffuseColor3;
 		std::vector<Color> pixels;
-		std::vector<Math::Vertex> meshData;
-		std::vector<GLuint> indices;
+		Util::Array<Math::Vertex> meshData;
+		Util::Array<GLuint> indices;
 		std::shared_ptr<MeshResources> mesh;
 		std::function<Color(vec2 tex, vec3 norm, unsigned char* image, int w, int h, int n)> fragments;
 		std::function<vec3(vec3 pos, vec3 norm, mat4 nMat)> vertShader;

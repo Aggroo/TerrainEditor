@@ -1,6 +1,7 @@
 #pragma once
 #include "core/app.h"
 #include "foundation/math/mat4.h"
+#include "core/singleton.h"
 
 namespace Display { class Window; }
 namespace Graphics { class Camera; }
@@ -15,6 +16,7 @@ struct Resolution
 
 class Renderer
 {
+__DeclareSingleton(Renderer)
 private:
 	struct UniformBufferBlock
 	{
@@ -35,11 +37,6 @@ private:
 	GLuint ubo[1];
 
 public:
-	static Renderer* Instance()
-	{
-		static Renderer instance;
-		return &instance;
-	}
 	~Renderer();
 
 	void Setup(Display::Window* window);
@@ -51,7 +48,6 @@ public:
 	void SetupUniformBuffer(Graphics::Camera* camera);
 
 private:
-	Renderer();
 	
 	Resolution renderResolution;
 

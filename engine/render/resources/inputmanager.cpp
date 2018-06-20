@@ -20,7 +20,7 @@ InputManager::InputManager()
 	dFlag(false), 
 	aFlag(false)
 {
-		
+	vec = Math::vec4(0, 0, 0);
 }
 
 InputManager::InputManager(Display::Window* window, Math::ShaderObject* shaders, Math::LightNode* lNode) 
@@ -35,6 +35,7 @@ InputManager::InputManager(Display::Window* window, Math::ShaderObject* shaders,
 	this->window = window;
 	this->shaders = shaders;
 	this->lNode = lNode;
+	vec = Math::vec4(0, 0, 0);
 }
 
 InputManager::~InputManager()
@@ -107,15 +108,18 @@ void InputManager::InitKeyPress()
 			shaders->ReloadShaders();
 			shaders->setupVector3f("u_matAmbientReflectance", 1.0f, 1.0f, 1.0f);
 			shaders->setupVector3f("u_matDiffuseReflectance", 1.0f, 1.0f, 1.0f);
-			shaders->setupVector3f("u_matSpecularReflectance", 1.0f, 1.0f, 1.0f);
-			shaders->setupUniformFloat("u_matShininess", 64.0f);
+			shaders->setupVector3f("u_matSpecularReflectance", 0.16f, 0.16f, 0.16f);
+			shaders->setupUniformFloat("u_matShininess", 20.0f);
 
 			shaders->setupUniformInt("textures[0]", 0);
 			shaders->setupUniformInt("textures[1]", 1);
 			shaders->setupUniformInt("textures[2]", 2);
-			shaders->setupUniformInt("textures[3]", 3);
-			shaders->setupUniformInt("pathtex", 4);
-			shaders->setupUniformInt("textures[4]", 5);
+
+			shaders->setupUniformInt("splat", 6);
+
+			shaders->setupUniformFloat("tex0UvMultiplier", 0.1f);
+			shaders->setupUniformFloat("tex1UvMultiplier", 0.1f);
+			shaders->setupUniformFloat("tex2UvMultiplier", 0.1f);
 
 			lNode->apply();
 		}
@@ -234,4 +238,24 @@ Math::vec4 InputManager::GetMovement()
 	return movement;
 }
 
+void InputManager::CameraMovement()
+{
+	mouseX = (oldX*2.0f) / 1024 - 1;
+	mouseY = 1 - (oldY*2.0f) / 768;
+	
+	Math::mat4 rotx = Math::mat4::rotX(-rotY*0.001f);
+	Math::mat4 roty = Math::mat4::rotY(rotX*0.001f);
+
+	Math::mat4 rotation = (roty*rotx);
+
+	const Math::vec4 left = rotation.GetXAxis();
+	const Math::vec4 up = rotation.GetYAxis();
+	const Math::vec4 forward = rotation.GetZAxis();
+
+	vec = vec + (rotation * movement);
+
+	Graphics::MainCamera::Instance()->SetPosition(vec);
+
+	Graphics::MainCamera::Instance()->LookAt(vec + forward, up);
+}
 }

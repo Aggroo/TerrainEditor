@@ -24,6 +24,7 @@ SET(files_foundation_util
 	util/fixedarray.h
 	util/list.h
 	util/curve.hpp
+	util/threadpool.h
 	)
 	
 IF(WIN32)

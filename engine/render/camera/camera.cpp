@@ -9,7 +9,7 @@ Camera::Camera() :
 	aspectRatio(0.0f),
 	fov(1.5708f),
 	nearZ(0.05f),
-	farZ(1000.0f)
+	farZ(3000.0f)
 {
 	this->view = Math::mat4::identity();
 	this->UpdateProjectionMatrix();

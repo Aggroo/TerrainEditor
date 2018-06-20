@@ -62,12 +62,12 @@ namespace Math
 		return this->intensity;
 	}
 
-	void LightNode::setShaders(std::shared_ptr<ShaderObject> newShader)
+	void LightNode::setShaders(Ptr<ShaderObject> newShader)
 	{
 		this->shaders = newShader;
 	}
 
-	std::shared_ptr<ShaderObject> LightNode::getShaders()
+	Ptr<ShaderObject> LightNode::getShaders()
 	{
 		return this->shaders;
 	}

@@ -7,11 +7,12 @@
 
 namespace Math
 {
+__ImplementClass(Math::MeshResources, 'MSHR', Core::RefCounted)
 MeshResources::MeshResources() : tSize(0), iSize(0), vertexSize(0), vertexPtr(nullptr), indexSize(0), indexPtr(nullptr) 
 {
 }
 
-MeshResources::MeshResources(std::vector<Math::Vertex> mesh, std::vector<GLuint> indices) : tSize(0), iSize(0), vertexSize(0), vertexPtr(nullptr), indexSize(0), indexPtr(nullptr)
+MeshResources::MeshResources(Util::Array<Math::Vertex> mesh, Util::Array<GLuint> indices) : tSize(0), iSize(0), vertexSize(0), vertexPtr(nullptr), indexSize(0), indexPtr(nullptr)
 {
 	this->mesh = mesh;
 	this->indices = indices;
@@ -31,7 +32,7 @@ void MeshResources::genBuffer()
 
 	glGenBuffers(1, &vbo[0]);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Math::Vertex)*mesh.size(), &mesh[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Math::Vertex)*mesh.Size(), &mesh[0], GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
@@ -39,10 +40,23 @@ void MeshResources::genBuffer()
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 8, NULL);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float32) * 8, (GLvoid*)(sizeof(float32) * 3));
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 8, (GLvoid*)(sizeof(float32) * 5));
+	
+	/*if(tangents)
+	{
+		glEnableVertexAttribArray(3);
+		glEnableVertexAttribArray(4);
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 14, NULL);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float32) * 14, (GLvoid*)(sizeof(float32) * 3));
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 14, (GLvoid*)(sizeof(float32) * 5));
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 14, (GLvoid*)(sizeof(float32) * 8));
+		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 14, (GLvoid*)(sizeof(float32) * 11));
+	}
+	else*/
 
 	glGenBuffers(1, &ibo[0]);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo[0]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint)*indices.size(), &indices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint)*indices.Size(), &indices[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 }
@@ -177,9 +191,9 @@ bool MeshResources::loadObj(const char* filename)
 				tempVertex.uv = temp_uvs[uv];
 				tempVertex.norm = temp_normals[norm];
 
-				this->vertexMap[key] = this->mesh.size();
-				faceVertList.verts.push_back(this->mesh.size());
-				this->mesh.push_back(tempVertex);
+				this->vertexMap[key] = this->mesh.Size();
+				faceVertList.verts.push_back(this->mesh.Size());
+				this->mesh.Append(tempVertex);
 
 			}
 			else
@@ -187,16 +201,16 @@ bool MeshResources::loadObj(const char* filename)
 				faceVertList.verts.push_back(this->vertexMap[key]);
 			}
 		}
-		this->meshFaces.push_back(faceVertList);
+		this->meshFaces.Append(faceVertList);
 	}
 	//For each face loop through to create triangles of all the vertices.
-	for (int i = 0; i < this->meshFaces.size(); ++i)
+	for (int i = 0; i < this->meshFaces.Size(); ++i)
 	{
 		for (int j = 1; j < this->meshFaces[i].verts.size() - 1; ++j)
 		{
-			this->indices.push_back(this->meshFaces[i].verts[0]);
-			this->indices.push_back(this->meshFaces[i].verts[j]);
-			this->indices.push_back(this->meshFaces[i].verts[j + 1]);
+			this->indices.Append(this->meshFaces[i].verts[0]);
+			this->indices.Append(this->meshFaces[i].verts[j]);
+			this->indices.Append(this->meshFaces[i].verts[j + 1]);
 		}
 	}
 	return true;
@@ -215,29 +229,29 @@ void MeshResources::createQuad()
 	tempVertex1.pos[0] = -1.0f; tempVertex1.pos[1] = -1.0f; tempVertex1.pos[2] = -1.0f;
 	tempVertex1.uv[0] = 0.0f; tempVertex1.uv[1] = 0.0f;
 	tempVertex1.norm[0] = 0.0f; tempVertex1.norm[1] = 0.0f; tempVertex1.norm[2] = 0.0f;
-	mesh.push_back(tempVertex1);
+	mesh.Append(tempVertex1);
 
 	Vertex tempVertex2;
 	tempVertex2.pos[0] = -1.0f; tempVertex2.pos[1] = 1.0f; tempVertex2.pos[2] = -1.0f;
 	tempVertex2.uv[0] = 0.0f; tempVertex2.uv[1] = 1.0f;
 	tempVertex2.norm[0] = 0.0f; tempVertex2.norm[1] = 0.0f; tempVertex2.norm[2] = 0.0f;
-	mesh.push_back(tempVertex2);
+	mesh.Append(tempVertex2);
 
 	Vertex tempVertex3;
 	tempVertex3.pos[0] = 1.0f; tempVertex3.pos[1] = 1.0f; tempVertex3.pos[2] = -1.0f;
 	tempVertex3.uv[0] = 1.0f; tempVertex3.uv[1] = 1.0f;
 	tempVertex3.norm[0] = 0.0f; tempVertex3.norm[1] = 0.0f; tempVertex3.norm[2] = 0.0f;
-	mesh.push_back(tempVertex3);
+	mesh.Append(tempVertex3);
 
 	Vertex tempVertex4;
 	tempVertex4.pos[0] = 1.0f; tempVertex4.pos[1] = -1.0f; tempVertex4.pos[2] = -1.0f;
 	tempVertex4.uv[0] = 1.0f; tempVertex4.uv[1] = 0.0f;
 	tempVertex4.norm[0] = 0.0f; tempVertex4.norm[1] = 0.0f; tempVertex4.norm[2] = 0.0f;
-	mesh.push_back(tempVertex4);
+	mesh.Append(tempVertex4);
 		
 	for (int i = 0; i < 6; i++)
 	{
-		indices.push_back(ibuff[i]);
+		indices.Append(ibuff[i]);
 	}
 	
 }
@@ -254,29 +268,29 @@ void MeshResources::createQuad2()
 	tempVertex1.pos[0] = 0.0f; tempVertex1.pos[1] = 0.0f; tempVertex1.pos[2] = 0.0f;
 	tempVertex1.uv[0] = 0.0f; tempVertex1.uv[1] = 0.0f;
 	tempVertex1.norm[0] = 0.0f; tempVertex1.norm[1] = 0.0f; tempVertex1.norm[2] = 0.0f;
-	mesh.push_back(tempVertex1);
+	mesh.Append(tempVertex1);
 
 	Vertex tempVertex2;
 	tempVertex2.pos[0] = 0.0f; tempVertex2.pos[1] = 1.0f; tempVertex2.pos[2] = 0.0f;
 	tempVertex2.uv[0] = 0.0f; tempVertex2.uv[1] = 1.0f;
 	tempVertex2.norm[0] = 0.0f; tempVertex2.norm[1] = 0.0f; tempVertex2.norm[2] = 0.0f;
-	mesh.push_back(tempVertex2);
+	mesh.Append(tempVertex2);
 
 	Vertex tempVertex3;
 	tempVertex3.pos[0] = 1.0f; tempVertex3.pos[1] = 1.0f; tempVertex3.pos[2] = 0.0f;
 	tempVertex3.uv[0] = 1.0f; tempVertex3.uv[1] = 1.0f;
 	tempVertex3.norm[0] = 0.0f; tempVertex3.norm[1] = 0.0f; tempVertex3.norm[2] = 0.0f;
-	mesh.push_back(tempVertex3);
+	mesh.Append(tempVertex3);
 
 	Vertex tempVertex4;
 	tempVertex4.pos[0] = 1.0f; tempVertex4.pos[1] = 0.0f; tempVertex4.pos[2] = 0.0f;
 	tempVertex4.uv[0] = 1.0f; tempVertex4.uv[1] = 0.0f;
 	tempVertex4.norm[0] = 0.0f; tempVertex4.norm[1] = 0.0f; tempVertex4.norm[2] = 0.0f;
-	mesh.push_back(tempVertex4);
+	mesh.Append(tempVertex4);
 
 	for (int i = 0; i < 6; i++)
 	{
-		indices.push_back(ibuff[i]);
+		indices.Append(ibuff[i]);
 	}
 
 }
@@ -286,7 +300,7 @@ void MeshResources::drawMesh()
 	glBindVertexArray(vao[0]);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo[0]);
-	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, NULL);
+	glDrawElements(GL_TRIANGLES, indices.Size(), GL_UNSIGNED_INT, NULL);
 		
 }
 
@@ -312,17 +326,17 @@ std::string MeshResources::FaceKey(int pos, int uv, int norm) const
 	return result;	
 }
 	
-std::vector< Math::Face >& MeshResources::GetMeshFaces()
+Util::Array< Math::Face >& MeshResources::GetMeshFaces()
 {
 	return this->meshFaces;
 }
 
-std::vector<Vertex> MeshResources::GetMesh()
+Util::Array<Vertex> MeshResources::GetMesh()
 {
 	return this->mesh;
 }
 	
-std::vector<GLuint> MeshResources::getIndices()
+Util::Array<GLuint> MeshResources::getIndices()
 {
 	return this->indices;
 }

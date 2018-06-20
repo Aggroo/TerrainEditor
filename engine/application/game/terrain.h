@@ -1,8 +1,5 @@
 #pragma once
 #include "GL/glew.h"
-#include "foundation/math/vec3.h"
-#include "foundation/math/vec2.h"
-#include <vector>
 #include "application/game/entity.h"
 #include <memory>
 #include "render/resources/meshresource.h"
@@ -40,8 +37,9 @@ public:
 
 	float GetHeightScale();
 
-	std::shared_ptr<Math::MeshResources> GetMesh() { return mesh; }
-	std::shared_ptr<Math::ShaderObject> GetShader() { return shader; }
+	Ptr<Math::MeshResources> GetMesh() { return mesh; }
+	Ptr<Math::ShaderObject> GetShader() { return shader; }
+	Ptr<Render::TextureNode> GetTextures() { return textures; }
 
 private:
 	void SmoothenTerrain();
@@ -60,9 +58,9 @@ private:
 	GLuint indexCount;
 	GLuint vertexCount;
 
-	Math::TextureNode textures;
-	std::shared_ptr<Math::MeshResources> mesh;
-	std::shared_ptr<Math::ShaderObject> shader;
+	Ptr<Render::TextureNode> textures;
+	Ptr<Math::MeshResources> mesh;
+	Ptr<Math::ShaderObject> shader;
 
 };
 }

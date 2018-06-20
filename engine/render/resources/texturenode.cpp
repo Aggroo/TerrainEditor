@@ -1,8 +1,11 @@
 #include "config.h"
 #include "texturenode.h"
 
-namespace Math
+namespace Render
 {
+__ImplementClass(Render::TextureNode, 'TEXN', Core::RefCounted)
+
+
 TextureNode::TextureNode()
 {
 }
@@ -11,16 +14,34 @@ TextureNode::~TextureNode()
 {
 }
 
-void TextureNode::AddTexture(const char* filename)
+void TextureNode::AddTexture(TextureIndex index, const char* filename)
 {
-	this->textures.push_back(std::make_shared<Math::TextureResource>());
-	this->textures[this->textures.size() - 1]->LoadTextureFile(filename);
+	this->textures.Add(index, Math::TextureResource::Create());
+	this->textures[index]->LoadTextureFile(filename);
 }
 
-void TextureNode::BindTextures()
+void TextureNode::UpdateTexture(TextureIndex index, const char* filename) const
 {
-	for (int i = 0; i < this->textures.size(); ++i)
-		this->textures[i]->bindTex(i);
+	if (this->textures.Contains(index))
+	{
+		this->textures[index]->LoadTextureFile(filename);
+	}
+}
+
+Ptr<Math::TextureResource> TextureNode::GetTexture(TextureIndex index) const
+{
+	return this->textures[index];
+}
+
+	void TextureNode::BindTextures() const
+{
+	Util::Array<TextureIndex> indexArr = this->textures.KeysAsArray();
+
+	for (int i = 0; i < indexArr.Size(); ++i)
+	{
+		this->textures[indexArr[i]]->bindTex((int)indexArr[i]);
+	}
+	
 }
 
 }

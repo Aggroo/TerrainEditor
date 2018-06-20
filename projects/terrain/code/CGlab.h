@@ -33,8 +33,6 @@ public:
 	/// run app
 	void Run();
 
-	void CameraMovement(std::shared_ptr<TerrainEditor::Terrain> terrain);
-
 	Display::Window* GetWindow(){ return window; }
 
 	void Shutdown(bool shutdown);
@@ -51,11 +49,11 @@ private:
 	Math::GraphicsNode gN;
 	Math::LightNode lNode;
 
-	Math::TextureNode textures;
 	std::shared_ptr<Input::InputManager> input;
 	std::shared_ptr<Math::ShaderObject> shaders;
+	Ptr<TerrainEditor::Terrain> terrain;
 
-	float mouseX, mouseY;
+	
 
 	bool shutdown;
 	

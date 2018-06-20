@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <iostream>
 #include "foundation/util/curve.hpp"
+#include "render/camera/camera.h"
 
 namespace TerrainEditor
 {
@@ -11,8 +12,9 @@ __ImplementClass(TerrainEditor::Terrain, 'TETY', Core::RefCounted);
 
 Terrain::Terrain() : terrainWidth(0), terrainHeight(0), heightMap(nullptr)
 {
-	mesh = std::make_shared<Math::MeshResources>();
-	shader = std::make_shared<Math::ShaderObject>();
+	mesh = Math::MeshResources::Create();
+	shader = Math::ShaderObject::Create();
+	textures = Render::TextureNode::Create();	
 }
 
 Terrain::~Terrain()
@@ -22,6 +24,8 @@ Terrain::~Terrain()
 		delete[] heightMap;
 		heightMap = nullptr;
 	}
+
+	
 }
 
 void Terrain::Activate()
@@ -30,26 +34,29 @@ void Terrain::Activate()
 
 	shader->setupVector3f("u_matAmbientReflectance", 1.0f, 1.0f, 1.0f);
 	shader->setupVector3f("u_matDiffuseReflectance", 1.0f, 1.0f, 1.0f);
-	shader->setupVector3f("u_matSpecularReflectance", 1.0f, 1.0f, 1.0f);
+	shader->setupVector3f("u_matSpecularReflectance", 0.16f, 0.16f, 0.16f);
 	shader->setupUniformFloat("u_matShininess", 64.0f);
 	/*shaders->setupMatrix4fv("transMatrix", modelMat);*/
 
-	textures.AddTexture("resources/textures/water.jpg");
-	textures.AddTexture("resources/textures/sand.jpg");
-	textures.AddTexture("resources/textures/grass.jpg");
-	textures.AddTexture("resources/textures/rock.jpg");
 
-	textures.AddTexture("resources/textures/pathway.jpg");
-	textures.AddTexture("resources/textures/road.jpg");
+	textures->AddTexture(Render::TextureIndex::albedo0, "resources/textures/grassalpha.tga");
+	textures->AddTexture(Render::TextureIndex::albedo1, "resources/textures/terrain_albedo/roughrock.tga");
+	textures->AddTexture(Render::TextureIndex::albedo2, "resources/textures/terrain_albedo/snow.tga");
+			
+	textures->AddTexture(Render::TextureIndex::splat, "resources/textures/heightmaps/splat2.jpg");
 
-	shader->setupUniformInt("textures[0]", 0);
-	shader->setupUniformInt("textures[1]", 1);
-	shader->setupUniformInt("textures[2]", 2);
-	shader->setupUniformInt("textures[3]", 3);
-	shader->setupUniformInt("textures[4]", 5);
-	shader->setupUniformInt("pathtex", 4);
+	//textures.AddTexture("resources/textures/pathway.jpg");
 
-	shader->setupUniformFloat("uvMultiplier", 0.1f);
+
+	shader->setupUniformInt("textures[0]", (GLuint) Render::TextureIndex::albedo0);
+	shader->setupUniformInt("textures[1]", (GLuint) Render::TextureIndex::albedo1);
+	shader->setupUniformInt("textures[2]", (GLuint) Render::TextureIndex::albedo2);
+
+	shader->setupUniformInt("splat", (GLuint) Render::TextureIndex::splat);
+
+	shader->setupUniformFloat("tex0UvMultiplier", 0.1f);
+	shader->setupUniformFloat("tex1UvMultiplier", 0.1f);
+	shader->setupUniformFloat("tex2UvMultiplier", 0.1f);
 
 	Entity::Activate();
 }
@@ -62,17 +69,19 @@ void Terrain::Deactivate()
 void Terrain::Update()
 {
 	this->shader->useProgram();
-	this->textures.BindTextures();
+	this->textures->BindTextures();
 	this->shader->setupMatrix4fv("transMatrix", this->transform);
 	this->shader->setupMatrix3fv("normalMat", Math::mat3::Transpose(Math::mat3::fromMatrix4D(this->transform).invert()));
+	this->shader->setupVector3f("cameraPosition", Graphics::MainCamera::Instance()->GetCameraPosition());
 
-	if(mesh->mesh.size() != 0)
+	if(mesh->mesh.Size() != 0)
 		mesh->drawMesh();
 }
 
 bool Terrain::CreateTerrain(const char* filename, float widthMultiplier, float heightMultiplier, ImVec2* points)
 {
-	mesh->mesh.clear();
+	mesh->mesh.Reset();
+	mesh->indices.Reset();
 	int n;
 	unsigned char *image = stbi_load(filename, &terrainWidth, &terrainHeight, &n, 0);
 
@@ -108,14 +117,14 @@ bool Terrain::CreateTerrain(const char* filename, float widthMultiplier, float h
 		}
 	}
 
-	vertexCount = ((terrainWidth-1) * (terrainHeight-1));
+	vertexCount = ((terrainWidth) * (terrainHeight));
 	indexCount = vertexCount*6;
 
 	// Create the vertex array.
-	mesh->mesh.reserve(vertexCount);
+	mesh->mesh.Reserve(vertexCount);
 
 	// Create the index array.
-	mesh->indices.assign(indexCount, 0);
+	mesh->indices.Fill(0, indexCount, 0);
 
 	SmoothenTerrain();
 
@@ -131,7 +140,7 @@ bool Terrain::CreateTerrain(const char* filename, float widthMultiplier, float h
 		for (int x = 0; x < (terrainWidth); ++x)
 		{
 			i = (terrainHeight * y) + x;
-			mesh->mesh.push_back(Math::Vertex(Math::vec3(heightMap[i].x, heightMap[i].y, heightMap[i].z), Math::vec2(x*uDiv, -y*vDiv), Math::vec3()));
+			mesh->mesh.Append(Math::Vertex(Math::vec3(heightMap[i].x, heightMap[i].y, heightMap[i].z), Math::vec2(x*uDiv, -y*vDiv), Math::vec3()));
 		}
 	}
 
@@ -255,5 +264,28 @@ void Terrain::GenerateNormals()
 	{
 		mesh->mesh[i].norm = Math::vec3::Normalize(mesh->mesh[i].norm);
 	}
+
+	//for (int i = 0; i < vertexCount; i += 3)
+	//{
+	//	// Edges of the triangle : position delta
+	//	Math::vec3 deltaPos1 = mesh->mesh[i+1].pos - mesh->mesh[i].pos;
+	//	Math::vec3 deltaPos2 = mesh->mesh[i + 2].pos - mesh->mesh[i].pos;
+
+	//	// UV delta
+	//	Math::vec2 deltaUV1 = mesh->mesh[i + 1].uv - mesh->mesh[i].uv;
+	//	Math::vec2 deltaUV2 = mesh->mesh[i + 2].uv - mesh->mesh[i].uv;
+
+	//	float r = 1.0f / (deltaUV1[0] * deltaUV2[1] - deltaUV1[1] * deltaUV2[0]);
+	//	Math::vec3 tangent = (deltaPos1 * deltaUV2[1] - deltaPos2 * deltaUV1[1])*r;
+	//	Math::vec3 bitangent = (deltaPos2 * deltaUV1[0] - deltaPos1 * deltaUV2[0])*r;
+
+	//	mesh->tangentList.Append(tangent);
+	//	mesh->tangentList.Append(tangent);
+	//	mesh->tangentList.Append(tangent);
+
+	//	mesh->bitangentList.Append(bitangent);
+	//	mesh->bitangentList.Append(bitangent);
+	//	mesh->bitangentList.Append(bitangent);
+	//}
 }
 }

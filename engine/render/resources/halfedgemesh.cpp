@@ -24,7 +24,7 @@ namespace HalfEdges
 	
 	void HalfEdgeMesh::ConstructHalfEdgeMesh()
 	{
-		for(int i = 0; i < mesh->GetMesh().size(); i++)
+		for(int i = 0; i < mesh->GetMesh().Size(); i++)
 		{
 			Math::Vertex meshVert = mesh->GetMesh()[i];
 			HalfEdges::Vertex* vert = new HalfEdges::Vertex();
@@ -32,14 +32,14 @@ namespace HalfEdges
 			vert->uv = meshVert.uv;
 			vert->norm = meshVert.norm;
 			vert->edge = nullptr;
-			vertices.push_back(vert);
-			vert->idx = vertices.size()-1;
+			vertices.Append(vert);
+			vert->idx = vertices.Size()-1;
 		}
 		
-		for(int i = 0; i < mesh->GetMeshFaces().size(); ++i)
+		for(int i = 0; i < mesh->GetMeshFaces().Size(); ++i)
 		{
-			faces.push_back(new HalfEdges::Face());
-			HalfEdges::Face* face = faces[faces.size()-1];
+			faces.Append(new HalfEdges::Face());
+			HalfEdges::Face* face = faces[faces.Size()-1];
 			for(int j = 0; j < mesh->GetMeshFaces()[i].verts.size(); ++j)
 			{
 				HalfEdges::HalfEdge* lastEdge;
@@ -47,8 +47,8 @@ namespace HalfEdges
 				
 				if(j == mesh->GetMeshFaces()[i].verts.size()-1)
 				{
-					halfedges.push_back(new HalfEdges::HalfEdge());
-					HalfEdges::HalfEdge* edge = halfedges[halfedges.size()-1];
+					halfedges.Append(new HalfEdges::HalfEdge());
+					HalfEdges::HalfEdge* edge = halfedges[halfedges.Size()-1];
 					edge->vert = vertices[mesh->GetMeshFaces()[i].verts[j]];
 					edge->nextEdge = firstEdge;
 					edge->oppositeEdge = nullptr;
@@ -73,8 +73,8 @@ namespace HalfEdges
 				}
 				else if(j == 0)
 				{
-					halfedges.push_back(new HalfEdges::HalfEdge());
-					HalfEdges::HalfEdge* edge = halfedges[halfedges.size()-1];
+					halfedges.Append(new HalfEdges::HalfEdge());
+					HalfEdges::HalfEdge* edge = halfedges[halfedges.Size()-1];
 					edge->vert = vertices[mesh->GetMeshFaces()[i].verts[j]];
 					edge->nextEdge = nullptr;
 					edge->face = face;
@@ -99,8 +99,8 @@ namespace HalfEdges
 				}
 				else
 				{
-					halfedges.push_back(new HalfEdges::HalfEdge());
-					HalfEdges::HalfEdge* edge = halfedges[halfedges.size()-1];
+					halfedges.Append(new HalfEdges::HalfEdge());
+					HalfEdges::HalfEdge* edge = halfedges[halfedges.Size()-1];
 					edge->vert = vertices[mesh->GetMeshFaces()[i].verts[j]];
 					edge->nextEdge = nullptr;
 					edge->oppositeEdge = nullptr;
@@ -130,7 +130,7 @@ namespace HalfEdges
 	MeshResources* HalfEdgeMesh::HalfEdgeMeshToMesh()
 	{
 		
-		for(int i = 0; i < vertices.size(); ++i)
+		for(int i = 0; i < vertices.Size(); ++i)
 		{
 			HalfEdges::Vertex* vert = vertices[i];
 			heMeshIndices[(uintptr_t) vert] = i;
@@ -140,21 +140,21 @@ namespace HalfEdges
 			bufVert.uv = vert->uv;
 			bufVert.norm = vert->norm;
 			
-			halfEdgeToMesh.mesh.push_back(bufVert);
+			halfEdgeToMesh.mesh.Append(bufVert);
 		}
 		
-		for(int i = 0; i < faces.size(); ++i)
+		for(int i = 0; i < faces.Size(); ++i)
 		{
 			HalfEdges::HalfEdge* edge = faces[i]->faceEdge;
-			halfEdgeToMesh.indices.push_back(heMeshIndices[(uintptr_t)edge->vert]);
-			halfEdgeToMesh.indices.push_back(heMeshIndices[(uintptr_t)edge->nextEdge->vert]);
-			halfEdgeToMesh.indices.push_back(heMeshIndices[(uintptr_t)edge->nextEdge->nextEdge->vert]);
+			halfEdgeToMesh.indices.Append(heMeshIndices[(uintptr_t)edge->vert]);
+			halfEdgeToMesh.indices.Append(heMeshIndices[(uintptr_t)edge->nextEdge->vert]);
+			halfEdgeToMesh.indices.Append(heMeshIndices[(uintptr_t)edge->nextEdge->nextEdge->vert]);
 			if(edge->nextEdge->nextEdge->nextEdge->nextEdge == edge)
 			{
 				edge = edge->nextEdge->nextEdge;
-				halfEdgeToMesh.indices.push_back(heMeshIndices[(uintptr_t)edge->vert]);
-				halfEdgeToMesh.indices.push_back(heMeshIndices[(uintptr_t)edge->nextEdge->vert]);
-				halfEdgeToMesh.indices.push_back(heMeshIndices[(uintptr_t)edge->nextEdge->nextEdge->vert]);
+				halfEdgeToMesh.indices.Append(heMeshIndices[(uintptr_t)edge->vert]);
+				halfEdgeToMesh.indices.Append(heMeshIndices[(uintptr_t)edge->nextEdge->vert]);
+				halfEdgeToMesh.indices.Append(heMeshIndices[(uintptr_t)edge->nextEdge->nextEdge->vert]);
 			}
 		}
 		
@@ -171,13 +171,13 @@ namespace HalfEdges
 		{
 			std::chrono::high_resolution_clock::time_point before = std::chrono::high_resolution_clock::now();
 			std::vector<vec3> original_pos;
-			int vertSize = vertices.size();
+			int vertSize = vertices.Size();
 			for(int i = 0; i < vertSize; ++i)
 			{
 				original_pos.push_back(vertices[i]->pos);
 			}
 			
-			int facesSize = faces.size();
+			int facesSize = faces.Size();
 			for(int i = 0; i < facesSize; ++i)
 			{
 				Face* face = faces[i];
@@ -185,19 +185,19 @@ namespace HalfEdges
 				HalfEdges::Face* northEast = new HalfEdges::Face();
 				HalfEdges::Face* southWest = new HalfEdges::Face();
 				HalfEdges::Face* southEast = new HalfEdges::Face();
-				faces.push_back(northEast);
-				faces.push_back(southWest);
-				faces.push_back(southEast);
+				faces.Append(northEast);
+				faces.Append(southWest);
+				faces.Append(southEast);
 				
 				HalfEdges::Vertex* facePoint = new HalfEdges::Vertex();
-				vertices.push_back(facePoint);
+				vertices.Append(facePoint);
 				vec3 vecPos = (face->faceEdge->vert->pos + face->faceEdge->nextEdge->vert->pos + face->faceEdge->nextEdge->nextEdge->vert->pos + face->faceEdge->nextEdge->nextEdge->nextEdge->vert->pos)*0.25f;
 				vec2 vecUV = (face->faceEdge->vert->uv + face->faceEdge->nextEdge->vert->uv + face->faceEdge->nextEdge->nextEdge->vert->uv + face->faceEdge->nextEdge->nextEdge->nextEdge->vert->uv)*0.25f;
 				vec3 vecNorm = (face->faceEdge->vert->norm + face->faceEdge->nextEdge->vert->norm + face->faceEdge->nextEdge->nextEdge->vert->norm + face->faceEdge->nextEdge->nextEdge->nextEdge->vert->norm)*0.25f;
 				facePoint->pos = vecPos;
 				facePoint->uv = vecUV;
 				facePoint->norm = vec3::Normalize(vecNorm);
-				facePoint->idx = vertices.size()-1;
+				facePoint->idx = vertices.Size()-1;
 				
 				
 				
@@ -247,7 +247,7 @@ namespace HalfEdges
 				else
 				{
 					edgePointTop = new HalfEdges::Vertex();
-					vertices.push_back(edgePointTop);
+					vertices.Append(edgePointTop);
 					edgePointTop->edge = edgeTopRight;
 					vec3 vecPosTop = (edgeTopLeft->vert->pos + edgeTopLeft->nextEdge->vert->pos + facePoint->pos)*0.25f;
 					vec2 vecUVTop = (edgeTopLeft->vert->uv + edgeTopLeft->nextEdge->vert->uv + facePoint->uv)*0.25f;
@@ -272,7 +272,7 @@ namespace HalfEdges
 				else
 				{
 					edgePointRight = new HalfEdges::Vertex();
-					vertices.push_back(edgePointRight);
+					vertices.Append(edgePointRight);
 					edgePointRight->edge = edgeRightBot;
 					vec3 vecPosRight = (edgeRightTop->vert->pos + edgeRightTop->nextEdge->vert->pos + facePoint->pos)*0.25f;
 					vec2 vecUVRight = (edgeRightTop->vert->uv + edgeRightTop->nextEdge->vert->uv + facePoint->uv)*0.25f;
@@ -296,7 +296,7 @@ namespace HalfEdges
 				else
 				{
 					edgePointBot = new HalfEdges::Vertex();
-					vertices.push_back(edgePointBot);
+					vertices.Append(edgePointBot);
 					edgePointBot->edge = edgeBotLeft;
 					vec3 vecPosBot = (edgeBotRight->vert->pos + edgeBotRight->nextEdge->vert->pos + facePoint->pos)*0.25f;
 					vec2 vecUVBot = (edgeBotRight->vert->uv + edgeBotRight->nextEdge->vert->uv + facePoint->uv)*0.25f;
@@ -321,7 +321,7 @@ namespace HalfEdges
 				else
 				{
 					edgePointLeft = new HalfEdges::Vertex();
-					vertices.push_back(edgePointLeft);
+					vertices.Append(edgePointLeft);
 					edgePointLeft->edge = edgeLeftTop;
 					vec3 vecPosLeft = (edgeLeftBot->vert->pos + edgeLeftBot->nextEdge->vert->pos + facePoint->pos)*0.25f;
 					vec2 vecUVLeft = (edgeLeftBot->vert->uv + edgeLeftBot->nextEdge->vert->uv + facePoint->uv)*0.25f;

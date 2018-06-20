@@ -35,6 +35,7 @@ public:
 	GLfloat GetOldY();
 
 	Math::vec4 GetMovement();
+	void CameraMovement();
 
 private:
 	Display::Window* window;
@@ -48,6 +49,9 @@ private:
 	GLfloat scrollY = 0;
 	GLfloat lightScroll = 0;
 	GLfloat indexScroll = 0;
+
+	Math::vec4 vec;
+	float mouseX, mouseY;
 
 	Math::vec4 movement;
 

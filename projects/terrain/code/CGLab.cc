@@ -49,8 +49,10 @@ CGLab::Open()
 	{
 		Render::Renderer::Instance()->Setup(this->window);
 
+		terrain = TerrainEditor::Terrain::Create();
+		terrain->Activate();
 		shaders = std::make_shared<Math::ShaderObject>();		
-		input = std::make_shared<Input::InputManager>(this->window, shaders.get(), &lNode);
+		input = std::make_shared<Input::InputManager>(this->window, terrain->GetShader(), &lNode);
 
 		input->InitKeyPress();
 		input->InitMouse();
@@ -96,22 +98,10 @@ CGLab::Run()
 
 	std::shared_ptr<Math::MeshResources> mesh = std::make_shared<Math::MeshResources>();
 	std::shared_ptr<Math::TextureResource> tex = std::make_shared<Math::TextureResource>();
-	std::shared_ptr<TerrainEditor::Terrain> terrain = std::make_shared<TerrainEditor::Terrain>();
-	terrain->Activate();
-	vec = Math::vec4(0, 0, 0);
 
 	UI->SetTerrain(terrain);
 
 	mat4 modelMat = mat4::translationMatrix(Math::vec4(0.0f, 0.0f, 0.0f));
-
-	//terrain->CreateTerrain("resources/textures/perlin2.jpg", 3.0f, 100.0f);
-
-	//mesh->createQuad();
-	//mesh->loadObj("resources/models/ARC170.obj");
-
-	//mesh->genBuffer();
-		
-	//shaders->setupShaders("resources/shaders/Blinn-phong.vert", "resources/shaders/Blinn-phong.frag");
 
 	lNode.setShaders(terrain->GetShader());
 	
@@ -120,32 +110,9 @@ CGLab::Run()
 	lNode.setColour(0.2f, 0.2f, 0.2f);
     lNode.apply();
 
-    //shaders->setupVector3f("u_matAmbientReflectance", 1.0f, 1.0f, 1.0f);
-    //shaders->setupVector3f("u_matDiffuseReflectance", 1.0f, 1.0f, 1.0f);
-    //shaders->setupVector3f("u_matSpecularReflectance", 1.0f, 1.0f, 1.0f);
-    //shaders->setupUniformFloat("u_matShininess", 64.0f);
-	///*shaders->setupMatrix4fv("transMatrix", modelMat);*/
-	//
-	//textures.AddTexture("resources/textures/water.jpg");
-	//textures.AddTexture("resources/textures/sand.jpg");
-	//textures.AddTexture("resources/textures/grass.jpg");
-	//textures.AddTexture("resources/textures/rock.jpg");
-	//
-	//textures.AddTexture("resources/textures/pathway.jpg");
-	//textures.AddTexture("resources/textures/road.jpg");
-	//
-	//shaders->setupUniformInt("textures[0]", 0);
-	//shaders->setupUniformInt("textures[1]", 1);
-	//shaders->setupUniformInt("textures[2]", 2);
-	//shaders->setupUniformInt("textures[3]", 3);
-	//shaders->setupUniformInt("textures[4]", 5);
-	//shaders->setupUniformInt("pathtex", 4);
-
-	//gN.setMesh(terrain->GetMesh());
-	//gN.setShaders(shaders);
-	//gN.setTex(std::make_shared<Math::TextureNode>(textures));
 
     std::chrono::high_resolution_clock::time_point before = std::chrono::high_resolution_clock::now();
+
 
 	while (this->window->IsOpen() && !this->shutdown)
 	{
@@ -156,7 +123,7 @@ CGLab::Run()
 		
 		//float timeStamp = float(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - before).count() / 1000.0f);
 
-		CameraMovement(terrain);
+		input->CameraMovement();
 
 		//gN.setTransMat(modelMat);
 		Render::Renderer::Instance()->SetupUniformBuffer(Graphics::MainCamera::Instance());
@@ -168,29 +135,6 @@ CGLab::Run()
 		this->window->SwapBuffers();
 	}
 	this->window->Close();
-}
-
-void CGLab::CameraMovement(std::shared_ptr<TerrainEditor::Terrain> terrain)
-{
-	mouseX = (input->GetOldX()*2.0f) / 1024 - 1;
-	mouseY = 1 - (input->GetOldY()*2.0f) / 768;
-
-	mat4 rotx = mat4::rotX(-input->GetRotY()*0.001f);
-	mat4 roty = mat4::rotY(input->GetRotX()*0.001f);
-
-	mat4 rotation = (roty*rotx);
-
-	const Math::vec4 left = rotation.GetXAxis();
-	const Math::vec4 up = rotation.GetYAxis();
-	const Math::vec4 forward = rotation.GetZAxis();
-
-	vec = vec + (rotation * input->GetMovement());
-
-	Graphics::MainCamera::Instance()->SetPosition(vec);
-
-	Graphics::MainCamera::Instance()->LookAt(vec + forward, up);
-
-	terrain->GetShader()->setupVector3f("cameraPosition", Graphics::MainCamera::Instance()->GetCameraPosition());
 }
 
 	void CGLab::Shutdown(bool shutdown)

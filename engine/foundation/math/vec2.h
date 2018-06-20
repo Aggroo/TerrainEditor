@@ -144,5 +144,3 @@ namespace Math
 	
 	};
 }
-
-typedef Math::vec2 vec2;

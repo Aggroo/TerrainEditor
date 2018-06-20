@@ -14,7 +14,8 @@ UserInterface::UserInterface(Example::CGLab* app)
 	this->application = app;
 
 	this->openPopup = false;
-	this->texturePopup = false;
+	this->heightPopup = false;
+	this->texturesPopup = false;
 	heightSettings.texture = std::make_shared<Math::TextureResource>();
 
 	// Setup style
@@ -229,28 +230,8 @@ void UserInterface::RenderTerrainSettings()
 		{
 			ImGui::BeginDockspace();
 
-			if (ImGui::BeginDock("Heightmap", NULL, ImGuiWindowFlags_NoSavedSettings)) {
-
-				if (!heightSettings.texName.IsEmpty())
-				{
-					Util::String s = heightSettings.texName.AsCharPtr();
-					Util::Array<Util::String> path;
-
-					s.Tokenize("/", path);
-
-					s = path[path.Size() - 2] + "/" + path[path.Size() - 1];
-
-					ImGui::InputText("##texture", (char*)s.AsCharPtr(), 256, ImGuiInputTextFlags_ReadOnly);
-				}
-				else
-				{
-					ImGui::InputText("##texture", (char*)heightSettings.texName.AsCharPtr(), 512, ImGuiInputTextFlags_ReadOnly);
-				}
-				ImGui::SameLine();
-				if (ImGui::Button("..."))
-				{
-					this->texturePopup = true;
-				}
+			if (ImGui::BeginDock("Heightmap", NULL, ImGuiWindowFlags_NoSavedSettings)) 
+			{
 
 				if (heightSettings.texName.IsEmpty())
 				{
@@ -258,7 +239,7 @@ void UserInterface::RenderTerrainSettings()
 					ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
 				}
 				ImGui::Indent(10);
-				if (ImGui::Button("Generate", ImVec2(ImGui::GetWindowContentRegionWidth() - 20, 25)))
+				if (ImGui::Button("Generate##heightmap", ImVec2(ImGui::GetWindowContentRegionWidth() - 20, 25)))
 				{
 					terrain->CreateTerrain(heightSettings.texName.AsCharPtr(), heightSettings.widthMultiplier, heightSettings.heightMultiplier, foo);
 				}
@@ -269,12 +250,9 @@ void UserInterface::RenderTerrainSettings()
 					ImGui::PopItemFlag();
 					ImGui::PopStyleVar();
 				}
-
 				ImGui::Separator();
 
-				ImGui::DragFloat("Width Multiplier", &heightSettings.widthMultiplier, 0.1f, 0.0f, 1000.f);
-				ImGui::DragFloat("Height Multiplier", &heightSettings.heightMultiplier, 0.01f, 0.0f, 1000.f);
-				if (ImGui::CollapsingHeader("Heightmap Image"))
+				if (ImGui::CollapsingHeader("Heightmap Image", ImGuiTreeNodeFlags_DefaultOpen))
 				{
 					if (!heightSettings.texName.IsEmpty())
 					{
@@ -292,33 +270,157 @@ void UserInterface::RenderTerrainSettings()
 						ImGui::InputText("##texture", (char*)heightSettings.texName.AsCharPtr(), 512, ImGuiInputTextFlags_ReadOnly);
 					}
 					ImGui::SameLine();
-					if (ImGui::Button("..."))
+					if (ImGui::Button("...##height"))
 					{
-						this->texturePopup = true;
+						this->heightPopup = true;
 					}
-					ImGui::Image((void*)heightSettings.texture->GetTextureID(), ImVec2(ImGui::GetWindowContentRegionWidth() - 5, ImGui::GetWindowContentRegionWidth() - 20));
+					ImGui::SameLine();
+					ImGui::Image((void*)heightSettings.texture->GetTextureID(), ImVec2(ImGui::GetContentRegionAvailWidth()-5, ImGui::GetContentRegionAvailWidth()-5));
+
+					ImGui::DragFloat("Width Multiplier", &heightSettings.widthMultiplier, 0.1f, 0.0f, 1000.f);
+					ImGui::DragFloat("Height Multiplier", &heightSettings.heightMultiplier, 0.01f, 0.0f, 1000.f);
+
+					if (ImGui::Curve("Height Curve", ImVec2(ImGui::GetWindowContentRegionWidth() - 10, 200), 10, foo))
+					{
+						// curve changed
+					}
 
 				}
 				if (ImGui::CollapsingHeader("Texture Settings"))
 				{
-					if(ImGui::DragFloat("UV Multiplier", &heightSettings.uvMultiplier, 0.01f, 0.0f, 1.f))
+					if(ImGui::TreeNode("Texture 0"))
 					{
-						terrain->GetShader()->setupUniformFloat("uvMultiplier", heightSettings.uvMultiplier);
+						if (!texSettings.tex0Name.IsEmpty())
+						{
+							Util::String s = texSettings.tex0Name.AsCharPtr();
+							Util::Array<Util::String> path;
+
+							s.Tokenize("/", path);
+
+							s = path[path.Size() - 2] + "/" + path[path.Size() - 1];
+
+							ImGui::InputText("##Tex0", (char*)s.AsCharPtr(), 256, ImGuiInputTextFlags_ReadOnly);
+						}
+						else
+						{
+							ImGui::InputText("##Tex0", (char*)texSettings.tex0Name.AsCharPtr(), 512, ImGuiInputTextFlags_ReadOnly);
+						}
+						ImGui::SameLine();
+						if (ImGui::Button("...##Tex0"))
+						{
+							texSettings.chosenIndex = Render::TextureIndex::albedo0;
+							this->texturesPopup = true;
+						}
+						ImGui::SameLine();
+						ImGui::Image((void*)terrain->GetTextures()->GetTexture(Render::TextureIndex::albedo0)->GetTextureID(), ImVec2(ImGui::GetContentRegionAvailWidth() - 5, ImGui::GetContentRegionAvailWidth() - 5));
+
+						if (ImGui::DragFloat("Tex0 UV Multiplier", &texSettings.tex0UvMultiplier, 0.01f, 0.0f, 1.f))
+						{
+							terrain->GetShader()->setupUniformFloat("tex0UvMultiplier", texSettings.tex0UvMultiplier);
+						}
+						ImGui::TreePop();
 					}
+					
+					if (ImGui::TreeNode("Texture 1"))
+					{
+						if (!texSettings.tex1Name.IsEmpty())
+						{
+							Util::String s = texSettings.tex1Name.AsCharPtr();
+							Util::Array<Util::String> path;
 
-				}
-				if (ImGui::Curve("Height Curve", ImVec2(ImGui::GetWindowContentRegionWidth()-10 , 200), 10, foo))
-				{
-					// curve changed
-				}
+							s.Tokenize("/", path);
 
+							s = path[path.Size() - 2] + "/" + path[path.Size() - 1];
+
+							ImGui::InputText("##Tex1", (char*)s.AsCharPtr(), 256, ImGuiInputTextFlags_ReadOnly);
+						}
+						else
+						{
+							ImGui::InputText("##Tex1", (char*)texSettings.tex1Name.AsCharPtr(), 512, ImGuiInputTextFlags_ReadOnly);
+						}
+						ImGui::SameLine();
+						if (ImGui::Button("...##Tex1"))
+						{
+							texSettings.chosenIndex = Render::TextureIndex::albedo1;
+							this->texturesPopup = true;
+						}
+						ImGui::SameLine();
+						ImGui::Image((void*)terrain->GetTextures()->GetTexture(Render::TextureIndex::albedo1)->GetTextureID(), ImVec2(ImGui::GetContentRegionAvailWidth() - 5, ImGui::GetContentRegionAvailWidth() - 5));
+
+						if (ImGui::DragFloat("Tex1 UV Multiplier", &texSettings.tex1UvMultiplier, 0.01f, 0.0f, 1.f))
+						{
+							terrain->GetShader()->setupUniformFloat("tex1UvMultiplier", texSettings.tex1UvMultiplier);
+						}
+						ImGui::TreePop();
+					}
+					if (ImGui::TreeNode("Texture 2"))
+					{
+						if (!texSettings.tex2Name.IsEmpty())
+						{
+							Util::String s = texSettings.tex2Name.AsCharPtr();
+							Util::Array<Util::String> path;
+
+							s.Tokenize("/", path);
+
+							s = path[path.Size() - 2] + "/" + path[path.Size() - 1];
+
+							ImGui::InputText("##Tex2", (char*)s.AsCharPtr(), 256, ImGuiInputTextFlags_ReadOnly);
+						}
+						else
+						{
+							ImGui::InputText("##Tex2", (char*)texSettings.tex2Name.AsCharPtr(), 512, ImGuiInputTextFlags_ReadOnly);
+						}
+						ImGui::SameLine();
+						if (ImGui::Button("...##Tex2"))
+						{
+							texSettings.chosenIndex = Render::TextureIndex::albedo2;
+							this->texturesPopup = true;
+						}
+						ImGui::SameLine();
+						ImGui::Image((void*)terrain->GetTextures()->GetTexture(Render::TextureIndex::albedo2)->GetTextureID(), ImVec2(ImGui::GetContentRegionAvailWidth() - 5, ImGui::GetContentRegionAvailWidth() - 5));
+
+						if (ImGui::DragFloat("Tex2 UV Multiplier", &texSettings.tex2UvMultiplier, 0.01f, 0.0f, 1.f))
+						{
+							terrain->GetShader()->setupUniformFloat("tex2UvMultiplier", texSettings.tex2UvMultiplier);
+						}
+						ImGui::TreePop();
+					}
+					if (ImGui::TreeNode("Splatmap"))
+					{
+						if (!texSettings.tex2Name.IsEmpty())
+						{
+							Util::String s = texSettings.tex2Name.AsCharPtr();
+							Util::Array<Util::String> path;
+
+							s.Tokenize("/", path);
+
+							s = path[path.Size() - 2] + "/" + path[path.Size() - 1];
+
+							ImGui::InputText("##splat", (char*)s.AsCharPtr(), 256, ImGuiInputTextFlags_ReadOnly);
+						}
+						else
+						{
+							ImGui::InputText("##splat", (char*)texSettings.tex2Name.AsCharPtr(), 512, ImGuiInputTextFlags_ReadOnly);
+						}
+						ImGui::SameLine();
+						if (ImGui::Button("...##splat"))
+						{
+							texSettings.chosenIndex = Render::TextureIndex::splat;
+							this->texturesPopup = true;
+						}
+						ImGui::SameLine();
+						ImGui::Image((void*)terrain->GetTextures()->GetTexture(Render::TextureIndex::splat)->GetTextureID(), ImVec2(ImGui::GetContentRegionAvailWidth() - 5, ImGui::GetContentRegionAvailWidth() - 5));
+
+						ImGui::TreePop();
+					}
+				}
 
 			}
 			ImGui::EndDock();
 
 			if (ImGui::BeginDock("Perlin Noise", NULL, ImGuiWindowFlags_NoSavedSettings)) {
 
-				if (ImGui::Button("Generate", ImVec2(ImGui::GetWindowContentRegionWidth() - 20, 25)))
+				if (ImGui::Button("Generate##Perlin", ImVec2(ImGui::GetWindowContentRegionWidth() - 20, 25)))
 				{
 
 					this->openPopup = true;
@@ -355,9 +457,11 @@ void UserInterface::RenderTerrainSettings()
 
 void UserInterface::ModalWindows()
 {
-	if (this->texturePopup) { ImGui::OpenPopup("OpenTexture"); }
+	if (this->heightPopup) { ImGui::OpenPopup("OpenHeightTexture"); }
+	if (this->texturesPopup) { ImGui::OpenPopup("OpenTexture"); }
 	if (this->openPopup) { ImGui::OpenPopup("SaveTexture"); }
-	if (ImGui::BeginPopupModal("OpenTexture", &this->texturePopup))
+
+	if (ImGui::BeginPopupModal("OpenHeightTexture", &this->heightPopup))
 	{
 		nfdchar_t* outpath;
 		nfdresult_t result = NFD_OpenDialog("jpg,jpeg;tga,png", NULL, &outpath);
@@ -373,18 +477,59 @@ void UserInterface::ModalWindows()
 
 			heightSettings.texture->LoadTextureFile(outpath);
 
-			this->texturePopup = false;
+			this->heightPopup = false;
 			free(outpath);
 		}
 		else if (result == NFD_CANCEL)
 		{
-			this->texturePopup = false;
+			this->heightPopup = false;
 		}
 		else
 		{
 			printf("Error: %s\n", NFD_GetError());
 			assert(false);
-			this->texturePopup = false;
+			this->heightPopup = false;
+		}
+
+		ImGui::EndPopup();
+	}
+
+	if (ImGui::BeginPopupModal("OpenTexture", &this->texturesPopup))
+	{
+		nfdchar_t* outpath;
+		nfdresult_t result = NFD_OpenDialog("jpg,jpeg;tga,png", NULL, &outpath);
+
+		if (result == NFD_OKAY)
+		{
+			printf("path: %s\n", outpath);
+
+			Util::String s = outpath;
+			Util::Array<Util::String> path;
+			s.ConvertBackslashes();
+
+			switch (texSettings.chosenIndex)
+			{
+			case Render::TextureIndex::albedo0: texSettings.tex0Name = s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr(); break;
+			case Render::TextureIndex::albedo1: texSettings.tex1Name = s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr(); break;
+			case Render::TextureIndex::albedo2: texSettings.tex2Name = s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr(); break;
+			case Render::TextureIndex::splat: texSettings.splatName = s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr(); break;
+			default:break;
+			}
+
+			terrain->GetTextures()->UpdateTexture(texSettings.chosenIndex, outpath);
+
+			this->texturesPopup = false;
+			free(outpath);
+		}
+		else if (result == NFD_CANCEL)
+		{
+			this->texturesPopup = false;
+		}
+		else
+		{
+			printf("Error: %s\n", NFD_GetError());
+			assert(false);
+			this->texturesPopup = false;
 		}
 
 		ImGui::EndPopup();
@@ -406,7 +551,7 @@ void UserInterface::ModalWindows()
 			p.GenerateNoiseMap(perlinSettings.name.AsCharPtr(), perlinSettings.width, perlinSettings.height, perlinSettings.scale, perlinSettings.octaves, perlinSettings.persistance, perlinSettings.lacunarity);
 			p.GetTexture()->LoadTextureFile(perlinSettings.name.AsCharPtr());
 
-			terrain->CreateTerrain(perlinSettings.name.AsCharPtr(), heightSettings.widthMultiplier, perlinSettings.scale, foo);
+			terrain->CreateTerrain(perlinSettings.name.AsCharPtr(), heightSettings.widthMultiplier, 150.f, foo);
 
 			this->openPopup = false;
 			free(outpath);
@@ -419,7 +564,7 @@ void UserInterface::ModalWindows()
 		{
 			printf("Error: %s\n", NFD_GetError());
 			assert(false);
-			this->texturePopup = false;
+			this->openPopup = false;
 		}
 
 		ImGui::EndPopup();

@@ -8,6 +8,7 @@
 
 namespace Math
 {
+	__ImplementClass(Math::ShaderObject, 'SHOB', Core::RefCounted)
 	ShaderObject::ShaderObject()
 	{
 

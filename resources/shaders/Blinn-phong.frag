@@ -1,6 +1,6 @@
 
-layout(location=0) in vec3 fragPos;
-layout(location=1) in vec2 uv;
+in vec3 fragPos;
+in vec2 texCoord;
 
 in vec3 o_normal;
 in vec3 o_toLight;
@@ -8,9 +8,12 @@ in vec3 o_toCamera;
 
 layout(location = 0) out vec4 resColor;
 //layout(location = 1) out vec3 normalColor;
-uniform sampler2D textures[5];
-uniform sampler2D pathtex;
-uniform float uvMultiplier;
+uniform sampler2D textures[3];
+uniform sampler2D splat;
+
+uniform float tex0UvMultiplier;
+uniform float tex1UvMultiplier;
+uniform float tex2UvMultiplier;
 
 // parameters of the light and possible values
 uniform vec3 u_lightAmbientIntensity; // = vec3(0.6, 0.3, 0);
@@ -52,19 +55,33 @@ vec3 specularLighting(in vec3 N, in vec3 L, in vec3 V)
    return u_matSpecularReflectance * u_lightSpecularIntensity * specularTerm;
 }
 
-void GetTexture(out vec4 texVec, int index)
+vec4 GetTexture(int index, in vec3 uvwPos, in vec3 weights)
 {
-	vec3 uvwPos = uvMultiplier * fragPos;
-	vec3 weights = o_normal * o_normal;
 
-	texVec = vec4(weights.xxx * texture2D(textures[index], uvwPos.yz).rgb +
-					weights.yyy * texture2D(textures[index], uvwPos.zx).rgb +
-					weights.zzz * texture2D(textures[index], uvwPos.xy).rgb,1);
+	return vec4(weights.xxx * texture2D(textures[index], uvwPos.yz).rgb +
+				weights.yyy * texture2D(textures[index], uvwPos.zx).rgb +
+				weights.zzz * texture2D(textures[index], uvwPos.xy).rgb, 
+				weights.x * texture2D(textures[index], uvwPos.yz).a + 
+				weights.y * texture2D(textures[index], uvwPos.zx).a + 
+				weights.z * texture2D(textures[index], uvwPos.xy).a);
+}
+
+vec4 blend(vec4 texture1, float a1, vec4 texture2, float a2)
+{
+    float depth = 0.2;
+    float ma = max(texture1.a + a1, texture2.a + a2) - depth;
+
+    float b1 = max(texture1.a + a1 - ma, 0);
+    float b2 = max(texture2.a + a2 - ma, 0);
+
+    return vec4((texture1.rgb * b1 + texture2.rgb * b2) / (b1 + b2), 1.0);
 }
 
 void main()
 {
 	//vec3 normal = texture(NormalMap, vec2(uv.x/10.0, 1.0-(uv.y/10.0))).rgb;
+	vec3 splatTex = texture(splat, vec2(texCoord.x/10.0, 1.0-(texCoord.y/10.0))).rgb;
+
 	
 	vec3 L = normalize(o_toLight);
     vec3 V = normalize(o_toCamera);
@@ -73,70 +90,22 @@ void main()
 	vec3 Iamb = ambientLighting();
     vec3 Idif = diffuseLighting(N, L);
     vec3 Ispe = specularLighting(N, L, V);
-	
-	vec4 vTexColor = vec4(0.0);
    
 	float fScale = fragPos.y/60.0f;
 
-	const float fRange1 = 0.01f;
-	const float fRange2 = 0.02f;
-	const float fRange3 = 0.05f;
-	const float fRange4 = 0.15f;
-	const float fRange5 = 0.45f;
-	const float fRange6 = 0.52f;
-
 	//float blendAmount;
 	//float slope = 1.0-o_normal.y;
-	vec3 uvwPos = uvMultiplier * fragPos;
 	vec3 weights = o_normal * o_normal;
-
-	float slope = 1.0-o_normal.y;
 	
-	vec4 g1;					
-	GetTexture(g1, 0);
-					
-	vec4 g2 = vec4(weights.xxx * texture2D(textures[1], uvwPos.yz).rgb +
-					weights.yyy * texture2D(textures[1], uvwPos.zx).rgb +
-					weights.zzz * texture2D(textures[1], uvwPos.xy).rgb,1);
-					
-	vec4 g3 = vec4(weights.xxx * texture2D(textures[2], uvwPos.yz).rgb +
-					weights.yyy * texture2D(textures[2], uvwPos.zx).rgb +
-					weights.zzz * texture2D(textures[2], uvwPos.xy).rgb,1);
-					
-	vec4 g4= vec4(weights.xxx * texture2D(textures[3], uvwPos.yz).rgb +
-					weights.yyy * texture2D(textures[3], uvwPos.zx).rgb +
-					weights.zzz * texture2D(textures[3], uvwPos.xy).rgb,1);
+	vec4 tex0 = GetTexture(0, tex0UvMultiplier * fragPos, weights);			
+	vec4 tex1 = GetTexture(1, tex1UvMultiplier * fragPos, weights);					
+	vec4 tex3 = GetTexture(2, tex2UvMultiplier * fragPos, weights);					
 
 	
-	if(fragPos.y < 0.05)
-	{
-		vTexColor = g1;
-	}
-	else if(fragPos.y < 1.0)
-	{
-		vTexColor = g1;
-		vTexColor=mix(g1,g2, smoothstep(0.0,0.2,slope));
-	}
-	else
-	{
-		vTexColor = g3;
-	}
+	//vTexColor = blend(snow, splatTex.r, rock, splatTex.g) + splatTex.b * grass;
+	vec4 vTexColor = splatTex.r * tex3 + splatTex.g * tex1 + splatTex.b * tex0;
 	
-	vTexColor = mix(vTexColor,g2,smoothstep(0.0,0.3,slope));
-	vTexColor = mix(vTexColor,g3,smoothstep(0.01,0.5,slope));
-	vTexColor = mix(vTexColor,g4,smoothstep(0.1,0.26,slope));
-		 
-	uvwPos = 0.1f * fragPos;
-	vec2 vPathCoord = vec2(uv.x/10.0f, 1.0-(uv.y/10.0f));
-	vec4 vPathIntensity = texture2D(pathtex, vPathCoord); // Black color means there is a path
-	fScale = vPathIntensity.x;
-
-	vec3 blendedColor = weights.xxx * texture2D(textures[4], uvwPos.yz).rgb +
-						weights.yyy * texture2D(textures[4], uvwPos.zx).rgb +
-						weights.zzz * texture2D(textures[4], uvwPos.xy).rgb;
-	vec4 vPathColor = vec4(blendedColor, 1.0);
-	
-	vec4 vFinalTexColor = fScale*vTexColor+(1-fScale)*vPathColor;
+	vec4 vFinalTexColor = vTexColor;
 	
 	//vec3 Color = texture(AlbedoMap, vec2(uv.x,1.0-uv.y)).rgb;
 	

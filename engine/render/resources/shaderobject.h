@@ -4,15 +4,16 @@
 #include "foundation/math/vec4.h"
 #include "foundation/math/mat3.h"
 #include "foundation/math/mat4.h"
-
 #include <vector>
 #include <map>
+#include "core/refcounted.h"
 
 namespace Math
 {
 	typedef std::map<std::string, GLuint> uniformMap;
-	class ShaderObject
+	class ShaderObject : public Core::RefCounted
 	{
+		__DeclareClass(ShaderObject)
 	public:
 		ShaderObject();
 		~ShaderObject();

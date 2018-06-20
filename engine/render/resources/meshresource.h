@@ -4,6 +4,7 @@
 #include "foundation/math/vec3.h"
 #include <map>
 #include <vector>
+#include "core/refcounted.h"
 
 
 namespace Math
@@ -32,11 +33,12 @@ namespace Math
 		vec3 norm;
 	};
 	
-	class MeshResources
+	class MeshResources : public Core::RefCounted
 	{
+		__DeclareClass(MeshResources)
 	public:
 		MeshResources();
-		MeshResources(std::vector<Math::Vertex>, std::vector<GLuint>);
+		MeshResources(Util::Array<Math::Vertex>, Util::Array<GLuint>);
 		~MeshResources();
 
 		void genBuffer();
@@ -49,15 +51,22 @@ namespace Math
 
 		//Used to concatenating three ints to a string
 		std::string FaceKey(int pos,int uv,int norm) const;
-		std::vector<Math::Vertex> GetMesh();
-		std::vector<Math::Face>& GetMeshFaces();
-		std::vector<GLuint> getIndices();
-		
-		std::vector<Math::Vertex> mesh;
-		std::vector<GLuint> indices;
-		std::vector<Face> meshFaces;
+		Util::Array<Math::Vertex> GetMesh();
+		Util::Array<Math::Face>& GetMeshFaces();
+		Util::Array<GLuint> getIndices();
+
+		//void SetTangents(bool t) { tangents = t; }
+
+		Util::Array<Math::Vertex> mesh;
+		Util::Array<GLuint> indices;
+		Util::Array<Face> meshFaces;
+
+		//Util::Array<Math::vec3> tangentList;
+		//Util::Array<Math::vec3> bitangentList;
 
 	private:
+
+		//bool tangents;
 
 		GLuint vbo[1];
 		GLuint vao[1];

@@ -41,12 +41,12 @@ namespace Math
 		return this->mesh;
 	}
 
-	void GraphicsNode::setTex(std::shared_ptr<TextureNode> newTex)
+	void GraphicsNode::setTex(Ptr<Render::TextureNode> newTex)
 	{
 		this->tex = newTex;
 	}
 
-	std::shared_ptr<TextureNode> GraphicsNode::getTex()
+	Ptr<Render::TextureNode> GraphicsNode::getTex()
 	{
 		return this->tex;
 	}
@@ -89,7 +89,7 @@ namespace Math
 		this->shader->setupMatrix4fv("transMatrix", this->transMat);
 		this->shader->setupMatrix3fv("normalMat", mat3::Transpose(mat3::fromMatrix4D(this->transMat).invert()));
 
-		if (this->mesh->mesh.size() != 0)
+		if (this->mesh->mesh.Size() != 0)
 			this->mesh->drawMesh();
 	}
 

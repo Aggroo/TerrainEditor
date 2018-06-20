@@ -278,7 +278,7 @@ namespace Math
 		meshData = mesh->GetMesh();
 		indices = mesh->getIndices();
 
-		for (int i = 0; i < indices.size(); i += 3)
+		for (int i = 0; i < indices.Size(); i += 3)
 		{
 			vec4 v1(meshData[indices[i]].pos.x(), meshData[indices[i]].pos.y(), meshData[indices[i]].pos.z());
 			vec4 v2(meshData[indices[i + 1]].pos.x(), meshData[indices[i + 1]].pos.y(), meshData[indices[i + 1]].pos.z());

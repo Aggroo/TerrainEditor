@@ -23,8 +23,8 @@ namespace Math
 		void setMesh(std::shared_ptr<MeshResources> newMesh);
 		std::shared_ptr<MeshResources> getMesh();
 
-		void setTex(std::shared_ptr<TextureNode> newTex);
-		std::shared_ptr<TextureNode> getTex();
+		void setTex(Ptr<Render::TextureNode> newTex);
+		Ptr<Render::TextureNode> getTex();
 		
 		void setTransMat(mat4 newTransMat);
 		mat4 getTransMat();
@@ -41,7 +41,7 @@ namespace Math
 	private:
 		std::shared_ptr<ShaderObject> shader;
 		std::shared_ptr<MeshResources> mesh;
-		std::shared_ptr<TextureNode> tex;
+		Ptr<Render::TextureNode> tex;
 
 		mat4 transMat;
 		mat4 viewMat;

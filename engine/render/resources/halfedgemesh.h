@@ -36,8 +36,8 @@ struct Vertex
 
 struct heMesh
 {
-	std::vector<GLuint> indices;
-	std::vector<Math::Vertex> mesh;
+	Util::Array<GLuint> indices;
+	Util::Array<Math::Vertex> mesh;
 };
 
 class HalfEdgeMesh
@@ -58,9 +58,9 @@ private:
 	MeshResources tempMesh;
 	HalfEdges::heMesh halfEdgeToMesh;
 	
-	std::vector<HalfEdges::Vertex*> vertices;
-	std::vector<HalfEdges::Face*> faces;
-	std::vector<HalfEdges::HalfEdge*> halfedges;
+	Util::Array<HalfEdges::Vertex*> vertices;
+	Util::Array<HalfEdges::Face*> faces;
+	Util::Array<HalfEdges::HalfEdge*> halfedges;
 	std::map< std::pair<unsigned int, unsigned int>, HalfEdge* > edges;
 	std::map<unsigned int, int> heMeshIndices;
 };
