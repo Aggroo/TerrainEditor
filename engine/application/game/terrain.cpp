@@ -5,6 +5,7 @@
 #include <iostream>
 #include "foundation/util/curve.hpp"
 #include "render/camera/camera.h"
+#include "render/render/renderer.h"
 
 namespace TerrainEditor
 {
@@ -35,13 +36,17 @@ void Terrain::Activate()
 	shader->setupVector3f("u_matAmbientReflectance", 1.0f, 1.0f, 1.0f);
 	shader->setupVector3f("u_matDiffuseReflectance", 1.0f, 1.0f, 1.0f);
 	shader->setupVector3f("u_matSpecularReflectance", 0.16f, 0.16f, 0.16f);
-	shader->setupUniformFloat("u_matShininess", 64.0f);
+	shader->setupUniformFloat("u_matShininess", 12.0f);
 	/*shaders->setupMatrix4fv("transMatrix", modelMat);*/
 
 
-	textures->AddTexture(Render::TextureIndex::albedo0, "resources/textures/grassalpha.tga");
+	textures->AddTexture(Render::TextureIndex::albedo0, "resources/textures/terrain_albedo/ground_albedo.jpg");
 	textures->AddTexture(Render::TextureIndex::albedo1, "resources/textures/terrain_albedo/roughrock.tga");
-	textures->AddTexture(Render::TextureIndex::albedo2, "resources/textures/terrain_albedo/snow.tga");
+	textures->AddTexture(Render::TextureIndex::albedo2, "resources/textures/terrain_albedo/Snow_albedo.jpg");
+
+	textures->AddTexture(Render::TextureIndex::normal0, "resources/textures/terrain_normal/ground_normal.png");
+	textures->AddTexture(Render::TextureIndex::normal1, "resources/textures/terrain_normal/roughrock_normal.png");
+	textures->AddTexture(Render::TextureIndex::normal2, "resources/textures/terrain_normal/Snow_normal.jpg");
 			
 	textures->AddTexture(Render::TextureIndex::splat, "resources/textures/heightmaps/splat2.jpg");
 
@@ -52,12 +57,18 @@ void Terrain::Activate()
 	shader->setupUniformInt("textures[1]", (GLuint) Render::TextureIndex::albedo1);
 	shader->setupUniformInt("textures[2]", (GLuint) Render::TextureIndex::albedo2);
 
+	shader->setupUniformInt("normals[0]", (GLuint) Render::TextureIndex::normal0);
+	shader->setupUniformInt("normals[1]", (GLuint) Render::TextureIndex::normal1);
+	shader->setupUniformInt("normals[2]", (GLuint) Render::TextureIndex::normal2);
+
 	shader->setupUniformInt("splat", (GLuint) Render::TextureIndex::splat);
 
 	shader->setupUniformFloat("tex0UvMultiplier", 0.1f);
 	shader->setupUniformFloat("tex1UvMultiplier", 0.1f);
 	shader->setupUniformFloat("tex2UvMultiplier", 0.1f);
 
+	const GLenum drawbuffers[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+	glDrawBuffers(3, &drawbuffers[0]);
 	Entity::Activate();
 }
 
@@ -69,8 +80,9 @@ void Terrain::Deactivate()
 void Terrain::Update()
 {
 	this->shader->useProgram();
+	Render::Renderer::Instance()->SetupUniformBuffer(Graphics::MainCamera::Instance());
 	this->textures->BindTextures();
-	this->shader->setupMatrix4fv("transMatrix", this->transform);
+	this->shader->setupMatrix4fv("Model", this->transform);
 	this->shader->setupMatrix3fv("normalMat", Math::mat3::Transpose(Math::mat3::fromMatrix4D(this->transform).invert()));
 	this->shader->setupVector3f("cameraPosition", Graphics::MainCamera::Instance()->GetCameraPosition());
 
@@ -144,6 +156,8 @@ bool Terrain::CreateTerrain(const char* filename, float widthMultiplier, float h
 		}
 	}
 
+	highestPoint = FLT_MIN;
+
 	// Load the vertex and index array with the terrain data.
 	for (int y = 0; y < (terrainHeight-1); ++y)
 	{
@@ -178,11 +192,16 @@ bool Terrain::CreateTerrain(const char* filename, float widthMultiplier, float h
 			mesh->indices[index] = index2;
 			index++;
 
+			if (mesh->mesh[y*terrainWidth+x].pos.y() > highestPoint)
+			{
+				highestPoint = mesh->mesh[y*terrainWidth + x].pos.y();
+			}
+
 		}
 	}
 
 	GenerateNormals();
-
+	//GetSteepness(100, 200);
 	mesh->genBuffer();
 
 	return true;
@@ -232,7 +251,24 @@ HeightmapValues Terrain::Average(int x, int y)
 	return avg;
 }
 
-bool Terrain::inBounds(int x, int y)
+float Terrain::GetSteepness(int x, int y)
+{
+	float slopeX = GetHeight(x <  terrainWidth - 1 ? x + 1 : x, y) - GetHeight(x > 0 ? x - 1 : x, y);
+	float slopeZ = GetHeight(x, y <  terrainHeight - 1 ? y + 1 : y) - GetHeight(x, y > 0 ? y - 1 : y);
+
+	if (x == 0 || x == terrainWidth - 1)
+		slopeX *= 2;
+	if (y == 0 || y == terrainHeight - 1)
+		slopeZ *= 2;
+
+	// Heightmap width = heightmap height
+	Math::vec3 normal = Math::vec3(-slopeX * (terrainWidth - 1) / terrainWidth, (terrainWidth - 1) / highestPoint, slopeZ * (terrainHeight - 1) / terrainHeight);
+	normal = Math::vec3::Normalize(normal);
+
+	return acos(Math::vec3::Dot(normal, Math::vec3(0.f, 1.f, 0.f)));
+}
+
+	bool Terrain::inBounds(int x, int y)
 {
 	return ((x >= 0 && x < this->terrainWidth) && (y >= 0 && y < this->terrainHeight));
 }
@@ -265,27 +301,32 @@ void Terrain::GenerateNormals()
 		mesh->mesh[i].norm = Math::vec3::Normalize(mesh->mesh[i].norm);
 	}
 
-	//for (int i = 0; i < vertexCount; i += 3)
-	//{
-	//	// Edges of the triangle : position delta
-	//	Math::vec3 deltaPos1 = mesh->mesh[i+1].pos - mesh->mesh[i].pos;
-	//	Math::vec3 deltaPos2 = mesh->mesh[i + 2].pos - mesh->mesh[i].pos;
+	for (int i = 0; i < vertexCount; i += 3)
+	{
+		// Edges of the triangle : position delta
+		Math::vec3 deltaPos1 = mesh->mesh[i+1].pos - mesh->mesh[i].pos;
+		Math::vec3 deltaPos2 = mesh->mesh[i + 2].pos - mesh->mesh[i].pos;
 
-	//	// UV delta
-	//	Math::vec2 deltaUV1 = mesh->mesh[i + 1].uv - mesh->mesh[i].uv;
-	//	Math::vec2 deltaUV2 = mesh->mesh[i + 2].uv - mesh->mesh[i].uv;
+		// UV delta
+		Math::vec2 deltaUV1 = mesh->mesh[i + 1].uv - mesh->mesh[i].uv;
+		Math::vec2 deltaUV2 = mesh->mesh[i + 2].uv - mesh->mesh[i].uv;
 
-	//	float r = 1.0f / (deltaUV1[0] * deltaUV2[1] - deltaUV1[1] * deltaUV2[0]);
-	//	Math::vec3 tangent = (deltaPos1 * deltaUV2[1] - deltaPos2 * deltaUV1[1])*r;
-	//	Math::vec3 bitangent = (deltaPos2 * deltaUV1[0] - deltaPos1 * deltaUV2[0])*r;
+		float r = 1.0f / (deltaUV1[0] * deltaUV2[1] - deltaUV1[1] * deltaUV2[0]);
+		Math::vec3 tangent = (deltaPos1 * deltaUV2[1] - deltaPos2 * deltaUV1[1])*r;
+		Math::vec3 bitangent = (deltaPos2 * deltaUV1[0] - deltaPos1 * deltaUV2[0])*r;
 
-	//	mesh->tangentList.Append(tangent);
-	//	mesh->tangentList.Append(tangent);
-	//	mesh->tangentList.Append(tangent);
+		mesh->mesh[i + 0].tangent = tangent;
+		mesh->mesh[i + 1].tangent = tangent;
+		mesh->mesh[i + 2].tangent = tangent;
 
-	//	mesh->bitangentList.Append(bitangent);
-	//	mesh->bitangentList.Append(bitangent);
-	//	mesh->bitangentList.Append(bitangent);
-	//}
+		mesh->mesh[i + 0].binormal = bitangent;
+		mesh->mesh[i + 1].binormal = bitangent;
+		mesh->mesh[i + 2].binormal = bitangent;
+	}
+}
+
+float Terrain::GetHeight(int x, int y) const
+{
+	return mesh->mesh[y*terrainWidth + x].pos.y();
 }
 }

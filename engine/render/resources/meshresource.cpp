@@ -35,24 +35,16 @@ void MeshResources::genBuffer()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Math::Vertex)*mesh.Size(), &mesh[0], GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(2); 
+	glEnableVertexAttribArray(3);
+	glEnableVertexAttribArray(4);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 8, NULL);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float32) * 8, (GLvoid*)(sizeof(float32) * 3));
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 8, (GLvoid*)(sizeof(float32) * 5));
-	
-	/*if(tangents)
-	{
-		glEnableVertexAttribArray(3);
-		glEnableVertexAttribArray(4);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 14, NULL);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float32) * 14, (GLvoid*)(sizeof(float32) * 3));
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 14, (GLvoid*)(sizeof(float32) * 5));
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 14, (GLvoid*)(sizeof(float32) * 8));
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 14, (GLvoid*)(sizeof(float32) * 11));
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 14, NULL);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float32) * 14, (GLvoid*)(sizeof(float32) * 3));
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 14, (GLvoid*)(sizeof(float32) * 5));
-		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 14, (GLvoid*)(sizeof(float32) * 8));
-		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 14, (GLvoid*)(sizeof(float32) * 11));
-	}
-	else*/
 
 	glGenBuffers(1, &ibo[0]);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo[0]);

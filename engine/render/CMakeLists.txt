@@ -37,7 +37,10 @@ SET(files_render_render
 	render/renderer.h
 	render/renderer.cpp
 	render/shadervariables.h
-	render/shadersemantics.h)
+	render/shadersemantics.h
+	render/skybox.h
+	render/skybox.cpp
+	)
 
 SET(files_render_frames
 	frames/framepass.h

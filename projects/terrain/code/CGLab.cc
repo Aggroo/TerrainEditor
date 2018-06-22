@@ -15,6 +15,7 @@
 #include "render/camera/camera.h"
 #include "render/render/renderer.h"
 #include "application/basegamefeatures/entitymanager.h"
+#include "render/render/skybox.h"
 
 using namespace Display;
 namespace Example
@@ -51,6 +52,7 @@ CGLab::Open()
 
 		terrain = TerrainEditor::Terrain::Create();
 		terrain->Activate();
+
 		shaders = std::make_shared<Math::ShaderObject>();		
 		input = std::make_shared<Input::InputManager>(this->window, terrain->GetShader(), &lNode);
 
@@ -60,6 +62,7 @@ CGLab::Open()
 		// set clear color to gray
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		//glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+		glEnable(GL_MULTISAMPLE);
 		// Enable depth test
 		glEnable(GL_DEPTH_TEST);
 		//Enable backface culling
@@ -98,7 +101,8 @@ CGLab::Run()
 
 	std::shared_ptr<Math::MeshResources> mesh = std::make_shared<Math::MeshResources>();
 	std::shared_ptr<Math::TextureResource> tex = std::make_shared<Math::TextureResource>();
-
+	Ptr<Render::Skybox> skybox = Render::Skybox::Create();
+	skybox->Activate();
 	UI->SetTerrain(terrain);
 
 	mat4 modelMat = mat4::translationMatrix(Math::vec4(0.0f, 0.0f, 0.0f));
@@ -113,7 +117,6 @@ CGLab::Run()
 
     std::chrono::high_resolution_clock::time_point before = std::chrono::high_resolution_clock::now();
 
-
 	while (this->window->IsOpen() && !this->shutdown)
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -126,7 +129,7 @@ CGLab::Run()
 		input->CameraMovement();
 
 		//gN.setTransMat(modelMat);
-		Render::Renderer::Instance()->SetupUniformBuffer(Graphics::MainCamera::Instance());
+		
 		BaseGameFeature::EntityManager::Instance()->Update();
 		//gN.draw();	
 

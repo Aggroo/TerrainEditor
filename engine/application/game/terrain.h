@@ -35,6 +35,8 @@ public:
 
 	HeightmapValues Average(int x, int y);
 
+	float GetSteepness(int x, int y);
+
 	float GetHeightScale();
 
 	Ptr<Math::MeshResources> GetMesh() { return mesh; }
@@ -45,11 +47,13 @@ private:
 	void SmoothenTerrain();
 	bool inBounds(int x, int y);
 	void GenerateNormals();
+	float GetHeight(int x, int y) const;
 
 	int terrainWidth;
 	int terrainHeight;
 
 	float heightScale;
+	float highestPoint;
 
 	HeightmapValues* heightMap;
 

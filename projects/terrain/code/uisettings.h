@@ -31,6 +31,11 @@ struct TextureSettings
 	float tex1UvMultiplier = 0.1f;
 	Util::String tex2Name;
 	float tex2UvMultiplier = 0.1f;
+
+	Util::String normal0Name;
+	Util::String normal1Name;
+	Util::String normal2Name;
+
 	Util::String splatName;
 
 	Render::TextureIndex chosenIndex;

@@ -22,6 +22,8 @@ public:
 	void ModalWindows();
 	void SetupImGuiStyle();
 
+	void GetImagePicker(Util::String texName, Render::TextureIndex index);
+
 	void SetTerrain(Ptr<TerrainEditor::Terrain> terrain) { this->terrain = terrain; }
 
 private:

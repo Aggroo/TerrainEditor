@@ -31,6 +31,8 @@ namespace Math
 		vec3 pos;
 		vec2 uv;
 		vec3 norm;
+		vec3 tangent;
+		vec3 binormal;
 	};
 	
 	class MeshResources : public Core::RefCounted

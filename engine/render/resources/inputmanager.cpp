@@ -6,6 +6,7 @@
 #include "lightnode.h"
 #include "render/render/renderer.h"
 #include "render/camera/camera.h"
+#include "texturenode.h"
 
 namespace Input
 {
@@ -109,13 +110,17 @@ void InputManager::InitKeyPress()
 			shaders->setupVector3f("u_matAmbientReflectance", 1.0f, 1.0f, 1.0f);
 			shaders->setupVector3f("u_matDiffuseReflectance", 1.0f, 1.0f, 1.0f);
 			shaders->setupVector3f("u_matSpecularReflectance", 0.16f, 0.16f, 0.16f);
-			shaders->setupUniformFloat("u_matShininess", 20.0f);
+			shaders->setupUniformFloat("u_matShininess", 12.0f);
 
-			shaders->setupUniformInt("textures[0]", 0);
-			shaders->setupUniformInt("textures[1]", 1);
-			shaders->setupUniformInt("textures[2]", 2);
+			shaders->setupUniformInt("textures[0]",(GLuint) Render::TextureIndex::albedo0);
+			shaders->setupUniformInt("textures[1]",(GLuint) Render::TextureIndex::albedo1);
+			shaders->setupUniformInt("textures[2]",(GLuint) Render::TextureIndex::albedo2);
 
-			shaders->setupUniformInt("splat", 6);
+			shaders->setupUniformInt("normals[0]", (GLuint) Render::TextureIndex::normal0);
+			shaders->setupUniformInt("normals[1]", (GLuint) Render::TextureIndex::normal1);
+			shaders->setupUniformInt("normals[2]", (GLuint) Render::TextureIndex::normal2);
+
+			shaders->setupUniformInt("splat", (GLuint)Render::TextureIndex::splat);
 
 			shaders->setupUniformFloat("tex0UvMultiplier", 0.1f);
 			shaders->setupUniformFloat("tex1UvMultiplier", 0.1f);
