@@ -17,5 +17,5 @@ Set terrain_proj as the startup project.
 Not yet documented!
   
 # Third-party
-⋅⋅* [Imgui](https://github.com/ocornut/imgui)
-⋅⋅* [Native File Dialog](https://github.com/mlabbe/nativefiledialog)
+..* [Imgui](https://github.com/ocornut/imgui)
+..* [Native File Dialog](https://github.com/mlabbe/nativefiledialog)
