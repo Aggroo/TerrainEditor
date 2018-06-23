@@ -17,4 +17,5 @@ Set terrain_proj as the startup project.
 Not yet documented!
   
 # Third-party
-Uses DearImgui as UI system
+⋅⋅* [Imgui](https://github.com/ocornut/imgui)
+⋅⋅* [Native File Dialog](https://github.com/mlabbe/nativefiledialog)
