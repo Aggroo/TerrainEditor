@@ -16,5 +16,5 @@ Set terrain_proj as the startup project.
 # Usage
 Not yet documented!
   
-#Third-party
+# Third-party
 Uses DearImgui as UI system
