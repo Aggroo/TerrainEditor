@@ -1,5 +1,5 @@
 # Terrain Editor
-C++11 based application for a terrain editor.
+A C++11 Terrain Editor created within my own custom game "engine"
 
 ![alt text](https://github.com/Aggroo/TerrainEditor/blob/master/terrain.png)
 
