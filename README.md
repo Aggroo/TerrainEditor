@@ -1,11 +1,11 @@
 # Terrain Editor
-C++11 based application for a terrain editor.
+A C++11 Terrain Editor created within my own custom game "engine"
 
 ![alt text](https://github.com/Aggroo/TerrainEditor/blob/master/terrain.png)
 
 # Requirements
 1. CMake 3+.
-2. Compiler with support for lambda functions (C++11), such as VS 2013.
+2. Compiler with support for C++11, such as VS 2015.
   
 # Instructions
 Only tested on windows!  
@@ -16,3 +16,6 @@ Set terrain_proj as the startup project.
 # Usage
 Not yet documented!
   
+# Third-party
+* [Imgui](https://github.com/ocornut/imgui)
+* [Native File Dialog](https://github.com/mlabbe/nativefiledialog)
