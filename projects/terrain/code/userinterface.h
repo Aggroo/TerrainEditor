@@ -20,15 +20,18 @@ public:
 	void RenderDocks();
 	void RenderTerrainSettings();
 	void ModalWindows();
-	void SetupImGuiStyle();
+	void SetupImGuiStyle() const;
 
 	void GetImagePicker(Util::String texName, Render::TextureIndex index);
+	Util::String GetStringFromTextureIndex(Render::TextureIndex index);
 
 	void SetTerrain(Ptr<TerrainEditor::Terrain> terrain) { this->terrain = terrain; }
 
 private:
 	Example::CGLab* application;
 	Ptr<TerrainEditor::Terrain> terrain;
+
+	bool terrainSettingsOpen;
 
 	bool heightPopup;
 	bool texturesPopup;

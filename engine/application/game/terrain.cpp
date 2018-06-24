@@ -67,8 +67,6 @@ void Terrain::Activate()
 	shader->setupUniformFloat("tex1UvMultiplier", 0.1f);
 	shader->setupUniformFloat("tex2UvMultiplier", 0.1f);
 
-	const GLenum drawbuffers[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
-	glDrawBuffers(3, &drawbuffers[0]);
 	Entity::Activate();
 }
 
@@ -201,7 +199,7 @@ bool Terrain::CreateTerrain(const char* filename, float widthMultiplier, float h
 	}
 
 	GenerateNormals();
-	//GetSteepness(100, 200);
+	GetSteepness(100, 200);
 	mesh->genBuffer();
 
 	return true;

@@ -70,7 +70,8 @@ private:
 	size_t jobSize;
 	///Maps every job to the task it belongs to
 	std::vector<int> jobTasks;
-	//Stores the job functions linked to a job
+
+	///Stores the job functions linked to a job
 	std::vector<Job> jobs;
 
 	///Used for the work threads

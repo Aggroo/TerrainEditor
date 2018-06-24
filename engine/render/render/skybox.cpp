@@ -6,7 +6,7 @@
 
 namespace Render
 {
-__ImplementClass(Render::Skybox, 'RSKY', Game::Entity)
+__ImplementClass(Render::Skybox, 'RSKY', Core::RefCounted)
 Skybox::Skybox()
 {
 	shader = Math::ShaderObject::Create();
@@ -31,12 +31,11 @@ void Skybox::Activate()
 	LoadCubemap(cubeTextures);
 	GenerateCube();
 
-	Entity::Activate();
 }
 
 void Skybox::Deactivate()
 {
-	Entity::Deactivate();
+
 }
 
 void Skybox::Update()
@@ -55,7 +54,7 @@ void Skybox::LoadCubemap(Util::Array<Util::String> texures)
 {
 	glGenTextures(1, &cubemapID);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapID);
-
+	
 	int width, height, nrChannels;
 	for (unsigned int i = 0; i < texures.Size(); i++)
 	{

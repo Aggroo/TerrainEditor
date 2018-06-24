@@ -26,6 +26,7 @@ public:
 
 	int32 GetWidth();
 	int32 GetHeight();
+	GLFWwindow* GetWindow() { return this->window; }
 
 	/// open window
 	bool Open();

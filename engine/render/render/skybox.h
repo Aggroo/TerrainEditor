@@ -5,7 +5,7 @@
 
 namespace Render
 {
-class Skybox : public Game::Entity
+class Skybox : public Core::RefCounted
 {
 __DeclareClass(Skybox)
 public:

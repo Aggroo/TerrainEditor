@@ -8,6 +8,7 @@
 #include "render/resources/textureresource.h"
 #include "imgui_internal.h"
 #include "foundation/util/curve.hpp"
+#include "foundation/util/threadpool.h"
 
 UserInterface::UserInterface(Example::CGLab* app)
 {
@@ -16,16 +17,11 @@ UserInterface::UserInterface(Example::CGLab* app)
 	this->openPopup = false;
 	this->heightPopup = false;
 	this->texturesPopup = false;
+	this->terrainSettingsOpen = false;
 	heightSettings.texture = std::make_shared<Math::TextureResource>();
 
 	// Setup style
-	ImGuiStyle& style = ImGui::GetStyle();
-
-	style.FrameRounding = 2.f;
-	style.GrabRounding = style.FrameRounding; // Make GrabRounding always the same value as FrameRounding
-	style.WindowBorderSize = 1.0f;
-	style.FrameBorderSize = 1.0f;
-	style.PopupBorderSize = 1.0f;
+	SetupImGuiStyle();
 
 
 	foo[0].x = -1; // init data so editor knows to take it from here
@@ -61,15 +57,9 @@ void UserInterface::Run()
 			if (ImGui::MenuItem("Paste", "CTRL+V")) {}
 			ImGui::EndMenu();
 		}
-		if (ImGui::BeginMenu("Window"))
+		if (ImGui::BeginMenu("Terrain"))
 		{
-			if (ImGui::BeginMenu("Show"))
-			{
-				//if (ImGui::MenuItem("GUI Console", NULL)) { IO::Console::Instance()->Show(); }
-				//if (ImGui::MenuItem("Statistics", NULL, &showStatistics)) {}
-				//if (ImGui::MenuItem("Shader Debugger", NULL, &showShaderDebugger)) {}
-				ImGui::EndMenu();
-			}
+			if (ImGui::MenuItem("Terrain Settings", "P")) { this->terrainSettingsOpen = true; }
 			ImGui::EndMenu();
 		}
 
@@ -125,9 +115,9 @@ void UserInterface::ShowFileMenu()
 
 void UserInterface::RenderDocks()
 {
-	const float toolbarWidth = 52.0f;
-	const float toolButtonSize = 30.0f;
-	
+	const float toolbarWidth = 48.0f;
+	const float toolButtonSize = 28.0f;
+
 	ImGui::Begin("ToolBar", NULL,
 		ImGuiWindowFlags_NoCollapse |
 		ImGuiWindowFlags_NoMove |
@@ -184,7 +174,7 @@ void UserInterface::RenderDocks()
 
 		ImGui::End();
 	}
-	
+
 	//ImGui::Begin("Dock", NULL,
 	//	ImGuiWindowFlags_NoCollapse |
 	//	ImGuiWindowFlags_NoMove |
@@ -222,156 +212,158 @@ void UserInterface::RenderDocks()
 
 void UserInterface::RenderTerrainSettings()
 {
-	bool open = true;
-	ImGui::Begin("Terrain Settings", &open);
+	if(this->terrainSettingsOpen)
 	{
-		ImGui::Text("Settings");
-		ImGui::BeginChild("TerrainSettings");
+		ImGui::Begin("Terrain Settings", &this->terrainSettingsOpen);
 		{
-			ImGui::BeginDockspace();
-
-			if (ImGui::BeginDock("Heightmap", NULL, ImGuiWindowFlags_NoSavedSettings)) 
+			ImGui::Text("Settings");
+			ImGui::BeginChild("TerrainSettings");
 			{
-				static float f = 12.0f;
-				if(ImGui::DragFloat("Shininess", &f, 0.01f, 0.01f, 80.f))
-				{
-					terrain->GetShader()->setupUniformFloat("u_matShininess", f);
-				}
-				if (heightSettings.texName.IsEmpty())
-				{
-					ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
-					ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
-				}
-				ImGui::Indent(10);
-				if (ImGui::Button("Generate##heightmap", ImVec2(ImGui::GetWindowContentRegionWidth() - 20, 25)))
-				{
-					terrain->CreateTerrain(heightSettings.texName.AsCharPtr(), heightSettings.widthMultiplier, heightSettings.heightMultiplier, foo);
-				}
-				ImGui::Unindent(10);
+				ImGui::BeginDockspace();
 
-				if (heightSettings.texName.IsEmpty())
+				if (ImGui::BeginDock("Heightmap", NULL, ImGuiWindowFlags_NoSavedSettings))
 				{
-					ImGui::PopItemFlag();
-					ImGui::PopStyleVar();
-				}
-				ImGui::Separator();
-
-				if (ImGui::CollapsingHeader("Heightmap Image", ImGuiTreeNodeFlags_DefaultOpen))
-				{
-					if (!heightSettings.texName.IsEmpty())
+					if (heightSettings.texName.IsEmpty())
 					{
-						Util::String s = heightSettings.texName.AsCharPtr();
-						Util::Array<Util::String> path;
-
-						s.Tokenize("/", path);
-
-						s = path[path.Size() - 2] + "/" + path[path.Size() - 1];
-
-						ImGui::InputText("##texture", (char*)s.AsCharPtr(), 256, ImGuiInputTextFlags_ReadOnly);
+						ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
+						ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
 					}
-					else
+					ImGui::Indent(10);
+					if (ImGui::Button("Generate##heightmap", ImVec2(ImGui::GetWindowContentRegionWidth() - 20, 25)))
 					{
-						ImGui::InputText("##texture", (char*)heightSettings.texName.AsCharPtr(), 512, ImGuiInputTextFlags_ReadOnly);
+						terrain->CreateTerrain(heightSettings.texName.AsCharPtr(), heightSettings.widthMultiplier, heightSettings.heightMultiplier, foo);
 					}
-					ImGui::SameLine();
-					if (ImGui::Button("...##height"))
+					ImGui::Unindent(10);
+
+					if (heightSettings.texName.IsEmpty())
 					{
-						this->heightPopup = true;
+						ImGui::PopItemFlag();
+						ImGui::PopStyleVar();
 					}
-					ImGui::SameLine();
-					ImGui::Image((void*)heightSettings.texture->GetTextureID(), ImVec2(ImGui::GetContentRegionAvailWidth()-5, ImGui::GetContentRegionAvailWidth()-5));
+					ImGui::Separator();
 
-					ImGui::DragFloat("Width Multiplier", &heightSettings.widthMultiplier, 0.1f, 0.0f, 1000.f);
-					ImGui::DragFloat("Height Multiplier", &heightSettings.heightMultiplier, 0.01f, 0.0f, 1000.f);
-
-					if (ImGui::Curve("Height Curve", ImVec2(ImGui::GetWindowContentRegionWidth() - 10, 200), 10, foo))
+					if (ImGui::CollapsingHeader("Heightmap Image", ImGuiTreeNodeFlags_DefaultOpen))
 					{
-						// curve changed
-					}
-
-				}
-				if (ImGui::CollapsingHeader("Texture Settings"))
-				{
-					if(ImGui::TreeNode("Texture 0 (R)"))
-					{
-						GetImagePicker(texSettings.tex0Name, Render::TextureIndex::albedo0);
-						GetImagePicker(texSettings.normal0Name, Render::TextureIndex::normal0);
-
-						if (ImGui::DragFloat("Tex0 UV Multiplier", &texSettings.tex0UvMultiplier, 0.01f, 0.0f, 1.f))
+						if (!heightSettings.texName.IsEmpty())
 						{
-							terrain->GetShader()->setupUniformFloat("tex0UvMultiplier", texSettings.tex0UvMultiplier);
-						}
-						ImGui::TreePop();
-					}
-					
-					if (ImGui::TreeNode("Texture 1 (G)"))
-					{
-						GetImagePicker(texSettings.tex1Name, Render::TextureIndex::albedo1);
-						GetImagePicker(texSettings.normal1Name, Render::TextureIndex::normal1);
+							Util::String s = heightSettings.texName.AsCharPtr();
+							Util::Array<Util::String> path;
 
-						if (ImGui::DragFloat("Tex1 UV Multiplier", &texSettings.tex1UvMultiplier, 0.01f, 0.0f, 1.f))
-						{
-							terrain->GetShader()->setupUniformFloat("tex1UvMultiplier", texSettings.tex1UvMultiplier);
-						}
-						ImGui::TreePop();
-					}
-					if (ImGui::TreeNode("Texture 2 (B)"))
-					{
-						GetImagePicker(texSettings.tex2Name, Render::TextureIndex::albedo2);
-						GetImagePicker(texSettings.normal2Name, Render::TextureIndex::normal2);
+							s.Tokenize("/", path);
 
-						if (ImGui::DragFloat("Tex2 UV Multiplier", &texSettings.tex2UvMultiplier, 0.01f, 0.0f, 1.f))
-						{
-							terrain->GetShader()->setupUniformFloat("tex2UvMultiplier", texSettings.tex2UvMultiplier);
+							s = path[path.Size() - 2] + "/" + path[path.Size() - 1];
+
+							ImGui::LabelText("##texture", "Heightmap");
+							ImGui::InputText("##texture", (char*)s.AsCharPtr(), 256, ImGuiInputTextFlags_ReadOnly);
 						}
-						ImGui::TreePop();
+						else
+						{
+							ImGui::LabelText("##texture", "Heightmap");
+							ImGui::InputText("##texture", (char*)heightSettings.texName.AsCharPtr(), 512, ImGuiInputTextFlags_ReadOnly);
+						}
+						ImGui::SameLine();
+						if (ImGui::ImageButton((void*)heightSettings.texture->GetTextureID(), ImVec2(ImGui::GetContentRegionAvailWidth() - 5, ImGui::GetContentRegionAvailWidth() - 5)))
+						{
+							this->heightPopup = true;
+						}
+
+						ImGui::LabelText("##widthmult", "Width Multiplier");
+						ImGui::DragFloat("##widthmult", &heightSettings.widthMultiplier, 0.1f, 0.0f, 1000.f);
+						ImGui::LabelText("##heightmult", "Height Multiplier");
+						ImGui::DragFloat("##heightmult", &heightSettings.heightMultiplier, 0.01f, 0.0f, 1000.f);
+
+						ImGui::LabelText("##heightscale", "Height Scale");
+						if (ImGui::Curve("##heightscale", ImVec2(ImGui::GetWindowContentRegionWidth() - 10, 200), 10, foo))
+						{
+							// curve changed
+						}
+
 					}
-					if (ImGui::TreeNode("Splatmap"))
+					if (ImGui::CollapsingHeader("Texture Settings"))
 					{
-						GetImagePicker(texSettings.splatName, Render::TextureIndex::splat);
-						
-						ImGui::TreePop();
+						if (ImGui::TreeNode("Texture 0 (R)"))
+						{
+							GetImagePicker(texSettings.tex0Name, Render::TextureIndex::albedo0);
+							GetImagePicker(texSettings.normal0Name, Render::TextureIndex::normal0);
+
+							ImGui::LabelText("##Tex0UVMultiplier", "UV multiplier");
+							if (ImGui::DragFloat("##Tex0UVMultiplier", &texSettings.tex0UvMultiplier, 0.01f, 0.0f, 1.f))
+							{
+								terrain->GetShader()->setupUniformFloat("tex0UvMultiplier", texSettings.tex0UvMultiplier);
+							}
+							ImGui::TreePop();
+						}
+
+						if (ImGui::TreeNode("Texture 1 (G)"))
+						{
+							GetImagePicker(texSettings.tex1Name, Render::TextureIndex::albedo1);
+							GetImagePicker(texSettings.normal1Name, Render::TextureIndex::normal1);
+
+							ImGui::LabelText("##Tex1UVMultiplier", "UV multiplier");
+							if (ImGui::DragFloat("##Tex1UVMultiplier", &texSettings.tex1UvMultiplier, 0.01f, 0.0f, 1.f))
+							{
+								terrain->GetShader()->setupUniformFloat("tex1UvMultiplier", texSettings.tex1UvMultiplier);
+							}
+							ImGui::TreePop();
+						}
+						if (ImGui::TreeNode("Texture 2 (B)"))
+						{
+							GetImagePicker(texSettings.tex2Name, Render::TextureIndex::albedo2);
+							GetImagePicker(texSettings.normal2Name, Render::TextureIndex::normal2);
+
+							ImGui::LabelText("##Tex2UVMultiplier", "UV multiplier");
+							if (ImGui::DragFloat("##Tex2UVMultiplier", &texSettings.tex2UvMultiplier, 0.01f, 0.0f, 1.f))
+							{
+								terrain->GetShader()->setupUniformFloat("tex2UvMultiplier", texSettings.tex2UvMultiplier);
+							}
+							ImGui::TreePop();
+						}
+						if (ImGui::TreeNode("Splatmap"))
+						{
+							GetImagePicker(texSettings.splatName, Render::TextureIndex::splat);
+
+							ImGui::TreePop();
+						}
 					}
+
 				}
+				ImGui::EndDock();
 
+				if (ImGui::BeginDock("Perlin Noise", NULL, ImGuiWindowFlags_NoSavedSettings)) {
+
+					if (ImGui::Button("Generate##Perlin", ImVec2(ImGui::GetWindowContentRegionWidth() - 20, 25)))
+					{
+
+						this->openPopup = true;
+
+						//terrain->CreateTerrain(heightSettings.texName.AsCharPtr(), heightSettings.widthMultiplier, heightSettings.heightMultiplier);
+					}
+					ImGui::Separator();
+					if (ImGui::CollapsingHeader("Perlin Texture"))
+					{
+						ImGui::Image((void*)p.GetTexture()->GetTextureID(), ImVec2(ImGui::GetWindowContentRegionWidth() - 5, ImGui::GetWindowContentRegionWidth() - 20));
+					}
+					if (ImGui::CollapsingHeader("Generation Settings"))
+					{
+						ImGui::DragInt("Width", &perlinSettings.width, 1.0f, 1.f, 1000.f);
+						ImGui::DragInt("Height", &perlinSettings.height, 1.0f, 1.f, 1000.f);
+						ImGui::DragFloat("Scale", &perlinSettings.scale, 0.1f, 0.0f, 1000.f);
+						ImGui::SliderInt("octaves", &perlinSettings.octaves, 1, 8);
+						ImGui::DragFloat("Persistance", &perlinSettings.persistance, 0.01f, 0.0f, 1.f);
+						ImGui::DragFloat("Lacunarity", &perlinSettings.lacunarity, 0.1f, 0.0001f, 1000.f);
+
+					}
+
+				}
+				ImGui::EndDock();
+
+				ImGui::EndDockspace();
 			}
-			ImGui::EndDock();
+			ImGui::EndChild();
 
-			if (ImGui::BeginDock("Perlin Noise", NULL, ImGuiWindowFlags_NoSavedSettings)) {
-
-				if (ImGui::Button("Generate##Perlin", ImVec2(ImGui::GetWindowContentRegionWidth() - 20, 25)))
-				{
-
-					this->openPopup = true;
-					
-					//terrain->CreateTerrain(heightSettings.texName.AsCharPtr(), heightSettings.widthMultiplier, heightSettings.heightMultiplier);
-				}
-				ImGui::Separator();
-				if (ImGui::CollapsingHeader("Perlin Texture"))
-				{
-					ImGui::Image((void*)p.GetTexture()->GetTextureID(), ImVec2(ImGui::GetWindowContentRegionWidth() - 5, ImGui::GetWindowContentRegionWidth() - 20));
-				}
-				if (ImGui::CollapsingHeader("Generation Settings"))
-				{
-					ImGui::DragInt("Width", &perlinSettings.width, 1.0f, 1.f, 1000.f);
-					ImGui::DragInt("Height", &perlinSettings.height, 1.0f, 1.f, 1000.f);
-					ImGui::DragFloat("Scale", &perlinSettings.scale, 0.1f, 0.0f, 1000.f);
-					ImGui::SliderInt("octaves", &perlinSettings.octaves, 1, 8);
-					ImGui::DragFloat("Persistance", &perlinSettings.persistance, 0.01f, 0.0f, 1.f);
-					ImGui::DragFloat("Lacunarity", &perlinSettings.lacunarity, 0.1f, 0.0001f, 1000.f);
-
-				}
-				
-			}
-			ImGui::EndDock();
-
-			ImGui::EndDockspace();
 		}
-		ImGui::EndChild();
-
+		ImGui::End();
 	}
-	ImGui::End();
-
 }
 
 void UserInterface::ModalWindows()
@@ -493,61 +485,88 @@ void UserInterface::ModalWindows()
 	}
 }
 
-void UserInterface::SetupImGuiStyle()
+void UserInterface::SetupImGuiStyle() const
 {
-	ImGuiStyle * style = &ImGui::GetStyle();
+	ImGui::StyleColorsDark();
+	ImGuiStyle& style = ImGui::GetStyle();
 
-	style->WindowPadding = ImVec2(15, 15);
-	style->WindowRounding = 5.0f;
-	style->FramePadding = ImVec2(5, 5);
-	style->FrameRounding = 4.0f;
-	style->ItemSpacing = ImVec2(12, 8);
-	style->ItemInnerSpacing = ImVec2(8, 6);
-	style->IndentSpacing = 25.0f;
-	style->ScrollbarSize = 15.0f;
-	style->ScrollbarRounding = 9.0f;
-	style->GrabMinSize = 5.0f;
-	style->GrabRounding = 3.0f;
+	float fontSize = 15.0f;
+	float roundness = 2.0f;
+	ImVec4 white = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
+	ImVec4 text = ImVec4(0.76f, 0.77f, 0.8f, 1.0f);
+	ImVec4 black = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
+	ImVec4 backgroundVeryDark = ImVec4(0.08f, 0.086f, 0.094f, 1.00f);
+	ImVec4 backgroundDark = ImVec4(0.117f, 0.121f, 0.145f, 1.00f);
+	ImVec4 backgroundMedium = ImVec4(0.26f, 0.26f, 0.27f, 1.0f);
+	ImVec4 backgroundLight = ImVec4(0.37f, 0.38f, 0.39f, 1.0f);
+	ImVec4 highlightBlue = ImVec4(0.172f, 0.239f, 0.341f, 1.0f);
+	ImVec4 highlightBlueActive = ImVec4(0.182f, 0.249f, 0.361f, 1.0f);
+	ImVec4 highlightBlueHovered = ImVec4(0.202f, 0.269f, 0.391f, 1.0f);
+	ImVec4 barBackground = ImVec4(0.078f, 0.082f, 0.09f, 1.0f);
+	ImVec4 bar = ImVec4(0.164f, 0.180f, 0.231f, 1.0f);
+	ImVec4 barHovered = ImVec4(0.411f, 0.411f, 0.411f, 1.0f);
+	ImVec4 barActive = ImVec4(0.337f, 0.337f, 0.368f, 1.0f);
 
-	style->Colors[ImGuiCol_Text] = ImVec4(0.80f, 0.80f, 0.83f, 1.00f);
-	style->Colors[ImGuiCol_TextDisabled] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
-	style->Colors[ImGuiCol_WindowBg] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
-	style->Colors[ImGuiCol_ChildWindowBg] = ImVec4(0.07f, 0.07f, 0.09f, 1.00f);
-	style->Colors[ImGuiCol_PopupBg] = ImVec4(0.07f, 0.07f, 0.09f, 1.00f);
-	style->Colors[ImGuiCol_Border] = ImVec4(0.80f, 0.80f, 0.83f, 0.88f);
-	style->Colors[ImGuiCol_BorderShadow] = ImVec4(0.92f, 0.91f, 0.88f, 0.00f);
-	style->Colors[ImGuiCol_FrameBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
-	style->Colors[ImGuiCol_FrameBgHovered] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
-	style->Colors[ImGuiCol_FrameBgActive] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
-	style->Colors[ImGuiCol_TitleBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
-	style->Colors[ImGuiCol_TitleBgCollapsed] = ImVec4(1.00f, 0.98f, 0.95f, 0.75f);
-	style->Colors[ImGuiCol_TitleBgActive] = ImVec4(0.07f, 0.07f, 0.09f, 1.00f);
-	style->Colors[ImGuiCol_MenuBarBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
-	style->Colors[ImGuiCol_ScrollbarBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
-	style->Colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.80f, 0.80f, 0.83f, 0.31f);
-	style->Colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
-	style->Colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
-	style->Colors[ImGuiCol_CheckMark] = ImVec4(0.80f, 0.80f, 0.83f, 0.31f);
-	style->Colors[ImGuiCol_SliderGrab] = ImVec4(0.80f, 0.80f, 0.83f, 0.31f);
-	style->Colors[ImGuiCol_SliderGrabActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
-	style->Colors[ImGuiCol_Button] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
-	style->Colors[ImGuiCol_ButtonHovered] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
-	style->Colors[ImGuiCol_ButtonActive] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
-	style->Colors[ImGuiCol_Header] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
-	style->Colors[ImGuiCol_HeaderHovered] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
-	style->Colors[ImGuiCol_HeaderActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
-	style->Colors[ImGuiCol_Column] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
-	style->Colors[ImGuiCol_ColumnHovered] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
-	style->Colors[ImGuiCol_ColumnActive] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
-	style->Colors[ImGuiCol_ResizeGrip] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
-	style->Colors[ImGuiCol_ResizeGripHovered] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
-	style->Colors[ImGuiCol_ResizeGripActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
-	style->Colors[ImGuiCol_PlotLines] = ImVec4(0.40f, 0.39f, 0.38f, 0.63f);
-	style->Colors[ImGuiCol_PlotLinesHovered] = ImVec4(0.25f, 1.00f, 0.00f, 1.00f);
-	style->Colors[ImGuiCol_PlotHistogram] = ImVec4(0.40f, 0.39f, 0.38f, 0.63f);
-	style->Colors[ImGuiCol_PlotHistogramHovered] = ImVec4(0.25f, 1.00f, 0.00f, 1.00f);
-	style->Colors[ImGuiCol_TextSelectedBg] = ImVec4(0.25f, 1.00f, 0.00f, 0.43f);
-	style->Colors[ImGuiCol_ModalWindowDarkening] = ImVec4(1.00f, 0.98f, 0.95f, 0.73f);
+	// Spatial
+	style.WindowBorderSize = 1.0f;
+	style.FrameBorderSize = 1.0f;
+	//style.WindowMinSize		= ImVec2(160, 20);
+	style.FramePadding = ImVec2(5, 5);
+	style.ItemSpacing = ImVec2(6, 5);
+	//style.ItemInnerSpacing	= ImVec2(6, 4);
+	style.Alpha = 1.0f;
+	style.WindowRounding = roundness;
+	style.FrameRounding = roundness;
+	style.PopupRounding = roundness;
+	//style.IndentSpacing		= 6.0f;
+	//style.ItemInnerSpacing	= ImVec2(2, 4);
+	//style.ColumnsMinSpacing	= 50.0f;
+	//style.GrabMinSize			= 14.0f;
+	style.GrabRounding = roundness;
+	//style.ScrollbarSize		= 12.0f;
+	style.ScrollbarRounding = roundness;
+
+	// Colors
+	style.Colors[ImGuiCol_Text] = text;
+	//style.Colors[ImGuiCol_TextDisabled]			= ImVec4(0.86f, 0.93f, 0.89f, 0.28f);
+	style.Colors[ImGuiCol_WindowBg] = backgroundDark;
+	//style.Colors[ImGuiCol_ChildBg]				= ImVec4(0.20f, 0.22f, 0.27f, 0.58f);
+	style.Colors[ImGuiCol_Border] = black;
+	//style.Colors[ImGuiCol_BorderShadow]			= ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+	style.Colors[ImGuiCol_FrameBg] = bar;
+	style.Colors[ImGuiCol_FrameBgHovered] = highlightBlue;
+	style.Colors[ImGuiCol_FrameBgActive] = highlightBlueHovered;
+	style.Colors[ImGuiCol_TitleBg] = backgroundVeryDark;
+	//style.Colors[ImGuiCol_TitleBgCollapsed]		= ImVec4(0.20f, 0.22f, 0.27f, 0.75f);
+	style.Colors[ImGuiCol_TitleBgActive] = bar;
+	style.Colors[ImGuiCol_MenuBarBg] = backgroundVeryDark;
+	style.Colors[ImGuiCol_ScrollbarBg] = barBackground;
+	style.Colors[ImGuiCol_ScrollbarGrab] = bar;
+	style.Colors[ImGuiCol_ScrollbarGrabHovered] = barHovered;
+	style.Colors[ImGuiCol_ScrollbarGrabActive] = barActive;
+	style.Colors[ImGuiCol_CheckMark] = white;
+	style.Colors[ImGuiCol_SliderGrab] = bar;
+	style.Colors[ImGuiCol_SliderGrabActive] = barActive;
+	style.Colors[ImGuiCol_Button] = barActive;
+	style.Colors[ImGuiCol_ButtonHovered] = highlightBlue;
+	style.Colors[ImGuiCol_ButtonActive] = highlightBlueHovered;
+	style.Colors[ImGuiCol_Header] = highlightBlue; // selected items (tree, menu bar etc.)
+	style.Colors[ImGuiCol_HeaderHovered] = highlightBlueHovered; // hovered items (tree, menu bar etc.)
+	style.Colors[ImGuiCol_HeaderActive] = highlightBlueActive;
+	style.Colors[ImGuiCol_Separator] = backgroundLight;
+	//style.Colors[ImGuiCol_SeparatorHovered]		= ImVec4(0.92f, 0.18f, 0.29f, 0.78f);
+	//style.Colors[ImGuiCol_SeparatorActive]		= ImVec4(0.92f, 0.18f, 0.29f, 1.00f);
+	style.Colors[ImGuiCol_ResizeGrip] = backgroundMedium;
+	style.Colors[ImGuiCol_ResizeGripHovered] = highlightBlue;
+	style.Colors[ImGuiCol_ResizeGripActive] = highlightBlueHovered;
+	//style.Colors[ImGuiCol_PlotLines]				= ImVec4(0.86f, 0.93f, 0.89f, 0.63f);
+	//style.Colors[ImGuiCol_PlotLinesHovered]		= ImVec4(0.92f, 0.18f, 0.29f, 1.00f);
+	style.Colors[ImGuiCol_PlotHistogram] = highlightBlue; // Also used for progress bar
+	style.Colors[ImGuiCol_PlotHistogramHovered] = highlightBlueHovered;
+	style.Colors[ImGuiCol_TextSelectedBg] = highlightBlue;
+	style.Colors[ImGuiCol_PopupBg] = backgroundVeryDark;
+	style.Colors[ImGuiCol_DragDropTarget] = backgroundLight;
+	//style.Colors[ImGuiCol_ModalWindowDarkening]	= ImVec4(0.20f, 0.22f, 0.27f, 0.73f);
 }
 
 void UserInterface::GetImagePicker(Util::String texName, Render::TextureIndex index)
@@ -563,19 +582,33 @@ void UserInterface::GetImagePicker(Util::String texName, Render::TextureIndex in
 
 		s = path[path.Size() - 2] + "/" + path[path.Size() - 1];
 
+		ImGui::LabelText(label.AsCharPtr(), GetStringFromTextureIndex(index).AsCharPtr());
 		ImGui::InputText(label.AsCharPtr(), (char*)s.AsCharPtr(), 256, ImGuiInputTextFlags_ReadOnly);
 	}
 	else
 	{
+		ImGui::LabelText(label.AsCharPtr(), GetStringFromTextureIndex(index).AsCharPtr());
 		ImGui::InputText(label.AsCharPtr(), (char*)texName.AsCharPtr(), 512, ImGuiInputTextFlags_ReadOnly);
 	}
 	ImGui::SameLine();
 	Util::String dot = "..." + label;
-	if (ImGui::Button(dot.AsCharPtr()))
+	if (ImGui::ImageButton((void*)terrain->GetTextures()->GetTexture(index)->GetTextureID(), ImVec2(ImGui::GetContentRegionAvailWidth() - 10, ImGui::GetContentRegionAvailWidth() - 10)))
 	{
 		texSettings.chosenIndex = index;
 		this->texturesPopup = true;
 	}
-	ImGui::SameLine();
-	ImGui::Image((void*)terrain->GetTextures()->GetTexture(index)->GetTextureID(), ImVec2(ImGui::GetContentRegionAvailWidth() - 5, ImGui::GetContentRegionAvailWidth() - 5));
+}
+
+Util::String UserInterface::GetStringFromTextureIndex(Render::TextureIndex index)
+{
+	switch (index)
+	{
+	case Render::TextureIndex::albedo0: return Util::String("Albedo");
+	case Render::TextureIndex::albedo1: return Util::String("Albedo");
+	case Render::TextureIndex::albedo2: return Util::String("Albedo");
+	case Render::TextureIndex::normal0: return Util::String("Normal");
+	case Render::TextureIndex::normal1: return Util::String("Normal");
+	case Render::TextureIndex::normal2: return Util::String("Normal");
+	case Render::TextureIndex::splat: return Util::String("Splatmap");
+	}
 }

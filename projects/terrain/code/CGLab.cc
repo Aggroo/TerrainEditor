@@ -16,6 +16,7 @@
 #include "render/render/renderer.h"
 #include "application/basegamefeatures/entitymanager.h"
 #include "render/render/skybox.h"
+#include "foundation/util/threadpool.h"
 
 using namespace Display;
 namespace Example
@@ -131,6 +132,7 @@ CGLab::Run()
 		//gN.setTransMat(modelMat);
 		
 		BaseGameFeature::EntityManager::Instance()->Update();
+		skybox->Update();
 		//gN.draw();	
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
