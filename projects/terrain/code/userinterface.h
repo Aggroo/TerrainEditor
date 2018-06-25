@@ -7,7 +7,11 @@
 #include "uisettings.h"
 
 namespace Example{ class CGLab; }
-namespace Math { class TextureResource; }
+namespace Render 
+{
+	enum class TextureIndex;
+	class TextureResource; 
+}
 
 class UserInterface
 {
@@ -18,20 +22,18 @@ public:
 	void Run();
 	void ShowFileMenu();
 	void RenderDocks();
-	void RenderTerrainSettings();
 	void ModalWindows();
 	void SetupImGuiStyle() const;
 
 	void GetImagePicker(Util::String texName, Render::TextureIndex index);
 	Util::String GetStringFromTextureIndex(Render::TextureIndex index);
+	void RenderTooltip(const char* text);
 
 	void SetTerrain(Ptr<TerrainEditor::Terrain> terrain) { this->terrain = terrain; }
 
 private:
 	Example::CGLab* application;
 	Ptr<TerrainEditor::Terrain> terrain;
-
-	bool terrainSettingsOpen;
 
 	bool heightPopup;
 	bool texturesPopup;

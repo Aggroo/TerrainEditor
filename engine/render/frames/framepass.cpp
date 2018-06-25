@@ -1,9 +1,9 @@
 #include "config.h"
 #include "framepass.h"
 
-namespace Frames 
+namespace Render
 {
-
+__ImplementClass(Render::FramePass, 'REFP', Core::RefCounted)
 FramePass::FramePass() 
 {
 

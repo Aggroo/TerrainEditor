@@ -48,13 +48,25 @@ SET(files_render_frames
 	frames/depthpass.h
 	frames/depthpass.cpp
 	frames/drawpass.h
-	frames/drawpass.cpp)
+	frames/drawpass.cpp
+	frames/lightcullingpass.h
+	frames/lightcullingpass.cpp
+	frames/flatgeometrylitpass.h
+	frames/flatgeometrylitpass.cpp
+	)
 	
 SET(files_render_material
 	material/material.h
 	material/material.cpp
 	material/materialparameter.h
 	material/materialparameter.cpp)
+	
+SET(files_render_server
+	server/resourceserver.h
+	server/resourceserver.cpp
+	server/frameserver.h
+	server/frameserver.cpp
+	)
 
 SOURCE_GROUP("display" FILES ${files_render_display})
 
@@ -68,6 +80,8 @@ SOURCE_GROUP("frames" FILES ${files_render_frames})
 
 SOURCE_GROUP("material" FILES ${files_render_material})
 
+SOURCE_GROUP("server" FILES ${files_render_server})
+
 SET(files_render
 	${files_render_display}
 	${files_render_resources}
@@ -75,6 +89,7 @@ SET(files_render
 	${files_render_render}
 	${files_render_frames}
 	${files_render_material}
+	${files_render_server}
 	${files_render_pch})
 
 SET(files_pch ../config.h ../config.cc)

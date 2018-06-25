@@ -9,7 +9,7 @@
 
 namespace TerrainEditor
 {
-__ImplementClass(TerrainEditor::Terrain, 'TETY', Core::RefCounted);
+__ImplementClass(TerrainEditor::Terrain, 'TETY', Game::Entity);
 
 Terrain::Terrain() : terrainWidth(0), terrainHeight(0), heightMap(nullptr)
 {

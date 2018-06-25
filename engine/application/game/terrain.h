@@ -24,7 +24,7 @@ public:
 	Terrain();
 	~Terrain();
 
-	///Registers this entity to the physics server
+	///Registers this entity to the Entity server
 	void Activate();
 	void Deactivate();
 

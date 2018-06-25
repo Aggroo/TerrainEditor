@@ -1,5 +1,6 @@
 #include "config.h"
 #include "texturenode.h"
+#include "render/server/resourceserver.h"
 
 namespace Render
 {
@@ -16,8 +17,9 @@ TextureNode::~TextureNode()
 
 void TextureNode::AddTexture(TextureIndex index, const char* filename)
 {
-	this->textures.Add(index, Math::TextureResource::Create());
-	this->textures[index]->LoadTextureFile(filename);
+	
+	this->textures.Add(index, Render::ResourceServer::Instance()->LoadTexture(filename));
+	//this->textures[index]->LoadTextureFile(filename);
 }
 
 void TextureNode::UpdateTexture(TextureIndex index, const char* filename) const
@@ -28,12 +30,12 @@ void TextureNode::UpdateTexture(TextureIndex index, const char* filename) const
 	}
 }
 
-Ptr<Math::TextureResource> TextureNode::GetTexture(TextureIndex index) const
+Ptr<Render::TextureResource> TextureNode::GetTexture(TextureIndex index) const
 {
 	return this->textures[index];
 }
 
-	void TextureNode::BindTextures() const
+void TextureNode::BindTextures() const
 {
 	Util::Array<TextureIndex> indexArr = this->textures.KeysAsArray();
 

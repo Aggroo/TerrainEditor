@@ -1,5 +1,6 @@
 #pragma once
 #include <math.h>
+#include <cmath>
 #include "vec4.h"
 #include "quaternions.h"
 
@@ -33,10 +34,10 @@ namespace Math
 			matrice[15] = 1;
 		}
 		
-		inline mat4(float m00, float m01, float m02, float m03, 
-				float m10, float m11,float m12,float m13, 
-				float m20,float m21, float m22,float m23, 
-				float m30,float m31, float m32,float m33)
+		inline mat4(const float m00, const float m01, const float m02, const float m03,
+				const float m10, const float m11, const float m12, const float m13,
+				const float m20, const float m21, const float m22, const float m23,
+				const float m30, const float m31, const float m32, const float m33)
 		{
 			matrice[0] = m00;
 			matrice[1] = m01;
@@ -160,7 +161,6 @@ namespace Math
 
 		inline static mat4 inverse(Math::mat4& matrice)
 		{
-			float determinant, invDeterminant;
 			float tmp[16];
 			mat4 new_matrix;
 
@@ -277,14 +277,14 @@ namespace Math
 					 matrice[8] * matrice[2] * matrice[5];
 
 			// check determinant if it is 0
-			determinant = matrice[0] * tmp[0] + matrice[1] * tmp[4] + matrice[2] * tmp[8] + matrice[3] * tmp[12];
+			const float determinant = matrice[0] * tmp[0] + matrice[1] * tmp[4] + matrice[2] * tmp[8] + matrice[3] * tmp[12];
 			if (determinant == 0)
 			{
 				return identity(); // cannot inverse, make it identity matrix
 			}
 
 			// divide by the determinant
-			invDeterminant = 1.0f / determinant;
+			const float invDeterminant = 1.0f / determinant;
 			
 			for(int i = 0; i < 16; i++)
 			{
@@ -294,7 +294,7 @@ namespace Math
 			return new_matrix;
 		}
 
-		inline static mat4 vectorScaling(float sX, float sY, float sZ)
+		inline static mat4 vectorScaling(const float sX, const float sY, const float sZ)
 		{
 			mat4 scaleMatrix;
 
@@ -303,7 +303,7 @@ namespace Math
 			return scaleMatrix;
 		}
 		
-		inline static mat4 vectorScaling(vec4 vec)
+		inline static mat4 vectorScaling(const vec4& vec)
 		{
 			mat4 scaleMatrix;
 
@@ -312,11 +312,11 @@ namespace Math
 			return scaleMatrix;
 		}
 
-		inline static mat4 rotX(float angle)
+		inline static mat4 rotX(const float angle)
 		{
 			mat4 rotMatrix;
-			float c = cos(angle);
-			float s = sin(angle);
+			const auto c = cos(angle);
+			const auto s = sin(angle);
 
 			rotMatrix[0] = 1; rotMatrix[1] = 0; rotMatrix[2] = 0;
 			rotMatrix[4] = 0; rotMatrix[5] = c; rotMatrix[6] = -s;
@@ -326,11 +326,11 @@ namespace Math
 
 		}
 
-		inline static mat4 rotY(float angle)
+		inline static mat4 rotY(const float angle)
 		{
 			mat4 rotMatrix;
-			float c = cos(angle);
-			float s = sin(angle);
+			const auto c = cos(angle);
+			const auto s = sin(angle);
 
 			rotMatrix[0] = c; rotMatrix[1] = 0; rotMatrix[2] = s;
 			rotMatrix[4] = 0; rotMatrix[5] = 1; rotMatrix[6] = 0;
@@ -339,11 +339,11 @@ namespace Math
 			return rotMatrix;
 		}
 
-		inline static mat4 rotZ(float angle)
+		inline static mat4 rotZ(const float angle)
 		{
 			mat4 rotMatrix;
-			float c = cos(angle);
-			float s = sin(angle);
+			const auto c = cos(angle);
+			const auto s = sin(angle);
 
 			rotMatrix[0] = c; rotMatrix[1] = -s; rotMatrix[2] = 0;
 			rotMatrix[4] = s; rotMatrix[5] = c; rotMatrix[6] = 0;
@@ -352,7 +352,7 @@ namespace Math
 			return rotMatrix;
 		}
 
-		inline static mat4 vecRot(float angle, float vecX, float vecY, float vecZ)
+		inline static mat4 vecRot(const float angle, const float vecX, const float vecY, const float vecZ)
 		{
 			vec4 rotVec;
 			mat4 rotMatrix;
@@ -361,8 +361,8 @@ namespace Math
 			rotVec[1] = vecY;
 			rotVec[2] = vecZ;
 
-			float c = cos(angle);
-			float s = sin(angle);
+			const auto c = cos(angle);
+			const auto s = sin(angle);
 
 			rotMatrix[0] = rotVec.x()*rotVec.x() + (1 - rotVec.x()*rotVec.x())*c;
 			rotMatrix[1] = rotVec.x()*rotVec.y() * (1 - c) - rotVec.x() * s;
@@ -377,12 +377,12 @@ namespace Math
 			return rotMatrix;
 		}
 
-		inline static mat4 vecRot(float angle, vec4 rotVec)
+		inline static mat4 vecRot(const float angle, const vec4& rotVec)
 		{
 			mat4 rotMatrix;
 
-			float c = cos(angle);
-			float s = sin(angle);
+			const auto c = cos(angle);
+			const auto s = sin(angle);
 
 			rotMatrix[0] = rotVec.x()*rotVec.x() + (1 - rotVec.x()*rotVec.x())*c;
 			rotMatrix[1] = rotVec.x()*rotVec.y() * (1 - c) - rotVec.x() * s;
@@ -403,7 +403,7 @@ namespace Math
 			return &matrice[0];
 		}
 
-		inline static mat4 translationMatrix(vec4 vec)
+		inline static mat4 translationMatrix(const vec4& vec)
 		{
 			mat4 transMatrix;
 			transMatrix[0] = 1;
@@ -416,33 +416,33 @@ namespace Math
 			return transMatrix;
 		}
 
-		inline static mat4 perspectiveMatrix(float fovy, float aspect, float zn, float zf)
+		inline static mat4 perspectiveMatrix(const float fovy, const float aspect, const float zn, const float zf)
 		{
 			mat4 fovMatrix;
-			float halfFov = 0.5f * fovy;
-			float sinfov = sinf(halfFov);
-			float cosfov = cosf(halfFov);
+			const auto halfFov = 0.5f * fovy;
+			const auto sinfov = sinf(halfFov);
+			const auto cosfov = cosf(halfFov);
 
-			float height = cosfov / sinfov;
-			float width = height / aspect;
+			const auto height = cosfov / sinfov;
+			const auto width = height / aspect;
 
-			float dist = zf / (zn - zf);
+			const auto dist = zf / (zn - zf);
 			fovMatrix[0] = width;
 			fovMatrix[5] = height;
 			fovMatrix[10] = dist;
-			fovMatrix[14] = -1;
 			fovMatrix[11] = dist*zn;
+			fovMatrix[14] = -1;
 			fovMatrix[15] = 0;
 			
 
 			return fovMatrix;
 		}
 
-		inline static mat4 LookAt( vec4 eye, vec4 target, vec4 up)
+		inline static mat4 LookAt(const vec4& eye, const vec4& target, const vec4& up)
 		{
-			vec4 zaxis = vec4::Normalize(eye - target);    // The "forward" vector.
-			vec4 xaxis = vec4::Normalize(vec4::Cross(up, zaxis));// The "right" vector.
-			vec4 yaxis = vec4::Cross(zaxis, xaxis);
+			auto zaxis = vec4::Normalize(eye - target);    // The "forward" vector.
+			auto xaxis = vec4::Normalize(vec4::Cross(up, zaxis));// The "right" vector.
+			auto yaxis = vec4::Cross(zaxis, xaxis);
 
 			// Create a 4x4 view matrix from the right, up, forward and eye position vectors
 			mat4 viewMatrix(xaxis.x(), xaxis.y(), xaxis.z(), -vec4::Dot(xaxis, eye),

@@ -1,5 +1,6 @@
 #pragma once
 #include "render/resources/textureresource.h"
+#include "render/server/resourceserver.h"
 
 namespace UI
 {
@@ -7,20 +8,16 @@ struct UIIcons
 {
 	UIIcons()
 	{
-		pointer = Math::TextureResource::Create();
-		pointer->LoadTextureFile("resources/textures/icons/pointer_terrain_icon.png");
-		raiseTerrain = Math::TextureResource::Create();
-		raiseTerrain->LoadTextureFile("resources/textures/icons/raise_terrain_icon.png");
-		flattenTerrain = Math::TextureResource::Create();
-		flattenTerrain->LoadTextureFile("resources/textures/icons/flatten_terrain_icon.png");
-		paintTerrain = Math::TextureResource::Create();
-		paintTerrain->LoadTextureFile("resources/textures/icons/paint_terrain_icon.png");
+		pointer = Render::ResourceServer::Instance()->LoadTexture("resources/textures/icons/pointer_terrain_icon.png");
+		raiseTerrain = Render::ResourceServer::Instance()->LoadTexture("resources/textures/icons/raise_terrain_icon.png");
+		flattenTerrain = Render::ResourceServer::Instance()->LoadTexture("resources/textures/icons/flatten_terrain_icon.png");
+		paintTerrain = Render::ResourceServer::Instance()->LoadTexture("resources/textures/icons/paint_terrain_icon.png");
 	}
 
-	Ptr<Math::TextureResource> pointer;
-	Ptr<Math::TextureResource> raiseTerrain;
-	Ptr<Math::TextureResource> flattenTerrain;
-	Ptr<Math::TextureResource> paintTerrain;
+	Ptr<Render::TextureResource> pointer;
+	Ptr<Render::TextureResource> raiseTerrain;
+	Ptr<Render::TextureResource> flattenTerrain;
+	Ptr<Render::TextureResource> paintTerrain;
 
 };
 struct TextureSettings
@@ -44,7 +41,7 @@ struct TextureSettings
 struct HeightMapSettings
 {
 	Util::String texName;
-	std::shared_ptr<Math::TextureResource> texture;
+	Ptr<Render::TextureResource> texture;
 	float widthMultiplier = 1.f;
 	float heightMultiplier = 1.f;
 

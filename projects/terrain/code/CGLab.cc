@@ -50,7 +50,8 @@ CGLab::Open()
 	if (this->window->Open())
 	{
 		Render::Renderer::Instance()->Setup(this->window);
-
+		Render::Renderer::Instance()->SetWindowResolution(1280, 900);
+		Render::Renderer::Instance()->SetRenderResolution(1280, 900);
 		terrain = TerrainEditor::Terrain::Create();
 		terrain->Activate();
 
@@ -63,7 +64,7 @@ CGLab::Open()
 		// set clear color to gray
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		//glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-		glEnable(GL_MULTISAMPLE);
+
 		// Enable depth test
 		glEnable(GL_DEPTH_TEST);
 		//Enable backface culling
@@ -99,11 +100,9 @@ void CGLab::RenderUI()
 void
 CGLab::Run()
 {
-
 	std::shared_ptr<Math::MeshResources> mesh = std::make_shared<Math::MeshResources>();
-	std::shared_ptr<Math::TextureResource> tex = std::make_shared<Math::TextureResource>();
-	Ptr<Render::Skybox> skybox = Render::Skybox::Create();
-	skybox->Activate();
+	std::shared_ptr<Render::TextureResource> tex = std::make_shared<Render::TextureResource>();
+	
 	UI->SetTerrain(terrain);
 
 	mat4 modelMat = mat4::translationMatrix(Math::vec4(0.0f, 0.0f, 0.0f));
@@ -115,6 +114,8 @@ CGLab::Run()
 	lNode.setColour(0.2f, 0.2f, 0.2f);
     lNode.apply();
 
+	Ptr<Render::Skybox> skybox = Render::Skybox::Create();
+	skybox->Activate();
 
     std::chrono::high_resolution_clock::time_point before = std::chrono::high_resolution_clock::now();
 
@@ -130,9 +131,9 @@ CGLab::Run()
 		input->CameraMovement();
 
 		//gN.setTransMat(modelMat);
+		//Render the scene
+		Render::Renderer::Instance()->Render(false);
 		
-		BaseGameFeature::EntityManager::Instance()->Update();
-		skybox->Update();
 		//gN.draw();	
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);

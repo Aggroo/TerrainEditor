@@ -49,7 +49,7 @@ public:
 	*/
 	void GenerateNoiseMap(const char* filename, int mapWidth, int mapHeight, float scale, int octaves, float persistance, float lacunarity);
 
-	Ptr<Math::TextureResource> GetTexture() { return texture; }
+	Ptr<Render::TextureResource> GetTexture() { return texture; }
 
 private:
 
@@ -57,7 +57,7 @@ private:
 
 	float* noiseMap;
 
-	Ptr<Math::TextureResource> texture;
+	Ptr<Render::TextureResource> texture;
 
 	std::random_device rd;  //Will be used to obtain a seed for the random number engine
 	std::mt19937 gen; //Standard mersenne_twister_engine seeded with rd()

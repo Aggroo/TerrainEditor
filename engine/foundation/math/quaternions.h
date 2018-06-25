@@ -160,9 +160,7 @@ public:
 	//! Sets new quaternions based on Euler angles (radians)
 	inline quaternions& set(float x, float y, float z)
 	{
-		double angle;
-
-		angle = x * 0.5;
+		auto angle = x * 0.5;
 		const double sr = sin(angle);
 		const double cr = cos(angle);
 
@@ -179,10 +177,10 @@ public:
 		const double cpsy = cp * sy;
 		const double spsy = sp * sy;
 
-		this->x = (float)(sr * cpcy - cr * spsy);
-		this->y = (float)(cr * spcy + sr * cpsy);
-		this->z = (float)(cr * cpsy - sr * spcy);
-		this->w = (float)(cr * cpcy + sr * spsy);
+		this->x = static_cast<float>(sr * cpcy - cr * spsy);
+		this->y = static_cast<float>(cr * spcy + sr * cpsy);
+		this->z = static_cast<float>(cr * cpsy - sr * spcy);
+		this->w = static_cast<float>(cr * cpcy + sr * spsy);
 
 		return normalize();
 	}
@@ -203,9 +201,9 @@ public:
 	inline static quaternions QuatSlerp(quaternions* from, quaternions * to, float t)
 	{
 		float           to1[4];
-		double        omega, cosom, sinom, scale0, scale1;
+		double scale0, scale1;
 		// calc cosine
-		cosom = from->x * to->x + from->y * to->y + from->z * to->z + from->w * to->w;
+		double cosom = from->x * to->x + from->y * to->y + from->z * to->z + from->w * to->w;
 
 		// adjust signs (if necessary)
 		if (cosom <0.0){
@@ -224,8 +222,8 @@ public:
 		if ((1.0 - cosom) > 0.3f)
 		{
 			// standard case (slerp)
-			omega = acos(cosom);
-			sinom = sin(omega);
+			const auto omega = acos(cosom);
+			const auto sinom = sin(omega);
 			scale0 = sin((1.0 - t) * omega) / sinom;
 			scale1 = sin(t * omega) / sinom;
 		}

@@ -180,7 +180,7 @@ void InputManager::InitMouse()
 	window->SetWindowResizeFunction([this](int32 x, int32 y)
 	{
 		Render::Renderer::Instance()->SetRenderResolution(x, y);
-		Graphics::MainCamera::Instance()->UpdateProjectionMatrix();
+		Render::Renderer::Instance()->SetWindowResolution(x, y);
 	});
 }
 
@@ -205,16 +205,16 @@ void InputManager::Update()
 	if (dFlag == true)
 	{
 		if (shiftFlag)
-			movement[0] -= movSpeed*movMultiplier;
+			movement[0] += movSpeed*movMultiplier;
 		else
-			movement[0] -= movSpeed;
+			movement[0] += movSpeed;
 	}
 	if (aFlag == true)
 	{
 		if (shiftFlag)
-			movement[0] += movSpeed*movMultiplier;
+			movement[0] -= movSpeed*movMultiplier;
 		else
-			movement[0] += movSpeed;
+			movement[0] -= movSpeed;
 	}
 }
 
@@ -248,7 +248,7 @@ void InputManager::CameraMovement()
 	mouseX = (oldX*2.0f) / 1024 - 1;
 	mouseY = 1 - (oldY*2.0f) / 768;
 	
-	Math::mat4 rotx = Math::mat4::rotX(-rotY*0.001f);
+	Math::mat4 rotx = Math::mat4::rotX(rotY*0.001f);
 	Math::mat4 roty = Math::mat4::rotY(rotX*0.001f);
 
 	Math::mat4 rotation = (roty*rotx);

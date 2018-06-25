@@ -6,11 +6,11 @@
 #include "stb_truetype.h"
 #include "core/refcounted.h"
 
-namespace Math
+namespace Render
 {
     struct textVert
     {
-        textVert(vec2 p,vec2 t)
+        textVert(Math::vec2 p, Math::vec2 t)
         {
             pos = p;
             tex = t;
@@ -27,7 +27,7 @@ namespace Math
 		~TextureResource();
 
 		void LoadTextureFile(const char * filename);
-		void LoadFromRasterizer(Rasterizer rast);
+		void LoadFromRasterizer(Math::Rasterizer rast);
 		void WriteToJPG(const char * filename, int w, int h, void* data, int quality);
 		void WriteToPNG(const char * filename, int w, int h, int comp, void* data, int stride_bytes);
 		void WriteToTGA(const char * filename, int w, int h, int comp, void* data);
@@ -40,7 +40,7 @@ namespace Math
 		GLuint m_texture;
         unsigned char ttf_buffer[1<<20];
         unsigned char temp_bitmap[512*512];
-        std::vector<Math::textVert> textMesh;
+        std::vector<textVert> textMesh;
 
         stbtt_bakedchar cdata[96]; // ASCII 32..126 is 95 glyphs
         GLuint ftex;

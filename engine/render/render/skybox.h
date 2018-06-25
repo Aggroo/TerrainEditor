@@ -5,7 +5,7 @@
 
 namespace Render
 {
-class Skybox : public Core::RefCounted
+class Skybox : public Game::Entity
 {
 __DeclareClass(Skybox)
 public:
@@ -14,7 +14,7 @@ public:
 
 	void Activate();
 	void Deactivate();
-	void Update();
+	virtual void Update();
 
 	void LoadCubemap(Util::Array<Util::String> texures);
 

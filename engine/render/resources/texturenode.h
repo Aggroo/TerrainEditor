@@ -23,12 +23,12 @@ public:
 
 	void AddTexture(TextureIndex index, const char * filename);
 	void UpdateTexture(TextureIndex index, const char * filename) const;
-	Ptr<Math::TextureResource> GetTexture(TextureIndex index) const;
+	Ptr<TextureResource> GetTexture(TextureIndex index) const;
 	void BindTextures() const;
 
 private:
 
-	Util::Dictionary<TextureIndex,Ptr<Math::TextureResource>> textures;
+	Util::Dictionary<TextureIndex, Ptr<TextureResource>> textures;
 
 };
 

@@ -11,9 +11,9 @@
 #include "stb_truetype.h"
 
 
-namespace Math
+namespace Render
 {
-__ImplementClass(Math::TextureResource, 'TXTR', Core::RefCounted);
+__ImplementClass(Render::TextureResource, 'TXTR', Core::RefCounted);
 	TextureResource::TextureResource()
 	{
 
@@ -51,7 +51,7 @@ __ImplementClass(Math::TextureResource, 'TXTR', Core::RefCounted);
 
 	}
 
-	void TextureResource::LoadFromRasterizer(Rasterizer rast)
+	void TextureResource::LoadFromRasterizer(Math::Rasterizer rast)
 	{
 		//stbi_write_bmp("blorf2.bmp", rast.width, rast.height, 3, &rast.getPixels()[0]);
 		glGenTextures(1, &m_texture);

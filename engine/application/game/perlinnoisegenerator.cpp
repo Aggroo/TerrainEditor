@@ -9,7 +9,7 @@ __ImplementClass(Generator::PerlinNoiseGenerator, 'GEPN', Core::RefCounted)
 
 PerlinNoiseGenerator::PerlinNoiseGenerator() : gen(rd()), dis(0, 3000)
 {
-	texture = Math::TextureResource::Create();
+	texture = Render::TextureResource::Create();
 }
 
 PerlinNoiseGenerator::~PerlinNoiseGenerator()

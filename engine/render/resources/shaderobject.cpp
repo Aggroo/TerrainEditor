@@ -58,6 +58,10 @@ namespace Math
 		std::string fragline = "";
 		while (!fragStream.eof()) {
 			std::getline(fragStream, fragline);
+			if (fragline == "#include(\"lights.frag\")")
+			{
+				fragline = ReadInclude("resources/shaders/lights.frag");
+			}
 			frag.append(fragline + "\n");
 		}
 		frag.append("\0");
@@ -117,6 +121,27 @@ namespace Math
 
 	}
 
+	std::string ShaderObject::ReadInclude(const char* file)
+	{
+		std::string f;
+		std::ifstream fileStream(file, std::ios::in);
+
+		if (!fileStream.is_open()) {
+			std::cerr << "Could not read file " << file << ". File does not exist." << std::endl;
+
+		}
+
+		std::string fileline = "";
+		while (!fileStream.eof()) {
+			std::getline(fileStream, fileline);
+			f.append(fileline + "\n");
+		}
+
+		fileStream.close();
+
+		return f;
+	}
+
 	void ShaderObject::ReloadShaders()
 	{
 		std::string vert;
@@ -128,6 +153,7 @@ namespace Math
 		}
 
 		std::string vertline = "";
+		
 		while (!vertStream.eof()) {
 			std::getline(vertStream, vertline);
 			vert.append(vertline + "\n");

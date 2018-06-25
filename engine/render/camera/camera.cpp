@@ -39,7 +39,7 @@ void Camera::UpdateProjectionMatrix()
 	Render::Resolution res = Render::Renderer::Instance()->GetRenderResolution();
 	this->aspectRatio =  (float)res.x / (float) res.y;
 
-	this->projection = Math::mat4::perspectiveMatrix(this->fov, this->aspectRatio, this->nearZ, this->farZ);
+	this->projection = Math::mat4::perspectiveMatrix(-this->fov, this->aspectRatio, this->nearZ, this->farZ);
 	this->invProjection = Math::mat4::inverse(this->projection);
 	this->viewProjection = this->view * this->projection;
 	this->invViewProjection = this->invView * this->invProjection;
@@ -48,9 +48,9 @@ void Camera::UpdateProjectionMatrix()
 	float sy = (float)res.y / 2.0f;
 
 	Math::mat4  scrScale = Math::mat4(sx, 0.0f, 0.0f, 0.0f,
-		0.0f, sy, 0.0f, 0.0f,
-		0.0f, 0.0f, 1.0f, 0.0f,
-		sx, sy, 0.0f, 1.0f);
+									  0.0f, sy, 0.0f, 0.0f,
+									  0.0f, 0.0f, 1.0f, 0.0f,
+									  sx, sy, 0.0f, 1.0f);
 
 	this->viewToTextureSpaceMatrix = this->projection * scrScale;
 }

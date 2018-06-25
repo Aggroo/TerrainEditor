@@ -17,7 +17,7 @@ uniform float tex1UvMultiplier;
 uniform float tex2UvMultiplier;
 
 // parameters of the light and possible values
-uniform vec3 u_lightAmbientIntensity; // = vec3(0.6, 0.3, 0);
+//uniform vec3 u_lightAmbientIntensity; // = vec3(0.6, 0.3, 0);
 uniform vec3 u_lightDiffuseIntensity; // = vec3(1, 0.5, 0);
 uniform vec3 u_lightSpecularIntensity; // = vec3(0, 1, 0);
 
@@ -28,6 +28,8 @@ uniform vec3 u_matSpecularReflectance; // = vec3(1, 1, 1);
 uniform float u_matShininess; // = 64;
 
 const float kPi = 3.14159265;
+
+#include("lights.frag")
 
 vec3 ambientLighting()
 {

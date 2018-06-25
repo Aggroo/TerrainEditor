@@ -19,6 +19,7 @@ namespace Math
 		~ShaderObject();
 
 		void setupShaders(const char* vertexFile, const char* fragmentFile);
+		std::string ReadInclude(const char* file);
 		void ReloadShaders();
 		void useProgram();
 		void setupMatrix4fv(const GLchar* name, mat4 mat);

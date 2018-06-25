@@ -41,16 +41,27 @@ public:
 
 	void Setup(Display::Window* window);
 
+	void Render(bool drawToScreen = true);
+
 	const Resolution& GetRenderResolution() const;
 	void SetRenderResolution(const Resolution& res);
 	void SetRenderResolution(const int& x, const int& y);
 
+	void SetWindowResolution(const int& x, const int& y);
+
+	void SetFinalColorBuffer(GLuint cbuffer) { this->finalColorBuffer = cbuffer; }
+	GLuint GetFinalColorBuffer() { return this->finalColorBuffer; }
+
 	void SetupUniformBuffer(Graphics::Camera* camera);
+
 
 private:
 	
 	Resolution renderResolution;
+	Resolution windowResolution;
 
 	Display::Window* window;
+
+	GLuint finalColorBuffer = 0;
 };
 }
