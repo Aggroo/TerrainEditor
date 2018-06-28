@@ -8,17 +8,18 @@
 #include "texturenode.h"
 #include "application/game/terrain.h"
 
-namespace Math
+namespace Render
 {
 	
-	class GraphicsNode
+	class GraphicsNode : public Core::RefCounted
 	{
+		__DeclareClass(GraphicsNode)
 	public:
 		GraphicsNode();
 		~GraphicsNode();
 
-		void setShaders(std::shared_ptr<ShaderObject> newShader);
-		std::shared_ptr<ShaderObject> getShaders();
+		void setShaders(Ptr<Render::ShaderObject> newShader);
+		Ptr<Render::ShaderObject> getShaders();
 
 		void setMesh(std::shared_ptr<MeshResources> newMesh);
 		std::shared_ptr<MeshResources> getMesh();
@@ -26,26 +27,26 @@ namespace Math
 		void setTex(Ptr<Render::TextureNode> newTex);
 		Ptr<Render::TextureNode> getTex();
 		
-		void setTransMat(mat4 newTransMat);
-		mat4 getTransMat();
+		void setTransMat(Math::mat4 newTransMat);
+		Math::mat4 getTransMat();
 
-		void SetViewMat(mat4 newViewMat);
-		mat4 GetViewMat();
+		void SetViewMat(Math::mat4 newViewMat);
+		Math::mat4 GetViewMat();
 
-		void SetProjectionMat(mat4 newProjectionMat);
-		mat4 GetProjectionMat();
+		void SetProjectionMat(Math::mat4 newProjectionMat);
+		Math::mat4 GetProjectionMat();
 
 		void draw();
 		void drawSkinned();
 		
 	private:
-		std::shared_ptr<ShaderObject> shader;
+		Ptr<Render::ShaderObject> shader;
 		std::shared_ptr<MeshResources> mesh;
 		Ptr<Render::TextureNode> tex;
 
-		mat4 transMat;
-		mat4 viewMat;
-		mat4 projMat;
+		Math::mat4 transMat;
+		Math::mat4 viewMat;
+		Math::mat4 projMat;
 		
 	};
 

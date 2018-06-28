@@ -23,6 +23,8 @@ public:
 	///Updates this entity and calls all its properties Update() functions.
 	virtual void Update();
 
+	virtual void OnUI();
+
 	///Shortcut for getting this entitys transform
 	virtual Math::mat4 GetTransform();
 	///Shortcut for setting this entitys transform

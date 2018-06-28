@@ -66,6 +66,10 @@ SET(files_render_server
 	server/resourceserver.cpp
 	server/frameserver.h
 	server/frameserver.cpp
+	server/shaderserver.h
+	server/shaderserver.cpp
+	server/lightserver.h
+	server/lightserver.cpp
 	)
 
 SOURCE_GROUP("display" FILES ${files_render_display})

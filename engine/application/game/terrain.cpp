@@ -6,6 +6,7 @@
 #include "foundation/util/curve.hpp"
 #include "render/camera/camera.h"
 #include "render/render/renderer.h"
+#include "render/server/shaderserver.h"
 
 namespace TerrainEditor
 {
@@ -13,9 +14,12 @@ __ImplementClass(TerrainEditor::Terrain, 'TETY', Game::Entity);
 
 Terrain::Terrain() : terrainWidth(0), terrainHeight(0), heightMap(nullptr)
 {
-	mesh = Math::MeshResources::Create();
-	shader = Math::ShaderObject::Create();
-	textures = Render::TextureNode::Create();	
+	mesh = Render::MeshResources::Create();
+	shader = Render::ShaderObject::Create();
+	textures = Render::TextureNode::Create();
+	p[0] = transform[3]; 
+	p[1] = transform[7];
+	p[2] = transform[11];
 }
 
 Terrain::~Terrain()
@@ -31,7 +35,16 @@ Terrain::~Terrain()
 
 void Terrain::Activate()
 {	
-	shader->setupShaders("resources/shaders/Blinn-phong.vert", "resources/shaders/Blinn-phong.frag");
+	GLuint vert = Render::ShaderServer::Instance()->LoadVertexShader("resources/shaders/Blinn-phong.vert");
+	GLuint frag = Render::ShaderServer::Instance()->LoadFragmentShader("resources/shaders/Blinn-phong.frag");
+
+	shader->AddShader(vert);
+	shader->AddShader(frag);
+	shader->LinkShaders();
+
+	Render::ShaderServer::Instance()->AddShaderObject("Terrain-Phong", shader);
+
+	shader->BindProgram();
 
 	shader->setupVector3f("u_matAmbientReflectance", 1.0f, 1.0f, 1.0f);
 	shader->setupVector3f("u_matDiffuseReflectance", 1.0f, 1.0f, 1.0f);
@@ -77,15 +90,27 @@ void Terrain::Deactivate()
 
 void Terrain::Update()
 {
-	this->shader->useProgram();
-	Render::Renderer::Instance()->SetupUniformBuffer(Graphics::MainCamera::Instance());
+	this->shader->BindProgram();
+	//Render::Renderer::Instance()->SetupUniformBuffer(Graphics::MainCamera::Instance());
 	this->textures->BindTextures();
 	this->shader->setupMatrix4fv("Model", this->transform);
-	this->shader->setupMatrix3fv("normalMat", Math::mat3::Transpose(Math::mat3::fromMatrix4D(this->transform).invert()));
 	this->shader->setupVector3f("cameraPosition", Graphics::MainCamera::Instance()->GetCameraPosition());
 
 	if(mesh->mesh.Size() != 0)
 		mesh->drawMesh();
+}
+
+void Terrain::OnUI()
+{
+	if (ImGui::CollapsingHeader("Terrain Entity"))
+	{
+		
+		if(ImGui::DragFloat3("Position", p))
+		{
+			transform.SetPosition(Math::vec4(p[0], p[1], p[2], 1.0f));
+		}
+	}
+	
 }
 
 bool Terrain::CreateTerrain(const char* filename, float widthMultiplier, float heightMultiplier, ImVec2* points)
@@ -150,7 +175,7 @@ bool Terrain::CreateTerrain(const char* filename, float widthMultiplier, float h
 		for (int x = 0; x < (terrainWidth); ++x)
 		{
 			i = (terrainHeight * y) + x;
-			mesh->mesh.Append(Math::Vertex(Math::vec3(heightMap[i].x, heightMap[i].y, heightMap[i].z), Math::vec2(x*uDiv, -y*vDiv), Math::vec3()));
+			mesh->mesh.Append(Render::Vertex(Math::vec3(heightMap[i].x, heightMap[i].y, heightMap[i].z), Math::vec2(x*uDiv, -y*vDiv), Math::vec3()));
 		}
 	}
 

@@ -5,81 +5,82 @@
 #include <string>
 
 
-namespace Math
+namespace Render
 {
-	LightNode::LightNode()
-	{
+__ImplementClass(Render::LightNode, 'RELN', Core::RefCounted)
+LightNode::LightNode()
+{
 
-	}
+}
 
-	LightNode::~LightNode()
-	{
-		
-	}
+LightNode::~LightNode()
+{
 	
+}
 
-	void LightNode::setPos(vec4 pos)
-	{
-		this->pos = pos;
-	}
 
-	void LightNode::setPos(GLfloat x, GLfloat y, GLfloat z)
-	{
-		vec4 vec(x,y,z);
+void LightNode::setPos(Math::vec4 pos)
+{
+	this->pos = pos;
+}
 
-		this->pos = vec;
-	}
+void LightNode::setPos(GLfloat x, GLfloat y, GLfloat z)
+{
+	Math::vec4 vec(x,y,z);
 
-	vec4 LightNode::getPos()
-	{
-		return this->pos;
-	}
+	this->pos = vec;
+}
 
-	void LightNode::setColour(GLfloat r, GLfloat g, GLfloat b)
-	{
-		vec3 cV;
-		cV.x() = r;
-		cV.y() = g;
-		cV.z() = b;
+Math::vec4 LightNode::getPos()
+{
+	return this->pos;
+}
 
-		this->colour = cV;
-	}
+void LightNode::setColour(GLfloat r, GLfloat g, GLfloat b)
+{
+	Math::vec3 cV;
+	cV.x() = r;
+	cV.y() = g;
+	cV.z() = b;
 
-	vec3 LightNode::getColour()
-	{
-		return this->colour;
-	}
+	this->colour = cV;
+}
 
-	void LightNode::setIntensity(GLfloat a, GLfloat b, GLfloat c)
-	{
-		vec3 cV(a,b,c);
+Math::vec3 LightNode::getColour()
+{
+	return this->colour;
+}
 
-		this->intensity = cV;
-	}
+void LightNode::setIntensity(GLfloat a, GLfloat b, GLfloat c)
+{
+	Math::vec3 cV(a,b,c);
 
-	vec3 LightNode::getIntensity()
-	{
-		return this->intensity;
-	}
+	this->intensity = cV;
+}
 
-	void LightNode::setShaders(Ptr<ShaderObject> newShader)
-	{
-		this->shaders = newShader;
-	}
+Math::vec3 LightNode::getIntensity()
+{
+	return this->intensity;
+}
 
-	Ptr<ShaderObject> LightNode::getShaders()
-	{
-		return this->shaders;
-	}
+void LightNode::setShaders(Ptr<Render::ShaderObject> newShader)
+{
+	this->shaders = newShader;
+}
 
-	void LightNode::apply()
-	{
-		shaders->useProgram();
-		shaders->setupVector3f("lightPosition", pos.x(), pos.y(), pos.z());
-		shaders->setupVector3f("u_lightAmbientIntensity", colour.x()*intensity.x(), colour.y()*intensity.y(), colour.z()*intensity.z());
-		shaders->setupVector3f("u_lightDiffuseIntensity", 0.8f*intensity.x(), 0.8f*intensity.y(), 0.8f*intensity.z());
-		shaders->setupVector3f("u_lightSpecularIntensity", 0.8f*intensity.x(), 0.8f*intensity.y(), 0.5f*intensity.z());
+Ptr<Render::ShaderObject> LightNode::getShaders()
+{
+	return this->shaders;
+}
 
-	}
+void LightNode::apply()
+{
+	shaders->BindProgram();
+	shaders->setupVector3f("lightPosition", pos.x(), pos.y(), pos.z());
+	shaders->setupVector3f("u_lightAmbientIntensity", colour.x()*intensity.x(), colour.y()*intensity.y(), colour.z()*intensity.z());
+	shaders->setupVector3f("u_lightDiffuseIntensity", 0.8f*intensity.x(), 0.8f*intensity.y(), 0.8f*intensity.z());
+	shaders->setupVector3f("u_lightSpecularIntensity", 0.8f*intensity.x(), 0.8f*intensity.y(), 0.5f*intensity.z());
+
+}
 
 }

@@ -30,6 +30,8 @@ public:
 
 	virtual void Update();
 
+	virtual void OnUI();
+
 	///Generates the terrain from a Heightmap
 	bool CreateTerrain(const char* filename, float widthMultiplier, float heightMultiplier, ImVec2* points);
 
@@ -39,8 +41,8 @@ public:
 
 	float GetHeightScale();
 
-	Ptr<Math::MeshResources> GetMesh() { return mesh; }
-	Ptr<Math::ShaderObject> GetShader() { return shader; }
+	Ptr<Render::MeshResources> GetMesh() { return mesh; }
+	Ptr<Render::ShaderObject> GetShader() { return shader; }
 	Ptr<Render::TextureNode> GetTextures() { return textures; }
 
 private:
@@ -55,6 +57,8 @@ private:
 	float heightScale;
 	float highestPoint;
 
+	float p[3];
+
 	HeightmapValues* heightMap;
 
 ///Rendering
@@ -63,8 +67,8 @@ private:
 	GLuint vertexCount;
 
 	Ptr<Render::TextureNode> textures;
-	Ptr<Math::MeshResources> mesh;
-	Ptr<Math::ShaderObject> shader;
+	Ptr<Render::MeshResources> mesh;
+	Ptr<Render::ShaderObject> shader;
 
 };
 }

@@ -67,7 +67,7 @@ namespace Math
 
 		void perspective(vec4&,vec4&,vec4&);
 		
-		void getMesh(std::shared_ptr<MeshResources> mesh);
+		void getMesh(std::shared_ptr<Render::MeshResources> mesh);
 		void clear();
 
 	private:
@@ -78,9 +78,9 @@ namespace Math
 		vec3 norm1, norm2, norm3;
 		vec3 diffuseColor1, diffuseColor2, diffuseColor3;
 		std::vector<Color> pixels;
-		Util::Array<Math::Vertex> meshData;
+		Util::Array<Render::Vertex> meshData;
 		Util::Array<GLuint> indices;
-		std::shared_ptr<MeshResources> mesh;
+		std::shared_ptr<Render::MeshResources> mesh;
 		std::function<Color(vec2 tex, vec3 norm, unsigned char* image, int w, int h, int n)> fragments;
 		std::function<vec3(vec3 pos, vec3 norm, mat4 nMat)> vertShader;
 

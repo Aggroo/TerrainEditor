@@ -46,11 +46,10 @@ private:
 	Math::vec4 vec;
 
 	Display::Window* window;
-	Math::GraphicsNode gN;
-	Math::LightNode lNode;
+	Render::GraphicsNode gN;
+	Render::LightNode lNode;
 
 	std::shared_ptr<Input::InputManager> input;
-	std::shared_ptr<Math::ShaderObject> shaders;
 	Ptr<TerrainEditor::Terrain> terrain;
 
 	

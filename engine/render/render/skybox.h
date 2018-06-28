@@ -28,7 +28,7 @@ private:
 	Util::Array<Util::String> cubeTextures;
 	Util::Array<float> cubeVerts;
 
-	Ptr<Math::ShaderObject> shader;
+	Ptr<Render::ShaderObject> shader;
 };
 	
 }

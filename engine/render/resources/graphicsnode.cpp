@@ -7,8 +7,9 @@
 #include "render/render/renderer.h"
 
 
-namespace Math
+namespace Render
 {
+	__ImplementClass(Render::GraphicsNode, 'GFXN', Core::RefCounted)
 	GraphicsNode::GraphicsNode()
 	{
 
@@ -20,12 +21,12 @@ namespace Math
 	}
 
 
-	void GraphicsNode::setShaders(std::shared_ptr<ShaderObject> newShader)
+	void GraphicsNode::setShaders(Ptr<Render::ShaderObject> newShader)
 	{
 		this->shader = newShader;
 	}
 
-	std::shared_ptr<ShaderObject> GraphicsNode::getShaders()
+	Ptr<Render::ShaderObject> GraphicsNode::getShaders()
 	{
 		return this->shader;
 	}
@@ -51,7 +52,7 @@ namespace Math
 		return this->tex;
 	}
 
-	void GraphicsNode::setTransMat(mat4 newTransMat)
+	void GraphicsNode::setTransMat(Math::mat4 newTransMat)
 	{
 		this->transMat = newTransMat;
 	}
@@ -61,22 +62,22 @@ namespace Math
 		return this->transMat;
 	}
 
-	void GraphicsNode::SetViewMat(mat4 newViewMat)
+	void GraphicsNode::SetViewMat(Math::mat4 newViewMat)
 	{
 		this->viewMat = newViewMat;
 	}
 
-	mat4 GraphicsNode::GetViewMat()
+	Math::mat4 GraphicsNode::GetViewMat()
 	{
 		return this->viewMat;
 	}
 
-	void GraphicsNode::SetProjectionMat(mat4 newProjectionMat)
+	void GraphicsNode::SetProjectionMat(Math::mat4 newProjectionMat)
 	{
 		this->projMat = newProjectionMat;
 	}
 
-	mat4 GraphicsNode::GetProjectionMat()
+	Math::mat4 GraphicsNode::GetProjectionMat()
 	{
 		return this->projMat;
 	}
@@ -84,10 +85,10 @@ namespace Math
 
 	void GraphicsNode::draw()
 	{
-		this->shader->useProgram();
+		this->shader->BindProgram();
 		this->tex->BindTextures();
 		this->shader->setupMatrix4fv("transMatrix", this->transMat);
-		this->shader->setupMatrix3fv("normalMat", mat3::Transpose(mat3::fromMatrix4D(this->transMat).invert()));
+		this->shader->setupMatrix3fv("normalMat", Math::mat3::Transpose(Math::mat3::fromMatrix4D(this->transMat).invert()));
 
 		if (this->mesh->mesh.Size() != 0)
 			this->mesh->drawMesh();
@@ -95,7 +96,7 @@ namespace Math
 
 	void GraphicsNode::drawSkinned()
 	{
-		this->shader->useProgram();
+		this->shader->BindProgram();
 		this->tex->BindTextures();
 		this->shader->setupMatrix4fv("transMatrix", this->transMat);
 		this->mesh->drawSkinnedMesh();

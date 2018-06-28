@@ -3,9 +3,16 @@
 #include "foundation/math/vec4.h"
 #include <memory>
 
-namespace Math {
-	class LightNode;
-	class ShaderObject;
+
+
+namespace Render 
+{
+class ShaderObject;
+}
+
+namespace Render
+{
+class LightNode;
 }
 
 namespace Display
@@ -18,9 +25,10 @@ namespace Input
 
 class InputManager
 {
+
 public:
 	InputManager();
-	InputManager(Display::Window* window, Math::ShaderObject* shaders, Math::LightNode* lNode);
+	InputManager(Display::Window* window, Render::LightNode* lNode);
 	~InputManager();
 
 	void InitKeyPress();
@@ -55,8 +63,7 @@ private:
 
 	Math::vec4 movement;
 
-	Math::ShaderObject* shaders;
-	Math::LightNode* lNode;
+	Render::LightNode* lNode;
 
 	GLboolean wFlag, sFlag, dFlag, aFlag, shiftFlag, mLeftCheck, mRightCheck;
 };

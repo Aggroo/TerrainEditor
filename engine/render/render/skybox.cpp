@@ -3,13 +3,14 @@
 #include <iostream>
 #include "render/camera/camera.h"
 #include "renderer.h"
+#include "render/server/shaderserver.h"
 
 namespace Render
 {
 __ImplementClass(Render::Skybox, 'RSKY', Game::Entity)
 Skybox::Skybox()
 {
-	shader = Math::ShaderObject::Create();
+	shader = Render::ShaderObject::Create();
 }
 
 Skybox::~Skybox()
@@ -20,7 +21,14 @@ Skybox::~Skybox()
 
 void Skybox::Activate()
 {
-	shader->setupShaders("resources/shaders/skybox.vert", "resources/shaders/skybox.frag");
+	GLuint vert = Render::ShaderServer::Instance()->LoadVertexShader("resources/shaders/skybox.vert");
+	GLuint frag = Render::ShaderServer::Instance()->LoadFragmentShader("resources/shaders/skybox.frag");
+
+	shader->AddShader(vert);
+	shader->AddShader(frag);
+	shader->LinkShaders();
+
+	Render::ShaderServer::Instance()->AddShaderObject("Skybox", shader);
 
 	cubeTextures.Append("resources/textures/skyboxes/skyboxsun5deg2/right.bmp");
 	cubeTextures.Append("resources/textures/skyboxes/skyboxsun5deg2/left.bmp");
@@ -42,7 +50,7 @@ void Skybox::Deactivate()
 void Skybox::Update()
 {
 	glDepthFunc(GL_LEQUAL);
-	shader->useProgram();
+	shader->BindProgram();
 	glBindVertexArray(vao);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapID);

@@ -26,7 +26,7 @@ namespace HalfEdges
 	{
 		for(int i = 0; i < mesh->GetMesh().Size(); i++)
 		{
-			Math::Vertex meshVert = mesh->GetMesh()[i];
+			Render::Vertex meshVert = mesh->GetMesh()[i];
 			HalfEdges::Vertex* vert = new HalfEdges::Vertex();
 			vert->pos = meshVert.pos;
 			vert->uv = meshVert.uv;
@@ -134,7 +134,7 @@ namespace HalfEdges
 		{
 			HalfEdges::Vertex* vert = vertices[i];
 			heMeshIndices[(uintptr_t) vert] = i;
-			Math::Vertex bufVert;
+			Render::Vertex bufVert;
 			//std::memcpy(&bufVert, vert, sizeof(HalfEdges::Vertex)-sizeof(uintptr_t));
 			bufVert.pos = vert->pos;
 			bufVert.uv = vert->uv;

@@ -5,7 +5,7 @@
 #include "meshresource.h"
 #include <map>
 
-using namespace Math;
+using namespace Render;
 
 namespace HalfEdges
 {
@@ -27,9 +27,9 @@ struct Face
 
 struct Vertex
 {
-	vec3 pos;
-	vec2 uv;
-	vec3 norm;
+	Math::vec3 pos;
+	Math::vec2 uv;
+	Math::vec3 norm;
 	int idx;
 	HalfEdge* edge;
 };
@@ -37,7 +37,7 @@ struct Vertex
 struct heMesh
 {
 	Util::Array<GLuint> indices;
-	Util::Array<Math::Vertex> mesh;
+	Util::Array<Render::Vertex> mesh;
 };
 
 class HalfEdgeMesh

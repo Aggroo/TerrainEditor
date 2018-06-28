@@ -350,7 +350,7 @@ namespace Math
 		v3[2] = v3[2] * w3;
 	}
 
-	void Rasterizer::getMesh(std::shared_ptr<MeshResources> mesh)
+	void Rasterizer::getMesh(std::shared_ptr<Render::MeshResources> mesh)
 	{
 		this->mesh = mesh;
 	}

@@ -35,6 +35,10 @@ namespace Game
 	{
 	}
 
+	void Entity::OnUI()
+	{
+	}
+
 	Math::mat4 Entity::GetTransform()
 	{
 		return this->transform;

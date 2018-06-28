@@ -8,42 +8,37 @@
 
 namespace Render
 {
-    struct textVert
+struct textVert
+{
+    textVert(Math::vec2 p, Math::vec2 t)
     {
-        textVert(Math::vec2 p, Math::vec2 t)
-        {
-            pos = p;
-            tex = t;
-        }
-        Math::vec2 pos;
-        Math::vec2 tex;
-    };
+        pos = p;
+        tex = t;
+    }
+    Math::vec2 pos;
+    Math::vec2 tex;
+};
 
-	class TextureResource : public Core::RefCounted
-    {
-	__DeclareClass(TextureResource)
-	public:
-		TextureResource();
-		~TextureResource();
+class TextureResource : public Core::RefCounted
+{
+__DeclareClass(TextureResource)
+public:
+	TextureResource();
+	~TextureResource();
 
-		void LoadTextureFile(const char * filename);
-		void LoadFromRasterizer(Math::Rasterizer rast);
-		void WriteToJPG(const char * filename, int w, int h, void* data, int quality);
-		void WriteToPNG(const char * filename, int w, int h, int comp, void* data, int stride_bytes);
-		void WriteToTGA(const char * filename, int w, int h, int comp, void* data);
-		void bindTex(GLuint slot);
+	void LoadTextureFile(const char * filename);
+	void LoadFromRasterizer(Math::Rasterizer rast);
+	void WriteToJPG(const char * filename, int w, int h, void* data, int quality);
+	void WriteToPNG(const char * filename, int w, int h, int comp, void* data, int stride_bytes);
+	void WriteToTGA(const char * filename, int w, int h, int comp, void* data);
+	void bindTex(GLuint slot);
 
-		GLuint GetTextureID() { return m_texture; }
+	GLuint GetTextureID() { return m_texture; }
 
-	private:
+private:
 
-		GLuint m_texture;
-        unsigned char ttf_buffer[1<<20];
-        unsigned char temp_bitmap[512*512];
-        std::vector<textVert> textMesh;
-
-        stbtt_bakedchar cdata[96]; // ASCII 32..126 is 95 glyphs
-        GLuint ftex;
-	};
+	GLuint m_texture;
+  
+};
 
 }

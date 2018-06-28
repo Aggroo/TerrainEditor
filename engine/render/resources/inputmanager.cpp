@@ -24,7 +24,7 @@ InputManager::InputManager()
 	vec = Math::vec4(0, 0, 0);
 }
 
-InputManager::InputManager(Display::Window* window, Math::ShaderObject* shaders, Math::LightNode* lNode) 
+InputManager::InputManager(Display::Window* window, Render::LightNode* lNode) 
 	: mRightCheck(false), 
 	mLeftCheck(false), 
 	shiftFlag(false), 
@@ -34,7 +34,6 @@ InputManager::InputManager(Display::Window* window, Math::ShaderObject* shaders,
 	aFlag(false)
 {
 	this->window = window;
-	this->shaders = shaders;
 	this->lNode = lNode;
 	vec = Math::vec4(0, 0, 0);
 }
@@ -106,27 +105,27 @@ void InputManager::InitKeyPress()
 		}
 		else if (key == GLFW_KEY_F5 && action == GLFW_PRESS)
 		{
-			shaders->ReloadShaders();
-			shaders->setupVector3f("u_matAmbientReflectance", 1.0f, 1.0f, 1.0f);
-			shaders->setupVector3f("u_matDiffuseReflectance", 1.0f, 1.0f, 1.0f);
-			shaders->setupVector3f("u_matSpecularReflectance", 0.16f, 0.16f, 0.16f);
-			shaders->setupUniformFloat("u_matShininess", 12.0f);
-
-			shaders->setupUniformInt("textures[0]",(GLuint) Render::TextureIndex::albedo0);
-			shaders->setupUniformInt("textures[1]",(GLuint) Render::TextureIndex::albedo1);
-			shaders->setupUniformInt("textures[2]",(GLuint) Render::TextureIndex::albedo2);
-
-			shaders->setupUniformInt("normals[0]", (GLuint) Render::TextureIndex::normal0);
-			shaders->setupUniformInt("normals[1]", (GLuint) Render::TextureIndex::normal1);
-			shaders->setupUniformInt("normals[2]", (GLuint) Render::TextureIndex::normal2);
-
-			shaders->setupUniformInt("splat", (GLuint)Render::TextureIndex::splat);
-
-			shaders->setupUniformFloat("tex0UvMultiplier", 0.1f);
-			shaders->setupUniformFloat("tex1UvMultiplier", 0.1f);
-			shaders->setupUniformFloat("tex2UvMultiplier", 0.1f);
-
-			lNode->apply();
+			//shaders->ReloadShaders();
+			//shaders->setupVector3f("u_matAmbientReflectance", 1.0f, 1.0f, 1.0f);
+			//shaders->setupVector3f("u_matDiffuseReflectance", 1.0f, 1.0f, 1.0f);
+			//shaders->setupVector3f("u_matSpecularReflectance", 0.16f, 0.16f, 0.16f);
+			//shaders->setupUniformFloat("u_matShininess", 12.0f);
+			//
+			//shaders->setupUniformInt("textures[0]",(GLuint) Render::TextureIndex::albedo0);
+			//shaders->setupUniformInt("textures[1]",(GLuint) Render::TextureIndex::albedo1);
+			//shaders->setupUniformInt("textures[2]",(GLuint) Render::TextureIndex::albedo2);
+			//
+			//shaders->setupUniformInt("normals[0]", (GLuint) Render::TextureIndex::normal0);
+			//shaders->setupUniformInt("normals[1]", (GLuint) Render::TextureIndex::normal1);
+			//shaders->setupUniformInt("normals[2]", (GLuint) Render::TextureIndex::normal2);
+			//
+			//shaders->setupUniformInt("splat", (GLuint)Render::TextureIndex::splat);
+			//
+			//shaders->setupUniformFloat("tex0UvMultiplier", 0.1f);
+			//shaders->setupUniformFloat("tex1UvMultiplier", 0.1f);
+			//shaders->setupUniformFloat("tex2UvMultiplier", 0.1f);
+			//
+			//lNode->apply();
 		}
 
 	});

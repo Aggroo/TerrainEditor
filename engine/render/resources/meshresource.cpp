@@ -5,14 +5,14 @@
 #include <string>
 #include <cstring>
 
-namespace Math
+namespace Render
 {
-__ImplementClass(Math::MeshResources, 'MSHR', Core::RefCounted)
+__ImplementClass(Render::MeshResources, 'MSHR', Core::RefCounted)
 MeshResources::MeshResources() : tSize(0), iSize(0), vertexSize(0), vertexPtr(nullptr), indexSize(0), indexPtr(nullptr) 
 {
 }
 
-MeshResources::MeshResources(Util::Array<Math::Vertex> mesh, Util::Array<GLuint> indices) : tSize(0), iSize(0), vertexSize(0), vertexPtr(nullptr), indexSize(0), indexPtr(nullptr)
+MeshResources::MeshResources(Util::Array<Render::Vertex> mesh, Util::Array<GLuint> indices) : tSize(0), iSize(0), vertexSize(0), vertexPtr(nullptr), indexSize(0), indexPtr(nullptr)
 {
 	this->mesh = mesh;
 	this->indices = indices;
@@ -32,7 +32,7 @@ void MeshResources::genBuffer()
 
 	glGenBuffers(1, &vbo[0]);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Math::Vertex)*mesh.Size(), &mesh[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Render::Vertex)*mesh.Size(), &mesh[0], GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2); 
@@ -87,9 +87,9 @@ bool MeshResources::loadObj(const char* filename)
 	typedef std::vector<FaceVertex> Faces;
 
 	std::vector<unsigned int> vertexIndices, uvIndices, normalIndices;
-	std::vector<vec3> temp_vertices;
-	std::vector<vec2> temp_uvs;
-	std::vector<vec3> temp_normals;
+	std::vector<Math::vec3> temp_vertices;
+	std::vector<Math::vec2> temp_uvs;
+	std::vector<Math::vec3> temp_normals;
 
 
 	std::vector<Faces> faces;
@@ -168,7 +168,7 @@ bool MeshResources::loadObj(const char* filename)
 	//Loop through all faces
 	for (int i = 0; i < faces.size(); ++i)
 	{
-		Math::Face faceVertList = Face();
+		Render::Face faceVertList = Face();
 		for (int j = 0; j < faces[i].size(); ++j)
 		{
 			int pos = faces[i][j].pos;
@@ -177,7 +177,7 @@ bool MeshResources::loadObj(const char* filename)
 			std::string key = this->FaceKey(pos, uv, norm);
 			if (this->vertexMap.find(key) == this->vertexMap.end())
 			{
-				Math::Vertex tempVertex;
+				Render::Vertex tempVertex;
 
 				tempVertex.pos = temp_vertices[pos];
 				tempVertex.uv = temp_uvs[uv];
@@ -318,7 +318,7 @@ std::string MeshResources::FaceKey(int pos, int uv, int norm) const
 	return result;	
 }
 	
-Util::Array< Math::Face >& MeshResources::GetMeshFaces()
+Util::Array< Render::Face >& MeshResources::GetMeshFaces()
 {
 	return this->meshFaces;
 }

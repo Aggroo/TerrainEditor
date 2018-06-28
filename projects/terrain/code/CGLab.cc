@@ -55,8 +55,7 @@ CGLab::Open()
 		terrain = TerrainEditor::Terrain::Create();
 		terrain->Activate();
 
-		shaders = std::make_shared<Math::ShaderObject>();		
-		input = std::make_shared<Input::InputManager>(this->window, terrain->GetShader(), &lNode);
+		input = std::make_shared<Input::InputManager>(this->window, &lNode);
 
 		input->InitKeyPress();
 		input->InitMouse();
@@ -100,12 +99,12 @@ void CGLab::RenderUI()
 void
 CGLab::Run()
 {
-	std::shared_ptr<Math::MeshResources> mesh = std::make_shared<Math::MeshResources>();
+	std::shared_ptr<Render::MeshResources> mesh = std::make_shared<Render::MeshResources>();
 	std::shared_ptr<Render::TextureResource> tex = std::make_shared<Render::TextureResource>();
 	
 	UI->SetTerrain(terrain);
 
-	mat4 modelMat = mat4::translationMatrix(Math::vec4(0.0f, 0.0f, 0.0f));
+	Math::mat4 modelMat = Math::mat4::translationMatrix(Math::vec4(0.0f, 0.0f, 0.0f));
 
 	lNode.setShaders(terrain->GetShader());
 	

@@ -5,37 +5,38 @@
 
 #include <memory>
 
-namespace Math
+namespace Render
 {
-	class LightNode
-	{
-	public:
-		LightNode();
-		~LightNode();
+class LightNode : public Core::RefCounted
+{
+__DeclareClass(LightNode)
+public:
+	LightNode();
+	~LightNode();
 
-		void setPos(vec4 pos);
-		void setPos(GLfloat x, GLfloat y, GLfloat z);
-		vec4 getPos();
+	void setPos(Math::vec4 pos);
+	void setPos(GLfloat x, GLfloat y, GLfloat z);
+	Math::vec4 getPos();
 
-		void setColour(GLfloat r, GLfloat g, GLfloat b);
-		vec3 getColour();
+	void setColour(GLfloat r, GLfloat g, GLfloat b);
+	Math::vec3 getColour();
 
-		void setIntensity(GLfloat a, GLfloat b, GLfloat c);
-		vec3 getIntensity();
+	void setIntensity(GLfloat a, GLfloat b, GLfloat c);
+	Math::vec3 getIntensity();
 
-		void setShaders(Ptr<ShaderObject> newShader);
-		Ptr<ShaderObject> getShaders();
+	void setShaders(Ptr<Render::ShaderObject> newShader);
+	Ptr<Render::ShaderObject> getShaders();
 
-		void apply();
-		
-	private:
-		Ptr<ShaderObject> shaders;
+	void apply();
+	
+private:
+	Ptr<Render::ShaderObject> shaders;
 
-		vec4 pos;
-		vec3 colour;
-		vec3 intensity;
+	Math::vec4 pos;
+	Math::vec3 colour;
+	Math::vec3 intensity;
 
-		
-	};
+	
+};
 
 }

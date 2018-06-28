@@ -10,6 +10,7 @@
 #include "foundation/util/curve.hpp"
 #include "foundation/util/threadpool.h"
 #include "render/render/renderer.h"
+#include "application/basegamefeatures/entitymanager.h"
 
 UserInterface::UserInterface(Example::CGLab* app)
 {
@@ -27,6 +28,7 @@ UserInterface::UserInterface(Example::CGLab* app)
 	foo[0].x = -1; // init data so editor knows to take it from here
 
 	ImGui::InitDock();
+
 }
 
 
@@ -115,8 +117,8 @@ void UserInterface::ShowFileMenu()
 
 void UserInterface::RenderDocks()
 {
-	const float toolbarWidth = 48.0f;
-	const float toolButtonSize = 28.0f;
+	const float toolbarWidth = 40.0f;
+	const float toolButtonSize = 20.0f;
 
 	ImGui::Begin("ToolBar", NULL,
 		ImGuiWindowFlags_NoCollapse |
@@ -127,7 +129,7 @@ void UserInterface::RenderDocks()
 		ImGuiWindowFlags_NoScrollWithMouse |
 		ImGuiWindowFlags_NoBringToFrontOnFocus);
 	{
-		ImGui::SetWindowSize(ImVec2(toolbarWidth, (float)application->GetWindow()->GetHeight() - 16.0f), ImGuiSetCond_Always);
+		ImGui::SetWindowSize(ImVec2((float)application->GetWindow()->GetWidth(), toolbarWidth), ImGuiSetCond_Always);
 		ImGui::SetWindowPos(ImVec2(0.0f, 16.0f), ImGuiSetCond_Once);
 
 		bool switched = false;
@@ -137,44 +139,27 @@ void UserInterface::RenderDocks()
 			switched = true;
 		}
 		RenderTooltip("Select");
+		ImGui::SameLine(0, 1);
 		if (ImGui::ImageButton((void*)this->icons.raiseTerrain->GetTextureID(), ImVec2(toolButtonSize, toolButtonSize)))
 		{
 			//Tools::ToolHandler::Instance()->SetTranslateTool();
 			switched = true;
 		}
 		RenderTooltip("Raise/Lower terrain");
+		ImGui::SameLine(0, 1);
 		if (ImGui::ImageButton((void*)this->icons.flattenTerrain->GetTextureID(), ImVec2(toolButtonSize, toolButtonSize)))
 		{
 			//Tools::ToolHandler::Instance()->SetRotateTool();
 			switched = true;
 		}
 		RenderTooltip("Flatten terrain");
+		ImGui::SameLine(0, 1);
 		if (ImGui::ImageButton((void*)this->icons.paintTerrain->GetTextureID(), ImVec2(toolButtonSize, toolButtonSize)))
 		{
 			//this->currentTool = scaleTool;
 			switched = true;
 		}
 		RenderTooltip("Paint terrain");
-		//if (ImGui::ImageButton((void*)this->entityToolTextureHandle, ImVec2(toolButtonSize, toolButtonSize)))
-		//{
-		//	//this->currentTool = entityTool;
-		//	switched = true;
-		//}
-		//if (ImGui::ImageButton((void*)this->brushToolTextureHandle, ImVec2(toolButtonSize, toolButtonSize)))
-		//{
-		//	//this->currentTool = brushTool;
-		//	switched = true;
-		//}
-		//if (ImGui::ImageButton((void*)this->polygonEditTextureHandle, ImVec2(toolButtonSize, toolButtonSize)))
-		//{
-		//	//this->currentTool = polygonEditTool;
-		//	switched = true;
-		//}
-
-		//if (switched && application->hit.object != nullptr)
-		//{
-		//	Tools::ToolHandler::Instance()->CurrentTool()->UpdateTransform(application->hit.object->GetTransform());
-		//}
 
 		ImGui::End();
 	}
@@ -188,13 +173,13 @@ void UserInterface::RenderDocks()
 		ImGuiWindowFlags_NoScrollWithMouse |
 		ImGuiWindowFlags_NoBringToFrontOnFocus);
 	{
-		ImGui::SetWindowSize(ImVec2((float)application->GetWindow()->GetWidth()- 45.0f, (float)application->GetWindow()->GetHeight()-10), ImGuiSetCond_Always);
-		ImGui::SetWindowPos(ImVec2(45.0f, 10.0f), ImGuiSetCond_Once);
+		ImGui::SetWindowSize(ImVec2((float)application->GetWindow()->GetWidth(), (float)application->GetWindow()->GetHeight()- 42.0f), ImGuiSetCond_Always);
+		ImGui::SetWindowPos(ImVec2(0.0f, 42.0f), ImGuiSetCond_Once);
 
 		ImGui::BeginDockspace();
 
 		if (ImGui::BeginDock("Terrain")) {
-			ImGui::Image((ImTextureID)Render::Renderer::Instance()->GetFinalColorBuffer(), ImGui::GetWindowSize());
+			ImGui::Image((ImTextureID)Render::Renderer::Instance()->GetFinalColorBuffer(), ImVec2(ImGui::GetWindowSize().x, ImGui::GetWindowSize().y-16.f));
 		}
 		ImGui::EndDock();
 
@@ -330,10 +315,22 @@ void UserInterface::RenderDocks()
 				ImGui::DragFloat("Lacunarity", &perlinSettings.lacunarity, 0.1f, 0.0001f, 1000.f);
 
 			}
-
+			
 		}
 		ImGui::EndDock();
 
+		if (ImGui::BeginDock("Inspector", NULL)) {
+
+			auto entities = BaseGameFeature::EntityManager::Instance()->GetEntityList();
+
+			for (auto it = entities.begin(); it != entities.end(); ++it)
+			{
+				it->second->OnUI();
+			}
+
+		}
+		ImGui::EndDock();
+		
 		ImGui::EndDockspace();
 	}
 	ImGui::End();
