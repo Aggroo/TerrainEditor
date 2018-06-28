@@ -21,12 +21,12 @@ void FrameServer::SetupFramePasses()
 	this->framePasses.Append(this->Depth.downcast<Render::FramePass>());
 
 	//Light culling compute shader pass
-	//this->lightCullingPass = LightCullingPass::Create();
-	//this->lightCullingPass->name = "LightCulling";
-	//this->lightCullingPass->Setup();
-	//
-	//this->framePassByName.Add(this->lightCullingPass->name, this->lightCullingPass);
-	//this->framePasses.Append(this->lightCullingPass);
+	this->lightCullingPass = LightCullingPass::Create();
+	this->lightCullingPass->name = "LightCulling";
+	this->lightCullingPass->Setup();
+	
+	this->framePassByName.Add(this->lightCullingPass->name, this->lightCullingPass);
+	this->framePasses.Append(this->lightCullingPass);
 
 	// FlatGeometryLit pass
 	this->FlatGeometryLit = FlatGeometryLitPass::Create();

@@ -17,6 +17,8 @@
 #include "application/basegamefeatures/entitymanager.h"
 #include "render/render/skybox.h"
 #include "foundation/util/threadpool.h"
+#include "render/server/shaderserver.h"
+#include "render/server/lightserver.h"
 
 using namespace Display;
 namespace Example
@@ -49,6 +51,14 @@ CGLab::Open()
 
 	if (this->window->Open())
 	{
+		shader = Render::ShaderObject::Create();
+
+		GLuint comp = Render::ShaderServer::Instance()->LoadComputeShader("resources/shaders/lightculling.comp");
+
+		shader->AddShader(comp);
+		shader->LinkShaders();
+
+		Render::ShaderServer::Instance()->AddShaderObject("LightCulling", shader);
 		Render::Renderer::Instance()->Setup(this->window);
 		Render::Renderer::Instance()->SetWindowResolution(1280, 900);
 		Render::Renderer::Instance()->SetRenderResolution(1280, 900);
@@ -105,6 +115,7 @@ CGLab::Run()
 	UI->SetTerrain(terrain);
 
 	Math::mat4 modelMat = Math::mat4::translationMatrix(Math::vec4(0.0f, 0.0f, 0.0f));
+
 
 	lNode.setShaders(terrain->GetShader());
 	

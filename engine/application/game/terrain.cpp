@@ -35,8 +35,8 @@ Terrain::~Terrain()
 
 void Terrain::Activate()
 {	
-	GLuint vert = Render::ShaderServer::Instance()->LoadVertexShader("resources/shaders/Blinn-phong.vert");
-	GLuint frag = Render::ShaderServer::Instance()->LoadFragmentShader("resources/shaders/Blinn-phong.frag");
+	GLuint vert = Render::ShaderServer::Instance()->LoadVertexShader("resources/shaders/terrainPhong.vert");
+	GLuint frag = Render::ShaderServer::Instance()->LoadFragmentShader("resources/shaders/terrainPhong.frag");
 
 	shader->AddShader(vert);
 	shader->AddShader(frag);

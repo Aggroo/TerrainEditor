@@ -51,8 +51,7 @@ private:
 
 	std::shared_ptr<Input::InputManager> input;
 	Ptr<TerrainEditor::Terrain> terrain;
-
-	
+	Ptr<Render::ShaderObject> shader;
 
 	bool shutdown;
 	

@@ -3,6 +3,7 @@
 #include "render/window.h"
 #include "render/camera/camera.h"
 #include "render/server/frameserver.h"
+#include "render/server/lightserver.h"
 
 namespace Render
 {
@@ -66,6 +67,9 @@ void Renderer::SetRenderResolution(const Resolution& res)
 	this->renderResolution = res;
 	Graphics::MainCamera::Instance()->UpdateProjectionMatrix();
 	FrameServer::Instance()->UpdateResolutions();
+	LightServer::Instance()->UpdateWorkGroups();
+	LightServer::Instance()->UpdatePointLightBuffer();
+	LightServer::Instance()->UpdateSpotLightBuffer();
 }
 
 void Renderer::SetRenderResolution(const int& x, const int& y)

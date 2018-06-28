@@ -24,6 +24,7 @@ public:
 	void LinkShaders();
 
 	void BindProgram();
+	GLuint GetProgram() const { return program; }
 
 	void setupMatrix4fv(const GLchar* name, Math::mat4 mat);
     void setupMatrix4fv(const GLchar* name, Util::Array<Math::mat4> mat, GLint count);

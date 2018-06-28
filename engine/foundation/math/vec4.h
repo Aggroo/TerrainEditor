@@ -258,6 +258,26 @@ namespace Math
 			return new_vec;
 		}
 
+		inline static vec4 Orthogonal(const vec4& v)
+		{
+			if (0.0 != v.x())
+			{
+				return Math::vec4((-v.y() - v.z()) / v.x(), 1.0f, 1.0f, 0.0f);
+			}
+			else if (0.0 != v.y())
+			{
+				return Math::vec4(1.0, (-v.x() - v.z()) / v.y(), 1.0f, 0.0f);
+			}
+			else if (0.0 != v.z())
+			{
+				return Math::vec4(1.0f, 1.0f, (-v.x() - v.y()) / v.z(), 0.0f);
+			}
+			else
+			{
+				return Math::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+			}
+		}
+
 		inline static float Dot(vec4 vec, vec4 vect)
 		{
 			float result = 0;

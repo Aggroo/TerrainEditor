@@ -1,0 +1,270 @@
+struct PointLight 
+{
+	vec4 color;
+	vec4 position;
+	//TODO: we can move radius to position.w
+	vec4 radiusAndPadding;
+};
+
+struct SpotLight 
+{
+	//centerAndRadius:
+	//Contains the center of the cone bounding sphere and the radius of it's sphere.
+	vec4 centerAndRadius;
+	
+	//colorAndCenterOffset:
+	//Color of the light and center offset
+	//if angle is greater than 50 (tan(50) = 1) the distance from the cornerpoints to the center is greater than the distance to the spotlight position.
+	//In this special case we need to apply a center offset for the position of the spotlight
+    vec4 colorAndCenterOffset;
+	
+	//params:
+	//Contains direction, angle and the falloff radius of the cone
+	//XY is direction (we can reconstruct Z because we know the direction is normalized and we know the sign of Z dir)
+	//Z is cosine of cone angle and lightdir Z sign (Sign bit is used to store sign for the z component of the light direction)
+	//W is falloff radius
+	vec4 params;
+	
+	
+	
+	//We can reconstruct position of spotlight by knowing that the top of the cone will be the 
+	//bounding spheres radius away from it's center in the direction of the spotlight 
+};
+
+struct VisibleIndex 
+{
+	int index;
+};
+
+// buffer objects
+//NOTE: GlobalBuffer is already attached via ShaderServer::LoadComputeShader
+
+layout (std140, binding = 24) uniform uniformBlock
+{
+	int pointLightCount;
+	int spotLightCount;
+};
+
+layout(std430, binding = 1) readonly buffer PointLightBuffer 
+{
+	PointLight data[];
+} pointLightBuffer;
+
+layout(std430, binding = 11) readonly buffer SpotLightBuffer 
+{
+	SpotLight data[];
+} spotLightBuffer;
+
+layout(std430, binding = 3) writeonly buffer VisiblePointLightIndicesBuffer 
+{
+	VisibleIndex data[];
+} visiblePointLightIndicesBuffer;
+
+layout(std430, binding = 12) writeonly buffer VisibleSpotLightIndicesBuffer 
+{
+	VisibleIndex data[];
+} visibleSpotLightIndicesBuffer;
+
+// Uniforms
+uniform sampler2D depthMap;
+//layout (rgba32f) uniform writeonly image2D lightImage;
+
+// Shared values between all the threads a group
+shared uint minDepthInt;
+shared uint maxDepthInt;
+shared uint visiblePointLightCount;
+shared uint visibleSpotLightCount;
+shared vec4 frustumPlanes[6];
+// Shared local storage for visible indices, will be written out to the global buffer at the end
+shared int visiblePointLightIndices[512];
+shared int visibleSpotLightIndices[512];
+
+layout(local_size_x = TILE_SIZE, local_size_y = TILE_SIZE, local_size_z = 1) in;
+
+void main() 
+{
+	uint tileLights = 512;
+	
+	ivec2 location = ivec2(gl_GlobalInvocationID.xy);
+	ivec2 itemID = ivec2(gl_LocalInvocationID.xy);
+	ivec2 tileID = ivec2(gl_WorkGroupID.xy);
+	ivec2 tileNumber = ivec2(gl_NumWorkGroups.xy);
+	uint index = tileID.y * tileNumber.x + tileID.x;
+	uint threadCount = TILE_SIZE * TILE_SIZE;
+	uint passCount = (pointLightCount + threadCount - 1) / threadCount;
+	
+	// Initialize shared global values for depth and light count
+	if (gl_LocalInvocationIndex == 0) 
+	{
+		minDepthInt = 0xFFFFFFFF;
+		maxDepthInt = 0;
+		visiblePointLightCount = 0;
+		visibleSpotLightCount = 0;
+	}
+
+	barrier();
+
+	// Step 1: Calculate the minimum and maximum depth values (from the depth buffer) for this group's tile
+	float maxDepth, minDepth;
+	//vec2 text = vec2(location) / ScreenSize;
+	float depth = texelFetch(depthMap, location, 0).r;
+	// Linearize the depth value from depth buffer (must do this because we created it using projection)
+	// We do this already in the depth pass!
+	//depth = (0.5 * Projection[3][2]) / (depth + 0.5 * Projection[2][2] - 0.5);
+
+	// Convert depth to uint so we can do atomic min and max comparisons between the threads
+	uint depthInt = floatBitsToUint(depth);
+	atomicMin(minDepthInt, depthInt);
+	atomicMax(maxDepthInt, depthInt);
+
+	barrier();
+
+	// Step 2: One thread should calculate the frustum planes to be used for this tile
+	if (gl_LocalInvocationIndex == 0) 
+	{
+		// Convert the min and max across the entire tile back to float
+		minDepth = uintBitsToFloat(minDepthInt);
+		maxDepth = uintBitsToFloat(maxDepthInt);
+
+		// Steps based on tile scale
+		vec2 negativeStep = (2.0 * vec2(tileID)) / vec2(tileNumber);
+		vec2 positiveStep = (2.0 * vec2(tileID + ivec2(1, 1))) / vec2(tileNumber);
+
+		// Set up starting values for planes using steps and min and max z values
+		frustumPlanes[0] = vec4(1.0, 0.0, 0.0, 1.0 - negativeStep.x); // Left
+		frustumPlanes[1] = vec4(-1.0, 0.0, 0.0, -1.0 + positiveStep.x); // Right
+		frustumPlanes[2] = vec4(0.0, 1.0, 0.0, 1.0 - negativeStep.y); // Bottom
+		frustumPlanes[3] = vec4(0.0, -1.0, 0.0, -1.0 + positiveStep.y); // Top
+		frustumPlanes[4] = vec4(0.0, 0.0, -1.0, -minDepth); // Near
+		frustumPlanes[5] = vec4(0.0, 0.0, 1.0, maxDepth); // Far
+
+		// Transform the first four planes
+		frustumPlanes[0] *= ViewProjection;
+		frustumPlanes[0] /= length(frustumPlanes[0].xyz);
+		frustumPlanes[1] *= ViewProjection;
+		frustumPlanes[1] /= length(frustumPlanes[1].xyz);
+		frustumPlanes[2] *= ViewProjection;
+		frustumPlanes[2] /= length(frustumPlanes[2].xyz);
+		frustumPlanes[3] *= ViewProjection;
+		frustumPlanes[3] /= length(frustumPlanes[3].xyz);
+		
+		// Transform the depth planes
+		frustumPlanes[4] *= View;
+		frustumPlanes[4] /= length(frustumPlanes[4].xyz);
+		frustumPlanes[5] *= View;
+		frustumPlanes[5] /= length(frustumPlanes[5].xyz);
+	}
+
+	barrier();
+
+	// Step 3: Cull lights.
+	// Parallelize the threads against the lights now.
+	// Can handle 256 simultaniously. Anymore lights than that and additional passes are performed
+	
+	/// Point Light Culling///
+	for (uint i = 0; i < passCount; i++) 
+	{
+		// Get the lightIndex to test for this thread / pass. If the index is >= light count, then this thread can stop testing lights
+		uint lightIndex = i * threadCount + gl_LocalInvocationIndex;
+		
+		if (lightIndex >= pointLightCount) 
+		{
+			break;
+		}
+
+		vec4 position = pointLightBuffer.data[lightIndex].position;
+		float radius = pointLightBuffer.data[lightIndex].radiusAndPadding.x;
+
+		// We check if the light exists in our frustum
+		float distance = 0.0;
+		for (uint j = 0; j < 6; j++) 
+		{
+			distance = dot(position, frustumPlanes[j]) + radius;
+
+			// If one of the tests fails, then there is no intersection
+			if (distance <= 0.0)
+			{
+				break;
+			}
+		}
+
+		// If greater than zero, then it is a visible light
+		if (distance > 0.0) 
+		{
+			// Add index to the shared array of visible indices
+			uint offset = atomicAdd(visiblePointLightCount, 1);
+			visiblePointLightIndices[offset] = int(lightIndex);
+		}
+	} 
+	
+	barrier();
+	
+	/// Spotlight Culling (Does the same thing as pointlight)///
+	passCount = (spotLightCount + threadCount - 1) / threadCount;
+	for (uint i = 0; i < passCount; i++) 
+	{		
+		uint lightIndex = i * threadCount + gl_LocalInvocationIndex;
+		
+		if (lightIndex >= spotLightCount) 
+		{
+			break;
+		}
+		
+		float radius = spotLightBuffer.data[lightIndex].centerAndRadius.w;
+		vec4 mp = vec4(spotLightBuffer.data[lightIndex].centerAndRadius.xyz, 1.0f);
+		
+		float distance = 0.0;
+		for (uint j = 0; j < 6; j++) 
+		{
+			distance = dot(mp, frustumPlanes[j]) + radius;
+			if (distance <= 0.0)
+			{
+				break;
+			}
+		}
+		
+		if (distance > 0.0) 
+		{
+			uint offset = atomicAdd(visibleSpotLightCount, 1);
+			visibleSpotLightIndices[offset] = int(lightIndex);
+		}
+	}
+
+	barrier();
+
+	// One thread should fill the global light buffer
+	if (gl_LocalInvocationIndex == 0) 
+	{
+		/// Point Lights
+		uint offset = index * tileLights; // Determine position in global buffer
+		for (uint i = 0; i < visiblePointLightCount; i++) 
+		{
+			visiblePointLightIndicesBuffer.data[offset + i].index = visiblePointLightIndices[i];
+		}
+
+		if (visiblePointLightCount < tileLights) 
+		{
+			// Unless we have totally filled the entire array, mark it's end with -1
+			// Final shader step will use this to determine where to stop (without having to pass the light count)
+			visiblePointLightIndicesBuffer.data[offset + visiblePointLightCount].index = -1;
+		}
+
+		/// SpotLight
+		for (uint i = 0; i < visibleSpotLightCount; i++) 
+		{
+			visibleSpotLightIndicesBuffer.data[offset + i].index = visibleSpotLightIndices[i];
+		}
+		
+		if (visibleSpotLightCount < tileLights) 
+		{
+			visibleSpotLightIndicesBuffer.data[offset + visibleSpotLightCount].index = -1;
+		}
+	}
+	
+	/// Debug Light ///
+	//barrier();
+	////float c = float(visiblePointLightCount) / float(visiblePointLightCount);
+	//float c = float(visibleSpotLightCount) / float(visibleSpotLightCount);
+	//imageStore(lightImage, location, vec4(c,c,c,1.0f));
+	////imageStore(lightImage, location, vec4(0,0,0,1.0f));
+}

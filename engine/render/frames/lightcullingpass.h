@@ -1,7 +1,7 @@
 #pragma once
 #include "core/refcounted.h"
 #include "framepass.h"
-#include "core/app.h"
+#include "render/server/lightserver.h"
 
 namespace Render
 {
@@ -28,7 +28,7 @@ private:
 
 	GLuint ubo[1];
 
-	//LightServer* lightServer;
+	LightServer* lightServer;
 
 	GLuint lightCullingProgram;
 
