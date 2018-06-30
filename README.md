@@ -1,11 +1,12 @@
 # Terrain Editor
-A C++11 Terrain Editor created within my own custom game "engine"
+A C++17 Terrain Editor created within my own custom game "engine" for learning purposes
 
 ![alt text](https://github.com/Aggroo/TerrainEditor/blob/master/terrain.png)
 
 # Requirements
 1. CMake 3+.
-2. Compiler with support for C++11, such as VS 2015.
+2. Compiler with support for C++17.
+3. GPU Support OGL 4.3+
   
 # Instructions
 Only tested on windows!  
