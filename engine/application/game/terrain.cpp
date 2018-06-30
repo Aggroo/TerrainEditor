@@ -7,6 +7,8 @@
 #include "render/camera/camera.h"
 #include "render/render/renderer.h"
 #include "render/server/shaderserver.h"
+#include "application/basegamefeatures/entitymanager.h"
+#include "render/render/skybox.h"
 
 namespace TerrainEditor
 {
@@ -35,8 +37,8 @@ Terrain::~Terrain()
 
 void Terrain::Activate()
 {	
-	GLuint vert = Render::ShaderServer::Instance()->LoadVertexShader("resources/shaders/terrainPhong.vert");
-	GLuint frag = Render::ShaderServer::Instance()->LoadFragmentShader("resources/shaders/terrainPhong.frag");
+	GLuint vert = Render::ShaderServer::Instance()->LoadVertexShader("resources/shaders/terrainPBR.vert");
+	GLuint frag = Render::ShaderServer::Instance()->LoadFragmentShader("resources/shaders/terrainPBR.frag");
 
 	shader->AddShader(vert);
 	shader->AddShader(frag);
@@ -49,17 +51,25 @@ void Terrain::Activate()
 	shader->setupVector3f("u_matAmbientReflectance", 1.0f, 1.0f, 1.0f);
 	shader->setupVector3f("u_matDiffuseReflectance", 1.0f, 1.0f, 1.0f);
 	shader->setupVector3f("u_matSpecularReflectance", 0.16f, 0.16f, 0.16f);
-	shader->setupUniformFloat("u_matShininess", 12.0f);
+	shader->setupUniformFloat("u_matShininess", 0.5f);
 	/*shaders->setupMatrix4fv("transMatrix", modelMat);*/
 
 
-	textures->AddTexture(Render::TextureIndex::albedo0, "resources/textures/terrain_albedo/ground_albedo.jpg");
-	textures->AddTexture(Render::TextureIndex::albedo1, "resources/textures/terrain_albedo/roughrock.tga");
-	textures->AddTexture(Render::TextureIndex::albedo2, "resources/textures/terrain_albedo/Snow_albedo.jpg");
+	textures->AddTexture(Render::TextureIndex::albedo0, "resources/textures/terrain_textures/mossy-ground/mixedmoss-albedo2.png");
+	textures->AddTexture(Render::TextureIndex::albedo1, "resources/textures/terrain_textures/slate-cliff/slatecliffrock-albedo.png");
+	textures->AddTexture(Render::TextureIndex::albedo2, "resources/textures/terrain_textures/marble-speckled/marble-speckled-albedo.png");
 
-	textures->AddTexture(Render::TextureIndex::normal0, "resources/textures/terrain_normal/ground_normal.png");
-	textures->AddTexture(Render::TextureIndex::normal1, "resources/textures/terrain_normal/roughrock_normal.png");
-	textures->AddTexture(Render::TextureIndex::normal2, "resources/textures/terrain_normal/Snow_normal.jpg");
+	textures->AddTexture(Render::TextureIndex::normal0, "resources/textures/terrain_textures/mossy-ground/mixedmoss-normal2.png");
+	textures->AddTexture(Render::TextureIndex::normal1, "resources/textures/terrain_textures/slate-cliff/slatecliffrock_Normal.jpg");
+	textures->AddTexture(Render::TextureIndex::normal2, "resources/textures/terrain_textures/marble-speckled/marble-speckled-normal.png");
+
+	textures->AddTexture(Render::TextureIndex::specular0, "resources/textures/terrain_textures/mossy-ground/mixedmoss-metalness.png");
+	textures->AddTexture(Render::TextureIndex::specular1, "resources/textures/terrain_textures/slate-cliff/slatecliffrock_Metallic.png");
+	textures->AddTexture(Render::TextureIndex::specular2, "resources/textures/terrain_textures/marble-speckled/marble-speckled-metalness.png");
+
+	textures->AddTexture(Render::TextureIndex::roughness0, "resources/textures/terrain_textures/mossy-ground/mixedmoss-roughness.png");
+	textures->AddTexture(Render::TextureIndex::roughness1, "resources/textures/terrain_textures/slate-cliff/slatecliffrock_Roughness2.png");
+	textures->AddTexture(Render::TextureIndex::roughness2, "resources/textures/terrain_textures/marble-speckled/marble-speckled-roughness.png");
 			
 	textures->AddTexture(Render::TextureIndex::splat, "resources/textures/heightmaps/splat2.jpg");
 
@@ -73,6 +83,14 @@ void Terrain::Activate()
 	shader->setupUniformInt("normals[0]", (GLuint) Render::TextureIndex::normal0);
 	shader->setupUniformInt("normals[1]", (GLuint) Render::TextureIndex::normal1);
 	shader->setupUniformInt("normals[2]", (GLuint) Render::TextureIndex::normal2);
+
+	shader->setupUniformInt("specular[0]", (GLuint)Render::TextureIndex::specular0);
+	shader->setupUniformInt("specular[1]", (GLuint)Render::TextureIndex::specular1);
+	shader->setupUniformInt("specular[2]", (GLuint)Render::TextureIndex::specular2);
+
+	shader->setupUniformInt("metallic[0]", (GLuint)Render::TextureIndex::roughness0);
+	shader->setupUniformInt("metallic[1]", (GLuint)Render::TextureIndex::roughness1);
+	shader->setupUniformInt("metallic[2]", (GLuint)Render::TextureIndex::roughness2);
 
 	shader->setupUniformInt("splat", (GLuint) Render::TextureIndex::splat);
 
@@ -90,11 +108,12 @@ void Terrain::Deactivate()
 
 void Terrain::Update()
 {
+	const Ptr<Render::Skybox> sky = BaseGameFeature::EntityManager::Instance()->GetEntityByID(GetID() + 1).downcast<Render::Skybox>();
 	this->shader->BindProgram();
-	//Render::Renderer::Instance()->SetupUniformBuffer(Graphics::MainCamera::Instance());
 	this->textures->BindTextures();
 	this->shader->setupMatrix4fv("Model", this->transform);
 	this->shader->setupVector3f("cameraPosition", Graphics::MainCamera::Instance()->GetCameraPosition());
+	this->shader->setupUniformInt("prefilterMap", sky->GetCubemap());
 
 	if(mesh->mesh.Size() != 0)
 		mesh->drawMesh();

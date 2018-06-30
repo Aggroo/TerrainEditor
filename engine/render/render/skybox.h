@@ -18,6 +18,8 @@ public:
 
 	void LoadCubemap(Util::Array<Util::String> texures);
 
+	GLuint GetCubemap() const { return cubemapID; }
+
 private:
 
 	void GenerateCube();

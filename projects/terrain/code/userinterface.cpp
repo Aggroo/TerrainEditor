@@ -11,6 +11,7 @@
 #include "foundation/util/threadpool.h"
 #include "render/render/renderer.h"
 #include "application/basegamefeatures/entitymanager.h"
+#include "render/server/lightserver.h"
 
 UserInterface::UserInterface(Example::CGLab* app)
 {
@@ -245,39 +246,45 @@ void UserInterface::RenderDocks()
 			{
 				if (ImGui::TreeNode("Texture 0 (R)"))
 				{
-					GetImagePicker(texSettings.tex0Name, Render::TextureIndex::albedo0);
-					GetImagePicker(texSettings.normal0Name, Render::TextureIndex::normal0);
-
 					ImGui::LabelText("##Tex0UVMultiplier", "UV multiplier");
 					if (ImGui::DragFloat("##Tex0UVMultiplier", &texSettings.tex0UvMultiplier, 0.01f, 0.0f, 1.f))
 					{
 						terrain->GetShader()->setupUniformFloat("tex0UvMultiplier", texSettings.tex0UvMultiplier);
 					}
+					GetImagePicker(texSettings.tex0Name, Render::TextureIndex::albedo0);
+					GetImagePicker(texSettings.normal0Name, Render::TextureIndex::normal0);
+					GetImagePicker(texSettings.specular0Name, Render::TextureIndex::specular0);
+					GetImagePicker(texSettings.roughness0Name, Render::TextureIndex::roughness0);
+
 					ImGui::TreePop();
 				}
 
 				if (ImGui::TreeNode("Texture 1 (G)"))
 				{
-					GetImagePicker(texSettings.tex1Name, Render::TextureIndex::albedo1);
-					GetImagePicker(texSettings.normal1Name, Render::TextureIndex::normal1);
-
 					ImGui::LabelText("##Tex1UVMultiplier", "UV multiplier");
 					if (ImGui::DragFloat("##Tex1UVMultiplier", &texSettings.tex1UvMultiplier, 0.01f, 0.0f, 1.f))
 					{
 						terrain->GetShader()->setupUniformFloat("tex1UvMultiplier", texSettings.tex1UvMultiplier);
 					}
+					GetImagePicker(texSettings.tex1Name, Render::TextureIndex::albedo1);
+					GetImagePicker(texSettings.normal1Name, Render::TextureIndex::normal1);
+					GetImagePicker(texSettings.specular1Name, Render::TextureIndex::specular1);
+					GetImagePicker(texSettings.roughness1Name, Render::TextureIndex::roughness1);
+
 					ImGui::TreePop();
 				}
 				if (ImGui::TreeNode("Texture 2 (B)"))
 				{
-					GetImagePicker(texSettings.tex2Name, Render::TextureIndex::albedo2);
-					GetImagePicker(texSettings.normal2Name, Render::TextureIndex::normal2);
-
 					ImGui::LabelText("##Tex2UVMultiplier", "UV multiplier");
 					if (ImGui::DragFloat("##Tex2UVMultiplier", &texSettings.tex2UvMultiplier, 0.01f, 0.0f, 1.f))
 					{
 						terrain->GetShader()->setupUniformFloat("tex2UvMultiplier", texSettings.tex2UvMultiplier);
 					}
+					GetImagePicker(texSettings.tex2Name, Render::TextureIndex::albedo2);
+					GetImagePicker(texSettings.normal2Name, Render::TextureIndex::normal2);
+					GetImagePicker(texSettings.specular2Name, Render::TextureIndex::specular2);
+					GetImagePicker(texSettings.roughness2Name, Render::TextureIndex::roughness2);
+
 					ImGui::TreePop();
 				}
 				if (ImGui::TreeNode("Splatmap"))
@@ -320,6 +327,30 @@ void UserInterface::RenderDocks()
 		ImGui::EndDock();
 
 		if (ImGui::BeginDock("Inspector", NULL)) {
+
+			Render::LightServer::PointLight& light = Render::LightServer::Instance()->GetPointLightAtIndex(0);
+			this->light.pos = light.position;
+			this->light.col = light.color;
+			this->light.radius = light.radiusAndPadding.x();
+			
+			if(ImGui::CollapsingHeader("Light"))
+			{
+				if(ImGui::DragFloat4("Position", (float*) &this->light.pos))
+				{
+					light.position = this->light.pos;
+					Render::LightServer::Instance()->UpdatePointLightBuffer();
+				}
+				if (ImGui::DragFloat4("Color", (float*)&this->light.col, 0.01f))
+				{
+					light.color = this->light.col;
+					Render::LightServer::Instance()->UpdatePointLightBuffer();
+				}
+				if (ImGui::DragFloat("Radius", &this->light.radius, 0.1f))
+				{
+					light.radiusAndPadding[0] = this->light.radius;
+					Render::LightServer::Instance()->UpdatePointLightBuffer();
+				}
+			}
 
 			auto entities = BaseGameFeature::EntityManager::Instance()->GetEntityList();
 
@@ -397,6 +428,12 @@ void UserInterface::ModalWindows()
 			case Render::TextureIndex::normal0: texSettings.normal0Name = s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr(); break;
 			case Render::TextureIndex::normal1: texSettings.normal1Name = s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr(); break;
 			case Render::TextureIndex::normal2: texSettings.normal2Name = s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr(); break;
+			case Render::TextureIndex::specular0: texSettings.specular0Name = s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr(); break;
+			case Render::TextureIndex::specular1: texSettings.specular1Name = s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr(); break;
+			case Render::TextureIndex::specular2: texSettings.specular2Name = s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr(); break;
+			case Render::TextureIndex::roughness0: texSettings.roughness0Name = s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr(); break;
+			case Render::TextureIndex::roughness1: texSettings.roughness1Name = s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr(); break;
+			case Render::TextureIndex::roughness2: texSettings.roughness2Name = s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr(); break;
 			case Render::TextureIndex::splat: texSettings.splatName = s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr(); break;
 			default:break;
 			}
@@ -580,6 +617,12 @@ Util::String UserInterface::GetStringFromTextureIndex(Render::TextureIndex index
 	case Render::TextureIndex::normal0: return Util::String("Normal");
 	case Render::TextureIndex::normal1: return Util::String("Normal");
 	case Render::TextureIndex::normal2: return Util::String("Normal");
+	case Render::TextureIndex::specular0: return Util::String("Specular");
+	case Render::TextureIndex::specular1: return Util::String("Specular");
+	case Render::TextureIndex::specular2: return Util::String("Specular");
+	case Render::TextureIndex::roughness0: return Util::String("Roughness");
+	case Render::TextureIndex::roughness1: return Util::String("Roughness");
+	case Render::TextureIndex::roughness2: return Util::String("Roughness");
 	case Render::TextureIndex::splat: return Util::String("Splatmap");
 	}
 }

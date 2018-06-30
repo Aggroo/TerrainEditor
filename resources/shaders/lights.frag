@@ -1,8 +1,8 @@
 
 struct PointLight
 {
-	vec4 color;
 	vec4 position;
+	vec4 color;
 	vec4 radiusAndPadding;
 };
 
@@ -65,4 +65,65 @@ float attenuate(vec3 lightDirection, float radius)
     float atten = max(0.0, 1.0 - dot(l,l));
 
 	return atten;
+}
+
+//Inverse gamma
+#define GAMMA 2.2f
+const float screenGamma = 1.0f / GAMMA;
+
+#define PI 3.14159265358979323846
+
+//returns the ratio between specular and diffuse reflection or how much the surface reflects light versus how much it refracts light
+//creates a rim-lighting effect, as the closer we get to zero incidence, the more the light the material will reflect.
+vec3 fresnelSchlick(in float cosTheta, in vec3 F0, float roughness)
+{
+	//Spherical Gaussian approximation
+	//return F0 + (1.0f - F0) * pow(2,((-5.55473f*cosTheta - 6.98316f) * cosTheta));
+	
+	//With roughness
+	return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(2,((-5.55473f*cosTheta - 6.98316f) * cosTheta));
+	
+	//Old, yields artifacts every now and then
+	//return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(1.0 - cosTheta, 5.0);
+}
+
+//We use GGX for our normal distribution function (NDF)
+//This approximates the ratio of microfacets aligned to given halfway vector H
+float NormalDistributionGGX(in vec3 N, in vec3 H, in float roughness)
+{
+	float a = pow(roughness, 4);
+	
+	float NdotH = max(dot(N, H), 0.0f);
+	NdotH = NdotH * NdotH;
+	
+	float denom = (NdotH * (a - 1.0f) + 1.0f);
+	denom = PI * denom * denom;
+	
+	return (a / (denom + 0.00001f));
+}
+
+//We use Smith with Schlick-GGX for our geometry function
+//This statistically approximates the ratio of microfacets that overshadow each other
+//TODO: These two functions can be optimized
+float GeometrySchlickGGX(in float NdotV, in float roughness)
+{
+	//Optimization: Moved to GeometrySmith, so that we don't calculate it twice
+	//float r = roughness + 1.0f;
+	//float k = (r*r) * 0.125f; // (r^2 / 8)
+	float k = roughness;
+	
+	float denom = NdotV * (1.0f - k) + k;
+	return NdotV / denom;
+}
+
+float GeometrySmith(in float NdotV, in float NdotL, in float roughness)
+{	
+	//Optimization: Moved here from GeometrySchlickGGX so that we don't calculate it twice
+	float r = roughness + 1.0f;
+	float k = (r*r) * 0.125f; // (r^2 / 8)
+	
+	float ggxNV = GeometrySchlickGGX(NdotV, k);
+	float ggxNL = GeometrySchlickGGX(NdotL, k);
+	
+	return ggxNV * ggxNL;
 }

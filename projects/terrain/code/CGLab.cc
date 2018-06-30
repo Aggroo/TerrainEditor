@@ -129,10 +129,10 @@ CGLab::Run()
 
     std::chrono::high_resolution_clock::time_point before = std::chrono::high_resolution_clock::now();
 
+	LightServer::Instance()->CreatePointLight(Math::vec4(0, 2, 3), Math::vec4(0.3f, 0.3f, 0.3f), 1000.0f);
+
 	while (this->window->IsOpen() && !this->shutdown)
-	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
+	{        
 		this->window->Update();
 		input->Update();
 		

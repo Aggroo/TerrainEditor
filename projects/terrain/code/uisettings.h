@@ -22,16 +22,25 @@ struct UIIcons
 };
 struct TextureSettings
 {
-	Util::String tex0Name;
 	float tex0UvMultiplier = 0.1f;
-	Util::String tex1Name;
 	float tex1UvMultiplier = 0.1f;
-	Util::String tex2Name;
 	float tex2UvMultiplier = 0.1f;
+	
+	Util::String tex0Name;
+	Util::String tex1Name;
+	Util::String tex2Name;
 
 	Util::String normal0Name;
 	Util::String normal1Name;
 	Util::String normal2Name;
+
+	Util::String specular0Name;
+	Util::String specular1Name;
+	Util::String specular2Name;
+
+	Util::String roughness0Name;
+	Util::String roughness1Name;
+	Util::String roughness2Name;
 
 	Util::String splatName;
 
@@ -47,8 +56,6 @@ struct HeightMapSettings
 
 };
 
-
-
 struct PerlinNoiseSettings
 {
 	Util::String name;
@@ -58,5 +65,12 @@ struct PerlinNoiseSettings
 	int octaves = 1;
 	float persistance = 0.5f;
 	float lacunarity = 5.f;
+};
+
+struct LightSettings
+{
+	Math::vec4 pos;
+	Math::vec4 col;
+	float radius;
 };
 }

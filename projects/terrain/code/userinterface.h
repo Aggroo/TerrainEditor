@@ -43,6 +43,7 @@ private:
 	UI::TextureSettings texSettings;
 	UI::PerlinNoiseSettings perlinSettings;
 	UI::UIIcons icons;
+	UI::LightSettings light;
 	Generator::PerlinNoiseGenerator p;
 
 	ImVec2 foo[10];

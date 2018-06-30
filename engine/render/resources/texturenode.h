@@ -11,6 +11,12 @@ enum class TextureIndex
 	normal0,
 	normal1,
 	normal2,
+	specular0,
+	specular1,
+	specular2,
+	roughness0,
+	roughness1,
+	roughness2,
 	splat,
 };
 class TextureNode : public Core::RefCounted
