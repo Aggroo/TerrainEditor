@@ -48,13 +48,6 @@ void Terrain::Activate()
 
 	shader->BindProgram();
 
-	shader->setupVector3f("u_matAmbientReflectance", 1.0f, 1.0f, 1.0f);
-	shader->setupVector3f("u_matDiffuseReflectance", 1.0f, 1.0f, 1.0f);
-	shader->setupVector3f("u_matSpecularReflectance", 0.16f, 0.16f, 0.16f);
-	shader->setupUniformFloat("u_matShininess", 0.5f);
-	/*shaders->setupMatrix4fv("transMatrix", modelMat);*/
-
-
 	textures->AddTexture(Render::TextureIndex::albedo0, "resources/textures/terrain_textures/mossy-ground/mixedmoss-albedo2.png");
 	textures->AddTexture(Render::TextureIndex::albedo1, "resources/textures/terrain_textures/slate-cliff/slatecliffrock-albedo.png");
 	textures->AddTexture(Render::TextureIndex::albedo2, "resources/textures/terrain_textures/marble-speckled/marble-speckled-albedo.png");
