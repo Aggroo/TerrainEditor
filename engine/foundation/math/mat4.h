@@ -69,19 +69,26 @@ namespace Math
 		{
 			mat4 new_matrix;
 
-			float value = 0;
-			for (int y = 0; y < 4; y++)
-			{
-				for (int x = 0; x < 4; x++)
-				{
-					value = 0.0;
-					for (int k = 0; k < 4; k++)
-					{
-						value += matrice[y*4 + k] * rhs[k*4 + x];
-					}
-					new_matrix[y*4 + x] = value;
-				}
-			}
+			new_matrix[0] = matrice[0]*rhs[0]+matrice[1]*rhs[4]+matrice[2]*rhs[8]+matrice[3]*rhs[12];
+			new_matrix[1] = matrice[0]*rhs[1]+matrice[1]*rhs[5]+matrice[2]*rhs[9]+matrice[3]*rhs[13];
+			new_matrix[2] = matrice[0]*rhs[2]+matrice[1]*rhs[6]+matrice[2]*rhs[10]+matrice[3]*rhs[14];
+			new_matrix[3] = matrice[0]*rhs[3]+matrice[1]*rhs[7]+matrice[2]*rhs[11]+matrice[3]*rhs[15];
+			
+			new_matrix[4] = matrice[4]*rhs[0]+matrice[5]*rhs[4]+matrice[6]*rhs[8]+matrice[7]*rhs[12];
+			new_matrix[5] = matrice[4]*rhs[1]+matrice[5]*rhs[5]+matrice[6]*rhs[9]+matrice[7]*rhs[13];
+			new_matrix[6] = matrice[4]*rhs[2]+matrice[5]*rhs[6]+matrice[6]*rhs[10]+matrice[7]*rhs[14];
+			new_matrix[7] = matrice[4]*rhs[3]+matrice[5]*rhs[7]+matrice[6]*rhs[11]+matrice[7]*rhs[15];
+			
+			new_matrix[8] = matrice[8]*rhs[0]+matrice[9]*rhs[4]+matrice[10]*rhs[8]+matrice[11]*rhs[12];
+			new_matrix[9] = matrice[8]*rhs[1]+matrice[9]*rhs[5]+matrice[10]*rhs[9]+matrice[11]*rhs[13];
+			new_matrix[10] = matrice[8]*rhs[2]+matrice[9]*rhs[6]+matrice[10]*rhs[10]+matrice[11]*rhs[14];
+			new_matrix[11] = matrice[8]*rhs[3]+matrice[9]*rhs[7]+matrice[10]*rhs[11]+matrice[11]*rhs[15];
+			
+			new_matrix[12] = matrice[12]*rhs[0]+matrice[13]*rhs[4]+matrice[14]*rhs[8]+matrice[15]*rhs[12];
+			new_matrix[13] = matrice[12]*rhs[1]+matrice[13]*rhs[5]+matrice[14]*rhs[9]+matrice[15]*rhs[13];
+			new_matrix[14] = matrice[12]*rhs[2]+matrice[13]*rhs[6]+matrice[14]*rhs[10]+matrice[15]*rhs[14];
+			new_matrix[15] = matrice[12]*rhs[3]+matrice[13]*rhs[7]+matrice[14]*rhs[11]+matrice[15]*rhs[15];
+			
 			return new_matrix;
 		}
 
@@ -102,22 +109,22 @@ namespace Math
 		{
 			mat4 new_matrix;
 
-			new_matrix[0*4 + 0] = matrice[0*4 + 0];
-			new_matrix[0*4 + 1] = matrice[1*4 + 0];
-			new_matrix[0*4 + 2] = matrice[2*4 + 0];
-			new_matrix[0*4 + 3] = matrice[3*4 + 0];
-			new_matrix[1*4 + 0] = matrice[0*4 + 1];
-			new_matrix[1*4 + 1] = matrice[1*4 + 1];
-			new_matrix[1*4 + 2] = matrice[2*4 + 1];
-			new_matrix[1*4 + 3] = matrice[3*4 + 1];
-			new_matrix[2*4 + 0] = matrice[0*4 + 2];
-			new_matrix[2*4 + 1] = matrice[1*4 + 2];
-			new_matrix[2*4 + 2] = matrice[2*4 + 2];
-			new_matrix[2*4 + 3] = matrice[3*4 + 2];
-			new_matrix[3*4 + 0] = matrice[0*4 + 3];
-			new_matrix[3*4 + 1] = matrice[1*4 + 3];
-			new_matrix[3*4 + 2] = matrice[2*4 + 3];
-			new_matrix[3*4 + 3] = matrice[3*4 + 3];
+			new_matrix[0] = matrice[0];
+			new_matrix[1] = matrice[4];
+			new_matrix[2] = matrice[8];
+			new_matrix[3] = matrice[12];
+			new_matrix[4] = matrice[1];
+			new_matrix[5] = matrice[5];
+			new_matrix[6] = matrice[9];
+			new_matrix[7] = matrice[13];
+			new_matrix[8] = matrice[2];
+			new_matrix[9] = matrice[6];
+			new_matrix[10] = matrice[10];
+			new_matrix[11] = matrice[14];
+			new_matrix[12] = matrice[3];
+			new_matrix[13] = matrice[7];
+			new_matrix[14] = matrice[11
+			new_matrix[15 = matrice[15;
 
 			return new_matrix;
 		}
