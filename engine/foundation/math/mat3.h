@@ -11,14 +11,9 @@ namespace Math
 	public:
 		inline mat3()
 		{
-
-			for (int y = 0; y < 3; y++)
-			{
-				for (int x = 0; x < 3; x++)
-				{
-					matrice[y*3 + x] = 0;
-				}
-			}
+			matrice[0] = 1; matrice[1] = 0; matrice[2] = 0;
+			matrice[3] = 0; matrice[4] = 1; matrice[5] = 0;
+			matrice[6] = 0; matrice[7] = 0; matrice[8] = 1;
 		}
 		inline ~mat3()
 		{
@@ -29,19 +24,17 @@ namespace Math
 		{
 			mat3 new_matrix;
 
-			float value = 0;
-			for (int y = 0; y < 3; y++)
-			{
-				for (int x = 0; x < 3; x++)
-				{
-					value = 0.0;
-					for (int k = 0; k < 3; k++)
-					{
-						value += matrice[y*3 + k] * rhs[k*3 + x];
-					}
-					new_matrix[y*3 + x] = value;
-				}
-			}
+			new_matrix[0] = matrice[0]*rhs[0]+matrice[1]*rhs[3]+matrice[2]*rhs[6];
+			new_matrix[1] = matrice[0]*rhs[1]+matrice[1]*rhs[4]+matrice[2]*rhs[7];
+			new_matrix[2] = matrice[0]*rhs[2]+matrice[1]*rhs[5]+matrice[2]*rhs[8];
+			
+			new_matrix[3] = matrice[3]*rhs[0]+matrice[4]*rhs[3]+matrice[5]*rhs[6];
+			new_matrix[4] = matrice[3]*rhs[1]+matrice[4]*rhs[4]+matrice[5]*rhs[7];
+			new_matrix[5] = matrice[3]*rhs[2]+matrice[4]*rhs[5]+matrice[5]*rhs[8];
+			
+			new_matrix[6] = matrice[6]*rhs[0]+matrice[7]*rhs[3]+matrice[8]*rhs[6];
+			new_matrix[7] = matrice[6]*rhs[1]+matrice[7]*rhs[4]+matrice[8]*rhs[7];
+			new_matrix[8] = matrice[6]*rhs[2]+matrice[7]*rhs[5]+matrice[8]*rhs[8];
 			return new_matrix;
 		}
 
@@ -49,29 +42,28 @@ namespace Math
 		{
 			vec3 new_vec;
 
-			float value = 0;
-			for (int y = 0; y < 3; y++)
-			{
-				value = 0.0;
-				for (int k = 0; k < 3; k++)
-				{
-					value += matrice[y*3 + k] * rhs[k];
-				}
-				new_vec[y] = value;
-			}
+			new_vec[0] = matrice[0]*rhs[0]+matrice[1]*rhs[1]+matrice[2]*rhs[2];
+			new_vec[1] = matrice[3]*rhs[0]+matrice[4]*rhs[1]+matrice[5]*rhs[2];
+			new_vec[2] = matrice[6]*rhs[0]+matrice[7]*rhs[1]+matrice[8]*rhs[2];
+			
 			return new_vec;
 		}
 
 		inline mat3 operator!()
 		{
 			mat3 new_matrix;
-			for (int y = 0; y < 3; y++)
-			{
-				for (int x = 0; x < 3; x++)
-				{
-					new_matrix[x*3 + y] = matrice[y*3 + x];
-				}
-			}
+			new_matrix[0] = matrice[0];
+			new_matrix[1] = matrice[3];
+			new_matrix[2] = matrice[6];
+			
+			new_matrix[3] = matrice[1];
+			new_matrix[4] = matrice[4];
+			new_matrix[5] = matrice[7];
+			
+			new_matrix[6] = matrice[2];
+			new_matrix[7] = matrice[5];
+			new_matrix[8] = matrice[8];
+			
 			return new_matrix;
 		}
 
