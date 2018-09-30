@@ -6,6 +6,7 @@
 #include "render/resources/texturenode.h"
 #include "render/resources/shaderobject.h"
 #include "imgui.h"
+#include "render/render/skybox.h"
 
 namespace TerrainEditor
 {
@@ -45,6 +46,8 @@ public:
 	Ptr<Render::ShaderObject> GetShader() { return shader; }
 	Ptr<Render::TextureNode> GetTextures() { return textures; }
 
+	void SetSkybox(const Ptr<Render::Skybox> sky);
+
 private:
 	void SmoothenTerrain();
 	bool inBounds(int x, int y);
@@ -69,6 +72,7 @@ private:
 	Ptr<Render::TextureNode> textures;
 	Ptr<Render::MeshResources> mesh;
 	Ptr<Render::ShaderObject> shader;
+	Ptr<Render::Skybox> sky;
 
 };
 }

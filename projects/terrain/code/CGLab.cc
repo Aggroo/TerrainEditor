@@ -126,10 +126,11 @@ CGLab::Run()
 
 	Ptr<Render::Skybox> skybox = Render::Skybox::Create();
 	skybox->Activate();
+	terrain->SetSkybox(skybox);
 
     std::chrono::high_resolution_clock::time_point before = std::chrono::high_resolution_clock::now();
 
-	LightServer::Instance()->CreatePointLight(Math::vec4(0, 2, 3), Math::vec4(0.3f, 0.3f, 0.3f), 1000.0f);
+	LightServer::Instance()->CreatePointLight(Math::vec4(0, 800, 3), Math::vec4(0.3f, 0.3f, 0.3f), 10000.0f);
 
 	while (this->window->IsOpen() && !this->shutdown)
 	{        

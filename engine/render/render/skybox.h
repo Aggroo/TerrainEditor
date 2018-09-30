@@ -16,20 +16,18 @@ public:
 	void Deactivate();
 	virtual void Update();
 
-	void LoadCubemap(Util::Array<Util::String> texures);
-
-	GLuint GetCubemap() const { return cubemapID; }
+	GLuint GetCubemapID() const { return cubemap->GetTextureID(); }
+	Ptr<TextureResource> GetCubemap() const { return cubemap; }
 
 private:
-
 	void GenerateCube();
 
-	GLuint cubemapID;
 	GLuint vao;
 	GLuint vbo;
 	Util::Array<Util::String> cubeTextures;
 	Util::Array<float> cubeVerts;
 
+	Ptr<TextureResource> cubemap;
 	Ptr<Render::ShaderObject> shader;
 };
 	

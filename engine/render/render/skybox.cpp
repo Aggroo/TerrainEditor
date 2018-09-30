@@ -10,6 +10,7 @@ namespace Render
 __ImplementClass(Render::Skybox, 'RSKY', Game::Entity)
 Skybox::Skybox()
 {
+	cubemap = TextureResource::Create();
 	shader = Render::ShaderObject::Create();
 }
 
@@ -30,13 +31,15 @@ void Skybox::Activate()
 
 	Render::ShaderServer::Instance()->AddShaderObject("Skybox", shader);
 
-	cubeTextures.Append("resources/textures/skyboxes/skyboxsun5deg2/right.bmp");
-	cubeTextures.Append("resources/textures/skyboxes/skyboxsun5deg2/left.bmp");
-	cubeTextures.Append("resources/textures/skyboxes/skyboxsun5deg2/top.bmp");
-	cubeTextures.Append("resources/textures/skyboxes/skyboxsun5deg2/bottom.bmp");
-	cubeTextures.Append("resources/textures/skyboxes/skyboxsun5deg2/front.bmp");
-	cubeTextures.Append("resources/textures/skyboxes/skyboxsun5deg2/back.bmp");
-	LoadCubemap(cubeTextures);
+	cubeTextures.Append("resources/textures/skyboxes/skyboxsun25degtest/right.bmp");
+	cubeTextures.Append("resources/textures/skyboxes/skyboxsun25degtest/left.bmp");
+	cubeTextures.Append("resources/textures/skyboxes/skyboxsun25degtest/top.bmp");
+	cubeTextures.Append("resources/textures/skyboxes/skyboxsun25degtest/bottom.bmp");
+	cubeTextures.Append("resources/textures/skyboxes/skyboxsun25degtest/front.bmp");
+	cubeTextures.Append("resources/textures/skyboxes/skyboxsun25degtest/back.bmp");
+
+	cubemap->LoadCubemap(cubeTextures);
+	
 	GenerateCube();
 
 	Game::Entity::Activate();
@@ -53,38 +56,10 @@ void Skybox::Update()
 	shader->BindProgram();
 	glBindVertexArray(vao);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapID);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap->GetTextureID());
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glDepthFunc(GL_LESS);
-}
-
-void Skybox::LoadCubemap(Util::Array<Util::String> texures)
-{
-	glGenTextures(1, &cubemapID);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapID);
-	
-	int width, height, nrChannels;
-	for (unsigned int i = 0; i < texures.Size(); i++)
-	{
-		unsigned char *data = stbi_load(texures[i].AsCharPtr(), &width, &height, &nrChannels, 0);
-		if (data)
-		{
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-				0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-			stbi_image_free(data);
-		}
-		else
-		{
-			printf("Cubemap texture failed to load at path: %s", texures[i].AsCharPtr());
-			stbi_image_free(data);
-		}
-	}
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
 
 void Skybox::GenerateCube()

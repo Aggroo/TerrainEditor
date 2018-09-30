@@ -18,6 +18,7 @@ enum class TextureIndex
 	roughness1,
 	roughness2,
 	splat,
+	environmentMap
 };
 class TextureNode : public Core::RefCounted
 {
@@ -28,9 +29,11 @@ public:
 	~TextureNode();
 
 	void AddTexture(TextureIndex index, const char * filename);
+	void AddTexture(TextureIndex index, Ptr<TextureResource> texture);
 	void UpdateTexture(TextureIndex index, const char * filename) const;
 	Ptr<TextureResource> GetTexture(TextureIndex index) const;
 	void BindTextures() const;
+	void UnbindTextures() const;
 
 private:
 

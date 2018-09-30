@@ -60,13 +60,13 @@ LightServer::SpotLight LightServer::CalculateSpotLight(Math::vec4 position, Math
 	Math::vec4 centerAndRadius = (position + Q1 + Q2) * oneOverThree;
 	centerAndRadius[3] = 1.0f;
 
-	GLfloat centerOffset = (centerAndRadius - position).vecLength();
+	GLfloat centerOffset = (centerAndRadius - position).Length();
 
 	//TODO: This isn't quite right, but it works for now. the sphere radius is a bit too big of angle is greater than 50
 	//if the angle is greater than 50 degrees we cant use center-position as our radius length
 	if (angle > 50)
 	{
-		centerAndRadius[3] = ((centerAndRadius - Q1).vecLength());
+		centerAndRadius[3] = ((centerAndRadius - Q1).Length());
 	}
 	else
 	{

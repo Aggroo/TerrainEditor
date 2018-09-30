@@ -66,6 +66,9 @@ public:
 	//Util::Array<Math::vec3> tangentList;
 	//Util::Array<Math::vec3> bitangentList;
 
+	bool IsRenderable() { return renderable; }
+	void SetRenderable(const bool& renderable) { this->renderable = renderable; }
+
 private:
 
 	//bool tangents;
@@ -85,7 +88,7 @@ private:
 	//Used to keep the loader from creating double vertices
 	std::map<std::string, GLuint> vertexMap;
 	
-	
+	bool renderable;
 };
 
 }

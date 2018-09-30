@@ -8,11 +8,11 @@
 namespace Render
 {
 __ImplementClass(Render::MeshResources, 'MSHR', Core::RefCounted)
-MeshResources::MeshResources() : tSize(0), iSize(0), vertexSize(0), vertexPtr(nullptr), indexSize(0), indexPtr(nullptr) 
+MeshResources::MeshResources() : tSize(0), iSize(0), vertexSize(0), vertexPtr(nullptr), indexSize(0), indexPtr(nullptr), renderable(false)
 {
 }
 
-MeshResources::MeshResources(Util::Array<Render::Vertex> mesh, Util::Array<GLuint> indices) : tSize(0), iSize(0), vertexSize(0), vertexPtr(nullptr), indexSize(0), indexPtr(nullptr)
+MeshResources::MeshResources(Util::Array<Render::Vertex> mesh, Util::Array<GLuint> indices) : tSize(0), iSize(0), vertexSize(0), vertexPtr(nullptr), indexSize(0), indexPtr(nullptr), renderable(false)
 {
 	this->mesh = mesh;
 	this->indices = indices;
@@ -51,6 +51,7 @@ void MeshResources::genBuffer()
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint)*indices.Size(), &indices[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
+	renderable = true;
 }
 
 void MeshResources::genSkinnedBuffer(size_t vertexSize, uchar* vertexPtr, size_t indexSize, uchar* indexPtr, GLuint size)

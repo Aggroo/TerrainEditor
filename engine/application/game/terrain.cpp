@@ -37,14 +37,14 @@ Terrain::~Terrain()
 
 void Terrain::Activate()
 {	
-	GLuint vert = Render::ShaderServer::Instance()->LoadVertexShader("resources/shaders/terrainPBR.vert");
+	GLuint vert = Render::ShaderServer::Instance()->LoadVertexShader("resources/shaders/PBR.vert");
 	GLuint frag = Render::ShaderServer::Instance()->LoadFragmentShader("resources/shaders/terrainPBR.frag");
 
 	shader->AddShader(vert);
 	shader->AddShader(frag);
 	shader->LinkShaders();
 
-	Render::ShaderServer::Instance()->AddShaderObject("Terrain-Phong", shader);
+	Render::ShaderServer::Instance()->AddShaderObject("Terrain-PBR", shader);
 
 	shader->BindProgram();
 
@@ -101,26 +101,27 @@ void Terrain::Deactivate()
 
 void Terrain::Update()
 {
-	const Ptr<Render::Skybox> sky = BaseGameFeature::EntityManager::Instance()->GetEntityByID(GetID() + 1).downcast<Render::Skybox>();
 	this->shader->BindProgram();
 	this->textures->BindTextures();
 	this->shader->setupMatrix4fv("Model", this->transform);
 	this->shader->setupVector3f("cameraPosition", Graphics::MainCamera::Instance()->GetCameraPosition());
-	this->shader->setupUniformInt("prefilterMap", sky->GetCubemap());
+	
 
-	if(mesh->mesh.Size() != 0)
+	if(mesh->IsRenderable())
 		mesh->drawMesh();
+
+	this->textures->UnbindTextures();
 }
 
 void Terrain::OnUI()
 {
 	if (ImGui::CollapsingHeader("Terrain Entity"))
-	{
-		
+	{		
 		if(ImGui::DragFloat3("Position", p))
 		{
 			transform.SetPosition(Math::vec4(p[0], p[1], p[2], 1.0f));
 		}
+		
 	}
 	
 }
@@ -236,12 +237,19 @@ bool Terrain::CreateTerrain(const char* filename, float widthMultiplier, float h
 	}
 
 	GenerateNormals();
-	GetSteepness(100, 200);
+
 	mesh->genBuffer();
 
 	return true;
 }
 
+
+void Terrain::SetSkybox(const Ptr<Render::Skybox> sky)
+{
+	this->sky = sky;
+	textures->AddTexture(Render::TextureIndex::environmentMap, this->sky->GetCubemap());
+	this->shader->setupUniformInt("environmentMap", (GLuint)Render::TextureIndex::environmentMap);
+}
 
 void Terrain::SmoothenTerrain()
 {
@@ -303,7 +311,7 @@ float Terrain::GetSteepness(int x, int y)
 	return acos(Math::vec3::Dot(normal, Math::vec3(0.f, 1.f, 0.f)));
 }
 
-	bool Terrain::inBounds(int x, int y)
+bool Terrain::inBounds(int x, int y)
 {
 	return ((x >= 0 && x < this->terrainWidth) && (y >= 0 && y < this->terrainHeight));
 }
