@@ -197,12 +197,19 @@ Util::String ShaderServer::ReadFromFile(const Util::String& filename)
 	}
 
 	std::string line = "";
+	Util::String checkInclude;
 	while (!fileStream.eof())
 	{
 		std::getline(fileStream, line);
-		if (line == "#include(\"lights.frag\")")
+		checkInclude = line.c_str();
+		if (checkInclude.ContainsCharFromSet("#"))
 		{
-			line = ReadFromFile("resources/shaders/lights.frag").AsCharPtr();
+			Util::Array<Util::String> tokens = checkInclude.Tokenize("(");
+			if (tokens[0] == "#include")
+			{
+				Util::String filename = tokens[1].ExtractRange(1, tokens[1].Length()-3);
+				line = ReadFromFile("resources/shaders/"+ filename).AsCharPtr();
+			}
 		}
 		fileContent.Append(line.c_str() + Util::String("\n"));
 	}
