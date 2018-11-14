@@ -1,11 +1,11 @@
 #pragma once
-#include "application/game/entity.h"
+#include "application/game/entitybase.h"
 #include "render/resources/textureresource.h"
 #include "render/resources/shaderobject.h"
 
 namespace Render
 {
-class Skybox : public Game::Entity
+class Skybox : public Game::EntityBase
 {
 __DeclareClass(Skybox)
 public:
@@ -28,7 +28,7 @@ private:
 	Util::Array<float> cubeVerts;
 
 	Ptr<TextureResource> cubemap;
-	Ptr<Render::ShaderObject> shader;
+	Ptr<Render::ShaderObject> shader, irradianceShader, prefilterShader, brdfShader;
 };
 	
 }

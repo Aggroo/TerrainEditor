@@ -1,42 +1,47 @@
 #pragma once
-#include "foundation/math/mat4.h"
-#include "core/refcounted.h"
+#include "entitybase.h"
+#include "render/resources/texturenode.h"
+#include "render/resources/shaderobject.h"
 
 namespace Game
 {
-class Entity : public Core::RefCounted
+class Entity : public Game::EntityBase
 {
 	__DeclareClass(Entity);
 public:
 	Entity();
 	~Entity();
 
-	const uint& GetID() const { return ID; }
+	void Activate();
+	void Deactivate();
 
-	///Activates this entity and all it's properties
-	virtual void Activate();
-	///Deactivates this entity and all it's properties
-	virtual void Deactivate();
-
-	///Updates this entity and calls all its properties FixedUpdate() functions. This is called much less frequently than Update()
-	virtual void FixedUpdate();
-	///Updates this entity and calls all its properties Update() functions.
 	virtual void Update();
 
 	virtual void OnUI();
 
-	///Shortcut for getting this entitys transform
-	virtual Math::mat4 GetTransform();
-	///Shortcut for setting this entitys transform
-	virtual void SetTransform(const Math::mat4& nTransform);
+	void SetMesh(Util::String filename);
+	Ptr<Render::MeshResources> GetMesh();
 
-	///Check if entity is active or not
-	const bool& IsActive() const;
+	void SetTextures(Util::String albedo, Util::String normal, Util::String metallic, Util::String roughness, Util::String ao = "Default");
 
-protected:
-	uint ID;
-	bool active;
+	void SetShaders(Util::String vertexShader, Util::String fragmentShader, const char* name);
+	Ptr<Render::ShaderObject> GetShader();
 
-	Math::mat4 transform;
+	void SetName(Util::String name);
+	Util::String GetName();
+
+	void SetEnvironmentMap(Ptr<Render::TextureResource> envmapID);
+	Ptr<Render::TextureResource> GetEnvironmentMap();
+
+private:
+
+	Ptr<Render::TextureNode> textures;
+	Ptr<Render::MeshResources> mesh;
+	Ptr<Render::ShaderObject> shader;
+	Ptr<Render::TextureResource> environmentMap;
+
+	Util::String entityName;
 };
+
 }
+

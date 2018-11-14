@@ -4,6 +4,8 @@
 SET(files_application_game
 	game/entity.h
 	game/entity.cpp
+	game/entitybase.h
+	game/entitybase.cpp
 	game/terrain.h
 	game/terrain.cpp
 	game/perlinnoisegenerator.h

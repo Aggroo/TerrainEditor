@@ -51,8 +51,7 @@ public:
 	void drawMesh();
 	void drawSkinnedMesh();
 
-	//Used to concatenating three ints to a string
-	std::string FaceKey(int pos,int uv,int norm) const;
+
 	Util::Array<Render::Vertex> GetMesh();
 	Util::Array<Render::Face>& GetMeshFaces();
 	Util::Array<GLuint> getIndices();
@@ -71,6 +70,8 @@ public:
 
 private:
 
+	//Used to concatenating three ints to a string
+	std::string FaceKey(int pos, int uv, int norm) const;
 	//bool tangents;
 
 	GLuint vbo[1];

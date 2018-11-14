@@ -7,7 +7,7 @@
 
 namespace Render
 {
-__ImplementClass(Render::Skybox, 'RSKY', Game::Entity)
+__ImplementClass(Render::Skybox, 'RSKY', Game::EntityBase)
 Skybox::Skybox()
 {
 	cubemap = TextureResource::Create();
@@ -31,23 +31,23 @@ void Skybox::Activate()
 
 	Render::ShaderServer::Instance()->AddShaderObject("Skybox", shader);
 
-	cubeTextures.Append("resources/textures/skyboxes/skyboxsun25degtest/right.bmp");
-	cubeTextures.Append("resources/textures/skyboxes/skyboxsun25degtest/left.bmp");
-	cubeTextures.Append("resources/textures/skyboxes/skyboxsun25degtest/top.bmp");
-	cubeTextures.Append("resources/textures/skyboxes/skyboxsun25degtest/bottom.bmp");
-	cubeTextures.Append("resources/textures/skyboxes/skyboxsun25degtest/front.bmp");
-	cubeTextures.Append("resources/textures/skyboxes/skyboxsun25degtest/back.bmp");
+	cubeTextures.Append("resources/textures/skyboxes/skyboxsun5deg/right.bmp");
+	cubeTextures.Append("resources/textures/skyboxes/skyboxsun5deg/left.bmp");
+	cubeTextures.Append("resources/textures/skyboxes/skyboxsun5deg/top.bmp");
+	cubeTextures.Append("resources/textures/skyboxes/skyboxsun5deg/bottom.bmp");
+	cubeTextures.Append("resources/textures/skyboxes/skyboxsun5deg/front.bmp");
+	cubeTextures.Append("resources/textures/skyboxes/skyboxsun5deg/back.bmp");
 
 	cubemap->LoadCubemap(cubeTextures);
-	
+
 	GenerateCube();
 
-	Game::Entity::Activate();
+	Game::EntityBase::Activate();
 }
 
 void Skybox::Deactivate()
 {
-	Game::Entity::Deactivate();
+	Game::EntityBase::Deactivate();
 }
 
 void Skybox::Update()

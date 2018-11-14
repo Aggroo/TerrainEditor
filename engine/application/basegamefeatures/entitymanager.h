@@ -6,7 +6,7 @@
 
 namespace Game
 {
-class Entity;
+class EntityBase;
 }
 
 #define UPDATE_FREQUENCY 0.1f //Update frequency per second for Fixed Update
@@ -24,7 +24,7 @@ public:
 	//Returns a unique ID
 	uint GetNewEntityID();
 
-	void RegisterEntity(Ptr<Game::Entity> entity);
+	void RegisterEntity(Ptr<Game::EntityBase> entity);
 
 	//Deletes an entity by ID. Unregisters it from gamehandler. 
 	void UnregisterEntity(const int& ID);
@@ -35,13 +35,13 @@ public:
 	//Returns time since last update multiplied with UPDATE_MULTIPLIER
 	double DeltaTime();
 
-	Ptr<Game::Entity> GetEntityByID(const uint& id);
+	Ptr<Game::EntityBase> GetEntityByID(const uint& id);
 
 	//Update frequency multiplier for deltaTime, put this to 1.0f if you want normal speed.
 	//float UPDATE_MULTIPLIER;
 
 	//Returns std::map of registered entities.
-	std::unordered_map<int, Ptr<Game::Entity>>& GetEntityList() { return entityList; }
+	std::unordered_map<int, Ptr<Game::EntityBase>>& GetEntityList() { return entityList; }
 
 private:
 	EntityManager();
@@ -61,7 +61,7 @@ private:
 	double TimeSinceLastUpdate();
 
 	//Holds all units mapped: unique ID as key and pointer to their baseclass as mapped value
-	std::unordered_map<int, Ptr<Game::Entity>> entityList;
+	std::unordered_map<int, Ptr<Game::EntityBase>> entityList;
 
 };
 }

@@ -1,0 +1,492 @@
+#include "config.h"
+#include "userinterface.h"
+#include "Application.h"
+#include "imgui.h"
+#include "imgui_impl_glfw_gl3.h"
+#include "imgui_dock.h"
+#include "nfd.h"
+#include "render/resources/textureresource.h"
+#include "imgui_internal.h"
+#include "foundation/util/curve.hpp"
+#include "foundation/util/threadpool.h"
+#include "render/render/renderer.h"
+#include "application/basegamefeatures/entitymanager.h"
+#include "render/server/lightserver.h"
+
+UserInterface::UserInterface(Example::Application* app)
+{
+	this->application = app;
+
+	this->openPopup = false;
+	this->heightPopup = false;
+	this->texturesPopup = false;
+	//this->terrainSettingsOpen = false;
+	this->heightSettings.texture = Render::TextureResource::Create();
+	// Setup style
+	SetupImGuiStyle();
+
+
+	foo[0].x = -1; // init data so editor knows to take it from here
+
+	ImGui::InitDock();
+
+}
+
+
+UserInterface::~UserInterface()
+{
+	ImGui_ImplGlfwGL3_Shutdown();
+	ImGui::DestroyContext();
+}
+
+void UserInterface::Run()
+{
+
+	RenderDocks();
+	if (ImGui::BeginMainMenuBar())
+	{
+		if (ImGui::BeginMenu("File"))
+		{
+			ShowFileMenu();
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Edit"))
+		{
+			if (ImGui::MenuItem("Undo", "CTRL+Z")) { /*commandManager->Undo();*/ }
+			if (ImGui::MenuItem("Redo", "CTRL+Y")) { /*commandManager->Redo();*/ }  // Disabled item
+			ImGui::Separator();
+			if (ImGui::MenuItem("Cut", "CTRL+X")) {}
+			if (ImGui::MenuItem("Copy", "CTRL+C")) {}
+			if (ImGui::MenuItem("Paste", "CTRL+V")) {}
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Terrain"))
+		{
+			//if (ImGui::MenuItem("Terrain Settings", "P")) { this->terrainSettingsOpen = true; }
+			ImGui::EndMenu();
+		}
+
+		ImGui::EndMainMenuBar();
+	}
+
+	ModalWindows();
+}
+
+void UserInterface::ShowFileMenu()
+{
+	if (ImGui::MenuItem("New")) {}
+	if (ImGui::MenuItem("Open", "Ctrl+O"))
+	{
+		//openPopup = true;
+	}
+	if (ImGui::MenuItem("Save", "Ctrl+S"))
+	{
+		//ImGui::InitDock();
+	}
+	if (ImGui::MenuItem("Save As..", "Ctrl+Shift+S"))
+	{
+		//this->saveAsPopup = true;
+	}
+
+	ImGui::Separator();
+
+	if (ImGui::BeginMenu("Layout"))
+	{
+		if (ImGui::MenuItem("Save Layout...")) { ImGui::InitDock(); }
+		if (ImGui::MenuItem("Load Layout...")) { /*ImGui::LoadDock("engine/toolkit/particleeditor/layout/default.layout");*/ }
+		ImGui::EndMenu();
+	}
+
+	//if (ImGui::BeginMenu("Options"))
+	//{
+	//	ImGui::EndMenu();
+	//}
+	//if (ImGui::BeginMenu("Colors"))
+	//{
+	//for (int i = 0; i < ImGuiCol_COUNT; i++)
+	//	ImGui::MenuItem(ImGui::GetStyleColName((ImGuiCol)i));
+	//ImGui::EndMenu();
+	//}
+	//if (ImGui::BeginMenu("Disabled", false)) // Disabled
+	//{
+	//	IM_ASSERT(0);
+	//}
+	//if (ImGui::MenuItem("Checked", NULL, true)) {}
+	if (ImGui::MenuItem("Quit", "Alt+F4")) { application->Shutdown(true); }
+
+}
+
+void UserInterface::RenderDocks()
+{
+	const float toolbarWidth = 40.0f;
+	const float toolButtonSize = 20.0f;
+
+	ImGui::Begin("ToolBar", NULL,
+		ImGuiWindowFlags_NoCollapse |
+		ImGuiWindowFlags_NoMove |
+		ImGuiWindowFlags_NoTitleBar |
+		ImGuiWindowFlags_NoResize |
+		ImGuiWindowFlags_NoScrollbar |
+		ImGuiWindowFlags_NoScrollWithMouse |
+		ImGuiWindowFlags_NoBringToFrontOnFocus);
+	{
+		ImGui::SetWindowSize(ImVec2((float)application->GetWindow()->GetWidth(), toolbarWidth), ImGuiSetCond_Always);
+		ImGui::SetWindowPos(ImVec2(0.0f, 16.0f), ImGuiSetCond_Once);
+
+		bool switched = false;
+		if (ImGui::ImageButton((void*)this->icons.pointer->GetTextureID(), ImVec2(toolButtonSize, toolButtonSize)))
+		{
+			//Tools::ToolHandler::Instance()->SetSelectTool();
+			switched = true;
+		}
+		RenderTooltip("Select");
+		ImGui::SameLine(0, 1);
+		if (ImGui::ImageButton((void*)this->icons.raiseTerrain->GetTextureID(), ImVec2(toolButtonSize, toolButtonSize)))
+		{
+			//Tools::ToolHandler::Instance()->SetTranslateTool();
+			switched = true;
+		}
+		RenderTooltip("Raise/Lower terrain");
+		ImGui::SameLine(0, 1);
+		if (ImGui::ImageButton((void*)this->icons.flattenTerrain->GetTextureID(), ImVec2(toolButtonSize, toolButtonSize)))
+		{
+			//Tools::ToolHandler::Instance()->SetRotateTool();
+			switched = true;
+		}
+		RenderTooltip("Flatten terrain");
+		ImGui::SameLine(0, 1);
+		if (ImGui::ImageButton((void*)this->icons.paintTerrain->GetTextureID(), ImVec2(toolButtonSize, toolButtonSize)))
+		{
+			//this->currentTool = scaleTool;
+			switched = true;
+		}
+		RenderTooltip("Paint terrain");
+
+		ImGui::End();
+	}
+
+	ImGui::Begin("Dock", NULL,
+		ImGuiWindowFlags_NoCollapse |
+		ImGuiWindowFlags_NoMove |
+		ImGuiWindowFlags_NoTitleBar |
+		ImGuiWindowFlags_NoResize |
+		ImGuiWindowFlags_NoScrollbar |
+		ImGuiWindowFlags_NoScrollWithMouse |
+		ImGuiWindowFlags_NoBringToFrontOnFocus);
+	{
+		ImGui::SetWindowSize(ImVec2((float)application->GetWindow()->GetWidth(), (float)application->GetWindow()->GetHeight()- 42.0f), ImGuiSetCond_Always);
+		ImGui::SetWindowPos(ImVec2(0.0f, 42.0f), ImGuiSetCond_Once);
+
+		ImGui::BeginDockspace();
+
+		if (ImGui::BeginDock("Terrain")) {
+			ImGui::Image((ImTextureID)Render::Renderer::Instance()->GetFinalColorBuffer(), ImVec2(ImGui::GetWindowSize().x, ImGui::GetWindowSize().y-16.f));
+		}
+		ImGui::EndDock();
+
+		if (ImGui::BeginDock("Inspector", NULL)) {
+
+			Render::LightServer::PointLight& light = Render::LightServer::Instance()->GetPointLightAtIndex(0);
+			this->light.pos = light.position;
+			this->light.col = light.color;
+			this->light.radius = light.radiusAndPadding.x();
+			
+			if(ImGui::CollapsingHeader("Light"))
+			{
+				if(ImGui::DragFloat4("Position", (float*) &this->light.pos))
+				{
+					light.position = this->light.pos;
+					Render::LightServer::Instance()->UpdatePointLightBuffer();
+				}
+				if (ImGui::DragFloat4("Color", (float*)&this->light.col, 0.01f))
+				{
+					light.color = this->light.col;
+					Render::LightServer::Instance()->UpdatePointLightBuffer();
+				}
+				if (ImGui::DragFloat("Radius", &this->light.radius, 0.1f))
+				{
+					light.radiusAndPadding[0] = this->light.radius;
+					Render::LightServer::Instance()->UpdatePointLightBuffer();
+				}
+			}
+
+			auto entities = BaseGameFeature::EntityManager::Instance()->GetEntityList();
+
+			for (auto it = entities.begin(); it != entities.end(); ++it)
+			{
+				it->second->OnUI();
+			}
+
+		}
+		ImGui::EndDock();
+		
+		ImGui::EndDockspace();
+	}
+	ImGui::End();
+	
+}
+
+void UserInterface::ModalWindows()
+{
+	if (this->heightPopup) { ImGui::OpenPopup("OpenHeightTexture"); }
+	if (this->texturesPopup) { ImGui::OpenPopup("OpenTexture"); }
+	if (this->openPopup) { ImGui::OpenPopup("SaveTexture"); }
+
+	if (ImGui::BeginPopupModal("OpenHeightTexture", &this->heightPopup))
+	{
+		nfdchar_t* outpath;
+		nfdresult_t result = NFD_OpenDialog("jpg,jpeg,tga,png", NULL, &outpath);
+
+		if (result == NFD_OKAY)
+		{
+			printf("path: %s\n", outpath);
+
+			Util::String s = outpath;
+			Util::Array<Util::String> path;
+			s.ConvertBackslashes();
+			heightSettings.texName = s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr();
+
+			heightSettings.texture = Render::ResourceServer::Instance()->LoadTexture(heightSettings.texName.AsCharPtr());
+
+			this->heightPopup = false;
+			free(outpath);
+		}
+		else if (result == NFD_CANCEL)
+		{
+			this->heightPopup = false;
+		}
+		else
+		{
+			printf("Error: %s\n", NFD_GetError());
+			assert(false);
+			this->heightPopup = false;
+		}
+
+		ImGui::EndPopup();
+	}
+
+	if (ImGui::BeginPopupModal("OpenTexture", &this->texturesPopup))
+	{
+		nfdchar_t* outpath;
+		nfdresult_t result = NFD_OpenDialog("jpg,jpeg,tga,png", NULL, &outpath);
+
+		if (result == NFD_OKAY)
+		{
+			printf("path: %s\n", outpath);
+
+			Util::String s = outpath;
+			Util::Array<Util::String> path;
+			s.ConvertBackslashes();
+
+			switch (texSettings.chosenIndex)
+			{
+			case Render::TextureIndex::albedo0: texSettings.tex0Name = s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr(); break;
+			case Render::TextureIndex::albedo1: texSettings.tex1Name = s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr(); break;
+			case Render::TextureIndex::albedo2: texSettings.tex2Name = s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr(); break;
+			case Render::TextureIndex::normal0: texSettings.normal0Name = s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr(); break;
+			case Render::TextureIndex::normal1: texSettings.normal1Name = s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr(); break;
+			case Render::TextureIndex::normal2: texSettings.normal2Name = s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr(); break;
+			case Render::TextureIndex::specular0: texSettings.specular0Name = s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr(); break;
+			case Render::TextureIndex::specular1: texSettings.specular1Name = s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr(); break;
+			case Render::TextureIndex::specular2: texSettings.specular2Name = s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr(); break;
+			case Render::TextureIndex::roughness0: texSettings.roughness0Name = s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr(); break;
+			case Render::TextureIndex::roughness1: texSettings.roughness1Name = s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr(); break;
+			case Render::TextureIndex::roughness2: texSettings.roughness2Name = s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr(); break;
+			case Render::TextureIndex::splat: texSettings.splatName = s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr(); break;
+			default:break;
+			}
+
+			terrain->GetTextures()->UpdateTexture(texSettings.chosenIndex, s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr());
+
+			this->texturesPopup = false;
+			free(outpath);
+		}
+		else if (result == NFD_CANCEL)
+		{
+			this->texturesPopup = false;
+		}
+		else
+		{
+			printf("Error: %s\n", NFD_GetError());
+			assert(false);
+			this->texturesPopup = false;
+		}
+
+		ImGui::EndPopup();
+	}
+
+	if (ImGui::BeginPopupModal("SaveTexture", &this->openPopup))
+	{
+		nfdchar_t* outpath;
+		nfdresult_t result = NFD_SaveDialog("jpg,jpeg", NULL, &outpath);
+
+		if (result == NFD_OKAY)
+		{
+			printf("path: %s\n", outpath);
+
+			Util::String s = outpath;
+			Util::Array<Util::String> path;
+			s.ConvertBackslashes();
+			perlinSettings.name = s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr();
+			p.GenerateNoiseMap(perlinSettings.name.AsCharPtr(), perlinSettings.width, perlinSettings.height, perlinSettings.scale, perlinSettings.octaves, perlinSettings.persistance, perlinSettings.lacunarity);
+			p.GetTexture()->LoadTextureFile(perlinSettings.name.AsCharPtr());
+
+			terrain->CreateTerrain(perlinSettings.name.AsCharPtr(), heightSettings.widthMultiplier, 150.f, foo);
+
+			this->openPopup = false;
+			free(outpath);
+		}
+		else if (result == NFD_CANCEL)
+		{
+			this->openPopup = false;
+		}
+		else
+		{
+			printf("Error: %s\n", NFD_GetError());
+			assert(false);
+			this->openPopup = false;
+		}
+
+		ImGui::EndPopup();
+	}
+}
+
+void UserInterface::SetupImGuiStyle() const
+{
+	ImGui::StyleColorsDark();
+	ImGuiStyle& style = ImGui::GetStyle();
+
+	float fontSize = 15.0f;
+	float roundness = 2.0f;
+	ImVec4 white = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
+	ImVec4 text = ImVec4(0.76f, 0.77f, 0.8f, 1.0f);
+	ImVec4 black = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
+	ImVec4 backgroundVeryDark = ImVec4(0.08f, 0.086f, 0.094f, 1.00f);
+	ImVec4 backgroundDark = ImVec4(0.117f, 0.121f, 0.145f, 1.00f);
+	ImVec4 backgroundMedium = ImVec4(0.26f, 0.26f, 0.27f, 1.0f);
+	ImVec4 backgroundLight = ImVec4(0.37f, 0.38f, 0.39f, 1.0f);
+	ImVec4 highlightBlue = ImVec4(0.172f, 0.239f, 0.341f, 1.0f);
+	ImVec4 highlightBlueActive = ImVec4(0.182f, 0.249f, 0.361f, 1.0f);
+	ImVec4 highlightBlueHovered = ImVec4(0.202f, 0.269f, 0.391f, 1.0f);
+	ImVec4 barBackground = ImVec4(0.078f, 0.082f, 0.09f, 1.0f);
+	ImVec4 bar = ImVec4(0.164f, 0.180f, 0.231f, 1.0f);
+	ImVec4 barHovered = ImVec4(0.411f, 0.411f, 0.411f, 1.0f);
+	ImVec4 barActive = ImVec4(0.337f, 0.337f, 0.368f, 1.0f);
+
+	// Spatial
+	style.WindowBorderSize = 1.0f;
+	style.FrameBorderSize = 1.0f;
+	//style.WindowMinSize		= ImVec2(160, 20);
+	style.FramePadding = ImVec2(5, 5);
+	style.ItemSpacing = ImVec2(6, 5);
+	//style.ItemInnerSpacing	= ImVec2(6, 4);
+	style.Alpha = 1.0f;
+	style.WindowRounding = roundness;
+	style.FrameRounding = roundness;
+	style.PopupRounding = roundness;
+	//style.IndentSpacing		= 6.0f;
+	//style.ItemInnerSpacing	= ImVec2(2, 4);
+	//style.ColumnsMinSpacing	= 50.0f;
+	//style.GrabMinSize			= 14.0f;
+	style.GrabRounding = roundness;
+	//style.ScrollbarSize		= 12.0f;
+	style.ScrollbarRounding = roundness;
+
+	// Colors
+	style.Colors[ImGuiCol_Text] = text;
+	//style.Colors[ImGuiCol_TextDisabled]			= ImVec4(0.86f, 0.93f, 0.89f, 0.28f);
+	style.Colors[ImGuiCol_WindowBg] = backgroundDark;
+	//style.Colors[ImGuiCol_ChildBg]				= ImVec4(0.20f, 0.22f, 0.27f, 0.58f);
+	style.Colors[ImGuiCol_Border] = black;
+	//style.Colors[ImGuiCol_BorderShadow]			= ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+	style.Colors[ImGuiCol_FrameBg] = bar;
+	style.Colors[ImGuiCol_FrameBgHovered] = highlightBlue;
+	style.Colors[ImGuiCol_FrameBgActive] = highlightBlueHovered;
+	style.Colors[ImGuiCol_TitleBg] = backgroundVeryDark;
+	//style.Colors[ImGuiCol_TitleBgCollapsed]		= ImVec4(0.20f, 0.22f, 0.27f, 0.75f);
+	style.Colors[ImGuiCol_TitleBgActive] = bar;
+	style.Colors[ImGuiCol_MenuBarBg] = backgroundVeryDark;
+	style.Colors[ImGuiCol_ScrollbarBg] = barBackground;
+	style.Colors[ImGuiCol_ScrollbarGrab] = bar;
+	style.Colors[ImGuiCol_ScrollbarGrabHovered] = barHovered;
+	style.Colors[ImGuiCol_ScrollbarGrabActive] = barActive;
+	style.Colors[ImGuiCol_CheckMark] = white;
+	style.Colors[ImGuiCol_SliderGrab] = bar;
+	style.Colors[ImGuiCol_SliderGrabActive] = barActive;
+	style.Colors[ImGuiCol_Button] = barActive;
+	style.Colors[ImGuiCol_ButtonHovered] = highlightBlue;
+	style.Colors[ImGuiCol_ButtonActive] = highlightBlueHovered;
+	style.Colors[ImGuiCol_Header] = highlightBlue; // selected items (tree, menu bar etc.)
+	style.Colors[ImGuiCol_HeaderHovered] = highlightBlueHovered; // hovered items (tree, menu bar etc.)
+	style.Colors[ImGuiCol_HeaderActive] = highlightBlueActive;
+	style.Colors[ImGuiCol_Separator] = backgroundLight;
+	//style.Colors[ImGuiCol_SeparatorHovered]		= ImVec4(0.92f, 0.18f, 0.29f, 0.78f);
+	//style.Colors[ImGuiCol_SeparatorActive]		= ImVec4(0.92f, 0.18f, 0.29f, 1.00f);
+	style.Colors[ImGuiCol_ResizeGrip] = backgroundMedium;
+	style.Colors[ImGuiCol_ResizeGripHovered] = highlightBlue;
+	style.Colors[ImGuiCol_ResizeGripActive] = highlightBlueHovered;
+	//style.Colors[ImGuiCol_PlotLines]				= ImVec4(0.86f, 0.93f, 0.89f, 0.63f);
+	//style.Colors[ImGuiCol_PlotLinesHovered]		= ImVec4(0.92f, 0.18f, 0.29f, 1.00f);
+	style.Colors[ImGuiCol_PlotHistogram] = highlightBlue; // Also used for progress bar
+	style.Colors[ImGuiCol_PlotHistogramHovered] = highlightBlueHovered;
+	style.Colors[ImGuiCol_TextSelectedBg] = highlightBlue;
+	style.Colors[ImGuiCol_PopupBg] = backgroundVeryDark;
+	style.Colors[ImGuiCol_DragDropTarget] = backgroundLight;
+	//style.Colors[ImGuiCol_ModalWindowDarkening]	= ImVec4(0.20f, 0.22f, 0.27f, 0.73f);
+}
+
+void UserInterface::GetImagePicker(Util::String texName, Render::TextureIndex index)
+{
+	Util::String label = "##Tex";
+	label.AppendInt((int)index);
+	if (!texName.IsEmpty())
+	{
+		Util::String s = texName.AsCharPtr();
+		Util::Array<Util::String> path;
+
+		s.Tokenize("/", path);
+
+		s = path[path.Size() - 2] + "/" + path[path.Size() - 1];
+
+		ImGui::LabelText(label.AsCharPtr(), GetStringFromTextureIndex(index).AsCharPtr());
+		ImGui::InputText(label.AsCharPtr(), (char*)s.AsCharPtr(), 256, ImGuiInputTextFlags_ReadOnly);
+	}
+	else
+	{
+		ImGui::LabelText(label.AsCharPtr(), GetStringFromTextureIndex(index).AsCharPtr());
+		ImGui::InputText(label.AsCharPtr(), (char*)texName.AsCharPtr(), 512, ImGuiInputTextFlags_ReadOnly);
+	}
+	ImGui::SameLine();
+	Util::String dot = "..." + label;
+	if (ImGui::ImageButton((void*)terrain->GetTextures()->GetTexture(index)->GetTextureID(), ImVec2(ImGui::GetContentRegionAvailWidth() - 10, ImGui::GetContentRegionAvailWidth() - 10)))
+	{
+		texSettings.chosenIndex = index;
+		this->texturesPopup = true;
+	}
+}
+
+Util::String UserInterface::GetStringFromTextureIndex(Render::TextureIndex index)
+{
+	switch (index)
+	{
+	case Render::TextureIndex::albedo0: return Util::String("Albedo");
+	case Render::TextureIndex::albedo1: return Util::String("Albedo");
+	case Render::TextureIndex::albedo2: return Util::String("Albedo");
+	case Render::TextureIndex::normal0: return Util::String("Normal");
+	case Render::TextureIndex::normal1: return Util::String("Normal");
+	case Render::TextureIndex::normal2: return Util::String("Normal");
+	case Render::TextureIndex::specular0: return Util::String("Specular");
+	case Render::TextureIndex::specular1: return Util::String("Specular");
+	case Render::TextureIndex::specular2: return Util::String("Specular");
+	case Render::TextureIndex::roughness0: return Util::String("Roughness");
+	case Render::TextureIndex::roughness1: return Util::String("Roughness");
+	case Render::TextureIndex::roughness2: return Util::String("Roughness");
+	case Render::TextureIndex::splat: return Util::String("Splatmap");
+	}
+}
+
+void UserInterface::RenderTooltip(const char* text)
+{
+	if (ImGui::IsItemHovered())
+		ImGui::SetTooltip(text);
+}

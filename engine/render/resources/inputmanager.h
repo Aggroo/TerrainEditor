@@ -52,7 +52,7 @@ private:
 	GLfloat rotX = 0;
 	GLfloat oldY = 0;
 	GLfloat oldX = 0;
-	GLfloat movSpeed = 1.0f;
+	GLfloat movSpeed = 0.4f;
 	GLfloat movMultiplier = 3.5f;
 	GLfloat scrollY = 0;
 	GLfloat lightScroll = 0;

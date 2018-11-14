@@ -7,7 +7,7 @@ namespace Generator
 {
 __ImplementClass(Generator::PerlinNoiseGenerator, 'GEPN', Core::RefCounted)
 
-PerlinNoiseGenerator::PerlinNoiseGenerator() : gen(rd()), dis(0, 3000)
+PerlinNoiseGenerator::PerlinNoiseGenerator() : gen(rd()), dis(0, 3000), noiseMap(nullptr)
 {
 	texture = Render::TextureResource::Create();
 }

@@ -2,7 +2,7 @@
 #include "entitymanager.h"
 #include <ctime>
 #include "GLFW/glfw3.h"
-#include "application/game/entity.h"
+#include "application/game/entitybase.cpp"
 
 
 namespace BaseGameFeature
@@ -26,9 +26,9 @@ uint EntityManager::GetNewEntityID()
 	return this->entityCounter++;
 }
 
-void EntityManager::RegisterEntity(Ptr<Game::Entity> entity)
+void EntityManager::RegisterEntity(Ptr<Game::EntityBase> entity)
 {
-	this->entityList.insert(std::pair<int, Ptr<Game::Entity>>(entity->GetID(), entity));
+	this->entityList.insert(std::pair<int, Ptr<Game::EntityBase>>(entity->GetID(), entity));
 }
 
 void EntityManager::UnregisterEntity(const int& ID)
@@ -50,17 +50,17 @@ void EntityManager::Update()
 		//update last update time to current clock-ticks
 		lastUpdateTime = clock();
 
-		for (std::unordered_map<int, Ptr<Game::Entity>>::iterator it = entityList.begin(); it != entityList.end(); it++)
+		for (std::unordered_map<int, Ptr<Game::EntityBase>>::iterator it = entityList.begin(); it != entityList.end(); it++)
 		{
-			Ptr<Game::Entity> entity = it->second;
+			Ptr<Game::EntityBase> entity = it->second;
 			if (entity->IsActive())
 				entity->FixedUpdate();
 		}
 	}
 
-	for (std::unordered_map<int, Ptr<Game::Entity>>::iterator it = this->entityList.begin(); it != entityList.end(); it++)
+	for (std::unordered_map<int, Ptr<Game::EntityBase>>::iterator it = this->entityList.begin(); it != entityList.end(); it++)
 	{
-		Ptr<Game::Entity> entity = it->second;
+		Ptr<Game::EntityBase> entity = it->second;
 		if (entity->IsActive())
 			entity->Update();
 	}
@@ -78,7 +78,7 @@ double EntityManager::TimeSinceLastUpdate()
 	return (((float)clock() - lastUpdateTime) / CLOCKS_PER_SEC);
 }
 
-Ptr<Game::Entity> EntityManager::GetEntityByID(const uint& id)
+Ptr<Game::EntityBase> EntityManager::GetEntityByID(const uint& id)
 {
 	assert(this->entityList.count(id) > 0, "ERROR: No Entity with this ID exists!");
 	return this->entityList[id];

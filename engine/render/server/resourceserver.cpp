@@ -24,6 +24,18 @@ Ptr<TextureResource> ResourceServer::LoadTexture(const Util::String& filepath)
 	}
 }
 
+Ptr<TextureResource> ResourceServer::GetTexture(const Util::String& filepath)
+{
+	if (this->HasTextureNamed(filepath))
+	{
+		return this->textures[filepath];
+	}
+	else
+	{
+		return this->LoadTexture(filepath);
+	}
+}
+
 bool ResourceServer::HasTextureNamed(const Util::String& nName) const
 {
 	return this->textures.Contains(nName); 

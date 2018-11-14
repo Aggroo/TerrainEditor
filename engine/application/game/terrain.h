@@ -1,6 +1,6 @@
 #pragma once
 #include "GL/glew.h"
-#include "application/game/entity.h"
+#include "application/game/entitybase.h"
 #include <memory>
 #include "render/resources/meshresource.h"
 #include "render/resources/texturenode.h"
@@ -18,7 +18,7 @@ struct HeightmapValues
 	HeightmapValues() : x(0), y(0), z(0) {}
 };
 
-class Terrain : public Game::Entity
+class Terrain : public Game::EntityBase
 {
 	__DeclareClass(Terrain);
 public:

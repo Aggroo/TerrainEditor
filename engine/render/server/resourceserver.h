@@ -12,6 +12,7 @@ __DeclareSingleton(ResourceServer)
 public:
 	///Returns a texture if it exists, otherwise loads it and then returns the new texture
 	Ptr<TextureResource> LoadTexture(const Util::String& filepath);
+	Ptr<TextureResource> GetTexture(const Util::String& filepath);
 	bool HasTextureNamed(const Util::String& nName) const;
 
 private:

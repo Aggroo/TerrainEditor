@@ -279,7 +279,17 @@ void main()
 		}
 	}
 	
-	color.rgb = irradiance + (vTexColor.rgb * u_lightAmbientIntensity);
+	// ambient lighting (we now use IBL as the ambient term)
+    vec3 F = fresnelSchlick(max(dot(N, V), 0.0), F0, roughnessSum);
+    
+    vec3 kS = F;
+    vec3 kD = 1.0 - kS;
+    kD *= 1.0 - specularSum;
+    
+    vec3 lo = texture(environmentMap, N).rgb;
+    vec3 diffuse = lo * vTexColor.rgb;
+	
+	color.rgb = irradiance + (kD * diffuse) + (vTexColor.rgb * u_lightAmbientIntensity);
 
 	color.rgb = color / (color + vec3(1.0f));
 	color = pow(color, vec3(screenGamma));

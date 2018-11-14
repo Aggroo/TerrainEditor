@@ -12,7 +12,7 @@
 
 namespace TerrainEditor
 {
-__ImplementClass(TerrainEditor::Terrain, 'TETY', Game::Entity);
+__ImplementClass(TerrainEditor::Terrain, 'TETY', Game::EntityBase);
 
 Terrain::Terrain() : terrainWidth(0), terrainHeight(0), heightMap(nullptr)
 {
@@ -91,12 +91,12 @@ void Terrain::Activate()
 	shader->setupUniformFloat("tex1UvMultiplier", 0.1f);
 	shader->setupUniformFloat("tex2UvMultiplier", 0.1f);
 
-	Entity::Activate();
+	EntityBase::Activate();
 }
 
 void Terrain::Deactivate()
 {
-	Entity::Deactivate();
+	EntityBase::Deactivate();
 }
 
 void Terrain::Update()
@@ -117,7 +117,7 @@ void Terrain::OnUI()
 {
 	if (ImGui::CollapsingHeader("Terrain Entity"))
 	{		
-		if(ImGui::DragFloat3("Position", p))
+		if(ImGui::DragFloat3("#Terrain Position", p))
 		{
 			transform.SetPosition(Math::vec4(p[0], p[1], p[2], 1.0f));
 		}

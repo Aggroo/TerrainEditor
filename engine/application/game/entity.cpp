@@ -1,56 +1,121 @@
 #include "config.h"
 #include "entity.h"
-#include "application/basegamefeatures/entitymanager.h"
+#include "render/server/shaderserver.h"
+#include "render/camera/camera.h"
 
 namespace Game
 {
-	__ImplementClass(Game::Entity, 'NTTY', Core::RefCounted);
-	Entity::Entity()
-	{
-		this->transform = Math::mat4::identity();
-		this->ID = BaseGameFeature::EntityManager::Instance()->GetNewEntityID();
-	}
+__ImplementClass(Game::Entity, 'ENTY', Game::EntityBase);
+Entity::Entity() : entityName("")
+{
+	this->mesh = Render::MeshResources::Create();
+	this->shader = Render::ShaderObject::Create();
+	this->textures = Render::TextureNode::Create();
+}
 
-	Entity::~Entity()
-	{
-	}
+Entity::~Entity()
+{
+}
 
-	void Entity::Activate()
-	{
-		BaseGameFeature::EntityManager::Instance()->RegisterEntity(this);
+void Entity::Activate()
+{
+	if (!this->mesh->GetMeshFaces().IsEmpty())
+		this->mesh->genBuffer();
 
-		this->active = true;
-	}
+	this->shader->BindProgram();
+	this->shader->setupUniformInt("AlbedoMap", (GLuint)Render::TextureIndex::albedo0);
+	this->shader->setupUniformInt("NormalMap", (GLuint)Render::TextureIndex::normal0);
+	this->shader->setupUniformInt("SpecularMap", (GLuint)Render::TextureIndex::specular0);
+	this->shader->setupUniformInt("RoughnessMap", (GLuint)Render::TextureIndex::roughness0);
+	this->shader->setupUniformInt("aoMap", (GLuint)Render::TextureIndex::ao0);
+	this->shader->setupUniformInt("environmentMap", (GLuint)Render::TextureIndex::environmentMap);
 
-	void Entity::Deactivate()
-	{
-		BaseGameFeature::EntityManager::Instance()->UnregisterEntity(this->ID);
-	}
+	EntityBase::Activate();
+}
 
-	void Entity::FixedUpdate()
-	{
-	}
+void Entity::Deactivate()
+{
+	EntityBase::Deactivate();
+}
 
-	void Entity::Update()
-	{
-	}
+void Entity::Update()
+{
+	this->shader->BindProgram();
+	this->textures->BindTextures();
+	this->shader->setupMatrix4fv("Model", this->transform);
+	this->shader->setupVector3f("cameraPosition", Graphics::MainCamera::Instance()->GetCameraPosition());
 
-	void Entity::OnUI()
-	{
-	}
+	if (this->mesh->IsRenderable())
+		this->mesh->drawMesh();
+}
 
-	Math::mat4 Entity::GetTransform()
-	{
-		return this->transform;
-	}
+void Entity::OnUI()
+{
+}
 
-	void Entity::SetTransform(const Math::mat4& nTransform)
-	{
-		this->transform = nTransform;
-	}
+void Entity::SetMesh(Util::String filename)
+{
+	this->mesh->loadObj(filename.AsCharPtr());
+}
 
-	const bool& Entity::IsActive() const
+Ptr<Render::MeshResources> Entity::GetMesh()
+{
+	return this->mesh;
+}
+
+void Entity::SetTextures(Util::String albedo, Util::String normal, Util::String metallic, Util::String roughness, Util::String ao)
+{
+	//TODO: FIX THIS WHEN SHADER SETTINGS ARE HANDLED IN FILES
+	this->textures->AddTexture(Render::TextureIndex::albedo0, albedo.AsCharPtr());
+	this->textures->AddTexture(Render::TextureIndex::normal0, normal.AsCharPtr());
+	this->textures->AddTexture(Render::TextureIndex::specular0, metallic.AsCharPtr());
+	this->textures->AddTexture(Render::TextureIndex::roughness0, roughness.AsCharPtr());
+	if (ao == "Default")
 	{
-		return this->active;
+		this->textures->AddTexture(Render::TextureIndex::ao0, "resources/textures/terrain_textures/default/defaultAO.png");
 	}
+	else
+	{
+		this->textures->AddTexture(Render::TextureIndex::ao0, ao.AsCharPtr());
+	}
+}
+
+void Entity::SetShaders(Util::String vertexShader, Util::String fragmentShader, const char* name)
+{
+	GLuint vert = Render::ShaderServer::Instance()->LoadVertexShader(vertexShader);
+	GLuint frag = Render::ShaderServer::Instance()->LoadFragmentShader(fragmentShader);
+
+	this->shader->AddShader(vert);
+	this->shader->AddShader(frag);
+	this->shader->LinkShaders();
+
+	Render::ShaderServer::Instance()->AddShaderObject(name, this->shader);
+}
+
+Ptr<Render::ShaderObject> Entity::GetShader()
+{
+	return this->shader;
+}
+
+void Entity::SetName(Util::String name)
+{
+	this->entityName = name;
+}
+
+Util::String Entity::GetName()
+{
+	return entityName;
+}
+
+void Entity::SetEnvironmentMap(Ptr<Render::TextureResource> envmapID)
+{
+	this->environmentMap = envmapID;
+	textures->AddTexture(Render::TextureIndex::environmentMap, this->environmentMap);
+	this->shader->setupUniformInt("environmentMap", (GLuint)Render::TextureIndex::environmentMap);
+}
+
+Ptr<Render::TextureResource> Entity::GetEnvironmentMap()
+{
+	return this->environmentMap;
+}
 }

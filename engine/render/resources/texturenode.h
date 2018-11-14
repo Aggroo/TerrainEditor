@@ -17,6 +17,9 @@ enum class TextureIndex
 	roughness0,
 	roughness1,
 	roughness2,
+	ao0,
+	ao1,
+	ao2,
 	splat,
 	environmentMap
 };

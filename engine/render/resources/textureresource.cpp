@@ -1,14 +1,12 @@
 #include "config.h"
 #include "textureresource.h"
 #include <iostream>
-#include <fstream>
 #include <string>
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image.h"
 #include "stb_image_write.h"
 #define STB_TRUETYPE_IMPLEMENTATION
-#include "stb_truetype.h"
 
 
 namespace Render
@@ -37,7 +35,9 @@ void TextureResource::LoadTextureFile(const char * filename)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	if (n == 3)
+	if(n == 1)
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, w, h, 0, GL_RED, GL_UNSIGNED_BYTE, image);
+	else if (n == 3)
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
 	else if (n == 4)
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
@@ -51,15 +51,15 @@ void TextureResource::LoadTextureFile(const char * filename)
 
 }
 
-void TextureResource::LoadCubemap(Util::Array<Util::String> texures)
+void TextureResource::LoadCubemap(Util::Array<Util::String> textures)
 {
 	glGenTextures(1, &m_texture);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, m_texture);
 
 	int width, height, nrChannels;
-	for (unsigned int i = 0; i < texures.Size(); i++)
+	for (unsigned int i = 0; i < textures.Size(); i++)
 	{
-		unsigned char *data = stbi_load(texures[i].AsCharPtr(), &width, &height, &nrChannels, 0);
+		unsigned char *data = stbi_load(textures[i].AsCharPtr(), &width, &height, &nrChannels, 0);
 		if (data)
 		{
 			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -67,15 +67,20 @@ void TextureResource::LoadCubemap(Util::Array<Util::String> texures)
 		}
 		else
 		{
-			printf("Cubemap texture failed to load at path: %s", texures[i].AsCharPtr());
+			printf("Cubemap texture failed to load at path: %s", textures[i].AsCharPtr());
 			stbi_image_free(data);
 		}
 	}
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+	glGenerateTextureMipmap(m_texture);
 
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
