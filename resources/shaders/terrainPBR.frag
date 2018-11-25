@@ -160,13 +160,7 @@ void main()
             // k=20: -(1/20)*(1 - 21/(1+20*x^2))
             float attenuation = -0.05 + 1.05/(1+20*x*x);
 			
-			vec3 R = reflect(-V, N);   
-
-			const float MAX_REFLECTION_LOD = 4.0;
-
-			vec3 prefilteredColor = textureLod(environmentMap, R,  roughnessSum*MAX_REFLECTION_LOD).rgb;
-			
-			vec3 radiance = texture(environmentMap, L).rgb * light.color.rgb * attenuation;
+			vec3 radiance = light.color.rgb * attenuation;
 			
 			L = normalize(L);
 			vec3 H = normalize(V + L);
@@ -196,9 +190,7 @@ void main()
 			float denominator = 4 * NdotV * NdotL + 0.001f; //We add 0.001f in case dot ends up becoming zero.
 			vec3 brdf = nominator / denominator;
 			
-			vec3 specular = prefilteredColor * (F*brdf);
-			
-			lo += (kD * vTexColor.rgb / PI + specular) * radiance * NdotL;
+			lo += (kD * vTexColor.rgb / PI) * radiance * NdotL;
 		}
 		
 	}
@@ -300,7 +292,7 @@ void main()
 	vec2 envBRDF  = texture(brdfLUT, vec2(cosLo, roughnessSum)).rg;	
     vec3 specular = prefilteredColor * (F * envBRDF.x + envBRDF.y);
 	
-	vec3 ambient = (kD * diffuse + specular) * 1.0f;
+	vec3 ambient = (kD * diffuse + specular) ;
 	
 	color.rgb = ambient + lo;
 
@@ -310,7 +302,7 @@ void main()
 	resColor.xyz = color.rgb;
 	resColor.a = 1;
 	normalColor = N;
-	specularOut.rgb = prefilteredColor;
+	specularOut.rgb = specular;
 	roughnessOut = vec3(roughnessSum);
 }
 

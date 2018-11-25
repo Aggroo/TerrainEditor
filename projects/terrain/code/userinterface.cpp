@@ -13,7 +13,6 @@
 #include "application/basegamefeatures/entitymanager.h"
 #include "render/server/lightserver.h"
 #include "render/server/frameserver.h"
-#include "render/frames/lightcullingpass.h"
 
 UserInterface::UserInterface(Example::CGLab* app)
 {
@@ -81,7 +80,6 @@ void UserInterface::Run()
 			ImGui::Separator();
 			ImGui::EndMenu();
 		}
-
 		ImGui::EndMainMenuBar();
 	}
 
