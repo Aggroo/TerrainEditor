@@ -17,8 +17,15 @@ public:
 
 	void UpdateResolution();
 
+	GLuint GetNormalBuffer() { return this->normalBuffer; }
+
+	GLuint GetSpecularBuffer() { return this->specularBuffer; }
+
+	GLuint GetRoughnessBuffer() { return this->roughnessBuffer; }
+
 private:
-
-
+	GLuint normalBuffer;
+	GLuint specularBuffer;
+	GLuint roughnessBuffer;
 };
 }

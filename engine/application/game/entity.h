@@ -2,6 +2,7 @@
 #include "entitybase.h"
 #include "render/resources/texturenode.h"
 #include "render/resources/shaderobject.h"
+#include "render/resources/model.h"
 
 namespace Game
 {
@@ -20,7 +21,7 @@ public:
 	virtual void OnUI();
 
 	void SetMesh(Util::String filename);
-	Ptr<Render::MeshResources> GetMesh();
+	Ptr<Render::Model> GetMesh();
 
 	void SetTextures(Util::String albedo, Util::String normal, Util::String metallic, Util::String roughness, Util::String ao = "Default");
 
@@ -30,15 +31,15 @@ public:
 	void SetName(Util::String name);
 	Util::String GetName();
 
-	void SetEnvironmentMap(Ptr<Render::TextureResource> envmapID);
+	void SetIBLMaps(Ptr<Render::TextureResource> envmapID, Ptr<Render::TextureResource> irID, Ptr<Render::TextureResource> brdfID);
 	Ptr<Render::TextureResource> GetEnvironmentMap();
 
 private:
 
 	Ptr<Render::TextureNode> textures;
-	Ptr<Render::MeshResources> mesh;
+	Ptr<Render::Model> mesh;
 	Ptr<Render::ShaderObject> shader;
-	Ptr<Render::TextureResource> environmentMap;
+	Ptr<Render::TextureResource> environmentMap, irradiance, brdf;
 
 	Util::String entityName;
 };

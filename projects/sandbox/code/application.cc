@@ -20,6 +20,8 @@
 #include "render/server/shaderserver.h"
 #include "render/server/lightserver.h"
 #include "application/game/entity.h"
+#include "foundation/math/math.h"
+#include "render/server/frameserver.h"
 
 using namespace Display;
 namespace Example
@@ -117,14 +119,13 @@ Application::Run()
 	Ptr<Game::Entity> sphere = Game::Entity::Create();
 	sphere->SetName("Sphere");
 	sphere->SetMesh("resources/models/sphere.obj");
-	sphere->SetTextures("resources/textures/terrain_textures/GroundForestRoots001/GroundForestRoots001_ALBEDO_1K.jpg",
-						"resources/textures/terrain_textures/GroundForestRoots001/GroundForestRoots001_NRM_1K.jpg",
-						"resources/textures/terrain_textures/GroundForestRoots001/GroundForestRoots001_GLOSS_1K.jpg",
-						"resources/textures/terrain_textures/GroundForestRoots001/GroundForestRoots001_REFL_1K.jpg",
-						"resources/textures/terrain_textures/GroundForestRoots001/GroundForestRoots001_AO_1K.jpg");
+	sphere->SetTextures("resources/textures/terrain_textures/mossy-ground/mixedmoss-albedo2.png",
+						"resources/textures/terrain_textures/mossy-ground/mixedmoss-normal2.png",
+						"resources/textures/terrain_textures/mossy-ground/mixedmoss-metalness.png",
+						"resources/textures/terrain_textures/mossy-ground/mixedmoss-roughness.png");
 	sphere->SetShaders("resources/shaders/PBR.vert", "resources/shaders/PBR.frag", "PBR");
-	sphere->SetEnvironmentMap(skybox->GetCubemap());
-	sphere->SetTransform(modelMat);
+	sphere->SetIBLMaps(skybox->GetCubemap(), Render::FrameServer::Instance()->GetIBLPass()->GetIrradianceMap(), Render::FrameServer::Instance()->GetIBLPass()->GetBRDFMap());
+	sphere->SetTransform(modelMat*Math::mat4::translationMatrix(Math::vec4(-50.0f, 0.0f, 0.0f)));
 	sphere->Activate();
 
 	Ptr<Game::Entity> teapot = Game::Entity::Create();
@@ -135,11 +136,24 @@ Application::Run()
 						"resources/textures/terrain_textures/MetalSpottyDiscoloration001/MetalSpottyDiscoloration001_METALNESS_1K_METALNESS.jpg",
 						"resources/textures/terrain_textures/MetalSpottyDiscoloration001/MetalSpottyDiscoloration001_ROUGHNESS_1K_METALNESS.jpg");
 	teapot->SetShaders("resources/shaders/PBR.vert", "resources/shaders/PBR.frag", "PBR");
-	teapot->SetEnvironmentMap(skybox->GetCubemap());
-	teapot->SetTransform(modelMat*Math::mat4::translationMatrix(Math::vec4(50.0f, 0.0f, 0.0f)));
+	teapot->SetIBLMaps(skybox->GetCubemap(), Render::FrameServer::Instance()->GetIBLPass()->GetIrradianceMap(), Render::FrameServer::Instance()->GetIBLPass()->GetBRDFMap());
+	teapot->SetTransform(modelMat*Math::mat4::translationMatrix(Math::vec4(-100.0f, 0.0f, 0.0f)));
 	teapot->Activate();
 
-	lNode.setShaders(sphere->GetShader());
+	Ptr<Game::Entity> gun = Game::Entity::Create();
+	gun->SetName("Gun");
+	gun->SetMesh("resources/models/Cerberus_LP.FBX");
+	gun->SetTextures("resources/textures/cerberus/Cerberus_A.tga",
+					 "resources/textures/cerberus/Cerberus_N.tga",
+					 "resources/textures/cerberus/Cerberus_M.tga",
+					 "resources/textures/cerberus/Cerberus_R.tga",
+					 "resources/textures/cerberus/Cerberus_AO.tga");
+	gun->SetShaders("resources/shaders/PBR.vert", "resources/shaders/PBR.frag", "PBR");
+	gun->SetIBLMaps(skybox->GetCubemap(), Render::FrameServer::Instance()->GetIBLPass()->GetIrradianceMap(), Render::FrameServer::Instance()->GetIBLPass()->GetBRDFMap());
+	gun->SetTransform(modelMat*Math::mat4::translationMatrix(Math::vec4(0.0f, -20.0f, 50.0f))*Math::mat4::rotY(Math::Deg2Rad(-90))*Math::mat4::rotX(Math::Deg2Rad(-90)));
+	gun->Activate();
+
+	lNode.setShaders(Render::ShaderServer::Instance()->GetShader("PBR"));
 	
 	lNode.setPos(0.0f, 250.0f, 0.0f);
 	lNode.setIntensity(0.6f, 0.6f, 0.6f);

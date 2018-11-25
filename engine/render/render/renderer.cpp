@@ -95,7 +95,7 @@ void Renderer::SetupUniformBuffer(Graphics::Camera* camera)
 
 	uniformBufferBlock.viewToTextureSpace = camera->GetViewToTextureSpaceMatrix();
 
-	uniformBufferBlock.CameraPosition = camera->GetCameraPosition();
+	uniformBufferBlock.CameraPosition = camera->GetPosition();
 
 	uniformBufferBlock.ScreenSize = this->renderResolution;
 

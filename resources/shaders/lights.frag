@@ -75,7 +75,7 @@ const float screenGamma = 1.0f / GAMMA;
 
 //returns the ratio between specular and diffuse reflection or how much the surface reflects light versus how much it refracts light
 //creates a rim-lighting effect, as the closer we get to zero incidence, the more the light the material will reflect.
-vec3 fresnelSchlick(in float cosTheta, in vec3 F0, float roughness)
+vec3 fresnelSchlickRoughness(in float cosTheta, in vec3 F0, float roughness)
 {
 	//Spherical Gaussian approximation
 	//return F0 + (1.0f - F0) * pow(2,((-5.55473f*cosTheta - 6.98316f) * cosTheta));
@@ -86,6 +86,12 @@ vec3 fresnelSchlick(in float cosTheta, in vec3 F0, float roughness)
 	
 	//Old, yields artifacts every now and then
 	//return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(1.0 - cosTheta, 5.0);
+}
+
+// ----------------------------------------------------------------------------
+vec3 fresnelSchlick(float cosTheta, in vec3 F0)
+{
+    return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
 }
 
 //We use GGX for our normal distribution function (NDF)

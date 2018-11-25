@@ -1,3 +1,7 @@
 [submodule "imgui"]
 	path = exts/imgui
 	url = git@github.com:ocornut/imgui.git
+
+[submodule "assimp"]
+	path = exts/assimp
+	url = git@github.com:assimp/assimp.git

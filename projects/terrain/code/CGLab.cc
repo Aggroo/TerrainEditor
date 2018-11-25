@@ -126,7 +126,6 @@ CGLab::Run()
 
 	Ptr<Render::Skybox> skybox = Render::Skybox::Create();
 	skybox->Activate();
-	terrain->SetSkybox(skybox);
 
     std::chrono::high_resolution_clock::time_point before = std::chrono::high_resolution_clock::now();
 

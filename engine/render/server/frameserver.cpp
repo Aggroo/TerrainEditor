@@ -20,6 +20,14 @@ void FrameServer::SetupFramePasses()
 	this->framePassByName.Add(this->Depth->name, this->Depth.upcast<Render::FramePass>());
 	this->framePasses.Append(this->Depth.downcast<Render::FramePass>());
 
+	// depth pre-pass
+	this->IBL = IBLPass::Create();
+	this->IBL->name = "IBL";
+	this->IBL->Setup();
+
+	this->framePassByName.Add(this->IBL->name, this->IBL.upcast<Render::FramePass>());
+	this->framePasses.Append(this->IBL.downcast<Render::FramePass>());
+
 	//Light culling compute shader pass
 	this->lightCullingPass = LightCullingPass::Create();
 	this->lightCullingPass->name = "LightCulling";
@@ -67,7 +75,12 @@ Ptr<DepthPass> FrameServer::GetDepthPass()
 	return this->Depth;
 }
 
-Ptr<FramePass> FrameServer::GetLightCullingPass()
+Ptr<IBLPass> FrameServer::GetIBLPass()
+{
+	return this->IBL;
+}
+
+	Ptr<FramePass> FrameServer::GetLightCullingPass()
 {
 	return this->lightCullingPass;
 }

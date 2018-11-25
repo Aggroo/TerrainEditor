@@ -2,10 +2,6 @@
 /**
 @file       memory.h
 @class      Memory::Memory
-@date       02-03-2017
-@author     Fredrik Lindahl
-@copyright  See LICENCE file
-
 
 @brief      Memory subsystem
 */

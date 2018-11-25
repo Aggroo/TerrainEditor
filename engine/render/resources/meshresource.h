@@ -37,7 +37,7 @@ struct Vertex
 
 class MeshResources : public Core::RefCounted
 {
-	__DeclareClass(MeshResources)
+__DeclareClass(MeshResources)
 public:
 	MeshResources();
 	MeshResources(Util::Array<Render::Vertex>, Util::Array<GLuint>);

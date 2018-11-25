@@ -12,6 +12,8 @@
 #include "render/render/renderer.h"
 #include "application/basegamefeatures/entitymanager.h"
 #include "render/server/lightserver.h"
+#include "render/server/frameserver.h"
+#include "render/frames/lightcullingpass.h"
 
 UserInterface::UserInterface(Example::Application* app)
 {
@@ -60,9 +62,19 @@ void UserInterface::Run()
 			if (ImGui::MenuItem("Paste", "CTRL+V")) {}
 			ImGui::EndMenu();
 		}
-		if (ImGui::BeginMenu("Terrain"))
+		if (ImGui::BeginMenu("Debug"))
 		{
-			//if (ImGui::MenuItem("Terrain Settings", "P")) { this->terrainSettingsOpen = true; }
+			ImGui::MenuItem("Show Framebuffer:");
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("FlatGeometryLit Color")) { Render::Renderer::Instance()->SetFinalColorBuffer(Render::FrameServer::Instance()->GetFlatGeometryLitPass()->GetTextureBuffer()); }
+			if (ImGui::MenuItem("Depth")) { Render::Renderer::Instance()->SetFinalColorBuffer(Render::FrameServer::Instance()->GetDepthPass()->GetTextureBuffer()); }
+			if (ImGui::MenuItem("Linear Depth")) { Render::Renderer::Instance()->SetFinalColorBuffer(Render::FrameServer::Instance()->GetDepthPass()->GetLinearDepthBuffer()); }
+			if (ImGui::MenuItem("Light Tiles")) { Render::Renderer::Instance()->SetFinalColorBuffer(dynamic_cast<Render::LightCullingPass*>(Render::FrameServer::Instance()->GetLightCullingPass().get())->GetBuffer()); }
+			if (ImGui::MenuItem("FlatGeometryLit Normals")) { Render::Renderer::Instance()->SetFinalColorBuffer(Render::FrameServer::Instance()->GetFlatGeometryLitPass()->GetNormalBuffer()); }
+			if (ImGui::MenuItem("FlatGeometryLit Specular")) { Render::Renderer::Instance()->SetFinalColorBuffer(Render::FrameServer::Instance()->GetFlatGeometryLitPass()->GetSpecularBuffer()); }
+			if (ImGui::MenuItem("FlatGeometryLit Roughness")) { Render::Renderer::Instance()->SetFinalColorBuffer(Render::FrameServer::Instance()->GetFlatGeometryLitPass()->GetRoughnessBuffer()); }
+			ImGui::Separator();
 			ImGui::EndMenu();
 		}
 
@@ -184,16 +196,158 @@ void UserInterface::RenderDocks()
 		}
 		ImGui::EndDock();
 
+		if (ImGui::BeginDock("Heightmap", NULL))
+		{
+			if (heightSettings.texName.IsEmpty())
+			{
+				ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
+				ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
+			}
+			ImGui::Indent(10);
+			if (ImGui::Button("Generate##heightmap", ImVec2(ImGui::GetWindowContentRegionWidth() - 20, 25)))
+			{
+				terrain->CreateTerrain(heightSettings.texName.AsCharPtr(), heightSettings.widthMultiplier, heightSettings.heightMultiplier, foo);
+			}
+			ImGui::Unindent(10);
+
+			if (heightSettings.texName.IsEmpty())
+			{
+				ImGui::PopItemFlag();
+				ImGui::PopStyleVar();
+			}
+			ImGui::Separator();
+
+			if (ImGui::CollapsingHeader("Heightmap Image", ImGuiTreeNodeFlags_DefaultOpen))
+			{
+				if (!heightSettings.texName.IsEmpty())
+				{
+					Util::String s = heightSettings.texName.AsCharPtr();
+					Util::Array<Util::String> path;
+
+					s.Tokenize("/", path);
+
+					s = path[path.Size() - 2] + "/" + path[path.Size() - 1];
+
+					ImGui::LabelText("##texture", "Heightmap");
+					ImGui::InputText("##texture", (char*)s.AsCharPtr(), 256, ImGuiInputTextFlags_ReadOnly);
+				}
+				else
+				{
+					ImGui::LabelText("##texture", "Heightmap");
+					ImGui::InputText("##texture", (char*)heightSettings.texName.AsCharPtr(), 512, ImGuiInputTextFlags_ReadOnly);
+				}
+				ImGui::SameLine();
+				if (ImGui::ImageButton((void*)heightSettings.texture->GetTextureID(), ImVec2(ImGui::GetContentRegionAvailWidth() - 5, ImGui::GetContentRegionAvailWidth() - 5)))
+				{
+					this->heightPopup = true;
+				}
+
+				ImGui::LabelText("##widthmult", "Width Multiplier");
+				ImGui::DragFloat("##widthmult", &heightSettings.widthMultiplier, 0.1f, 0.0f, 1000.f);
+				ImGui::LabelText("##heightmult", "Height Multiplier");
+				ImGui::DragFloat("##heightmult", &heightSettings.heightMultiplier, 0.01f, 0.0f, 1000.f);
+
+				ImGui::LabelText("##heightscale", "Height Scale");
+				if (ImGui::Curve("##heightscale", ImVec2(ImGui::GetWindowContentRegionWidth() - 10, 200), 10, foo))
+				{
+					// curve changed
+				}
+
+			}
+			if (ImGui::CollapsingHeader("Texture Settings"))
+			{
+				if (ImGui::TreeNode("Texture 0 (R)"))
+				{
+					ImGui::LabelText("##Tex0UVMultiplier", "UV multiplier");
+					if (ImGui::DragFloat("##Tex0UVMultiplier", &texSettings.tex0UvMultiplier, 0.01f, 0.0f, 1.f))
+					{
+						terrain->GetShader()->setupUniformFloat("tex0UvMultiplier", texSettings.tex0UvMultiplier);
+					}
+					GetImagePicker(texSettings.tex0Name, Render::TextureIndex::albedo0);
+					GetImagePicker(texSettings.normal0Name, Render::TextureIndex::normal0);
+					GetImagePicker(texSettings.specular0Name, Render::TextureIndex::specular0);
+					GetImagePicker(texSettings.roughness0Name, Render::TextureIndex::roughness0);
+
+					ImGui::TreePop();
+				}
+
+				if (ImGui::TreeNode("Texture 1 (G)"))
+				{
+					ImGui::LabelText("##Tex1UVMultiplier", "UV multiplier");
+					if (ImGui::DragFloat("##Tex1UVMultiplier", &texSettings.tex1UvMultiplier, 0.01f, 0.0f, 1.f))
+					{
+						terrain->GetShader()->setupUniformFloat("tex1UvMultiplier", texSettings.tex1UvMultiplier);
+					}
+					GetImagePicker(texSettings.tex1Name, Render::TextureIndex::albedo1);
+					GetImagePicker(texSettings.normal1Name, Render::TextureIndex::normal1);
+					GetImagePicker(texSettings.specular1Name, Render::TextureIndex::specular1);
+					GetImagePicker(texSettings.roughness1Name, Render::TextureIndex::roughness1);
+
+					ImGui::TreePop();
+				}
+				if (ImGui::TreeNode("Texture 2 (B)"))
+				{
+					ImGui::LabelText("##Tex2UVMultiplier", "UV multiplier");
+					if (ImGui::DragFloat("##Tex2UVMultiplier", &texSettings.tex2UvMultiplier, 0.01f, 0.0f, 1.f))
+					{
+						terrain->GetShader()->setupUniformFloat("tex2UvMultiplier", texSettings.tex2UvMultiplier);
+					}
+					GetImagePicker(texSettings.tex2Name, Render::TextureIndex::albedo2);
+					GetImagePicker(texSettings.normal2Name, Render::TextureIndex::normal2);
+					GetImagePicker(texSettings.specular2Name, Render::TextureIndex::specular2);
+					GetImagePicker(texSettings.roughness2Name, Render::TextureIndex::roughness2);
+
+					ImGui::TreePop();
+				}
+				if (ImGui::TreeNode("Splatmap"))
+				{
+					GetImagePicker(texSettings.splatName, Render::TextureIndex::splat);
+
+					ImGui::TreePop();
+				}
+			}
+
+		}
+		ImGui::EndDock();
+
+		if (ImGui::BeginDock("Perlin Noise", NULL)) {
+
+			if (ImGui::Button("Generate##Perlin", ImVec2(ImGui::GetWindowContentRegionWidth() - 20, 25)))
+			{
+
+				this->openPopup = true;
+
+				//terrain->CreateTerrain(heightSettings.texName.AsCharPtr(), heightSettings.widthMultiplier, heightSettings.heightMultiplier);
+			}
+			ImGui::Separator();
+			if (ImGui::CollapsingHeader("Perlin Texture"))
+			{
+				ImGui::Image((void*)p.GetTexture()->GetTextureID(), ImVec2(ImGui::GetWindowContentRegionWidth() - 5, ImGui::GetWindowContentRegionWidth() - 20));
+			}
+			if (ImGui::CollapsingHeader("Generation Settings"))
+			{
+				ImGui::DragInt("Width", &perlinSettings.width, 1.0f, 1.f, 1000.f);
+				ImGui::DragInt("Height", &perlinSettings.height, 1.0f, 1.f, 1000.f);
+				ImGui::DragFloat("Scale", &perlinSettings.scale, 0.1f, 0.0f, 1000.f);
+				ImGui::SliderInt("octaves", &perlinSettings.octaves, 1, 8);
+				ImGui::DragFloat("Persistance", &perlinSettings.persistance, 0.01f, 0.0f, 1.f);
+				ImGui::DragFloat("Lacunarity", &perlinSettings.lacunarity, 0.1f, 0.0001f, 1000.f);
+
+			}
+
+		}
+		ImGui::EndDock();
+
 		if (ImGui::BeginDock("Inspector", NULL)) {
 
 			Render::LightServer::PointLight& light = Render::LightServer::Instance()->GetPointLightAtIndex(0);
 			this->light.pos = light.position;
 			this->light.col = light.color;
 			this->light.radius = light.radiusAndPadding.x();
-			
-			if(ImGui::CollapsingHeader("Light"))
+
+			if (ImGui::CollapsingHeader("Light"))
 			{
-				if(ImGui::DragFloat4("Position", (float*) &this->light.pos))
+				if (ImGui::DragFloat4("Position", (float*)&this->light.pos))
 				{
 					light.position = this->light.pos;
 					Render::LightServer::Instance()->UpdatePointLightBuffer();

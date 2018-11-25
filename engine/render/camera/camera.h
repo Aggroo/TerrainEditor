@@ -16,7 +16,7 @@ public:
 	void SetViewMatrix(const Math::mat4& mat);
 	void UpdateProjectionMatrix();
 
-	Math::vec3 GetCameraPosition();
+	Math::vec4 GetCameraPosition();
 
 	Math::vec4 GetPosition();
 	void SetPosition(const Math::vec4 & p);

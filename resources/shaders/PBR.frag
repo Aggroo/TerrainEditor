@@ -8,7 +8,8 @@ in vec3 o_toCamera;
 
 layout(location = 0) out vec4 resColor;
 layout(location = 1) out vec3 normalColor;
-layout(location = 2) out vec4 specularAndRoughness;
+layout(location = 2) out vec3 specularOut;
+layout(location = 3) out vec3 roughnessOut;
 
 uniform sampler2D AlbedoMap;
 uniform sampler2D NormalMap;
@@ -16,10 +17,8 @@ uniform sampler2D SpecularMap;
 uniform sampler2D RoughnessMap;
 uniform sampler2D aoMap;
 uniform samplerCube environmentMap;
-
-uniform float u_matShininess; // = 64;
-
-const float kPi = 3.14159265;
+uniform samplerCube irradiance;
+uniform sampler2D brdfLUT;
 
 #include("lights.frag")
 
@@ -31,35 +30,26 @@ void main()
 	ivec2 location = ivec2(gl_FragCoord.xy);
 	ivec2 tileID = location / ivec2(TILE_SIZE, TILE_SIZE);
 	uint index = tileID.y * LightTileWorkGroups.x + tileID.x;
-
-	vec3 color = vec3(0.0, 0.0, 0.0);
-
-	float reflectance = 0;
 	
-	vec4 albedo = texture(AlbedoMap,texCoord*0.1f).rgba;
-	
-	//Adjust to linear space
-	albedo.rgb = pow(albedo.rgb, vec3(GAMMA));
-		
-	vec3 normal = texture(NormalMap, texCoord*0.1f).rgb;
+	vec3 albedo = pow(texture(AlbedoMap,texCoord).rgb, vec3(GAMMA));
+	vec3 normal = texture(NormalMap, texCoord).rgb * 2.0f - 1.0f;
 	//vec3 spec = texture(SpecularMap, texCoord).rgb;
-	float metallic = texture(SpecularMap, texCoord*0.1f).r;
-	float roughness = texture(RoughnessMap, texCoord*0.1f).r;
-	float ao = texture(aoMap, texCoord*0.1f).r;
+	float metallic = texture(SpecularMap, texCoord).r;
+	float roughness = texture(RoughnessMap, texCoord).r;
+	float ao = texture(aoMap, texCoord).r;
 
 	//vec3 Color = texture(AlbedoMap, vec2(uv.x,1.0-uv.y)).rgb;
 	
-	vec3 L = normalize(o_toLight);
-    vec3 N = normalize(o_normal * ((normal*2.0f) - 1.0f));
-	vec3 V = normalize(CameraPosition.xyz - fragPos.xyz);
+    vec3 N = normalize(o_normal * normal);
+	vec3 V = normalize(o_toCamera);
 	vec3 R = reflect(-V, N); 
 	
 	//F0 as 0.04 will usually look good for all dielectric (non-metal) surfaces
 	vec3 F0 = vec3(0.04);
 	//for metallic surfaces we interpolate between F0 and the albedo value with metallic value as our lerp weight
-	F0 = mix(F0, albedo.rgb, metallic);
+	F0 = mix(F0, albedo, metallic);
 	
-	vec3 lo = vec3(0.0f, 0.0f, 0.0f);
+	vec3 lo = vec3(0.0f);
 	
 	/// Loop for Point Lights
 	uint offset = index * tileLights;   
@@ -89,7 +79,7 @@ void main()
 			
 			//if we are using IBL we should use dot(N,V) for cosTheta. 
 			//The correct way of doing it for direct lighting is using the halfway H for each lightsource
-			vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0, roughness);
+			vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0);
 
 			//F denotes the specular contribution of any light that hits the surface
 			//We set kS (specular) to F and because PBR requires the condition that our equation is
@@ -112,7 +102,7 @@ void main()
 			float denominator = 4 * NdotV * NdotL + 0.001f; //We add 0.001f in case dot ends up becoming zero.
 			vec3 brdf = nominator / max(denominator, 0.001);
 			
-			lo += (kD * albedo.rgb / PI + brdf) * radiance * NdotL;
+			lo += (kD * albedo / PI + brdf) * radiance * NdotL;
 		}
 		
 	}
@@ -172,7 +162,7 @@ void main()
 			
 			//if we are using IBL we should use dot(N,V) for cosTheta. 
 			//The correct way of doing it for direct lighting is using the halfway H for each lightsource
-			vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0, roughness);
+			vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0);
 
 			//F denotes the specular contribution of any light that hits the surface
 			//We set kS (specular) to F and because PBR requires the condition that our equation is
@@ -195,34 +185,34 @@ void main()
 			float denominator = 4 * NdotV * NdotL + 0.001f; //We add 0.001f in case dot ends up becoming zero.
 			vec3 brdf = nominator / denominator;
 			
-			lo += (kD * albedo.rgb / PI + brdf) * radiance * NdotL;
+			lo += (kD * albedo / PI + brdf) * radiance * NdotL;
 		}
 	}
 	
-	// ambient lighting (we now use IBL as the ambient term)
-    vec3 F = fresnelSchlick(max(dot(N, V), 0.0), F0, roughness);
-    
-    vec3 kS = F;
-    vec3 kD = 1.0 - kS;
-    kD *= 1.0 - metallic;
+	float cosLo = max(0.0, dot(N, V));
 	
-	vec3 irradiance = texture(environmentMap, N).rgb;
-    vec3 diffuse = irradiance * albedo.rgb;
+	// ambient lighting (we now use IBL as the ambient term)
+    vec3 F = fresnelSchlickRoughness(cosLo, F0, roughness);
+
+    vec3 kD = mix(vec3(1.0) - F, vec3(0.0), metallic);
+	
+	vec3 irradiance = texture(irradiance, N).rgb;
+    vec3 diffuse = irradiance * albedo;
 	
 	const float MAX_REFLECTION_LOD = 4.0;
-    vec3 prefilteredColor = textureLod(environmentMap, R,  roughness * MAX_REFLECTION_LOD).rgb;    
-    vec3 specular = prefilteredColor;
+    vec3 prefilteredColor = textureLod(environmentMap, R,  roughness * MAX_REFLECTION_LOD).rgb;   
+	vec2 envBRDF  = texture(brdfLUT, vec2(cosLo, roughness)).rg;	
+    vec3 specular = prefilteredColor * (F * envBRDF.x + envBRDF.y);
 	
 	vec3 ambient = (kD * diffuse + specular) * ao;
 	
-	color.rgb = lo + ambient;
+	vec3 color = ambient + lo;
 
-	color.rgb = color / (color + vec3(1.0f));
+	color = color / (color + vec3(1.0f));
 	color = pow(color, vec3(screenGamma));
 
-	resColor.xyz = color.rgb;
-	resColor.a = albedo.a;
+	resColor = vec4(color, 1.0);
 	normalColor = N;
-	specularAndRoughness.rgb = fresnelSchlick(max(dot(N, V), 0.0), F0, roughness);
-	specularAndRoughness.a = roughness;
+	specularOut.rgb = prefilteredColor;
+	roughnessOut = vec3(roughness);
 }

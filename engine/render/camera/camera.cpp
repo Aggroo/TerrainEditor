@@ -55,9 +55,9 @@ void Camera::UpdateProjectionMatrix()
 	this->viewToTextureSpaceMatrix = this->projection * scrScale;
 }
 
-Math::vec3 Camera::GetCameraPosition()
+Math::vec4 Camera::GetCameraPosition()
 {
-	return Math::vec3(this->view[3], this->view[7], this->view[11]);
+	return this->view.GetPosition();
 }
 
 Math::vec4 Camera::GetPosition()

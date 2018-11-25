@@ -12,6 +12,8 @@
 #include "render/render/renderer.h"
 #include "application/basegamefeatures/entitymanager.h"
 #include "render/server/lightserver.h"
+#include "render/server/frameserver.h"
+#include "render/frames/lightcullingpass.h"
 
 UserInterface::UserInterface(Example::CGLab* app)
 {
@@ -63,6 +65,20 @@ void UserInterface::Run()
 		if (ImGui::BeginMenu("Terrain"))
 		{
 			//if (ImGui::MenuItem("Terrain Settings", "P")) { this->terrainSettingsOpen = true; }
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Debug"))
+		{
+			ImGui::MenuItem("Show Framebuffer:");
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("FlatGeometryLit Color")) { Render::Renderer::Instance()->SetFinalColorBuffer(Render::FrameServer::Instance()->GetFlatGeometryLitPass()->GetTextureBuffer()); }
+			if (ImGui::MenuItem("Depth")) { Render::Renderer::Instance()->SetFinalColorBuffer(Render::FrameServer::Instance()->GetDepthPass()->GetTextureBuffer()); }
+			if (ImGui::MenuItem("Linear Depth")) { Render::Renderer::Instance()->SetFinalColorBuffer(Render::FrameServer::Instance()->GetDepthPass()->GetLinearDepthBuffer()); }
+			if (ImGui::MenuItem("FlatGeometryLit Normals")) { Render::Renderer::Instance()->SetFinalColorBuffer(Render::FrameServer::Instance()->GetFlatGeometryLitPass()->GetNormalBuffer()); }
+			if (ImGui::MenuItem("FlatGeometryLit Specular")) { Render::Renderer::Instance()->SetFinalColorBuffer(Render::FrameServer::Instance()->GetFlatGeometryLitPass()->GetSpecularBuffer()); }
+			if (ImGui::MenuItem("FlatGeometryLit Roughness")) { Render::Renderer::Instance()->SetFinalColorBuffer(Render::FrameServer::Instance()->GetFlatGeometryLitPass()->GetRoughnessBuffer()); }
+			ImGui::Separator();
 			ImGui::EndMenu();
 		}
 

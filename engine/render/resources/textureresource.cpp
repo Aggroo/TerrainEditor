@@ -11,8 +11,8 @@
 
 namespace Render
 {
-__ImplementClass(Render::TextureResource, 'TXTR', Core::RefCounted);
-TextureResource::TextureResource()
+__ImplementClass(Render::TextureResource, 'TXTR', Core::RefCounted)
+TextureResource::TextureResource() : isHDR(false)
 {
 
 }
@@ -24,8 +24,22 @@ TextureResource::~TextureResource()
 
 void TextureResource::LoadTextureFile(const char * filename)
 {
-	int w, h, n;
-	unsigned char *image = stbi_load(filename, &w, &h, &n, 0);
+	if(stbi_is_hdr(filename))
+	{
+		float* pixels = stbi_loadf(filename, &width, &height, &channels, 3);
+		if (pixels)
+		{
+			image = (reinterpret_cast<unsigned char*>(pixels));
+			isHDR = true;
+		}
+	}
+	else
+	{
+		unsigned char* pixels = stbi_load(filename, &width, &height, &channels, 0);
+
+		if (pixels)
+			image = (pixels);
+	}
 
 	if (image == nullptr)
 		throw(std::string("Failed to load texture"));
@@ -35,19 +49,20 @@ void TextureResource::LoadTextureFile(const char * filename)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	if(n == 1)
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, w, h, 0, GL_RED, GL_UNSIGNED_BYTE, image);
-	else if (n == 3)
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-	else if (n == 4)
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+	if(channels == 1)
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, pixels<unsigned char>());
+	else if (channels == 3)
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, pixels<unsigned char>());
+	else if (channels == 4)
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels<unsigned char>());
 
 	glGenerateMipmap(GL_TEXTURE_2D);
 	glGenerateTextureMipmap(m_texture);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	stbi_image_free(image);
+	if(!isHDR)
+		stbi_image_free(image);
 
 }
 
@@ -56,13 +71,12 @@ void TextureResource::LoadCubemap(Util::Array<Util::String> textures)
 	glGenTextures(1, &m_texture);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, m_texture);
 
-	int width, height, nrChannels;
 	for (unsigned int i = 0; i < textures.Size(); i++)
 	{
-		unsigned char *data = stbi_load(textures[i].AsCharPtr(), &width, &height, &nrChannels, 0);
+		unsigned char *data = stbi_load(textures[i].AsCharPtr(), &width, &height, &channels, 0);
 		if (data)
 		{
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA16F, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 			stbi_image_free(data);
 		}
 		else

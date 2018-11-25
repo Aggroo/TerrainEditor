@@ -7,6 +7,9 @@ in vec3 o_toLight;
 in vec3 o_toCamera;
 
 layout(location = 0) out vec4 resColor;
+layout(location = 1) out vec3 normalColor;
+layout(location = 2) out vec3 specularOut;
+layout(location = 3) out vec3 roughnessOut;
 
 uniform sampler2D textures[3];
 uniform sampler2D normals[3];
@@ -14,6 +17,8 @@ uniform sampler2D specular[3];
 uniform sampler2D metallic[3];
 uniform sampler2D splat;
 uniform samplerCube environmentMap;
+uniform samplerCube irradianceMap;
+uniform sampler2D brdfLUT;
 
 uniform float tex0UvMultiplier;
 uniform float tex1UvMultiplier;
@@ -92,7 +97,7 @@ void main()
 
 	float reflectance = 0;
 
-	vec3 splatTex = texture(splat, vec2(texCoord.x/10.0, 1.0-(texCoord.y/10.0))).rgb;
+	vec3 splatTex = texture(splat, vec2(texCoord.x, 1.0-(texCoord.y))).rgb;
 	
 	vec3 norm = o_normal[2].xyz;
 	vec3 weights =  norm*norm;
@@ -124,14 +129,15 @@ void main()
 	
 	vec3 L = normalize(o_toLight);
     vec3 V = normalize(o_toCamera);
-    vec3 N = normalize(o_normal[2].rgb + normalSum);
+    vec3 N = normalize(o_normal[2] + normalSum);
+	vec3 R = reflect(-V, N); 
 	
 	//F0 as 0.04 will usually look good for all dielectric (non-metal) surfaces
 	vec3 F0 = vec3(0.04);
 	//for metallic surfaces we interpolate between F0 and the albedo value with metallic value as our lerp weight
 	F0 = mix(F0, vTexColor.rgb, specularSum);
 	
-	vec3 irradiance = vec3(0.0f, 0.0f, 0.0f);
+	vec3 lo = vec3(0.0f, 0.0f, 0.0f);
 	
 	/// Loop for Point Lights
 	uint offset = index * tileLights;   
@@ -167,7 +173,7 @@ void main()
 			
 			//if we are using IBL we should use dot(N,V) for cosTheta. 
 			//The correct way of doing it for direct lighting is using the halfway H for each lightsource
-			vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0, roughnessSum);
+			vec3 F = fresnelSchlickRoughness(max(dot(H, V), 0.0), F0, roughnessSum);
 
 			//F denotes the specular contribution of any light that hits the surface
 			//We set kS (specular) to F and because PBR requires the condition that our equation is
@@ -192,7 +198,7 @@ void main()
 			
 			vec3 specular = prefilteredColor * (F*brdf);
 			
-			irradiance += (kD * vTexColor.rgb / PI + specular) * radiance * NdotL;
+			lo += (kD * vTexColor.rgb / PI + specular) * radiance * NdotL;
 		}
 		
 	}
@@ -252,7 +258,7 @@ void main()
 			
 			//if we are using IBL we should use dot(N,V) for cosTheta. 
 			//The correct way of doing it for direct lighting is using the halfway H for each lightsource
-			vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0, roughnessSum);
+			vec3 F = fresnelSchlickRoughness(max(dot(H, V), 0.0), F0, roughnessSum);
 
 			//F denotes the specular contribution of any light that hits the surface
 			//We set kS (specular) to F and because PBR requires the condition that our equation is
@@ -275,26 +281,36 @@ void main()
 			float denominator = 4 * NdotV * NdotL + 0.001f; //We add 0.001f in case dot ends up becoming zero.
 			vec3 brdf = nominator / denominator;
 			
-			irradiance += (kD * vTexColor.rgb / PI + brdf) * radiance * NdotL;
+			lo += (kD * vTexColor.rgb / PI + brdf) * radiance * NdotL;
 		}
 	}
 	
-	// ambient lighting (we now use IBL as the ambient term)
-    vec3 F = fresnelSchlick(max(dot(N, V), 0.0), F0, roughnessSum);
-    
-    vec3 kS = F;
-    vec3 kD = 1.0 - kS;
-    kD *= 1.0 - specularSum;
-    
-    vec3 lo = texture(environmentMap, N).rgb;
-    vec3 diffuse = lo * vTexColor.rgb;
+	float cosLo = max(0.0, dot(N, V));
 	
-	color.rgb = irradiance + (kD * diffuse) + (vTexColor.rgb * u_lightAmbientIntensity);
+	// ambient lighting (we now use IBL as the ambient term)
+    vec3 F = fresnelSchlickRoughness(cosLo, F0, roughnessSum);
+
+    vec3 kD = mix(vec3(1.0) - F, vec3(0.0), specularSum);
+	
+	vec3 irradiance = texture(irradianceMap, N).rgb;
+    vec3 diffuse = irradiance * vTexColor.rgb;
+	
+	const float MAX_REFLECTION_LOD = 4.0;
+    vec3 prefilteredColor = textureLod(environmentMap, R,  roughnessSum * MAX_REFLECTION_LOD).rgb;   
+	vec2 envBRDF  = texture(brdfLUT, vec2(cosLo, roughnessSum)).rg;	
+    vec3 specular = prefilteredColor * (F * envBRDF.x + envBRDF.y);
+	
+	vec3 ambient = (kD * diffuse + specular) * 1.0f;
+	
+	color.rgb = ambient + lo;
 
 	color.rgb = color / (color + vec3(1.0f));
 	color = pow(color, vec3(screenGamma));
 
 	resColor.xyz = color.rgb;
 	resColor.a = 1;
+	normalColor = N;
+	specularOut.rgb = prefilteredColor;
+	roughnessOut = vec3(roughnessSum);
 }
 

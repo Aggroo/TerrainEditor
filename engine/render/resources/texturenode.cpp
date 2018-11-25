@@ -46,7 +46,7 @@ void TextureNode::BindTextures() const
 
 	for (int i = 0; i < indexArr.Size(); ++i)
 	{
-		if(indexArr[i] == TextureIndex::environmentMap)
+		if(indexArr[i] == TextureIndex::environmentMap || indexArr[i] == TextureIndex::irradiance)
 		{
 			this->textures[indexArr[i]]->bindCubeTex((int)indexArr[i]);
 		}

@@ -9,6 +9,7 @@
 #include "render/server/shaderserver.h"
 #include "application/basegamefeatures/entitymanager.h"
 #include "render/render/skybox.h"
+#include "render/server/frameserver.h"
 
 namespace TerrainEditor
 {
@@ -66,6 +67,11 @@ void Terrain::Activate()
 			
 	textures->AddTexture(Render::TextureIndex::splat, "resources/textures/heightmaps/splat2.jpg");
 
+	textures->AddTexture(Render::TextureIndex::environmentMap, Render::FrameServer::Instance()->GetIBLPass()->GetEnvironmentMap());
+	textures->AddTexture(Render::TextureIndex::irradiance, Render::FrameServer::Instance()->GetIBLPass()->GetIrradianceMap());
+	textures->AddTexture(Render::TextureIndex::brdf, Render::FrameServer::Instance()->GetIBLPass()->GetBRDFMap());
+	
+
 	//textures.AddTexture("resources/textures/pathway.jpg");
 
 
@@ -86,6 +92,9 @@ void Terrain::Activate()
 	shader->setupUniformInt("metallic[2]", (GLuint)Render::TextureIndex::roughness2);
 
 	shader->setupUniformInt("splat", (GLuint) Render::TextureIndex::splat);
+	this->shader->setupUniformInt("environmentMap", (GLuint)Render::TextureIndex::environmentMap);
+	this->shader->setupUniformInt("irradianceMap", (GLuint)Render::TextureIndex::irradiance);
+	this->shader->setupUniformInt("brdfLUT", (GLuint)Render::TextureIndex::brdf);
 
 	shader->setupUniformFloat("tex0UvMultiplier", 0.1f);
 	shader->setupUniformFloat("tex1UvMultiplier", 0.1f);
@@ -104,9 +113,7 @@ void Terrain::Update()
 	this->shader->BindProgram();
 	this->textures->BindTextures();
 	this->shader->setupMatrix4fv("Model", this->transform);
-	this->shader->setupVector3f("cameraPosition", Graphics::MainCamera::Instance()->GetCameraPosition());
 	
-
 	if(mesh->IsRenderable())
 		mesh->drawMesh();
 
@@ -243,13 +250,6 @@ bool Terrain::CreateTerrain(const char* filename, float widthMultiplier, float h
 	return true;
 }
 
-
-void Terrain::SetSkybox(const Ptr<Render::Skybox> sky)
-{
-	this->sky = sky;
-	textures->AddTexture(Render::TextureIndex::environmentMap, this->sky->GetCubemap());
-	this->shader->setupUniformInt("environmentMap", (GLuint)Render::TextureIndex::environmentMap);
-}
 
 void Terrain::SmoothenTerrain()
 {

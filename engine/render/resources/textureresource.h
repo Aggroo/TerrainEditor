@@ -36,12 +36,25 @@ public:
 	void bindCubeTex(GLuint slot) const;
 	void unbindTex() const;
 
-	GLuint GetTextureID() { return m_texture; }
+	GLuint& GetTextureID() { return m_texture; }
+	int& GetWidth() { return width; }
+	int& GetHeight() { return height; }
+	int& GetChannels() { return channels; }
+	bool& IsHDR() { return isHDR; }
+
+	template<typename T>
+	const T* pixels() const
+	{
+		return reinterpret_cast<const T*>(image);
+	}
 
 private:
 
 	GLuint m_texture;
-  
+	bool isHDR;
+	int width, height, channels;
+	unsigned char* image;
+
 };
 
 }

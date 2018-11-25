@@ -4,6 +4,7 @@
 #include "render/camera/camera.h"
 #include "renderer.h"
 #include "render/server/shaderserver.h"
+#include "render/server/frameserver.h"
 
 namespace Render
 {
@@ -31,15 +32,7 @@ void Skybox::Activate()
 
 	Render::ShaderServer::Instance()->AddShaderObject("Skybox", shader);
 
-	cubeTextures.Append("resources/textures/skyboxes/skyboxsun5deg/right.bmp");
-	cubeTextures.Append("resources/textures/skyboxes/skyboxsun5deg/left.bmp");
-	cubeTextures.Append("resources/textures/skyboxes/skyboxsun5deg/top.bmp");
-	cubeTextures.Append("resources/textures/skyboxes/skyboxsun5deg/bottom.bmp");
-	cubeTextures.Append("resources/textures/skyboxes/skyboxsun5deg/front.bmp");
-	cubeTextures.Append("resources/textures/skyboxes/skyboxsun5deg/back.bmp");
-
-	cubemap->LoadCubemap(cubeTextures);
-
+	cubemap = Render::FrameServer::Instance()->GetIBLPass()->GetEnvironmentMap();
 	GenerateCube();
 
 	Game::EntityBase::Activate();
@@ -57,8 +50,10 @@ void Skybox::Update()
 	glBindVertexArray(vao);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap->GetTextureID());
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glDepthFunc(GL_LESS);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
 

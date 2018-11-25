@@ -4,6 +4,7 @@
 #include "render/frames/framepass.h"
 #include "render/frames/depthpass.h"
 #include "render/frames/flatgeometrylitpass.h"
+#include "render/frames/iblpass.h"
 
 namespace Render
 {
@@ -21,6 +22,7 @@ public:
 	bool HasPassNamed(const Util::String& name);
 
 	Ptr<DepthPass> GetDepthPass();
+	Ptr<IBLPass> GetIBLPass();
 	Ptr<FramePass> GetLightCullingPass();
 	Ptr<FlatGeometryLitPass> GetFlatGeometryLitPass();
 
@@ -35,6 +37,8 @@ private:
 
 	/// Early depth testing
 	Ptr<DepthPass> Depth;
+
+	Ptr<IBLPass> IBL;
 
 	/// Used for lightculling as part of tiled forward rendering.
 	Ptr<FramePass> lightCullingPass;

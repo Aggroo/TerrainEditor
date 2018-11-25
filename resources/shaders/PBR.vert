@@ -12,7 +12,6 @@ out vec3 o_toLight;
 out vec3 o_toCamera;
 
 uniform vec3 lightPosition;
-uniform vec3 cameraPosition;
 
 void main()
 {
@@ -26,12 +25,11 @@ void main()
 	
 	fragPos = worldpos.xyz;
 	
-
 	o_normal = mat3(t,b,n);	
 	o_toLight = normalize(lightPosition - worldpos.xyz);
-	o_toCamera = normalize(cameraPosition - worldpos.xyz);
+	o_toCamera = normalize(CameraPosition.xyz - worldpos.xyz);
 	
-	texCoord = inCoord*10.0f;
+	texCoord = inCoord;
 	
 	gl_Position = Projection*View*worldpos;
 }

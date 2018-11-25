@@ -27,6 +27,8 @@ SET(files_render_resources
 	resources/stb_image_write.h
 	resources/inputmanager.h
 	resources/inputmanager.cpp
+	resources/model.h
+	resources/model.cpp
 	)
 	
 SET(files_render_camera
@@ -53,6 +55,8 @@ SET(files_render_frames
 	frames/lightcullingpass.cpp
 	frames/flatgeometrylitpass.h
 	frames/flatgeometrylitpass.cpp
+	frames/iblpass.h
+	frames/iblpass.cpp
 	)
 	
 SET(files_render_material

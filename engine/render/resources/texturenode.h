@@ -21,7 +21,9 @@ enum class TextureIndex
 	ao1,
 	ao2,
 	splat,
-	environmentMap
+	environmentMap,
+	irradiance,
+	brdf
 };
 class TextureNode : public Core::RefCounted
 {
