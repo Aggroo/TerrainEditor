@@ -3,7 +3,6 @@
 #include "foundation/math/vec2.h"
 #include "rasterizer.h"
 #include <vector>
-#include "stb_truetype.h"
 #include "core/refcounted.h"
 
 namespace Render

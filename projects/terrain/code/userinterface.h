@@ -13,15 +13,19 @@ namespace Render
 	class TextureResource; 
 }
 
-class UserInterface
+class UserInterface : public Core::RefCounted
 {
+__DeclareClass(UserInterface)
 public:
+	UserInterface();
 	UserInterface(Example::CGLab* app);
 	~UserInterface();
 
+	void Setup(Example::CGLab* app);
 	void Run();
 	void ShowFileMenu();
 	void RenderDocks();
+	void RenderToolBar();
 	void ModalWindows();
 	void SetupImGuiStyle() const;
 

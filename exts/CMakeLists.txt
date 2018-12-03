@@ -25,23 +25,31 @@ ADD_SUBDIRECTORY(misc)
 SET_TARGET_PROPERTIES(misc PROPERTIES FOLDER "exts/misc")
 TARGET_INCLUDE_DIRECTORIES(exts INTERFACE misc)
 
+OPTION(DEFINE_GLEW "Define IMGUI GLEW" ON)
+
+IF(DEFINE_GLEW)
+    ADD_DEFINITIONS(-DIMGUI_IMPL_OPENGL_LOADER_GLEW)
+ENDIF(DEFINE_GLEW)
+
 ADD_LIBRARY(imgui STATIC 
 			imgui/imgui.cpp 
 			imgui/imgui_demo.cpp 
 			imgui/imgui_draw.cpp 
 			imgui/imgui.h 
 			imgui/imgui_internal.h 
-			imgui/stb_rect_pack.h 
-			imgui/stb_textedit.h 
-			imgui/stb_truetype.h 
-			imgui/examples/opengl3_example/imgui_impl_glfw_gl3.h
-			imgui/examples/opengl3_example/imgui_impl_glfw_gl3.cpp
-			imgui/imgui_dock.cpp
-			imgui/imgui_dock.h
+			imgui/imstb_rectpack.h
+			imgui/imstb_textedit.h
+			imgui/imstb_truetype.h
+			imgui/examples/imgui_impl_opengl3.h
+			imgui/examples/imgui_impl_opengl3.cpp
+			imgui/examples/imgui_impl_glfw.h
+			imgui/examples/imgui_impl_glfw.cpp
+			imgui/imconfig.h
+			imgui/imgui_widgets.cpp
 			)
 
 TARGET_LINK_LIBRARIES(imgui PUBLIC exts)
-TARGET_INCLUDE_DIRECTORIES(imgui PUBLIC imgui imgui/examples/opengl3_example)
+TARGET_INCLUDE_DIRECTORIES(imgui PUBLIC imgui imgui/examples/)
 SET_TARGET_PROPERTIES(imgui PROPERTIES FOLDER "exts/imgui")
 TARGET_LINK_LIBRARIES(exts INTERFACE imgui)
 

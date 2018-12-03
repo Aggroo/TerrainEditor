@@ -2,7 +2,7 @@
 #include "GL/glew.h"
 #include "foundation/math/vec4.h"
 #include <memory>
-
+#include "core/refcounted.h"
 
 
 namespace Render 
@@ -23,14 +23,14 @@ class Window;
 namespace Input
 {
 
-class InputManager
+class InputManager : public Core::RefCounted
 {
-
+__DeclareClass(InputManager)
 public:
 	InputManager();
-	InputManager(Display::Window* window, Render::LightNode* lNode);
 	~InputManager();
 
+	void Setup(Display::Window* window, Render::LightNode* lNode);
 	void InitKeyPress();
 	void InitMouse();
 

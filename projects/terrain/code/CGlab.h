@@ -38,7 +38,7 @@ public:
 	void Shutdown(bool shutdown);
 private:
 
-	std::shared_ptr<UserInterface> UI;
+	Ptr<UserInterface> UI;
 
 	GLuint program;
 	GLuint vertexShader;
@@ -49,7 +49,7 @@ private:
 	Render::GraphicsNode gN;
 	Render::LightNode lNode;
 
-	std::shared_ptr<Input::InputManager> input;
+	Ptr<Input::InputManager> input;
 	Ptr<TerrainEditor::Terrain> terrain;
 	Ptr<Render::ShaderObject> shader;
 

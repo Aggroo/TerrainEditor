@@ -4,8 +4,10 @@
 //------------------------------------------------------------------------------
 #include "config.h"
 #include "window.h"
-#include <imgui.h>
-#include "imgui_impl_glfw_gl3.h"
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+
 #define MAX_VERTEX_BUFFER 512 * 1024
 #define MAX_ELEMENT_BUFFER 128 * 1024
 
@@ -239,10 +241,15 @@ Window::Open()
 	glfwSetWindowSizeCallback(this->window, Window::StaticWindowResizeCallback);
 
 	// setup imgui implementation
+	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
 
-	ImGui_ImplGlfwGL3_Init(this->window, false);
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+	io.ConfigResizeWindowsFromEdges = true;
+
+	ImGui_ImplGlfw_InitForOpenGL(this->window, false);
+	ImGui_ImplOpenGL3_Init();
 	glfwSetCharCallback(window, ImGui_ImplGlfw_CharCallback);
 
 
@@ -294,10 +301,19 @@ Window::SwapBuffers()
 	{
 		if (nullptr != this->uiFunc)
 		{
-			ImGui_ImplGlfwGL3_NewFrame();
+			ImGui_ImplOpenGL3_NewFrame();
+			ImGui_ImplGlfw_NewFrame();
+			ImGui::NewFrame();
+
 			this->uiFunc();
 			ImGui::Render();
-			ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+			if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+			{
+				ImGui::UpdatePlatformWindows();
+				ImGui::RenderPlatformWindowsDefault();
+			}
 		}
 
 		glfwSwapBuffers(this->window);

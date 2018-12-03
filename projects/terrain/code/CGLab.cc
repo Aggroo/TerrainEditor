@@ -65,7 +65,8 @@ CGLab::Open()
 		terrain = TerrainEditor::Terrain::Create();
 		terrain->Activate();
 
-		input = std::make_shared<Input::InputManager>(this->window, &lNode);
+		input = Input::InputManager::Create();
+		input->Setup(window, &lNode);
 
 		input->InitKeyPress();
 		input->InitMouse();
@@ -82,7 +83,8 @@ CGLab::Open()
 		// Accept fragment if it closer to the camera than the former one
 		glDepthFunc(GL_LESS);
 
-		this->UI = std::make_shared<UserInterface>(this);
+		this->UI = UserInterface::Create();
+		this->UI->Setup(this);
 
 		// set ui rendering function
 		this->window->SetUiRender([this]()

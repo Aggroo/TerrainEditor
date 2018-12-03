@@ -10,7 +10,7 @@
 
 namespace Input
 {
-
+__ImplementClass(Input::InputManager, 'INPT', Core::RefCounted)
 InputManager::InputManager() 
 	: window(nullptr),
 	mRightCheck(false), 
@@ -24,23 +24,16 @@ InputManager::InputManager()
 	vec = Math::vec4(0, 0, 0);
 }
 
-InputManager::InputManager(Display::Window* window, Render::LightNode* lNode) 
-	: mRightCheck(false), 
-	mLeftCheck(false), 
-	shiftFlag(false), 
-	wFlag(false), 
-	sFlag(false), 
-	dFlag(false), 
-	aFlag(false)
+InputManager::~InputManager()
+{
+		
+}
+
+void InputManager::Setup(Display::Window* window, Render::LightNode* lNode)
 {
 	this->window = window;
 	this->lNode = lNode;
 	vec = Math::vec4(0, 0, 0);
-}
-
-InputManager::~InputManager()
-{
-		
 }
 
 void InputManager::InitKeyPress()

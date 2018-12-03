@@ -66,7 +66,8 @@ Application::Open()
 		Render::Renderer::Instance()->SetWindowResolution(1280, 900);
 		Render::Renderer::Instance()->SetRenderResolution(1280, 900);
 
-		input = std::make_shared<Input::InputManager>(this->window, &lNode);
+		input = Input::InputManager::Create();
+		input->Setup(window, &lNode);
 
 		input->InitKeyPress();
 		input->InitMouse();
@@ -130,14 +131,15 @@ Application::Run()
 
 	Ptr<Game::Entity> teapot = Game::Entity::Create();
 	teapot->SetName("Teapot");
-	teapot->SetMesh("resources/models/sphere.obj");
-	teapot->SetTextures("resources/textures/terrain_textures/MetalSpottyDiscoloration001/MetalSpottyDiscoloration001_COL_1K_METALNESS.jpg",
-						"resources/textures/terrain_textures/MetalSpottyDiscoloration001/MetalSpottyDiscoloration001_NRM_1K_METALNESS.jpg",
-						"resources/textures/terrain_textures/MetalSpottyDiscoloration001/MetalSpottyDiscoloration001_METALNESS_1K_METALNESS.jpg",
-						"resources/textures/terrain_textures/MetalSpottyDiscoloration001/MetalSpottyDiscoloration001_ROUGHNESS_1K_METALNESS.jpg");
+	teapot->SetMesh("resources/models/HelmetPresentationLightMap.fbx.fbx");
+	teapot->SetTextures("resources/textures/helmet/BaseColor.png",
+						"resources/textures/helmet/NormalMap.png",
+						"resources/textures/helmet/Metalness.png",
+						"resources/textures/helmet/Roughness.png",
+						"resources/textures/helmet/AOMap.png");
 	teapot->SetShaders("resources/shaders/PBR.vert", "resources/shaders/PBR.frag", "PBR");
 	teapot->SetIBLMaps(skybox->GetCubemap(), Render::FrameServer::Instance()->GetIBLPass()->GetIrradianceMap(), Render::FrameServer::Instance()->GetIBLPass()->GetBRDFMap());
-	teapot->SetTransform(modelMat*Math::mat4::translationMatrix(Math::vec4(-100.0f, 0.0f, 0.0f)));
+	teapot->SetTransform(modelMat*Math::mat4::translationMatrix(Math::vec4(-120.0f, 0.0f, 0.0f))*Math::mat4::vectorScaling(10.0f, 10.0f, 10.0f));
 	teapot->Activate();
 
 	Ptr<Game::Entity> gun = Game::Entity::Create();
@@ -165,7 +167,7 @@ Application::Run()
 
     std::chrono::high_resolution_clock::time_point before = std::chrono::high_resolution_clock::now();
 
-	LightServer::Instance()->CreatePointLight(Math::vec4(0, 800, 3), Math::vec4(0.3f, 0.3f, 0.3f), 10000.0f);
+	//LightServer::Instance()->CreatePointLight(Math::vec4(0, 800, 3), Math::vec4(0.3f, 0.3f, 0.3f), 10.0f);
 
 	while (this->window->IsOpen() && !this->shutdown)
 	{        

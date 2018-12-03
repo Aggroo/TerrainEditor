@@ -22,6 +22,7 @@ public:
 	void Run();
 	void ShowFileMenu();
 	void RenderDocks();
+	void RenderToolBar();
 	void ModalWindows();
 	void SetupImGuiStyle() const;
 
