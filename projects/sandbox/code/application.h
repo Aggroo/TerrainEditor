@@ -49,7 +49,6 @@ private:
 	Render::GraphicsNode gN;
 	Render::LightNode lNode;
 
-	Ptr<Input::InputManager> input;
 	Ptr<TerrainEditor::Terrain> terrain;
 	Ptr<Render::ShaderObject> shader;
 

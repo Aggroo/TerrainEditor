@@ -65,11 +65,10 @@ CGLab::Open()
 		terrain = TerrainEditor::Terrain::Create();
 		terrain->Activate();
 
-		input = Input::InputManager::Create();
-		input->Setup(window, &lNode);
+		
+		Input::InputManager::Instance()->Setup(window, &lNode);
 
-		input->InitKeyPress();
-		input->InitMouse();
+		Input::InputManager::Instance()->Initialization();
 
 		// set clear color to gray
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -136,11 +135,11 @@ CGLab::Run()
 	while (this->window->IsOpen() && !this->shutdown)
 	{        
 		this->window->Update();
-		input->Update();
+		Input::InputManager::Instance()->Update();
 		
 		//float timeStamp = float(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - before).count() / 1000.0f);
 
-		input->CameraMovement();
+		Input::InputManager::Instance()->CameraMovement();
 
 		//gN.setTransMat(modelMat);
 		//Render the scene
