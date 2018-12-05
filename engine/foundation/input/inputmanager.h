@@ -104,8 +104,6 @@ private:
 
 	Render::LightNode* lNode;
 
-	unsigned char keyboardState[348];
-
 	bool keyboardButtons[83] = { false };
 	bool mouseButtons[3] = { false };
 	GLboolean wFlag, sFlag, dFlag, aFlag, shiftFlag, mLeftCheck, mRightCheck;

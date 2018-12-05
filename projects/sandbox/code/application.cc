@@ -7,12 +7,8 @@
 #include <chrono>
 #include "foundation/math/mat4.h"
 #include <assert.h>
-#include "render/resources/HalfEdgeMesh.h"
-#include "application/game/terrain.h"
-#include "imguiextra.h"
 #include "UserInterface.h"
 #include "foundation/util/JsonParser.h"
-#include "render/camera/camera.h"
 #include "render/render/renderer.h"
 #include "application/basegamefeatures/entitymanager.h"
 #include "render/render/skybox.h"

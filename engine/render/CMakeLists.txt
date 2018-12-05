@@ -25,8 +25,6 @@ SET(files_render_resources
 	resources/rasterizer.cpp
 	resources/stb_image.h
 	resources/stb_image_write.h
-	resources/inputmanager.h
-	resources/inputmanager.cpp
 	resources/model.h
 	resources/model.cpp
 	)

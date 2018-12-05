@@ -11,7 +11,7 @@
 #include "render/resources/graphicsnode.h"
 #include "render/resources/lightnode.h"
 #include "render/resources/shaderobject.h"
-#include "render/resources/inputmanager.h"
+#include "foundation/input/inputmanager.h"
 #include <chrono>
 #include "UserInterface.h"
 
