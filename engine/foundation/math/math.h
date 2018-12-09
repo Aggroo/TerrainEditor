@@ -55,6 +55,29 @@ static float Rad2Deg(const float& rad)
 	return (float)(rad * (RADTODEG));
 }
 
+static int Abs(const int& x)
+{
+	int m = x >> 31;
+	return((x ^ m) - m);
+}
+
+static int Nabs(const int& x)
+{
+	int m = x >> 31;
+	return(m - (x ^ m));
+}
+
+static int Sign(const int& x)
+{
+	return ((x >> 31) - (-x >> 31));
+}
+
+static bool IsPowerOfTwo(int x)
+{
+	int y = x - 1; // y is negative only if x == 0.
+	return ((x & y) - (y >> 31) == 0);
+}
+
 }
 
 
