@@ -109,6 +109,7 @@ void UserInterface::ShowFileMenu()
 	}
 	if (ImGui::MenuItem("Save", "Ctrl+S"))
 	{
+		printf("Ctrl+S\n");
 		//ImGui::InitDock();
 	}
 	if (ImGui::MenuItem("Save As..", "Ctrl+Shift+S"))
@@ -601,6 +602,10 @@ void UserInterface::SetupImGuiStyle() const
 	style.Colors[ImGuiCol_PopupBg] = backgroundVeryDark;
 	style.Colors[ImGuiCol_DragDropTarget] = backgroundLight;
 	//style.Colors[ImGuiCol_ModalWindowDarkening]	= ImVec4(0.20f, 0.22f, 0.27f, 0.73f);
+	style.Colors[ImGuiCol_Tab] = highlightBlue;
+	style.Colors[ImGuiCol_TabActive] = highlightBlueActive;
+	style.Colors[ImGuiCol_TabHovered] = highlightBlueHovered;
+
 }
 
 void UserInterface::GetImagePicker(Util::String texName, Render::TextureIndex index)

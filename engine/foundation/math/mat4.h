@@ -50,9 +50,50 @@ public:
 		matrice[14] = m32;
 		matrice[15] = m33;
 	}
+
+	inline mat4(const float* val)
+	{
+		matrice[0] = val[0];
+		matrice[1] = val[1];
+		matrice[2] = val[2];
+		matrice[3] = val[3];
+
+		matrice[4] = val[4];
+		matrice[5] = val[5];
+		matrice[6] = val[6];
+		matrice[7] = val[7];
+
+		matrice[8] = val[8];
+		matrice[9] = val[9];
+		matrice[10] = val[10];
+		matrice[11] = val[11];
+
+		matrice[12] = val[12];
+		matrice[13] = val[13];
+		matrice[14] = val[14];
+		matrice[15] = val[15];
+	}
 	
 	inline ~mat4()
 	{
+
+	}
+
+	inline bool operator==(const mat4& rhs) const
+	{
+		return matrice[0] == rhs[0] && matrice[1] == rhs[1] && matrice[2] == rhs[2] && matrice[3] == rhs[3] &&
+			matrice[4] == rhs[4] && matrice[5] == rhs[5] && matrice[6] == rhs[6] && matrice[7] == rhs[7] &&
+			matrice[8] == rhs[8] && matrice[9] == rhs[9] && matrice[10] == rhs[10] && matrice[11] == rhs[11] &&
+			matrice[12] == rhs[12] && matrice[13] == rhs[13] && matrice[14] == rhs[14] && matrice[15] == rhs[15];
+			
+	}
+
+	inline bool operator!=(const mat4& rhs) const
+	{
+		return matrice[0] != rhs[0] || matrice[1] != rhs[1] || matrice[2] != rhs[2] || matrice[3] != rhs[3] ||
+			matrice[4] != rhs[4] || matrice[5] != rhs[5] || matrice[6] != rhs[6] || matrice[7] != rhs[7] ||
+			matrice[8] != rhs[8] || matrice[9] != rhs[9] || matrice[10] != rhs[10] || matrice[11] != rhs[11] ||
+			matrice[12] != rhs[12] || matrice[13] != rhs[13] || matrice[14] != rhs[14] || matrice[15] != rhs[15];
 
 	}
 
@@ -523,7 +564,7 @@ public:
 private:
 	float matrice[16];
 };
-typedef Math::mat4 mat4;
+
 }
 
 
