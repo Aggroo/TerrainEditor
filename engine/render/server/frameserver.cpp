@@ -20,7 +20,7 @@ void FrameServer::SetupFramePasses()
 	this->framePassByName.Add(this->Depth->name, this->Depth.upcast<Render::FramePass>());
 	this->framePasses.Append(this->Depth.downcast<Render::FramePass>());
 
-	// depth pre-pass
+	// IBL pass
 	this->IBL = IBLPass::Create();
 	this->IBL->name = "IBL";
 	this->IBL->Setup();
@@ -80,10 +80,11 @@ Ptr<IBLPass> FrameServer::GetIBLPass()
 	return this->IBL;
 }
 
-	Ptr<FramePass> FrameServer::GetLightCullingPass()
+Ptr<FramePass> FrameServer::GetLightCullingPass()
 {
 	return this->lightCullingPass;
 }
+
 Ptr<FlatGeometryLitPass> FrameServer::GetFlatGeometryLitPass()
 {
 	return this->FlatGeometryLit;

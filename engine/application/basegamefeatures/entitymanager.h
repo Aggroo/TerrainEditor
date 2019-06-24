@@ -2,6 +2,8 @@
 #include <memory>
 #include <unordered_map>
 #include "core/ptr.h"
+#include "core/refcounted.h"
+#include "core/windows/win32singleton.h"
 
 
 namespace Game
@@ -13,13 +15,11 @@ class EntityBase;
 
 namespace BaseGameFeature
 {
-class EntityManager
+class EntityManager : public Core::RefCounted
 {
+__DeclareSingleton(EntityManager)
 public: 
-	static EntityManager* Instance() { static EntityManager instance; return &instance; }
 	~EntityManager();
-	EntityManager(const EntityManager&) = delete;
-	void operator=(const EntityManager&) = delete;
 
 	//Returns a unique ID
 	uint GetNewEntityID();
@@ -44,7 +44,6 @@ public:
 	std::unordered_map<int, Ptr<Game::EntityBase>>& GetEntityList() { return entityList; }
 
 private:
-	EntityManager();
 
 	//Incrementing index for making sure entities has unique IDs. 
 	//Never change this explicitly if you don't know what you're doing!
