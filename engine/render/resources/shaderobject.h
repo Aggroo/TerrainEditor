@@ -34,8 +34,8 @@ public:
 	void setupVector4f(const GLchar* name, Math::vec4 vec);
 	void setupVector3f(const GLchar* name, GLfloat x, GLfloat y, GLfloat z);
 	void setupVector3f(const GLchar* name, Math::vec3 vec);
-	void setupUniformFloat(const GLchar* name, GLfloat shine);
-	void setupUniformInt(const GLchar* name, GLint shine);
+	void setupUniformFloat(const GLchar* name, GLfloat val);
+	void setupUniformInt(const GLchar* name, GLint val);
 
 private:
 	friend class ShaderServer;

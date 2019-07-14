@@ -43,7 +43,7 @@ void IBLPass::Setup()
 		Render::ShaderServer::Instance()->AddShaderObject("EQ2CUBE", eq2Cubemap);
 
 		Ptr<TextureResource> hdr = TextureResource::Create();
-		hdr->LoadTextureFile("resources/textures/skyboxes/hdri_sky_01_full.hdr");
+		hdr->LoadTextureFile("resources/textures/skyboxes/hdri_sky_02_full.hdr");
 
 		Ptr<TextureResource> envTexEq = TextureResource::Create();
 		glCreateTextures(GL_TEXTURE_2D, 1, &envTexEq->GetTextureID());

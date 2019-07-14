@@ -21,6 +21,18 @@ struct HeightmapValues
 class Terrain : public Game::EntityBase
 {
 	__DeclareClass(Terrain);
+private:
+	struct TerrainShaderVariables
+	{
+		float texUv0Multiplier = 0.1f;
+		float texUv1Multiplier = 0.1f;;
+		float texUv2Multiplier = 0.1f;;
+		float padding;
+	};
+
+	///uniform buffer object
+	GLuint ubo[1];
+
 public:
 	Terrain();
 	~Terrain();
@@ -46,11 +58,15 @@ public:
 	Ptr<Render::ShaderObject> GetShader() { return shader; }
 	Ptr<Render::TextureNode> GetTextures() { return textures; }
 
+	//Shader Settings
+	TerrainShaderVariables tsVar;
+
 private:
 	void SmoothenTerrain();
 	bool inBounds(int x, int y);
 	void GenerateNormals();
 	float GetHeight(int x, int y) const;
+	void BindShaderVariables();
 
 	int terrainWidth;
 	int terrainHeight;

@@ -489,7 +489,7 @@ namespace ImGui
         if (!ItemAdd(bb, id))
             return 0;
 
-        const bool hovered = IsItemHoveredRect();
+        const bool hovered = ImGui::IsItemHovered();
 
         int max = 0;
         while (max < maxpoints && points[max].x >= 0) max++;

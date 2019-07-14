@@ -224,6 +224,10 @@ public:
 		return vec4(vec[1] * vect[2] - vec[2] * vect[1], vec[2] * vect[0] - vec[0] * vect[2], vec[0] * vect[1] - vec[1] * vect[0]);
 	}
 
+	inline float* ToFloat4()
+	{
+		return vec;
+	}
 
 private:
 	float vec[4];

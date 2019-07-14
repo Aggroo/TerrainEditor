@@ -505,11 +505,11 @@ public:
 		return mat;
 		
 	}
-	
+
 	inline vec4 GetPosition()
 	{
 		vec4 vec;
-		
+
 		vec[0] = matrice[3];
 		vec[1] = matrice[7];
 		vec[2] = matrice[11];

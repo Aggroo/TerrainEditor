@@ -28,6 +28,9 @@ public:
 
 	void AddShaderObject(const char* name, Ptr<ShaderObject> shaderObj);
 
+	//Reloaded the updated shader
+	void ReloadShader(Util::String shader);
+
 	//Checks whether a shader with given name has already been loaded
 	bool HasShaderProgramLoaded(const Util::String& name);
 	//Checks whether a shader object with given name exists

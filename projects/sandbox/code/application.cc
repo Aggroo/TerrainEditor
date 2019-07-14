@@ -7,8 +7,7 @@
 #include <chrono>
 #include "foundation/math/mat4.h"
 #include <assert.h>
-#include "UserInterface.h"
-#include "foundation/util/JsonParser.h"
+#include "foundation/util/jsonparser.h"
 #include "render/render/renderer.h"
 #include "application/basegamefeatures/entitymanager.h"
 #include "render/render/skybox.h"
@@ -18,15 +17,22 @@
 #include "application/game/entity.h"
 #include "foundation/math/math.h"
 #include "render/server/frameserver.h"
+#include "ui/uiserver.h"
+#include "ui/widgets/widgettoolbar.h"
+#include "ui/widgets/widgetinspector.h"
+#include "ui/widgets/widgetmenubar.h"
+#include "ui/widgets/widgetperlingenerator.h"
+#include "ui/widgets/widgetterrainsettings.h"
+#include "ui/widgets/widgetview.h"
 
 using namespace Display;
-namespace Example
+namespace Application
 {
 
 //------------------------------------------------------------------------------
 /**
 */
-Application::Application() : shutdown(false)
+Application::Application()
 {
 	// empty
 }
@@ -78,7 +84,13 @@ Application::Open()
 		// Accept fragment if it closer to the camera than the former one
 		glDepthFunc(GL_LESS);
 
-		this->UI = std::make_shared<UserInterface>(this);
+		UI::UIServer::Instance()->Setup(this->window);
+		UI::UIServer::Instance()->AddWidget(std::make_unique<UI::Toolbar>(this->window));
+		UI::UIServer::Instance()->AddWidget(std::make_unique<UI::MenuBar>(this->window));
+		UI::UIServer::Instance()->AddWidget(std::make_unique<UI::View>(this->window));
+		UI::UIServer::Instance()->AddWidget(std::make_unique<UI::PerlinSettings>(this->window));
+		UI::UIServer::Instance()->AddWidget(std::make_unique<UI::Inspector>(this->window));
+
 
 		// set ui rendering function
 		this->window->SetUiRender([this]()
@@ -96,7 +108,7 @@ void Application::RenderUI()
 	if (this->window->IsOpen())
 	{
 		//Imgui code goes here!
-		UI->Run();
+		UI::UIServer::Instance()->Update();
 	}
 }
 
@@ -163,7 +175,7 @@ Application::Run()
 
 	//LightServer::Instance()->CreatePointLight(Math::vec4(0, 800, 3), Math::vec4(0.3f, 0.3f, 0.3f), 10.0f);
 
-	while (this->window->IsOpen() && !this->shutdown)
+	while (this->window->IsOpen())
 	{        
 		this->window->Update();
 		Input::InputManager::Instance()->Update();
@@ -184,12 +196,6 @@ Application::Run()
 	}
 	this->window->Close();
 }
-
-void Application::Shutdown(bool shutdown)
-{
-	this->shutdown = shutdown;
-}
-
 
 	//------------------------------------------------------------------------------
 

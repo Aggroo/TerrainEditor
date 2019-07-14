@@ -2,6 +2,7 @@
 #include "entity.h"
 #include "render/server/shaderserver.h"
 #include "render/camera/camera.h"
+#include "imgui.h"
 
 namespace Game
 {
@@ -46,6 +47,19 @@ void Entity::Update()
 
 void Entity::OnUI()
 {
+	const Util::String s = GetName() + " Entity";
+	
+	if (ImGui::CollapsingHeader(s.AsCharPtr()))
+	{
+		const Util::String n = "##Position" + GetName();
+		float* p = transform.GetPosition().ToFloat4();
+		ImGui::LabelText("##PositionLabel", "Position");
+		if (ImGui::DragFloat3(n.AsCharPtr(), p))
+		{
+			transform.SetPosition(Math::vec4(p[0], p[1], p[2], 1.0f));
+		}
+
+	}
 }
 
 void Entity::SetMesh(Util::String filename)

@@ -107,18 +107,18 @@ void ShaderObject::setupVector3f(const GLchar* name, Math::vec3 vec)
 	glUniform3f(shaderMatrix, vec[0], vec[1], vec[2]);
 }
 
-void ShaderObject::setupUniformFloat(const GLchar* name, GLfloat shine)
+void ShaderObject::setupUniformFloat(const GLchar* name, GLfloat val)
 {
 	GLuint shaderMatrix = glGetUniformLocation(this->program, name);
 	this->BindProgram();
-	glUniform1f(shaderMatrix, shine);
+	glUniform1f(shaderMatrix, val);
 }
 
-void ShaderObject::setupUniformInt(const GLchar *name, GLint shine)
+void ShaderObject::setupUniformInt(const GLchar *name, GLint val)
 {
 	GLuint shaderMatrix = glGetUniformLocation(this->program, name);
 	this->BindProgram();
-	glUniform1i(shaderMatrix, shine);
+	glUniform1i(shaderMatrix, val);
 }
 
 }

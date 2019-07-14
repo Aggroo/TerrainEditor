@@ -11,6 +11,11 @@ layout(location = 1) out vec3 normalColor;
 layout(location = 2) out vec3 specularOut;
 layout(location = 3) out vec3 roughnessOut;
 
+layout (std140, binding = 1) uniform TerrainVariables
+{
+	float texUvMultiplier[4];
+};
+
 uniform sampler2D AlbedoMap;
 uniform sampler2D NormalMap;
 uniform sampler2D SpecularMap;
@@ -19,6 +24,7 @@ uniform sampler2D aoMap;
 uniform samplerCube environmentMap;
 uniform samplerCube irradiance;
 uniform sampler2D brdfLUT;
+
 
 #include("lights.frag")
 

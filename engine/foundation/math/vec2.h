@@ -27,6 +27,12 @@ namespace Math
 			vec[1] = y;
 		}
 
+		inline vec2(float v)
+		{
+			vec[0] = v;
+			vec[1] = v;
+		}
+
 		inline vec2(float* arr)
 		{
 			vec[0] = arr[0];

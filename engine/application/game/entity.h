@@ -42,6 +42,7 @@ private:
 	Ptr<Render::TextureResource> environmentMap, irradiance, brdf;
 
 	Util::String entityName;
+
 };
 
 }

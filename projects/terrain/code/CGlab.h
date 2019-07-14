@@ -13,19 +13,16 @@
 #include "render/resources/shaderobject.h"
 #include "foundation/input/inputmanager.h"
 #include <chrono>
-#include "UserInterface.h"
 
-class UserInterface;
-
-namespace Example
+namespace Application
 {
-class CGLab : public Core::App
+class Application : public Core::App
 {
 public:
 	/// constructor
-	CGLab();
+	Application();
 	/// destructor
-	~CGLab();
+	~Application();
 
 	/// open app
 	bool Open();
@@ -35,10 +32,7 @@ public:
 
 	Display::Window* GetWindow(){ return window; }
 
-	void Shutdown(bool shutdown);
 private:
-
-	Ptr<UserInterface> UI;
 
 	GLuint program;
 	GLuint vertexShader;
@@ -52,10 +46,8 @@ private:
 	Ptr<TerrainEditor::Terrain> terrain;
 	Ptr<Render::ShaderObject> shader;
 
-	bool shutdown;
-	
 	//GLuint shaderTransMatrix;
 	
 
 };
-} // namespace Example
+} // namespace Application

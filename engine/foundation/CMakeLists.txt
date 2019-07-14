@@ -17,8 +17,8 @@ SET(files_foundation_math
 	)
 	
 SET(files_foundation_util
-	util/JsonParser.h
-	util/JsonParser.cpp
+	util/jsonparser.h
+	util/jsonparser.cpp
 	util/string.h
 	util/string.cpp
 	util/array.h

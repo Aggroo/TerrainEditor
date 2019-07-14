@@ -6,26 +6,29 @@
 #include "CGlab.h"
 #include <chrono>
 #include "foundation/math/mat4.h"
-#include <assert.h>
-#include "render/resources/HalfEdgeMesh.h"
 #include "application/game/terrain.h"
-#include "UserInterface.h"
-#include "foundation/util/JsonParser.h"
 #include "render/render/renderer.h"
 #include "application/basegamefeatures/entitymanager.h"
 #include "render/render/skybox.h"
-#include "foundation/util/threadpool.h"
 #include "render/server/shaderserver.h"
 #include "render/server/lightserver.h"
+#include "ui/uiserver.h"
+#include "ui/widgets/widgettoolbar.h"
+#include "ui/widgets/widgetinspector.h"
+#include "ui/widgets/widgetmenubar.h"
+#include "ui/widgets/widgetperlingenerator.h"
+#include "ui/widgets/widgetterrainsettings.h"
+#include "ui/widgets/widgetview.h"
+
 
 using namespace Display;
-namespace Example
+namespace Application
 {
 
 //------------------------------------------------------------------------------
 /**
 */
-CGLab::CGLab() : shutdown(false)
+Application::Application()
 {
 	// empty
 }
@@ -33,7 +36,7 @@ CGLab::CGLab() : shutdown(false)
 //------------------------------------------------------------------------------
 /**
 */
-CGLab::~CGLab()
+Application::~Application()
 {
 	// empty
 }
@@ -42,7 +45,7 @@ CGLab::~CGLab()
 /**
 */
 bool
-CGLab::Open()
+Application::Open()
 {
 	App::Open();
 	this->window = new Display::Window;
@@ -80,8 +83,15 @@ CGLab::Open()
 		// Accept fragment if it closer to the camera than the former one
 		glDepthFunc(GL_LESS);
 
-		this->UI = UserInterface::Create();
-		this->UI->Setup(this);
+		UI::UIServer::Instance()->Setup(this->window);
+		UI::UIServer::Instance()->AddWidget(std::make_unique<UI::Toolbar>(this->window));
+		UI::UIServer::Instance()->AddWidget(std::make_unique<UI::MenuBar>(this->window));
+		UI::UIServer::Instance()->AddWidget(std::make_unique<UI::View>(this->window));
+		UI::UIServer::Instance()->AddWidget(std::make_unique<UI::TerrainSettings>(this->window));
+		UI::TerrainSettings* test = (UI::TerrainSettings*) UI::UIServer::Instance()->GetLastWidget();
+		test->SetTerrain(terrain);
+		UI::UIServer::Instance()->AddWidget(std::make_unique<UI::PerlinSettings>(this->window));
+		UI::UIServer::Instance()->AddWidget(std::make_unique<UI::Inspector>(this->window));
 
 		// set ui rendering function
 		this->window->SetUiRender([this]()
@@ -94,50 +104,48 @@ CGLab::Open()
 	return false;
 }
 
-void CGLab::RenderUI()
+void Application::RenderUI()
 {
 	if (this->window->IsOpen())
 	{
 		//Imgui code goes here!
-		UI->Run();
+		UI::UIServer::Instance()->Update();
 	}
 }
 
 /**
 */
 void
-CGLab::Run()
+Application::Run()
 {
 	std::shared_ptr<Render::MeshResources> mesh = std::make_shared<Render::MeshResources>();
 	std::shared_ptr<Render::TextureResource> tex = std::make_shared<Render::TextureResource>();
 	
-	UI->SetTerrain(terrain);
+	//UI::UIServer::Instance()->SetTerrain(terrain);
 
 	Math::mat4 modelMat = Math::mat4::translationMatrix(Math::vec4(0.0f, 0.0f, 0.0f));
 
 
-	lNode.setShaders(terrain->GetShader());
-	
-	lNode.setPos(0.0f, 250.0f, 0.0f);
-	lNode.setIntensity(0.6f, 0.6f, 0.6f);
-	lNode.setColour(0.2f, 0.2f, 0.2f);
-    lNode.apply();
+	//lNode.setShaders(terrain->GetShader());
+	//
+	//lNode.setPos(0.0f, 250.0f, 0.0f);
+	//lNode.setIntensity(0.6f, 0.6f, 0.6f);
+	//lNode.setColour(0.2f, 0.2f, 0.2f);
+    //lNode.apply();
 
 	Ptr<Render::Skybox> skybox = Render::Skybox::Create();
 	skybox->Activate();
 
     std::chrono::high_resolution_clock::time_point before = std::chrono::high_resolution_clock::now();
 
-	LightServer::Instance()->CreatePointLight(Math::vec4(0, 800, 3), Math::vec4(0.3f, 0.3f, 0.3f), 10000.0f);
+	Render::LightServer::Instance()->CreatePointLight(Math::vec4(0, 800, 3), Math::vec4(0.3f, 0.3f, 0.3f), 10000.0f);
 
-	while (this->window->IsOpen() && !this->shutdown)
+	while (this->window->IsOpen())
 	{        
 		this->window->Update();
 		Input::InputManager::Instance()->Update();
 		
 		//float timeStamp = float(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - before).count() / 1000.0f);
-
-		Input::InputManager::Instance()->CameraMovement();
 
 		//gN.setTransMat(modelMat);
 		//Render the scene
@@ -150,11 +158,6 @@ CGLab::Run()
 		this->window->SwapBuffers();
 	}
 	this->window->Close();
-}
-
-	void CGLab::Shutdown(bool shutdown)
-{
-	this->shutdown = shutdown;
 }
 
 

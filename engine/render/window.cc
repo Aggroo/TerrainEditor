@@ -246,7 +246,10 @@ Window::Open()
 	ImGuiIO& io = ImGui::GetIO();
 
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-	io.ConfigResizeWindowsFromEdges = true;
+	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+	io.ConfigWindowsResizeFromEdges = true;
+
+	io.Fonts->AddFontFromFileTTF("resources/fonts/Roboto-Regular.ttf", 15.0f);
 
 	ImGui_ImplGlfw_InitForOpenGL(this->window, false);
 	ImGui_ImplOpenGL3_Init();
@@ -269,6 +272,9 @@ Window::Close()
 	Window::WindowCount--;
 	if (Window::WindowCount == 0)
 	{
+		ImGui_ImplOpenGL3_Shutdown();
+		ImGui_ImplGlfw_Shutdown();
+		ImGui::DestroyContext();
 		glfwTerminate();
 	}
 }
@@ -311,9 +317,12 @@ Window::SwapBuffers()
 
 			if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 			{
+				GLFWwindow* backup_current_context = glfwGetCurrentContext();
 				ImGui::UpdatePlatformWindows();
 				ImGui::RenderPlatformWindowsDefault();
+				glfwMakeContextCurrent(backup_current_context);
 			}
+			ImGui::EndFrame();
 		}
 
 		glfwSwapBuffers(this->window);

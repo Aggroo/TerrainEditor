@@ -115,6 +115,11 @@ void InputManager::Update()
 		else
 			movement[0] -= movSpeed;
 	}
+
+	if (GetButtonKeyboard(KeyCode::Esc))
+		window->Close();
+
+	CameraMovement();
 }
 
 Math::vec4 InputManager::GetMovement()

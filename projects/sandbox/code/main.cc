@@ -9,7 +9,7 @@
 int
 main(int argc, const char** argv)
 {
-	Example::Application app;
+	Application::Application app;
 
 	glfwWindowHint(GLFW_SAMPLES, 4);
 	if (app.Open())

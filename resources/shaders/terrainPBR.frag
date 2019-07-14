@@ -11,6 +11,14 @@ layout(location = 1) out vec3 normalColor;
 layout(location = 2) out vec3 specularOut;
 layout(location = 3) out vec3 roughnessOut;
 
+layout (std140, binding = 1) uniform TerrainVariables
+{
+	float texUv0Multiplier;
+	float texUv1Multiplier;
+	float texUv2Multiplier;
+	float padding;
+};
+
 uniform sampler2D textures[3];
 uniform sampler2D normals[3];
 uniform sampler2D specular[3];
@@ -19,10 +27,6 @@ uniform sampler2D splat;
 uniform samplerCube environmentMap;
 uniform samplerCube irradianceMap;
 uniform sampler2D brdfLUT;
-
-uniform float tex0UvMultiplier;
-uniform float tex1UvMultiplier;
-uniform float tex2UvMultiplier;
 
 uniform float u_matShininess; // = 64;
 
@@ -102,21 +106,21 @@ void main()
 	vec3 norm = o_normal[2].xyz;
 	vec3 weights =  norm*norm;
 	
-	vec4 tex0 = GetTexture(0, tex0UvMultiplier * fragPos, weights);			
-	vec4 tex1 = GetTexture(1, tex1UvMultiplier * fragPos, weights);					
-	vec4 tex3 = GetTexture(2, tex2UvMultiplier * fragPos, weights);		
+	vec4 tex0 = GetTexture(0, texUv0Multiplier * fragPos, weights);			
+	vec4 tex1 = GetTexture(1, texUv1Multiplier * fragPos, weights);					
+	vec4 tex3 = GetTexture(2, texUv2Multiplier * fragPos, weights);		
 	
-	vec3 normal0 = GetNormal(0, tex0UvMultiplier * fragPos);
-	vec3 normal1 = GetNormal(1, tex1UvMultiplier * fragPos);
-	vec3 normal2 = GetNormal(2, tex2UvMultiplier * fragPos);
+	vec3 normal0 = GetNormal(0, texUv0Multiplier * fragPos);
+	vec3 normal1 = GetNormal(1, texUv1Multiplier * fragPos);
+	vec3 normal2 = GetNormal(2, texUv2Multiplier * fragPos);
 	
-	vec3 specular0 = GetSpecular(0, tex0UvMultiplier * fragPos, weights);
-	vec3 specular1 = GetSpecular(1, tex1UvMultiplier * fragPos, weights);
-	vec3 specular2 = GetSpecular(2, tex2UvMultiplier * fragPos, weights);
+	vec3 specular0 = GetSpecular(0, texUv0Multiplier * fragPos, weights);
+	vec3 specular1 = GetSpecular(1, texUv1Multiplier * fragPos, weights);
+	vec3 specular2 = GetSpecular(2, texUv2Multiplier * fragPos, weights);
 	
-	vec3 roughness0 = GetRoughness(0, tex0UvMultiplier * fragPos, weights);
-	vec3 roughness1 = GetRoughness(1, tex1UvMultiplier * fragPos, weights);
-	vec3 roughness2 = GetRoughness(2, tex2UvMultiplier * fragPos, weights);
+	vec3 roughness0 = GetRoughness(0, texUv0Multiplier * fragPos, weights);
+	vec3 roughness1 = GetRoughness(1, texUv1Multiplier * fragPos, weights);
+	vec3 roughness2 = GetRoughness(2, texUv2Multiplier * fragPos, weights);
 
 	vec3 normalSum = splatTex.r * normal2 + splatTex.g * normal1 + splatTex.b * normal0;
 	float specularSum = (splatTex.r * specular2 + splatTex.g * specular1 + splatTex.b * specular0).r;
