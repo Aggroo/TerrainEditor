@@ -461,9 +461,9 @@ public:
 
 		// Create a 4x4 view matrix from the right, up, forward and eye position vectors
 		mat4 viewMatrix(xaxis.x(), xaxis.y(), xaxis.z(), -vec4::Dot(xaxis, eye),
-							yaxis.x(), yaxis.y(), yaxis.z(), -vec4::Dot(yaxis, eye),
-							zaxis.x(), zaxis.y(), zaxis.z(), -vec4::Dot(zaxis, eye),
-							0, 0, 0, 1);
+						yaxis.x(), yaxis.y(), yaxis.z(), -vec4::Dot(yaxis, eye),
+						zaxis.x(), zaxis.y(), zaxis.z(), -vec4::Dot(zaxis, eye),
+						0, 0, 0, 1);
 
 		return viewMatrix;
 	}

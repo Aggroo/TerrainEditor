@@ -1,6 +1,8 @@
 #include "config.h"
 #include "widgetview.h"
 #include "render/render/renderer.h"
+#include "ImGuizmo.h"
+#include "imgui_internal.h"
 
 namespace UI
 {
@@ -20,6 +22,11 @@ void View::Update()
 	width -= (width % 2 != 0) ? 1 : 0;
 	height -= (height % 2 != 0) ? 1 : 0;
 	ImGui::Image((ImTextureID)Render::Renderer::Instance()->GetFinalColorBuffer(), ImVec2(width, height));
+
+	ImGuizmo::SetDrawlist();
+
+	auto win = ImGui::GetCurrentWindowRead();
+	ImGuizmo::SetRect(win->Pos.x, win->Pos.y, win->Size.x, win->Size.y);
 }
 
 }

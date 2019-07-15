@@ -24,8 +24,12 @@ void UIServer::Setup(Display::Window* window)
 
 void UIServer::Update()
 {
-	ImGuizmo::SetDrawlist();
+
+
 	ImGuiViewport* viewport = ImGui::GetMainViewport();
+
+	//ImGuizmo::SetRect(viewport->Pos.x, viewport->Pos.y + 35, viewport->Size.x, viewport->Size.y - 35);
+
 	ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + 35));
 	ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, viewport->Size.y - 35));
 	ImGui::SetNextWindowViewport(viewport->ID);

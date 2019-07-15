@@ -6,6 +6,7 @@
 #include "ImSequencer.h"
 #include "ImCurveEdit.h"
 #include "imgui_internal.h"
+#include "render/render/renderer.h"
 
 
 namespace Game
@@ -55,7 +56,6 @@ void Entity::OnUI()
 	
 	if (ImGui::CollapsingHeader(s.AsCharPtr()))
 	{
-
 		if (ImGui::IsKeyPressed(90))
 			gizmo.mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
 		if (ImGui::IsKeyPressed(69))
@@ -119,10 +119,22 @@ void Entity::OnUI()
 			break;
 		}
 
-		ImVec2 size = ImGui::GetMainViewport()->Size;
-		ImVec2 cursorPos = ImGui::GetCursorScreenPos();          // "cursor" is where imgui will draw the image
-		ImGuizmo::SetRect(cursorPos.x, cursorPos.y, size.x, size.y);
-		ImGuizmo::Manipulate(Math::mat4::Transpose(Graphics::MainCamera::Instance()->GetView()).getPointer(), Math::mat4::Transpose(Graphics::MainCamera::Instance()->GetProjection()).getPointer(), gizmo.mCurrentGizmoOperation, gizmo.mCurrentGizmoMode, mat.getPointer(), NULL, gizmo.useSnap ? &gizmo.snap[0] : NULL);
+		Math::mat4 view = Graphics::MainCamera::Instance()->GetView();
+
+		///Invert the entire Y-Axis of the view matrix to work with ImGuizmo
+		view[4] = -view[4];
+		view[5] = -view[5];
+		view[6] = -view[6];
+		view[7] = -view[7];
+
+		ImGuizmo::Manipulate(Math::mat4::Transpose(view).getPointer(),
+			Math::mat4::Transpose(Graphics::MainCamera::Instance()->GetProjection()).getPointer(), 
+			gizmo.mCurrentGizmoOperation,
+			gizmo.mCurrentGizmoMode, 
+			mat.getPointer(), 
+			NULL, 
+			gizmo.useSnap ? &gizmo.snap[0] : NULL);
+
 		this->transform = Math::mat4::Transpose(mat);
 
 	}
