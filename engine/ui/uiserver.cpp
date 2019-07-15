@@ -6,6 +6,7 @@
 #include "ui/widgets/widgetperlingenerator.h"
 #include "ui/widgets/widgetterrainsettings.h"
 #include "ui/widgets/widgetview.h"
+#include "ImGuizmo.h"
 
 namespace UI
 {
@@ -23,6 +24,7 @@ void UIServer::Setup(Display::Window* window)
 
 void UIServer::Update()
 {
+	ImGuizmo::SetDrawlist();
 	ImGuiViewport* viewport = ImGui::GetMainViewport();
 	ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + 35));
 	ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, viewport->Size.y - 35));
@@ -31,9 +33,8 @@ void UIServer::Update()
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar;
 	window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove;
 	window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoDocking;
-
 	ImGui::Begin("Base", NULL, window_flags);
-
+	
 	ImGuiID dockSpace_id = ImGui::GetID("MyDockSpace");
 	ImGui::DockSpace(dockSpace_id);
 	ImGui::SetNextWindowDockID(dockSpace_id, ImGuiCond_Once);

@@ -74,8 +74,6 @@ private:
 	float heightScale;
 	float highestPoint;
 
-	float p[3];
-
 	HeightmapValues* heightMap;
 
 ///Rendering

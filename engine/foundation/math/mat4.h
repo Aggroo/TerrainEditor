@@ -488,19 +488,23 @@ public:
 	inline static mat4 Transpose(mat4 m)
 	{
 		mat4 mat;
-		
+
+		mat[0] = m[0];
 		mat[1] = m[4];
 		mat[2] = m[8];
 		mat[3] = m[12]; 
 		mat[4] = m[1];
+		mat[5] = m[5];
 		mat[6] = m[9];
 		mat[7] = m[13];
 		mat[8] = m[2];
 		mat[9] = m[6];
+		mat[10] = m[10];
 		mat[11] = m[14];
 		mat[12] = m[3];
 		mat[13] = m[7];
 		mat[14] = m[11];
+		mat[15] = m[15];
 		
 		return mat;
 		

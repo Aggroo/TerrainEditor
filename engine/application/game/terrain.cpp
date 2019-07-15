@@ -20,9 +20,6 @@ Terrain::Terrain() : terrainWidth(0), terrainHeight(0), heightMap(nullptr)
 	mesh = Render::MeshResources::Create();
 	shader = Render::ShaderObject::Create();
 	textures = Render::TextureNode::Create();
-	p[0] = transform[3]; 
-	p[1] = transform[7];
-	p[2] = transform[11];
 	glGenBuffers(1, this->ubo);
 }
 

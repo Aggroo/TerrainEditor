@@ -47,12 +47,36 @@ ADD_LIBRARY(imgui STATIC
 			imgui/examples/imgui_impl_glfw.cpp
 			imgui/imconfig.h
 			imgui/imgui_widgets.cpp
+			ImGuizmo/ImCurveEdit.cpp
+			ImGuizmo/ImCurveEdit.h
+			ImGuizmo/ImGradient.cpp
+			ImGuizmo/ImGradient.h
+			ImGuizmo/ImGuizmo.cpp
+			ImGuizmo/ImGuizmo.h
+			ImGuizmo/ImSequencer.cpp
+			ImGuizmo/ImSequencer.h
 			)
 
 TARGET_LINK_LIBRARIES(imgui PUBLIC exts)
 TARGET_INCLUDE_DIRECTORIES(imgui PUBLIC imgui imgui/examples/)
 SET_TARGET_PROPERTIES(imgui PROPERTIES FOLDER "exts/imgui")
 TARGET_LINK_LIBRARIES(exts INTERFACE imgui)
+
+ADD_LIBRARY(imguizmo STATIC 
+			ImGuizmo/ImCurveEdit.cpp
+			ImGuizmo/ImCurveEdit.h
+			ImGuizmo/ImGradient.cpp
+			ImGuizmo/ImGradient.h
+			ImGuizmo/ImGuizmo.cpp
+			ImGuizmo/ImGuizmo.h
+			ImGuizmo/ImSequencer.cpp
+			ImGuizmo/ImSequencer.h
+			)
+
+TARGET_LINK_LIBRARIES(imguizmo PUBLIC exts)
+TARGET_INCLUDE_DIRECTORIES(imguizmo PUBLIC imguizmo)
+SET_TARGET_PROPERTIES(imguizmo PROPERTIES FOLDER "exts/ImGuizmo")
+TARGET_LINK_LIBRARIES(exts INTERFACE imguizmo)
 
 IF(CMAKE_COMPILER_IS_GNUCXX)
 

@@ -3,6 +3,10 @@
 #include "render/server/shaderserver.h"
 #include "render/camera/camera.h"
 #include "imgui.h"
+#include "ImSequencer.h"
+#include "ImCurveEdit.h"
+#include "imgui_internal.h"
+
 
 namespace Game
 {
@@ -51,13 +55,75 @@ void Entity::OnUI()
 	
 	if (ImGui::CollapsingHeader(s.AsCharPtr()))
 	{
-		const Util::String n = "##Position" + GetName();
-		float* p = transform.GetPosition().ToFloat4();
-		ImGui::LabelText("##PositionLabel", "Position");
-		if (ImGui::DragFloat3(n.AsCharPtr(), p))
+
+		if (ImGui::IsKeyPressed(90))
+			gizmo.mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
+		if (ImGui::IsKeyPressed(69))
+			gizmo.mCurrentGizmoOperation = ImGuizmo::ROTATE;
+		if (ImGui::IsKeyPressed(82)) // r Key
+			gizmo.mCurrentGizmoOperation = ImGuizmo::SCALE;
+
+		const Util::String translateName = "Translate##" + GetName();
+		const Util::String rotateName = "Rotate##" + GetName();
+		const Util::String scaleName = "Scale##" + GetName();
+		if (ImGui::RadioButton(translateName.AsCharPtr(), gizmo.mCurrentGizmoOperation == ImGuizmo::TRANSLATE))
+			gizmo.mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
+		ImGui::SameLine();
+		if (ImGui::RadioButton(rotateName.AsCharPtr(), gizmo.mCurrentGizmoOperation == ImGuizmo::ROTATE))
+			gizmo.mCurrentGizmoOperation = ImGuizmo::ROTATE;
+		ImGui::SameLine();
+		if (ImGui::RadioButton(scaleName.AsCharPtr(), gizmo.mCurrentGizmoOperation == ImGuizmo::SCALE))
+			gizmo.mCurrentGizmoOperation = ImGuizmo::SCALE;
+
+		const Util::String tr = "Tr##" + GetName();
+		const Util::String rt = "Rt##" + GetName();
+		const Util::String sc = "Sc##" + GetName();
+		float matrixTranslation[3], matrixRotation[3], matrixScale[3];
+		Math::mat4 mat = Math::mat4::Transpose(this->transform);
+		ImGuizmo::DecomposeMatrixToComponents(mat.getPointer(), matrixTranslation, matrixRotation, matrixScale);
+		ImGui::InputFloat3(tr.AsCharPtr(), matrixTranslation, 3);
+		ImGui::InputFloat3(rt.AsCharPtr(), matrixRotation, 3);
+		ImGui::InputFloat3(sc.AsCharPtr(), matrixScale, 3);
+		ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, mat.getPointer());
+
+		if (gizmo.mCurrentGizmoOperation != ImGuizmo::SCALE)
 		{
-			transform.SetPosition(Math::vec4(p[0], p[1], p[2], 1.0f));
+			const Util::String localName = "Local##" + GetName();
+			const Util::String worldName = "World##" + GetName();
+			if (ImGui::RadioButton(localName.AsCharPtr(), gizmo.mCurrentGizmoMode == ImGuizmo::LOCAL))
+				gizmo.mCurrentGizmoMode = ImGuizmo::LOCAL;
+			ImGui::SameLine();
+			if (ImGui::RadioButton(worldName.AsCharPtr(), gizmo.mCurrentGizmoMode == ImGuizmo::WORLD))
+				gizmo.mCurrentGizmoMode = ImGuizmo::WORLD;
 		}
+		if (ImGui::IsKeyPressed(83))
+			gizmo.useSnap = !gizmo.useSnap;
+
+		const Util::String snapCheckName = "##Snap" + GetName();
+		ImGui::Checkbox(snapCheckName.AsCharPtr(), &gizmo.useSnap);
+		ImGui::SameLine();
+
+		const Util::String snapName = "Snap##" + GetName();
+		const Util::String snapAngleName = "Angle Snap##" + GetName();
+		const Util::String snapScaleName = "Scale Snap##" + GetName();
+		switch (gizmo.mCurrentGizmoOperation)
+		{
+		case ImGuizmo::TRANSLATE:
+			ImGui::InputFloat3(snapName.AsCharPtr(), &gizmo.snap[0]);
+			break;
+		case ImGuizmo::ROTATE:
+			ImGui::InputFloat(snapAngleName.AsCharPtr(), &gizmo.snap[0]);
+			break;
+		case ImGuizmo::SCALE:
+			ImGui::InputFloat(snapScaleName.AsCharPtr(), &gizmo.snap[0]);
+			break;
+		}
+
+		ImVec2 size = ImGui::GetMainViewport()->Size;
+		ImVec2 cursorPos = ImGui::GetCursorScreenPos();          // "cursor" is where imgui will draw the image
+		ImGuizmo::SetRect(cursorPos.x, cursorPos.y, size.x, size.y);
+		ImGuizmo::Manipulate(Math::mat4::Transpose(Graphics::MainCamera::Instance()->GetView()).getPointer(), Math::mat4::Transpose(Graphics::MainCamera::Instance()->GetProjection()).getPointer(), gizmo.mCurrentGizmoOperation, gizmo.mCurrentGizmoMode, mat.getPointer(), NULL, gizmo.useSnap ? &gizmo.snap[0] : NULL);
+		this->transform = Math::mat4::Transpose(mat);
 
 	}
 }

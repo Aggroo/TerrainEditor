@@ -12,6 +12,7 @@ View::View(Display::Window* app) : Widget(app)
 
 void View::Update()
 {
+
 	int width = (int)(ImGui::GetWindowContentRegionMax().x - ImGui::GetWindowContentRegionMin().x);
 	int height = (int)(ImGui::GetWindowContentRegionMax().y - ImGui::GetWindowContentRegionMin().y);
 

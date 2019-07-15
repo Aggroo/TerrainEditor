@@ -3,12 +3,22 @@
 #include "render/resources/texturenode.h"
 #include "render/resources/shaderobject.h"
 #include "render/resources/model.h"
+#include "ImGuizmo.h"
 
 namespace Game
 {
+
 class Entity : public Game::EntityBase
 {
 	__DeclareClass(Entity);
+public:
+	struct transformGizmo
+	{
+		ImGuizmo::OPERATION mCurrentGizmoOperation = ImGuizmo::OPERATION::ROTATE;
+		ImGuizmo::MODE mCurrentGizmoMode = ImGuizmo::MODE::WORLD;
+		bool useSnap = false;
+		float snap[3] = { 1.f, 1.f, 1.f };
+	} gizmo;
 public:
 	Entity();
 	~Entity();
