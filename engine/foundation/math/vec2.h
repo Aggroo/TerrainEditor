@@ -99,7 +99,15 @@ namespace Math
 		{
 			return vec[1];
 		}
-		
+
+		inline const float& x() const
+		{
+			return vec[0];
+		}
+		inline const float& y() const
+		{
+			return vec[1];
+		}
 
 		inline vec2 vecMult(float constant)
 		{

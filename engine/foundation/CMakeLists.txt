@@ -30,7 +30,7 @@ SET(files_foundation_util
 	util/list.h
 	util/curve.hpp
 	util/threadpool.h
-	util/variance.h
+	util/variant.h
 	)
 	
 IF(WIN32)

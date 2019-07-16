@@ -7,6 +7,7 @@
 #include "ImCurveEdit.h"
 #include "imgui_internal.h"
 #include "render/render/renderer.h"
+#include "foundation/input/inputmanager.h"
 
 
 namespace Game
@@ -56,11 +57,11 @@ void Entity::OnUI()
 	
 	if (ImGui::CollapsingHeader(s.AsCharPtr()))
 	{
-		if (ImGui::IsKeyPressed(90))
+		if (Input::InputManager::Instance()->GetButtonKeyboard(Input::KeyCode::Q))
 			gizmo.mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
-		if (ImGui::IsKeyPressed(69))
+		if (Input::InputManager::Instance()->GetButtonKeyboard(Input::KeyCode::E))
 			gizmo.mCurrentGizmoOperation = ImGuizmo::ROTATE;
-		if (ImGui::IsKeyPressed(82)) // r Key
+		if (Input::InputManager::Instance()->GetButtonKeyboard(Input::KeyCode::R))
 			gizmo.mCurrentGizmoOperation = ImGuizmo::SCALE;
 
 		const Util::String translateName = "Translate##" + GetName();

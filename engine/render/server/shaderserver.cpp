@@ -3,13 +3,20 @@
 #include "render/resources/shaderobject.h"
 #include <sstream>
 #include <fstream>
+#include <filesystem>
 #include "render/render/shadervariables.h"
 
 namespace Render
 {
-ShaderServer::ShaderServer()
+namespace fs = std::experimental::filesystem;
+ShaderServer::ShaderServer() : stopListening(false)
 {
-	
+	this->fileChangeListener = std::thread(&ShaderServer::ListenToFileChanges, this);
+}
+
+ShaderServer::~ShaderServer()
+{
+	CleanUp();
 }
 
 Ptr<ShaderObject> ShaderServer::GetShader(const char* file)
@@ -26,9 +33,9 @@ Ptr<ShaderObject> ShaderServer::GetShader(const char* file)
 	}
 }
 
-GLuint ShaderServer::LoadVertexShader(Util::String file)
+GLuint ShaderServer::LoadVertexShader(Util::String file, bool reload)
 {
-	if (!this->HasShaderProgramLoaded(file))
+	if (!this->HasShaderProgramLoaded(file) || reload)
 	{
 		if (!file.CheckFileExtension("vert"))
 		{
@@ -49,7 +56,7 @@ GLuint ShaderServer::LoadVertexShader(Util::String file)
 		const char* vs = fileContent.AsCharPtr();
 
 		// setup vertex shader
-		GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+		const GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
 		GLint length = (GLint)fileContent.Length();
 		glShaderSource(vertexShader, 1, &vs, &length);
 		glCompileShader(vertexShader);
@@ -65,19 +72,45 @@ GLuint ShaderServer::LoadVertexShader(Util::String file)
 			delete[] buf;
 		}
 
+		ShaderInfo shaderInfo;
+		shaderInfo.program = vertexShader;
+		shaderInfo.type = GL_VERTEX_SHADER;
+		shaderInfo.filename = file;
+		shaderInfo.lastWriteTime = fs::last_write_time(fs::path(file.AsCharPtr())).time_since_epoch().count();
+
 		//Insert to our shader list
-		this->shaders.Add(file, vertexShader);
+		if (reload)
+		{
+			auto oldProgram = this->shaders[file].program;
+			glDeleteProgram(this->shaders[file].program);
+			for(auto& shaderObj : shaderObjects.ValuesAsArray())
+			{
+				if (shaderObj->ContainsShader(oldProgram))
+				{
+					shaderObj->ReloadShaders(oldProgram, shaderInfo.program);
+				}
+				
+			}
+			this->shaders[file] = shaderInfo;
+		}
+		else
+			this->shaders.Add(file, shaderInfo);
 
 		return vertexShader;
 	}
-
-	return this->shaders[file];
+	
+	return this->shaders[file].program;
 }
 
-GLuint ShaderServer::LoadFragmentShader(Util::String file)
+GLuint ShaderServer::LoadFragmentShader(Util::String file, bool reload)
 {
-	if (!this->HasShaderProgramLoaded(file))
+	if (!this->HasShaderProgramLoaded(file) || reload)
 	{
+		if (reload)
+		{
+			glDeleteProgram(this->shaders[file].program);
+		}
+
 		if (!file.CheckFileExtension("frag"))
 		{
 			printf("[SHADER LOAD ERROR]: File is not a .frag file");
@@ -97,7 +130,7 @@ GLuint ShaderServer::LoadFragmentShader(Util::String file)
 		const char* fs = fileContent.AsCharPtr();
 
 		// setup vertex shader
-		GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+		const GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 		GLint length = (GLint)fileContent.Length();
 		glShaderSource(fragmentShader, 1, &fs, &length);
 		glCompileShader(fragmentShader);
@@ -113,20 +146,41 @@ GLuint ShaderServer::LoadFragmentShader(Util::String file)
 			delete[] buf;
 		}
 
+		ShaderInfo shaderInfo;
+		shaderInfo.program = fragmentShader;
+		shaderInfo.type = GL_FRAGMENT_SHADER;
+		shaderInfo.filename = file;
+		shaderInfo.lastWriteTime = fs::last_write_time(fs::path(file.AsCharPtr())).time_since_epoch().count();
+
 		//Insert to our shader list
-		this->shaders.Add(file, fragmentShader);
+		if (reload)
+		{
+			auto oldProgram = this->shaders[file].program;
+			glDeleteProgram(this->shaders[file].program);
+			for (auto& shaderObj : shaderObjects.ValuesAsArray())
+			{
+				shaderObj->ReloadShaders(oldProgram, shaderInfo.program);
+			}
+			this->shaders[file] = shaderInfo;
+		}
+		else
+			this->shaders.Add(file, shaderInfo);
 
 		return fragmentShader;
 	}
 
-	return this->shaders[file];
+	return this->shaders[file].program;
 
 }
 
-GLuint ShaderServer::LoadComputeShader(Util::String file)
+GLuint ShaderServer::LoadComputeShader(Util::String file, bool reload)
 {
-	if (!this->HasShaderProgramLoaded(file))
+	if (!this->HasShaderProgramLoaded(file) || reload)
 	{
+		if (reload)
+		{
+			glDeleteProgram(this->shaders[file].program);
+		}
 		if (!file.CheckFileExtension("comp"))
 		{
 			printf("[SHADER LOAD ERROR]: File is not a .comp file");
@@ -145,7 +199,7 @@ GLuint ShaderServer::LoadComputeShader(Util::String file)
 		const char* cs = fileContent.AsCharPtr();
 
 		// setup vertex shader
-		GLuint computeShader = glCreateShader(GL_COMPUTE_SHADER);
+		const GLuint computeShader = glCreateShader(GL_COMPUTE_SHADER);
 		GLint length = (GLint)fileContent.Length();
 		glShaderSource(computeShader, 1, &cs, &length);
 		glCompileShader(computeShader);
@@ -161,13 +215,34 @@ GLuint ShaderServer::LoadComputeShader(Util::String file)
 			delete[] buf;
 		}
 
+		ShaderInfo shaderInfo;
+		shaderInfo.program = computeShader;
+		shaderInfo.type = GL_COMPUTE_SHADER;
+		shaderInfo.filename = file;
+		shaderInfo.lastWriteTime = fs::last_write_time(fs::path(file.AsCharPtr())).time_since_epoch().count();
+
 		//Insert to our shader list
-		this->shaders.Add(file, computeShader);
+		if (reload)
+		{
+			const auto oldProgram = this->shaders[file].program;
+			glDeleteProgram(this->shaders[file].program);
+			for (auto& shaderObj : shaderObjects.ValuesAsArray())
+			{
+				if (shaderObj->ContainsShader(oldProgram))
+				{
+					shaderObj->ReloadShaders(oldProgram, shaderInfo.program);
+				}
+
+			}
+			this->shaders[file] = shaderInfo;
+		}
+		else
+			this->shaders.Add(file, shaderInfo);
 
 		return computeShader;
 	}
 
-	return this->shaders[file];
+	return this->shaders[file].program;
 }
 
 void ShaderServer::AddShaderObject(const char* name, Ptr<ShaderObject> shaderObj)
@@ -175,17 +250,67 @@ void ShaderServer::AddShaderObject(const char* name, Ptr<ShaderObject> shaderObj
 	this->shaderObjects.Add(name, shaderObj);
 }
 
-bool ShaderServer::HasShaderProgramLoaded(const Util::String& name)
+void ShaderServer::ListenToFileChanges()
+{
+	using namespace std::chrono_literals;
+
+	while (!this->stopListening)
+	{
+		Util::Array<Util::String> keys = this->shaders.KeysAsArray();
+		for (auto& filename : keys)
+		{
+			auto time = fs::last_write_time(fs::path(filename.AsCharPtr())).time_since_epoch().count();
+			auto lastTime = this->shaders[filename].lastWriteTime;
+
+			if(lastTime != 0 && lastTime < time)
+			{
+				this->dirtyPrograms.Append(&this->shaders[filename]);
+			}
+		}
+		std::this_thread::sleep_for(1s);
+	}
+}
+
+void ShaderServer::ReloadShader(ShaderInfo* shader)
+{
+	switch (shader->type)
+	{
+	case GL_VERTEX_SHADER: LoadVertexShader(shader->filename, true); break;
+	case GL_FRAGMENT_SHADER: LoadFragmentShader(shader->filename, true); break;
+	case GL_COMPUTE_SHADER: LoadComputeShader(shader->filename, true); break;
+	default: printf("[SHADER RELOAD ERROR] Invalid shader type\n"); break;
+	}
+}
+
+void ShaderServer::Update()
+{
+	std::lock_guard<std::mutex> lock_guard(this->fileChangesMutex);
+	for (auto program : this->dirtyPrograms)
+	{
+		ReloadShader(program);
+	}
+
+	this->dirtyPrograms.Clear();
+	
+}
+
+void ShaderServer::CleanUp()
+{
+	this->stopListening = true;
+	this->fileChangeListener.join();
+}
+
+bool ShaderServer::HasShaderProgramLoaded(const Util::String& name) const
 {
 	return this->shaders.Contains(name);
 }
 
-bool ShaderServer::HasShaderNamed(const Util::String& name)
+bool ShaderServer::HasShaderNamed(const Util::String& name) const
 {
 	return this->shaderObjects.Contains(name);
 }
 
-Util::String ShaderServer::ReadFromFile(const Util::String& filename)
+Util::String ShaderServer::ReadFromFile(const Util::String& filename) const
 {
 	Util::String fileContent;
 	std::ifstream fileStream(filename.AsCharPtr(), std::ios::in);

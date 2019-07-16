@@ -29,6 +29,7 @@
 #include "foundation/math/vec4.h"
 #include "foundation/math/mat4.h"
 #include "foundation/memory/windows/winmemory.h"
+#include "foundation/math/vec2.h"
 
 
 //------------------------------------------------------------------------------
@@ -157,20 +158,36 @@ public:
     void SetCharPtr(const char* s);
     /// set as char ptr, with explicit length
     void Set(const char* ptr, size_t length);
+	/// set as byte value
+	void SetByte(byte val);
+	/// set as ubyte value
+	void SetUByte(ubyte val);
+	/// set as short value
+	void SetShort(short val);
+	/// set as ushort value
+	void SetUShort(ushort val);
     /// set as int value
     void SetInt(int val);
-    /// set as long value
-    void SetLong(long val);
+	/// set as uint value
+	void SetUInt(uint val);
+	/// set as long value
+	void SetLong(long val);
+	/// set as long value
+	void SetSizeT(size_t val);
+	/// set as long long value
+	void SetLongLong(long long val);
     /// set as float value
     void SetFloat(float val);
     /// set as bool value
-    void SetBool(bool val);	
-    
+    void SetBool(bool val);
+    void SetVec2(const Math::vec2& v);
+
     /// set as vec4 value
     void SetVec4(const Math::vec4& v);
     /// set as mat4 value
     void SetMat4(const Math::mat4& v);
-    
+    void SetQuaternion(const Math::quaternions& v);
+
     /// generic setter
     //template<typename T> void Set(const T& t);
 
@@ -193,8 +210,12 @@ public:
     const char* AsCharPtr() const;
     /// return contents as integer
     int AsInt() const;
+	/// return contents as long long
+	long long AsLongLong() const;
     /// return contents as float
     float AsFloat() const;
+	/// set as double value
+	void SetDouble(double val);
     /// return contents as bool
     bool AsBool() const;
     
@@ -214,30 +235,52 @@ public:
     bool IsValidInt() const;
     /// return true if the content is a valid float
     bool IsValidFloat() const;
+    bool IsValidVec2() const;
     /// return true if the content is a valid bool
     bool IsValidBool() const;
     /// return true if the content is a valid vec4
     bool IsValidVec4() const;
     /// return true if content is a valid mat4
     bool IsValidMat4() const;
+    Math::vec2 AsVec2() const;
 
     /// generic valid checker
     template<typename T> bool IsValid() const;
 
+	/// construct a string from a byte
+	static String FromByte(byte i);
+	/// construct a string from a ubyte
+	static String FromUByte(ubyte i);
+	/// construct a string from a short
+	static String FromShort(short i);
+	/// construct a string from a ushort
+	static String FromUShort(ushort i);
     /// construct a string from an int
     static String FromInt(int i);
-    /// construct a string from a long
-    static String FromLong(long i);
+	/// construct a string from a uint
+	static String FromUInt(uint i);
+	/// construct a string from a long
+	static String FromLong(long i);
+	/// construct a string from a size_t
+	static String FromSize(size_t i);
+	/// construct a string from a long long
+	static String FromLongLong(long long i);
     /// construct a string from a float
     static String FromFloat(float f);
+	/// construct a string from a double
+	static String FromDouble(double f);
     /// construct a string from a bool
     static String FromBool(bool b);
-    
+	/// construct a string from vec2
+    static String FromVec2(const Math::vec2& v);
+
     /// construct a string from vec4
     static String FromVec4(const Math::vec4& v);
     /// construct a string from mat4
     static String FromMat4(const Math::mat4& m);
-    
+	///construct a string from a quaternion
+    static String FromQuaternion(const Math::quaternions& q);
+
     /// create from blob
     //static String FromBlob(const Util::Blob & b);
 	
@@ -442,9 +485,54 @@ String::Reserve(size_t newSize)
 /**
 */
 inline void
+String::SetByte(byte val)
+{
+	this->Format("%d", val);
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+inline void
+String::SetUByte(ubyte val)
+{
+	this->Format("%u", val);
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+inline void
+String::SetShort(short val)
+{
+	this->Format("%d", val);
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+inline void
+String::SetUShort(ushort val)
+{
+	this->Format("%u", val);
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+inline void
 String::SetInt(int val)
 {
     this->Format("%d", val);
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+inline void
+String::SetUInt(uint val)
+{
+	this->Format("%u", val);
 }
 
 //------------------------------------------------------------------------------
@@ -455,6 +543,24 @@ String::SetLong(long val)
 {
 	this->Format("%ld", val);
 }
+
+//------------------------------------------------------------------------------
+/**
+*/
+inline void
+String::SetSizeT(size_t val)
+{
+	this->Format("%zu", val);
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+inline void
+String::SetLongLong(long long val)
+{
+	this->Format("%lld", val);
+}
 //------------------------------------------------------------------------------
 /**
 */
@@ -462,6 +568,15 @@ inline void
 String::SetFloat(float val)
 {
     this->Format("%.6f", val);
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+inline void
+String::SetDouble(double val)
+{
+	this->Format("%.6f", val);
 }
 
 //------------------------------------------------------------------------------
@@ -478,6 +593,15 @@ String::SetBool(bool val)
     {
         this->SetCharPtr("false");
     }
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+inline void
+String::SetVec2(const Math::vec2& v)
+{
+	this->Format("%.6f,%.6f", v.x(), v.y());
 }
 
 //------------------------------------------------------------------------------
@@ -503,6 +627,15 @@ String::SetMat4(const Math::mat4& m)
                  m[4], m[5], m[6], m[7],
                  m[8], m[9], m[10], m[11],
                  m[12], m[13], m[14], m[15]);
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+inline void
+String::SetQuaternion(const Math::quaternions& v)
+{
+	this->Format("%.6f,%.6f,%.6f,%.6f", v.X(), v.Y(), v.Z(), v.W());
 }
 
 //------------------------------------------------------------------------------
@@ -800,6 +933,18 @@ String::IsValidFloat() const
 
 //------------------------------------------------------------------------------
 /**
+Note: this method is not 100% correct, it just checks for invalid characters.
+*/
+inline bool
+String::IsValidVec2() const
+{
+	Array<String> tokens(2, 0);
+	this->Tokenize(", \t", tokens);
+	return this->CheckValidCharSet(" \t-+.,e1234567890") && tokens.Size() == 2;
+}
+
+//------------------------------------------------------------------------------
+/**
     Note: this method is not 100% correct, it just checks for invalid characters.
 */
 inline bool
@@ -821,7 +966,22 @@ String::IsValidMat4() const
 	this->Tokenize(", \t", tokens);
     return this->CheckValidCharSet(" \t-+.,e1234567890") && tokens.Size() == 16;
 }
-    
+
+//------------------------------------------------------------------------------
+/**
+Returns content as vec2. Note: this method doesn't check whether the
+contents is actually a valid vec2. Use the IsValidVec2() method
+for this!
+*/
+inline Math::vec2
+String::AsVec2() const
+{
+	Array<String> tokens(2, 0);
+	this->Tokenize(", \t", tokens);
+	assert(tokens.Size() == 2);
+	Math::vec2 v(tokens[0].AsFloat(), tokens[1].AsFloat());
+	return v;
+}
 
 //------------------------------------------------------------------------------
 /**
@@ -885,11 +1045,33 @@ String::FromFloat(float f)
 /**
 */
 inline String
+String::FromDouble(double i)
+{
+	String str;
+	str.SetDouble(i);
+	return str;
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+inline String
 String::FromBool(bool b)
 {
     String str;
     str.SetBool(b);
     return str;
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+inline String
+String::FromVec2(const Math::vec2& v)
+{
+	String str;
+	str.SetVec2(v);
+	return str;
 }
 
 //------------------------------------------------------------------------------
@@ -912,6 +1094,17 @@ String::FromMat4(const Math::mat4& m)
     String str;
     str.SetMat4(m);
     return str;
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+inline String
+String::FromQuaternion(const Math::quaternions& q)
+{
+	String str;
+	str.SetQuaternion(q);
+	return str;
 }
 
 //------------------------------------------------------------------------------

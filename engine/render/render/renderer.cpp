@@ -4,6 +4,7 @@
 #include "render/camera/camera.h"
 #include "render/server/frameserver.h"
 #include "render/server/lightserver.h"
+#include "render/server/shaderserver.h"
 
 namespace Render
 {
@@ -51,7 +52,7 @@ void Renderer::Render(bool drawToScreen)
 		//This is only for OGL 4.5 and it might cause issues with older cards...
 		//glBlitNamedFramebuffer(FrameServer::Instance()->FlatGeometryLit->frameBufferObject, 0, 0, 0, this->renderResolution.x, this->renderResolution.y, 0, 0, this->windowResolution.x, this->windowResolution.y, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 	}
-
+	Render::ShaderServer::Instance()->Update();
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, 0);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, 0);
 
