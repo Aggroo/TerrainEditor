@@ -82,7 +82,6 @@ GLuint ShaderServer::LoadVertexShader(Util::String file, bool reload)
 		if (reload)
 		{
 			auto oldProgram = this->shaders[file].program;
-			glDeleteProgram(this->shaders[file].program);
 			for(auto& shaderObj : shaderObjects.ValuesAsArray())
 			{
 				if (shaderObj->ContainsShader(oldProgram))
@@ -106,10 +105,6 @@ GLuint ShaderServer::LoadFragmentShader(Util::String file, bool reload)
 {
 	if (!this->HasShaderProgramLoaded(file) || reload)
 	{
-		if (reload)
-		{
-			glDeleteProgram(this->shaders[file].program);
-		}
 
 		if (!file.CheckFileExtension("frag"))
 		{
@@ -156,8 +151,7 @@ GLuint ShaderServer::LoadFragmentShader(Util::String file, bool reload)
 		if (reload)
 		{
 			auto oldProgram = this->shaders[file].program;
-			glDeleteProgram(this->shaders[file].program);
-			for (auto& shaderObj : shaderObjects.ValuesAsArray())
+			for (auto& shaderObj : this->shaderObjects.ValuesAsArray())
 			{
 				shaderObj->ReloadShaders(oldProgram, shaderInfo.program);
 			}
@@ -177,10 +171,6 @@ GLuint ShaderServer::LoadComputeShader(Util::String file, bool reload)
 {
 	if (!this->HasShaderProgramLoaded(file) || reload)
 	{
-		if (reload)
-		{
-			glDeleteProgram(this->shaders[file].program);
-		}
 		if (!file.CheckFileExtension("comp"))
 		{
 			printf("[SHADER LOAD ERROR]: File is not a .comp file");
@@ -225,7 +215,6 @@ GLuint ShaderServer::LoadComputeShader(Util::String file, bool reload)
 		if (reload)
 		{
 			const auto oldProgram = this->shaders[file].program;
-			glDeleteProgram(this->shaders[file].program);
 			for (auto& shaderObj : shaderObjects.ValuesAsArray())
 			{
 				if (shaderObj->ContainsShader(oldProgram))

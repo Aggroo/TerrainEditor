@@ -17,7 +17,7 @@ layout (std140, binding = 1) uniform TerrainVariables
 	float texUv1Multiplier;
 	float texUv2Multiplier;
 	float padding;
-};
+}; 
 
 uniform sampler2D textures[3];
 uniform sampler2D normals[3];
@@ -75,17 +75,6 @@ vec3 GetNormal(int index, in vec3 uvwPos)
 	return vec3(bump1.xyz * blend_weights.xxx +
 			   bump2.xyz * blend_weights.yyy +
 			   bump3.xyz * blend_weights.zzz);
-}
-
-vec4 blend(vec4 texture1, float a1, vec4 texture2, float a2)
-{
-    float depth = 0.2;
-    float ma = max(texture1.a + a1, texture2.a + a2) - depth;
-
-    float b1 = max(texture1.a + a1 - ma, 0);
-    float b2 = max(texture2.a + a2 - ma, 0);
-
-    return vec4((texture1.rgb * b1 + texture2.rgb * b2) / (b1 + b2), 1.0);
 }
 
 void main()

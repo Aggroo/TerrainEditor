@@ -913,10 +913,10 @@ Variant::SetType(Type t)
 	switch (t)
 	{
 	case String:
-		this->string = new(Util::String);
+		this->string = new Util::String;
 		break;
 	case mat4:
-		this->m = new(Math::mat4);
+		this->m = new Math::mat4;
 		break;
 	case Object:
 		this->object = 0;
@@ -925,25 +925,25 @@ Variant::SetType(Type t)
 		this->voidPtr = 0;
 		break;
 	case IntArray:
-		this->intArray = new(Util::Array<int>);
+		this->intArray = new Util::Array<int>;
 		break;
 	case FloatArray:
-		this->floatArray = new(Util::Array<float>);
+		this->floatArray = new Util::Array<float>;
 		break;
 	case BoolArray:
-		this->boolArray = new(Util::Array<bool>);
+		this->boolArray = new Util::Array<bool>;
 		break;
 	case vec2Arrayt:
-		this->vec2Array = new(Util::Array<Math::vec2>);
+		this->vec2Array = new Util::Array<Math::vec2>;
 		break;
 	case vec4Arrayt:
-		this->vec4Array = new(Util::Array<Math::vec4>);
+		this->vec4Array = new Util::Array<Math::vec4>;
 		break;
 	case mat4Arrayt:
-		this->mat4Array = new(Util::Array<Math::mat4>);
+		this->mat4Array = new Util::Array<Math::mat4>;
 		break;
 	case StringArray:
-		this->stringArray = new(Util::Array<Util::String>);
+		this->stringArray = new Util::Array<Util::String>;
 		break;
 	default:
 		break;
