@@ -5,7 +5,7 @@ A C++17 Terrain Editor created within my own custom "game engine".
 
 This terrain editor is created mostly out of learning purposes and to try and implement different modern graphics techniques
 Currently it uses techniques like:
-* Forward+ Rendering
+* Clustered Forward Rendering
 * PBR & IBL
 
 # Requirements
