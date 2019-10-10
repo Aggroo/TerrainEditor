@@ -28,7 +28,6 @@ void main()
 	o_normal = mat3(t,b,n);	
 	o_toLight = normalize(lightPosition - worldpos.xyz);
 	o_toCamera = normalize(CameraPosition.xyz - worldpos.xyz);
-	
 	texCoord = inCoord;
 	
 	gl_Position = Projection*View*worldpos;

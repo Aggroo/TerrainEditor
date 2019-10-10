@@ -75,6 +75,64 @@ void TerrainSettings::Update()
 	}
 	if (ImGui::CollapsingHeader("Texture Settings"))
 	{
+		if (ImGui::TreeNode("Procedural Texturing Settings"))
+		{
+			if (ImGui::TreeNode("Blend 1"))
+			{
+				ImGui::LabelText("##slopeAngle", "Slope Angle");
+				if (ImGui::DragFloat("##slopeAngle", &terrain->tsVar.slopeAngle, 0.01f, 0.0f, 2.f))
+				{
+				}
+
+				ImGui::LabelText("##heightFalloff", "Height Falloff");
+				if (ImGui::DragFloat("##heightFalloff", &terrain->tsVar.heightFalloff, 0.1f, 0.0f, 100.f))
+				{
+				}
+
+				ImGui::LabelText("##height1", "Height");
+				if (ImGui::DragFloat("##height1", &terrain->tsVar.height, 0.1f, 0.0f, 1000.f))
+				{
+				}
+
+				ImGui::LabelText("##Hardness1", "Hardness1");
+				if (ImGui::DragFloat("##Hardness1", &terrain->tsVar.hardness1, 0.1f, 0.0f, 10.f))
+				{
+				}
+				ImGui::TreePop();
+			}
+
+			if (ImGui::TreeNode("Blend 2"))
+			{
+				ImGui::LabelText("##slopeAngle2", "Slope Angle");
+				if (ImGui::DragFloat("##slopeAngle2", &terrain->tsVar.slopeAngle2, 0.01f, 0.0f, 2.f))
+				{
+				}
+
+				ImGui::LabelText("##heightFalloff2", "Height Falloff");
+				if (ImGui::DragFloat("##heightFalloff2", &terrain->tsVar.heightFalloff2, 0.1f, 0.0f, 100.f))
+				{
+				}
+
+				ImGui::LabelText("##height2", "Height");
+				if (ImGui::DragFloat("##height2", &terrain->tsVar.height2, 0.1f, 0.0f, 1000.f))
+				{
+				}
+
+				ImGui::LabelText("##Hardness2", "Hardness 2");
+				if (ImGui::DragFloat("##Hardness2", &terrain->tsVar.hardness2, 0.1f, 0.0f, 10.f))
+				{
+				}
+
+				ImGui::TreePop();
+			}
+
+			ImGui::LabelText("##Hardness3", "Hardness 3");
+			if (ImGui::DragFloat("##Hardness3", &terrain->tsVar.hardness3, 0.1f, 0.0f, 10.f))
+			{
+			}
+			ImGui::TreePop();
+		}
+
 		if (ImGui::TreeNode("Texture 0 (R)"))
 		{
 			ImGui::LabelText("##Tex0UVMultiplier", "UV multiplier");
@@ -167,9 +225,9 @@ Util::String TerrainSettings::GetStringFromTextureIndex(Render::TextureIndex ind
 	case Render::TextureIndex::normal0: return Util::String("Normal");
 	case Render::TextureIndex::normal1: return Util::String("Normal");
 	case Render::TextureIndex::normal2: return Util::String("Normal");
-	case Render::TextureIndex::specular0: return Util::String("Specular");
-	case Render::TextureIndex::specular1: return Util::String("Specular");
-	case Render::TextureIndex::specular2: return Util::String("Specular");
+	case Render::TextureIndex::specular0: return Util::String("Specular/Metallic");
+	case Render::TextureIndex::specular1: return Util::String("Specular/Metallic");
+	case Render::TextureIndex::specular2: return Util::String("Specular/Metallic");
 	case Render::TextureIndex::roughness0: return Util::String("Roughness");
 	case Render::TextureIndex::roughness1: return Util::String("Roughness");
 	case Render::TextureIndex::roughness2: return Util::String("Roughness");

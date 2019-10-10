@@ -143,9 +143,6 @@ bool Terrain::CreateTerrain(const char* filename, float widthMultiplier, float h
 		for (int x = 0; x < this->terrainWidth; ++x)
 		{
 			heightVal = static_cast<float>(image[k]);
-			heightVal += static_cast<float>(image[k + 1]);
-			heightVal += static_cast<float>(image[k + 2]);
-			heightVal /= 3.f;
 			heightVal /= 255.f;
 
 			index = (this->terrainHeight * y) + x;

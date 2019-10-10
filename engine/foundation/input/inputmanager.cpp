@@ -116,6 +116,14 @@ void InputManager::Update()
 			movement[0] -= movSpeed;
 	}
 
+	if (GetButtonKeyboard(KeyCode::F2))
+	{
+		wireframe = !wireframe;
+		wireframe ? glPolygonMode(GL_FRONT_AND_BACK, GL_LINE) : glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+		
+		
+
 	if (GetButtonKeyboard(KeyCode::Esc))
 		window->Close();
 

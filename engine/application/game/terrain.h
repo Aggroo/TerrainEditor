@@ -25,9 +25,17 @@ private:
 	struct TerrainShaderVariables
 	{
 		float texUv0Multiplier = 0.1f;
-		float texUv1Multiplier = 0.1f;;
-		float texUv2Multiplier = 0.1f;;
-		float padding;
+		float texUv1Multiplier = 0.1f;
+		float texUv2Multiplier = 0.1f;
+		float slopeAngle = 0.8f;
+		float heightFalloff = 10.0f;
+		float height = 5.0f;
+		float slopeAngle2 = 0.8f;
+		float heightFalloff2 = 40.0f;
+		float height2 = 60.0f;
+		float hardness1 = 0.2f;
+		float hardness2 = 0.1f;
+		float hardness3 = 4.0f;
 	};
 
 	///uniform buffer object
@@ -58,7 +66,7 @@ public:
 	Ptr<Render::ShaderObject> GetShader() { return shader; }
 	Ptr<Render::TextureNode> GetTextures() { return textures; }
 
-	//Shader Settings
+	///Shader Settings
 	TerrainShaderVariables tsVar;
 
 private:

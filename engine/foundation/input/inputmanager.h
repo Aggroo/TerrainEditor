@@ -95,6 +95,7 @@ private:
 	GLfloat scrollY = 0;
 	GLfloat lightScroll = 0;
 	GLfloat indexScroll = 0;
+	GLboolean wireframe = false;
 
 	Math::vec4 vec;
 	float mouseX, mouseY;

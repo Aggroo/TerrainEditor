@@ -16,8 +16,16 @@ layout (std140, binding = 1) uniform TerrainVariables
 	float texUv0Multiplier;
 	float texUv1Multiplier;
 	float texUv2Multiplier;
-	float padding;
-}; 
+	float slopeAngle;
+	float heightFalloff;
+	float height;
+	float slopeAngle2;
+	float heightFalloff2;
+	float height2;
+	float hardness1;
+	float hardness2;
+	float hardness3;
+};  
 
 uniform sampler2D textures[3];
 uniform sampler2D normals[3];
@@ -77,6 +85,16 @@ vec3 GetNormal(int index, in vec3 uvwPos)
 			   bump3.xyz * blend_weights.zzz);
 }
 
+float SlopeBlending(float angle, float worldNormal, float slopeFade)
+{
+	return 1 - (clamp(worldNormal - angle, 0.0, 1.0) * (1.0/(1 - angle)));
+}
+
+float HeightBlending(float height, float heightFalloff)
+{
+	return clamp((fragPos.y - (height - heightFalloff)) / heightFalloff, 0.0, 1.0);
+}
+
 void main()
 {
 	uint tileLights = 512;
@@ -97,7 +115,7 @@ void main()
 	
 	vec4 tex0 = GetTexture(0, texUv0Multiplier * fragPos, weights);			
 	vec4 tex1 = GetTexture(1, texUv1Multiplier * fragPos, weights);					
-	vec4 tex3 = GetTexture(2, texUv2Multiplier * fragPos, weights);		
+	vec4 tex2 = GetTexture(2, texUv2Multiplier * fragPos, weights);		
 	
 	vec3 normal0 = GetNormal(0, texUv0Multiplier * fragPos);
 	vec3 normal1 = GetNormal(1, texUv1Multiplier * fragPos);
@@ -114,7 +132,20 @@ void main()
 	vec3 normalSum = splatTex.r * normal2 + splatTex.g * normal1 + splatTex.b * normal0;
 	float specularSum = (splatTex.r * specular2 + splatTex.g * specular1 + splatTex.b * specular0).r;
 	float roughnessSum = (splatTex.r * roughness2 + splatTex.g * roughness1 + splatTex.b * roughness0).r;
-	vec4 vTexColor = splatTex.r * tex3 + splatTex.g * tex1 + splatTex.b * tex0;
+	
+	float slopeBlend = pow(SlopeBlending(slopeAngle, norm.y, 0.2), hardness1);
+	float slopeBlend2 = pow(1-SlopeBlending(slopeAngle2, norm.y, 0.2), hardness2);
+	float heightBlend = HeightBlending(height, heightFalloff);
+	float blendAmount = pow(clamp(slopeBlend * heightBlend, 0.0, 1.0), 16);
+	float blendAmount2 = pow(clamp(slopeBlend2 * HeightBlending(height2, heightFalloff2), 0.0, 1.0), hardness3);
+
+	vec4 vTexColor;
+	
+	vTexColor = mix(mix(tex0, tex1, blendAmount), tex2, blendAmount2);
+	specularSum = mix(mix(specular0, specular1, blendAmount), specular2, blendAmount2).r;
+	roughnessSum = mix(mix(roughness0, roughness1, blendAmount), roughness2, blendAmount2).r;
+
+	//vec4 vTexColor = splatTex.r * tex2 + splatTex.g * tex1 + splatTex.b * tex0;
 	
 	vTexColor.rgb = pow(vTexColor.rgb, vec3(GAMMA));
 
