@@ -25,11 +25,12 @@ void PerlinSettings::Update()
 		ImGui::DragInt("Width", &perlinSettings.width, 1.0f, 1.f, 1000.f);
 		ImGui::DragInt("Height", &perlinSettings.height, 1.0f, 1.f, 1000.f);
 		ImGui::DragFloat("Scale", &perlinSettings.scale, 0.1f, 0.0f, 1000.f);
-		ImGui::SliderInt("octaves", &perlinSettings.octaves, 1, 8);
+		ImGui::SliderInt("Octaves", &perlinSettings.octaves, 1, 8);
 		ImGui::DragFloat("Persistance", &perlinSettings.persistance, 0.01f, 0.0f, 1.f);
-		ImGui::DragFloat("Lacunarity", &perlinSettings.lacunarity, 0.1f, 0.0001f, 1000.f);
+		ImGui::DragFloat("Frequency", &perlinSettings.lacunarity, 0.1f, 0.0001f, 1000.f);
 
 	}
+	ModalWindows();
 }
 
 void PerlinSettings::ModalWindows()

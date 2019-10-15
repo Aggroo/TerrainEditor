@@ -46,7 +46,7 @@ void PerlinNoiseGenerator::GenerateNoiseMap(const char* filename, int mapWidth, 
 				float sampleY = y / scale * frequency;
 
 				float perlinValue = perlin.octaveNoise0_1(sampleX, sampleY, octaves) * 2 - 1;
-				noiseHeight += perlinValue * amplitude;
+				noiseHeight += (abs(perlinValue)*-1) * amplitude;
 
 				amplitude *= persistance;
 				frequency *= lacunarity;
