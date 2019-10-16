@@ -24,6 +24,9 @@ class Window;
 
 namespace Input
 {
+
+#define MAX_KEYS 1024
+
 enum MouseButton
 {
 	LEFT,
@@ -34,31 +37,94 @@ enum MouseButton
 enum KeyCode
 {
 	// FUNCTION
-	F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12, F13, F14, F15,
+	F1 = 290,
+	F2 = 291,
+	F3 = 292,
+	F4 = 293,
+	F5 = 294,
+	F6 = 295,
+	F7 = 296,
+	F8 = 297,
+	F9 = 298,
+	F10 = 299,
+	F11 = 300,
+	F12 = 301,
+	F13 = 302,
+	F14 = 303,
+	F15 = 304,
+
 	// NUMBERS
-	Alpha0, Alpha1, Alpha2, Alpha3, Alpha4, Alpha5, Alpha6, Alpha7, Alpha8, Alpha9,
+	Alpha0 = 48,
+	Alpha1 = 49,
+	Alpha2 = 50,
+	Alpha3 = 51,
+	Alpha4 = 52,
+	Alpha5 = 53,
+	Alpha6 = 54,
+	Alpha7 = 55,
+	Alpha8 = 56,
+	Alpha9 = 57,
 	// NUMPAD
-	Keypad0, Keypad1, Keypad2, Keypad3, Keypad4, Keypad5, Keypad6, Keypad7, Keypad8, Keypad9,
+	Keypad0 = 320,
+	Keypad1 = 321,
+	Keypad2 = 322,
+	Keypad3 = 323,
+	Keypad4 = 324,
+	Keypad5 = 325,
+	Keypad6 = 326,
+	Keypad7 = 327,
+	Keypad8 = 328,
+	Keypad9 = 329,
 	// LETTERS
-	Q, W, E, R, T, Y, U, I, O, P,
-	A, S, D, F, G, H, J, K, L,
-	Z, X, C, V, B, N, M,
+	A = 65,
+	B = 66,
+	C = 67,
+	D = 68,
+	E = 69,
+	F = 70,
+	G = 71,
+	H = 72,
+	I = 73,
+	J = 74,
+	K = 75,
+	L = 76,
+	M = 77,
+	N = 78,
+	O = 79,
+	P = 80,
+	Q = 81,
+	R = 82,
+	S = 83,
+	T = 84,
+	U = 85,
+	V = 86,
+	W = 87,
+	X = 88,
+	Z = 89,
+	Y = 90,
 	// CONTROLS
-	Esc,
-	Tab,
-	Shift_Left, Shift_Right,
-	Ctrl_Left, Ctrl_Right,
-	Alt_Left, Alt_Right,
-	Space,
-	CapsLock,
-	Backspace,
-	Enter,
-	Delete,
-	Arrow_Left, Arrow_Right, Arrow_Up, Arrow_Down,
-	Page_Up, Page_Down,
-	Home,
-	End,
-	Insert
+	Esc = 256,
+	Tab = 258,
+	Shift_Left = 340,
+	Shift_Right = 344,
+	Ctrl_Left = 341, 
+	Ctrl_Right = 345,
+	Alt_Left = 342, 
+	Alt_Right = 346,
+	Space = 32,
+	CapsLock = 280,
+	Backspace = 259,
+	Enter = 257,
+	Delete = 261,
+	Arrow_Left = 263,
+	Arrow_Right = 262,
+	Arrow_Up = 265,
+	Arrow_Down = 264,
+	Page_Up = 266,
+	Page_Down = 267,
+	Home = 268,
+	End = 269,
+	Insert = 260
 };
 
 class InputManager : public Core::RefCounted
@@ -81,7 +147,6 @@ public:
 
 private:
 
-	void ReadKeyboard(int32 key, int32 action);
 	void ReadMouse(int32 button, int32 action);
 
 	Display::Window* window;
@@ -105,8 +170,8 @@ private:
 
 	Render::LightNode* lNode;
 
-	bool keyboardButtons[83] = { false };
-	bool mouseButtons[3] = { false };
+	static bool keyboardButtons[MAX_KEYS];
+	static  bool mouseButtons[3];
 	GLboolean wFlag, sFlag, dFlag, aFlag, shiftFlag, mLeftCheck, mRightCheck;
 };
 

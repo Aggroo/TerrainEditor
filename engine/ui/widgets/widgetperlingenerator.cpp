@@ -39,7 +39,7 @@ void PerlinSettings::ModalWindows()
 
 	if (ImGui::BeginPopupModal("SaveTexture", &this->openPopup))
 	{
-		nfdchar_t* outpath;
+		nfdchar_t* outpath = "../resources/textures/heightmaps";
 		nfdresult_t result = NFD_SaveDialog("jpg,jpeg", NULL, &outpath);
 
 		if (result == NFD_OKAY)

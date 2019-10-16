@@ -14,31 +14,39 @@ RenderSettings::RenderSettings(Display::Window* app) : Widget(app)
 
 void RenderSettings::Update()
 {
-	Util::String label = "##EnvTex";
-	Util::String dot = "..." + label;
-
-	const Util::String& texName = Render::FrameServer::Instance()->GetIBLPass()->GetHDRTexturePath();
-
-	ImGui::LabelText(label.AsCharPtr(), "Environment Map");
-	if (ImGui::Button(dot.AsCharPtr(), ImVec2(ImGui::GetContentRegionAvailWidth() - 10, ImGui::GetContentRegionAvailWidth() - 10)))
+	if (isVisible)
 	{
-		this->envTexPopup = true;
-	}
-	ImGui::SameLine();
-	if (!texName.IsEmpty())
-	{
-		Util::String s = texName.AsCharPtr();
-		Util::Array<Util::String> path;
+		ImGui::Begin(this->title.AsCharPtr(), &isVisible);
 
-		s.Tokenize("/", path);
+		Util::String label = "##EnvTex";
+		Util::String dot = "..." + label;
 
-		s = path[path.Size() - 2] + "/" + path[path.Size() - 1];
+		const Util::String& texName = Render::FrameServer::Instance()->GetIBLPass()->GetHDRTexturePath();
 
-		ImGui::InputText(label.AsCharPtr(), (char*)s.AsCharPtr(), 256, ImGuiInputTextFlags_ReadOnly);
-	}
-	else
-	{
-		ImGui::InputText(label.AsCharPtr(), (char*)texName.AsCharPtr(), 512, ImGuiInputTextFlags_ReadOnly);
+		ImGui::LabelText(label.AsCharPtr(), "Environment Map");
+		if (ImGui::Button(dot.AsCharPtr()))
+		{
+			this->envTexPopup = true;
+		}
+		ImGui::SameLine();
+		if (!texName.IsEmpty())
+		{
+			Util::String s = texName.AsCharPtr();
+			Util::Array<Util::String> path;
+
+			s.Tokenize("/", path);
+
+			s = path[path.Size() - 2] + "/" + path[path.Size() - 1];
+
+			ImGui::InputText(label.AsCharPtr(), (char*)s.AsCharPtr(), 512, ImGuiInputTextFlags_ReadOnly);
+		}
+		else
+		{
+			ImGui::InputText(label.AsCharPtr(), (char*)texName.AsCharPtr(), 512, ImGuiInputTextFlags_ReadOnly);
+		}
+		ModalWindows();
+
+		ImGui::End();
 	}
 }
 
@@ -49,7 +57,7 @@ void RenderSettings::ModalWindows()
 	if (ImGui::BeginPopupModal("OpenEnvTexture", &this->envTexPopup))
 	{
 		nfdchar_t* outpath;
-		nfdresult_t result = NFD_OpenDialog("jpg,jpeg,tga,png,hdr", NULL, &outpath);
+		nfdresult_t result = NFD_OpenDialog("hdr;jpg,jpeg,tga,png", NULL, &outpath);
 
 		if (result == NFD_OKAY)
 		{
