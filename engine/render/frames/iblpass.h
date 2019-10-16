@@ -17,9 +17,13 @@ public:
 
 	void UpdateResolution();
 
+	void UpdateIBL(Util::String newTexturePath);
+
 	Ptr<TextureResource> GetEnvironmentMap() const { return sp; }
 	Ptr<TextureResource> GetIrradianceMap() const { return ir; }
 	Ptr<TextureResource> GetBRDFMap() const { return brdf; }
+
+	const Util::String& GetHDRTexturePath() const { return hdrTexPath; }
 
 	static inline int numMipMapLevels(int width, int height)
 	{
@@ -33,6 +37,7 @@ public:
 private:
 	Ptr<TextureResource> ir, brdf, sp;
 
+	Util::String hdrTexPath;
 };
 
 }

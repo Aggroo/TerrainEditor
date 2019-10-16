@@ -20,6 +20,8 @@ SET(files_ui_widgets
 	widgets/widgetperlingenerator.h
 	widgets/widgetterrainsettings.cpp
 	widgets/widgetterrainsettings.h
+	widgets/widgetrendersettings.cpp
+	widgets/widgetrendersettings.h
 	widgets/widgettoolbar.cpp
 	widgets/widgettoolbar.h
 	widgets/widgetview.cpp

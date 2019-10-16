@@ -70,6 +70,8 @@ public:
 	template<typename T>
 	void PushStyleVar(ImGuiStyleVar idx, T val) { ImGui::PushStyleVar(idx, val); styleVarPushes++; }
 
+	void SetVisibility(bool visibility) { isVisible = visibility; }
+
 protected:
 
 	Util::String title;

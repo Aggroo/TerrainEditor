@@ -3,6 +3,7 @@
 #include "render/render/renderer.h"
 #include "render/server/frameserver.h"
 #include "render/window.h"
+#include "ui/uiserver.h"
 
 namespace UI
 {
@@ -30,9 +31,10 @@ void MenuBar::Update()
 			if (ImGui::MenuItem("Paste", "CTRL+V")) {}
 			ImGui::EndMenu();
 		}
-		if (ImGui::BeginMenu("Terrain"))
+		if (ImGui::BeginMenu("Settings"))
 		{
-			//if (ImGui::MenuItem("Terrain Settings", "P")) { this->terrainSettingsOpen = true; }
+			if (ImGui::MenuItem("Terrain Settings", "P")) { UI::UIServer::Instance()->SetWidgetVisibility("Terrain Settings", true); }
+			if (ImGui::MenuItem("Render Settings", "O")) { UI::UIServer::Instance()->SetWidgetVisibility("Render Settings", true); }
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Debug"))

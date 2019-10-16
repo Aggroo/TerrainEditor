@@ -24,8 +24,6 @@ void UIServer::Setup(Display::Window* window)
 
 void UIServer::Update()
 {
-
-
 	ImGuiViewport* viewport = ImGui::GetMainViewport();
 
 	//ImGuizmo::SetRect(viewport->Pos.x, viewport->Pos.y + 35, viewport->Size.x, viewport->Size.y - 35);
@@ -53,14 +51,25 @@ void UIServer::Update()
 	ImGui::End();
 }
 
-void UIServer::AddWidget(std::unique_ptr<Widget> widget)
+void UIServer::AddWidget(std::unique_ptr<UI::Widget> widget)
 {
-	this->widgets.push_back(std::move(widget));
+	this->widgets.emplace_back(std::move(widget));
 }
 
 UI::Widget* UIServer::GetLastWidget()
 {
 	return this->widgets.back().get();
+}
+
+void UIServer::SetWidgetVisibility(Util::String widgetName, bool visibility)
+{
+	for (auto& widget : widgets)
+	{
+		if (widget.get()->GetTitle().HashCode() == widgetName.HashCode())
+		{
+			widget.get()->SetVisibility(visibility);
+		}
+	}
 }
 
 	void UIServer::ApplyStyle()

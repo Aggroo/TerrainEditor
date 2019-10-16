@@ -165,7 +165,6 @@ void TerrainSettings::Update()
 			ImGui::LabelText("##Tex2UVMultiplier", "UV multiplier");
 			if (ImGui::DragFloat("##Tex2UVMultiplier", &terrain->tsVar.texUv2Multiplier, 0.01f, 0.0f, 1.f))
 			{
-
 			}
 			GetImagePicker(texSettings.tex2Name, Render::TextureIndex::albedo2);
 			GetImagePicker(texSettings.normal2Name, Render::TextureIndex::normal2);

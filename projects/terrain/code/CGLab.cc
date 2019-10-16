@@ -19,6 +19,7 @@
 #include "ui/widgets/widgetperlingenerator.h"
 #include "ui/widgets/widgetterrainsettings.h"
 #include "ui/widgets/widgetview.h"
+#include "ui/widgets/widgetrendersettings.h"
 
 
 using namespace Display;
@@ -87,11 +88,13 @@ Application::Open()
 		UI::UIServer::Instance()->AddWidget(std::make_unique<UI::Toolbar>(this->window));
 		UI::UIServer::Instance()->AddWidget(std::make_unique<UI::MenuBar>(this->window));
 		UI::UIServer::Instance()->AddWidget(std::make_unique<UI::View>(this->window));
+		UI::UIServer::Instance()->AddWidget(std::make_unique<UI::RenderSettings>(this->window));
 		UI::UIServer::Instance()->AddWidget(std::make_unique<UI::TerrainSettings>(this->window));
 		UI::TerrainSettings* test = (UI::TerrainSettings*) UI::UIServer::Instance()->GetLastWidget();
 		test->SetTerrain(terrain);
 		UI::UIServer::Instance()->AddWidget(std::make_unique<UI::PerlinSettings>(this->window));
 		UI::UIServer::Instance()->AddWidget(std::make_unique<UI::Inspector>(this->window));
+		
 
 		// set ui rendering function
 		this->window->SetUiRender([this]()

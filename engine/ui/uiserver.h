@@ -25,6 +25,8 @@ public:
 	void AddWidget(std::unique_ptr<UI::Widget> widget);
 	UI::Widget* GetLastWidget();
 
+	void SetWidgetVisibility(Util::String widgetName, bool visibility);
+
 private:
 
 	void ApplyStyle();
