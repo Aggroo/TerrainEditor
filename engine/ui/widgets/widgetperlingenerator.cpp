@@ -22,8 +22,7 @@ void PerlinSettings::Update()
 	}
 	if (ImGui::CollapsingHeader("Generation Settings"))
 	{
-		ImGui::DragInt("Width", &perlinSettings.width, 1.0f, 1.f, 1000.f);
-		ImGui::DragInt("Height", &perlinSettings.height, 1.0f, 1.f, 1000.f);
+		ImGui::DragInt("Width and height", &perlinSettings.size, 1.0f, 1.f, 1000.f);
 		ImGui::DragFloat("Scale", &perlinSettings.scale, 0.1f, 0.0f, 1000.f);
 		ImGui::SliderInt("Octaves", &perlinSettings.octaves, 1, 8);
 		ImGui::DragFloat("Persistance", &perlinSettings.persistance, 0.01f, 0.0f, 1.f);
@@ -39,7 +38,7 @@ void PerlinSettings::ModalWindows()
 
 	if (ImGui::BeginPopupModal("SaveTexture", &this->openPopup))
 	{
-		nfdchar_t* outpath = "../resources/textures/heightmaps";
+		nfdchar_t* outpath;
 		nfdresult_t result = NFD_SaveDialog("jpg,jpeg", NULL, &outpath);
 
 		if (result == NFD_OKAY)
@@ -50,10 +49,8 @@ void PerlinSettings::ModalWindows()
 			Util::Array<Util::String> path;
 			s.ConvertBackslashes();
 			perlinSettings.name = s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr();
-			p.GenerateNoiseMap(perlinSettings.name.AsCharPtr(), perlinSettings.width, perlinSettings.height, perlinSettings.scale, perlinSettings.octaves, perlinSettings.persistance, perlinSettings.lacunarity);
+			p.GenerateNoiseMap(perlinSettings.name.AsCharPtr(), perlinSettings.size, perlinSettings.size, perlinSettings.scale, perlinSettings.octaves, perlinSettings.persistance, perlinSettings.lacunarity);
 			p.GetTexture()->LoadTextureFile(perlinSettings.name.AsCharPtr());
-
-			//terrain->CreateTerrain(perlinSettings.name.AsCharPtr(), heightSettings.widthMultiplier, 150.f, foo);
 
 			this->openPopup = false;
 			free(outpath);

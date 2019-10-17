@@ -7,8 +7,7 @@ namespace UI
 struct PerlinNoiseSettings
 {
 	Util::String name;
-	int width = 100;
-	int height = 100;
+	int size = 100;
 	float scale = 1.f;
 	int octaves = 1;
 	float persistance = 0.5f;
