@@ -147,7 +147,7 @@ void main()
 
 	//vec4 vTexColor = splatTex.r * tex2 + splatTex.g * tex1 + splatTex.b * tex0;
 	
-	vTexColor.rgb = pow(vTexColor.rgb, vec3(GAMMA));
+	//vTexColor.rgb = pow(vTexColor.rgb, vec3(GAMMA));
 
 	//vec3 Color = texture(AlbedoMap, vec2(uv.x,1.0-uv.y)).rgb;
 	
@@ -320,8 +320,8 @@ void main()
 	
 	color.rgb = ambient + lo;
 
-	color.rgb = color / (color + vec3(1.0f));
-	color = pow(color, vec3(screenGamma));
+	//color.rgb = color / (color + vec3(1.0f));
+	//color = pow(color, vec3(screenGamma));
 
 	resColor.xyz = color.rgb;
 	resColor.a = 1;

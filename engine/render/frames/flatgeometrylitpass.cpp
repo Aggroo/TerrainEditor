@@ -3,6 +3,7 @@
 #include "lightcullingpass.h"
 #include "render/render/renderer.h"
 #include "render/server/frameserver.h"
+#include "render/server/shaderserver.h"
 
 namespace Render
 {

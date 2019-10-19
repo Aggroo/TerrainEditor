@@ -39,6 +39,7 @@ protected:
 	//Texture buffer
 	GLuint buffer;
 
+
 private:
 	//Ptr<Render::Skybox> skybox;
 

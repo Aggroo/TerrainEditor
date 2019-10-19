@@ -44,13 +44,23 @@ void FrameServer::SetupFramePasses()
 	this->framePassByName.Add(this->FlatGeometryLit->name, this->FlatGeometryLit.downcast<Render::FramePass>());
 	this->framePasses.Append(this->FlatGeometryLit.downcast<FramePass>());
 
-	Renderer::Instance()->SetFinalColorBuffer(this->FlatGeometryLit->buffer);
+	// PostProcessing pass
+	this->postProcessing = PostProcessingPass::Create();
+	this->postProcessing->name = "PostProcessing";
+	this->postProcessing->Setup();
+
+	this->framePassByName.Add(this->postProcessing->name, this->postProcessing.downcast<Render::FramePass>());
+	this->framePasses.Append(this->postProcessing.downcast<FramePass>());
+
+	Renderer::Instance()->SetFinalColorBuffer(this->postProcessing->buffer);
+	Renderer::Instance()->SetRenderFBO(this->postProcessing->frameBufferObject);
 }
 
 void FrameServer::UpdateResolutions() const
 {
 	this->Depth->UpdateResolution();
 	this->FlatGeometryLit->UpdateResolution();
+	this->postProcessing->UpdateResolution();
 }
 
 Ptr<FramePass> FrameServer::GetFramePass(const Util::String& name)

@@ -52,6 +52,9 @@ public:
 	void SetFinalColorBuffer(GLuint cbuffer) { this->finalColorBuffer = cbuffer; }
 	GLuint GetFinalColorBuffer() { return this->finalColorBuffer; }
 
+	void SetRenderFBO(GLuint fbo) { this->renderFBO = fbo; }
+	GLuint GetRenderFBO() { return this->renderFBO; }
+
 	void SetupUniformBuffer(Graphics::Camera* camera);
 
 
@@ -63,5 +66,6 @@ private:
 	Display::Window* window;
 
 	GLuint finalColorBuffer = 0;
+	GLuint renderFBO = 0;
 };
 }

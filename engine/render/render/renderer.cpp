@@ -46,7 +46,7 @@ void Renderer::Render(bool drawToScreen)
 	//Copy final colorbuffer to screen if specified
 	if (drawToScreen)
 	{
-		glBindFramebuffer(GL_READ_FRAMEBUFFER, FrameServer::Instance()->FlatGeometryLit->frameBufferObject);
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, this->renderFBO);
 		glBlitFramebuffer(0, 0, this->renderResolution.x, this->renderResolution.y, 0, 0, this->windowResolution.x, this->windowResolution.y, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
 		//This is only for OGL 4.5 and it might cause issues with older cards...

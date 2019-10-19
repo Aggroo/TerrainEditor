@@ -19,6 +19,7 @@ public:
 		bool useSnap = false;
 		float snap[3] = { 1.f, 1.f, 1.f };
 	} gizmo;
+
 public:
 	Entity();
 	~Entity();

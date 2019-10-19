@@ -147,8 +147,6 @@ public:
 
 private:
 
-	void ReadMouse(int32 button, int32 action);
-
 	Display::Window* window;
 
 	GLfloat rotY = 0;

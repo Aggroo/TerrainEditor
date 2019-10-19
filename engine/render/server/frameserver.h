@@ -5,6 +5,7 @@
 #include "render/frames/depthpass.h"
 #include "render/frames/flatgeometrylitpass.h"
 #include "render/frames/iblpass.h"
+#include "render/frames/postprocessingpass.h"
 
 namespace Render
 {
@@ -45,5 +46,8 @@ private:
 
 	/// For lit objects
 	Ptr<FlatGeometryLitPass> FlatGeometryLit;
+
+	/// For post processing techniques
+	Ptr<PostProcessingPass> postProcessing;
 };
 }

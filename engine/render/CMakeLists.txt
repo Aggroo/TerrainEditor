@@ -53,6 +53,8 @@ SET(files_render_frames
 	frames/lightcullingpass.cpp
 	frames/flatgeometrylitpass.h
 	frames/flatgeometrylitpass.cpp
+	frames/postprocessingpass.h
+	frames/postprocessingpass.cpp
 	frames/iblpass.h
 	frames/iblpass.cpp
 	)

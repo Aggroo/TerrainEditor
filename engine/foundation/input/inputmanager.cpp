@@ -66,7 +66,12 @@ void InputManager::Initialization()
 
 	window->SetMousePressFunction([this](int32 button, int32 action, int32 mods)
 	{
-		ReadMouse(button, action);
+		switch (button)
+		{
+		case GLFW_MOUSE_BUTTON_LEFT: mouseButtons[0] = action != GLFW_RELEASE; break;
+		case GLFW_MOUSE_BUTTON_MIDDLE: mouseButtons[1] = action != GLFW_RELEASE; break;
+		case GLFW_MOUSE_BUTTON_RIGHT: mouseButtons[2] = action != GLFW_RELEASE; break;
+		}
 	});
 
 	window->SetMouseScrollFunction([this](float64 x, float64 y)
@@ -156,27 +161,5 @@ void InputManager::CameraMovement()
 	Graphics::MainCamera::Instance()->SetPosition(vec);
 
 	Graphics::MainCamera::Instance()->LookAt(vec + forward, up);
-}
-
-void InputManager::ReadMouse(int32 button, int32 action)
-{
-	if(action == GLFW_PRESS)
-	{
-		switch (button)
-		{
-		case GLFW_MOUSE_BUTTON_LEFT: mouseButtons[0] = true; break;
-		case GLFW_MOUSE_BUTTON_MIDDLE: mouseButtons[1] = true; break;
-		case GLFW_MOUSE_BUTTON_RIGHT: mouseButtons[2] = true; break;
-		}
-	}
-	else if(action == GLFW_RELEASE)
-	{
-		switch (button)
-		{
-		case GLFW_MOUSE_BUTTON_LEFT: mouseButtons[0] = false; break;
-		case GLFW_MOUSE_BUTTON_MIDDLE: mouseButtons[1] = false; break;
-		case GLFW_MOUSE_BUTTON_RIGHT: mouseButtons[2] = false; break;
-		}
-	}
 }
 }

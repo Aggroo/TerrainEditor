@@ -27,5 +27,7 @@ private:
 	GLuint normalBuffer;
 	GLuint specularBuffer;
 	GLuint roughnessBuffer;
+
+
 };
 }

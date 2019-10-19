@@ -30,13 +30,8 @@ void DrawPass::Setup()
 
 void DrawPass::Execute()
 {
-	//if (!skybox.isvalid())
-	//{
-	//	skybox = Render::Skybox::Create();
-	//	skybox->Activate();
-	//}
+
 	BaseGameFeature::EntityManager::Instance()->Update();
-	//skybox->Update();
 
 	FramePass::Execute();
 }
