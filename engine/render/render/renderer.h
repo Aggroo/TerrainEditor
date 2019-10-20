@@ -2,6 +2,7 @@
 #include "core/app.h"
 #include "foundation/math/mat4.h"
 #include "core/singleton.h"
+#include "foundation/util/dictionary.h"
 
 namespace Display { class Window; }
 namespace Graphics { class Camera; }
@@ -12,6 +13,28 @@ struct Resolution
 {
 	GLint x;
 	GLint y;
+};
+
+enum RendererSettings : uint32_t
+{
+	RenderHDR = 1 << 0,
+	RenderBloom = 1 << 1,
+	RenderSSAO = 1 << 2
+};
+
+enum RendererToneMappingTypes
+{
+	ToneMappingOff,
+	ToneMappingACES,
+	ToneMappingUncharted2,
+	ToneMappingReinhard
+};
+
+enum RendererOptions
+{
+	OptionTonemapping,
+	OptionExposure,
+	OptionGamma
 };
 
 class Renderer
@@ -57,9 +80,21 @@ public:
 
 	void SetupUniformBuffer(Graphics::Camera* camera);
 
+	float GetRenderOption(RendererOptions option) { return renderOptions[option]; }
+	void SetRenderOption(RendererOptions option, float val) { renderOptions[option] = val; }
+
+	auto GetRenderFlags() { return renderFlags; }
+	void SetRenderFlags(uint32_t flags) { renderFlags = flags; }
+	void SetRenderFlag(RendererSettings flag) { renderFlags |= flag; };
+	void UnsetRenderFlag(RendererSettings flag) { renderFlags &= ~flag; };
+	bool IsRenderFlagSet(RendererSettings flag) { return renderFlags & flag; }
 
 private:
-	
+
+	Util::Dictionary<RendererOptions, float> renderOptions;
+
+	uint32_t renderFlags = 0;
+
 	Resolution renderResolution;
 	Resolution windowResolution;
 

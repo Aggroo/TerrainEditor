@@ -12,6 +12,7 @@ PostProcessingPass::PostProcessingPass()
 {
 	this->postProcessingShader = ShaderObject::Create();
 	this->postProcessingQuad = MeshResources::Create();
+	glGenBuffers(1, this->ubo);
 }
 
 PostProcessingPass::~PostProcessingPass()
@@ -65,6 +66,8 @@ void PostProcessingPass::Setup()
 	this->postProcessingQuad->createQuad();
 	this->postProcessingQuad->genBuffer();
 
+	UpdateUBOValues();
+
 	FramePass::Setup();
 }
 
@@ -78,6 +81,12 @@ void PostProcessingPass::Execute()
 	this->postProcessingShader->BindProgram();
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, FrameServer::Instance()->GetFlatGeometryLitPass()->GetTextureBuffer());
+
+	UpdateUBOValues();
+
+	glBindBuffer(GL_UNIFORM_BUFFER, this->ubo[0]);
+	glBindBufferBase(GL_UNIFORM_BUFFER, 1, this->ubo[0]);
+	glBufferData(GL_UNIFORM_BUFFER, sizeof(PostProcessOptions), &postProcessVar, GL_STATIC_DRAW);
 
 	this->postProcessingQuad->drawMesh();
 
@@ -94,5 +103,12 @@ void PostProcessingPass::UpdateResolution()
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, newRes.x, newRes.y, 0, GL_RGBA, GL_FLOAT, NULL);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void PostProcessingPass::UpdateUBOValues()
+{
+	postProcessVar.tonemapping = Render::Renderer::Instance()->GetRenderOption(Render::RendererOptions::OptionTonemapping);
+	postProcessVar.exposure = Render::Renderer::Instance()->GetRenderOption(Render::RendererOptions::OptionExposure);
+	postProcessVar.gamma = Render::Renderer::Instance()->GetRenderOption(Render::RendererOptions::OptionGamma);
 }
 }

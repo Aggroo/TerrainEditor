@@ -3,6 +3,13 @@ in vec2 TexCoords;
 
 layout(location = 0) out vec4 resColor;
 
+layout (std140, binding = 1) uniform PostProcessOptions
+{
+	float toneMapping;
+	float exposure;
+	float gamma;
+};
+
 uniform sampler2D hdrBuffer;
 
 vec3 Reinhard(vec3 hdr, float k = 1.0f)
@@ -69,30 +76,30 @@ vec3 ACESFitted(vec3 color)
 
 void main()
 {    
-	const int toneMapping = 2;
-	const float gamma = 1.5;
 	vec3 mapped;
     vec3 hdrColor = texture(hdrBuffer, TexCoords).rgb;
 	
-	hdrColor *= exp(gamma);
-  
-	if(toneMapping == 0)
-	{
+	hdrColor = pow(abs(hdrColor), vec3(1.0f / gamma));
 	
+	hdrColor *= exp(exposure);
+  
+	if(toneMapping == 0.0)
+	{
+		mapped = hdrColor;
 	}
-	else if(toneMapping == 1)
+	else if(toneMapping == 1.0)
 	{
 		//ACES Tone mapping
 		mapped = pow(abs(hdrColor), vec3(0.933f));
 		mapped *= 1.07f;
 		mapped = ACESFitted(mapped);
 	}
-	else if(toneMapping == 2)
+	else if(toneMapping == 2.0)
 	{
 		// Uncharted2 tone mapping
 		mapped = Uncharted2(hdrColor);
 	}
-	else if(toneMapping == 3)
+	else if(toneMapping == 3.0)
 	{
 		// Reinhard tone mapping
 		mapped = Reinhard(hdrColor);

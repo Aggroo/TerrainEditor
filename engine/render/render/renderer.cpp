@@ -9,7 +9,7 @@
 namespace Render
 {
 Renderer::Renderer()
-{
+{	
 }
 
 Renderer::~Renderer()
@@ -21,6 +21,10 @@ void Renderer::Setup(Display::Window* window)
 	this->window = window;
 	this->renderResolution = { window->GetWidth(), window->GetHeight() };
 	glGenBuffers(1, this->ubo);
+
+	renderOptions.Add(OptionTonemapping, static_cast<float>(ToneMappingACES));
+	renderOptions.Add(OptionExposure, 0.0f);
+	renderOptions.Add(OptionGamma, 2.2f);
 
 	//Setup framepasses before materials
 	Render::FrameServer::Instance()->SetupFramePasses();
