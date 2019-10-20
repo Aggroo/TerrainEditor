@@ -7,6 +7,7 @@ This terrain editor is created mostly out of learning purposes and to try and im
 Currently it uses techniques like:
 * Tiled Forward Rendering
 * PBR & IBL
+* HDR and Tonemapping
 
 # Requirements
 1. CMake 3+.
