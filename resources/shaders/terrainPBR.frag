@@ -129,14 +129,13 @@ void main()
 	vec3 roughness1 = GetRoughness(1, texUv1Multiplier * fragPos, weights);
 	vec3 roughness2 = GetRoughness(2, texUv2Multiplier * fragPos, weights);
 
-	vec3 normalSum = splatTex.r * normal2 + splatTex.g * normal1 + splatTex.b * normal0;
-	float specularSum = (splatTex.r * specular2 + splatTex.g * specular1 + splatTex.b * specular0).r;
-	float roughnessSum = (splatTex.r * roughness2 + splatTex.g * roughness1 + splatTex.b * roughness0).r;
+	//vec3 normalSum = splatTex.r * normal2 + splatTex.g * normal1 + splatTex.b * normal0;
+	//float specularSum = (splatTex.r * specular2 + splatTex.g * specular1 + splatTex.b * specular0).r;
+	//float roughnessSum = (splatTex.r * roughness2 + splatTex.g * roughness1 + splatTex.b * roughness0).r;
 	
 	float slopeBlend = pow(SlopeBlending(slopeAngle, norm.y, 0.2), hardness1);
-	float slopeBlend2 = pow(1-SlopeBlending(slopeAngle2, norm.y, 0.2), hardness2);
-	float heightBlend = HeightBlending(height, heightFalloff);
-	float blendAmount = pow(clamp(slopeBlend * heightBlend, 0.0, 1.0), 16);
+	float slopeBlend2 = pow(1-SlopeBlending(slopeAngle2, norm.y, 0.2), hardness2) * pow(1-SlopeBlending(slopeAngle2, normal1.y, 0.2), hardness2);
+	float blendAmount = pow(clamp(slopeBlend * HeightBlending(height, heightFalloff), 0.0, 1.0), 16);
 	float blendAmount2 = pow(clamp(slopeBlend2 * HeightBlending(height2, heightFalloff2), 0.0, 1.0), hardness3);
 
 	vec4 vTexColor;
@@ -144,6 +143,7 @@ void main()
 	vTexColor = mix(mix(tex0, tex1, blendAmount), tex2, blendAmount2);
 	specularSum = mix(mix(specular0, specular1, blendAmount), specular2, blendAmount2).r;
 	roughnessSum = mix(mix(roughness0, roughness1, blendAmount), roughness2, blendAmount2).r;
+	normalSum = mix(mix(normal0, normal1, blendAmount), normal2, blendAmount2).r;
 
 	//vec4 vTexColor = splatTex.r * tex2 + splatTex.g * tex1 + splatTex.b * tex0;
 	
