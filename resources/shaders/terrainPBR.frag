@@ -30,7 +30,7 @@ layout (std140, binding = 1) uniform TerrainVariables
 uniform sampler2D textures[3];
 uniform sampler2D normals[3];
 uniform sampler2D specular[3];
-uniform sampler2D metallic[3];
+uniform sampler2D roughness[3];
 uniform sampler2D splat;
 uniform samplerCube environmentMap;
 uniform samplerCube irradianceMap;
@@ -61,9 +61,9 @@ vec3 GetSpecular(int index, in vec3 uvwPos, in vec3 weights)
 
 vec3 GetRoughness(int index, in vec3 uvwPos, in vec3 weights)
 {
-	return vec3(weights.xxx * texture2D(metallic[index], uvwPos.yz).rgb +
-				weights.yyy * texture2D(metallic[index], uvwPos.zx).rgb +
-				weights.zzz * texture2D(metallic[index], uvwPos.xy).rgb).rgb;
+	return vec3(weights.xxx * texture2D(roughness[index], uvwPos.yz).rgb +
+				weights.yyy * texture2D(roughness[index], uvwPos.zx).rgb +
+				weights.zzz * texture2D(roughness[index], uvwPos.xy).rgb).rgb;
 }
 
 vec3 GetNormal(int index, in vec3 uvwPos)
@@ -85,15 +85,55 @@ vec3 GetNormal(int index, in vec3 uvwPos)
 			   bump3.xyz * blend_weights.zzz);
 }
 
-float SlopeBlending(float angle, float worldNormal, float slopeFade)
+float SlopeBlending(float angle, float worldNormal)
 {
 	return 1 - (clamp(worldNormal - angle, 0.0, 1.0) * (1.0/(1 - angle)));
 }
 
 float HeightBlending(float height, float heightFalloff)
 {
-	return clamp((fragPos.y - (height - heightFalloff)) / heightFalloff, 0.0, 1.0);
+	return clamp((fragPos.y - (height - (heightFalloff * 0.5))) / heightFalloff, 0.0, 1.0);
 }
+
+float overlayBlend(float value1, float value2, float opacity) 
+{     
+	float blend = value1 < 0.5 ? 2*value1*value2 : 1 - 2*(1-value1)*(1-value2);     
+	return mix(value1, blend, opacity); 
+}
+float scaleContrast(float value, float contrast) 
+{     
+	return clamp((value-0.5)*contrast+0.5, 0.0, 1.0); 
+} 
+
+float hash( float n ) { return fract(sin(n) * 753.5453123); }
+
+float noise( in vec3 x )
+{
+    vec3 p = floor(x);
+    vec3 f = fract(x);
+    f = f * f * (3.0 - 2.0 * f);
+	
+    float n = p.x + p.y * 157.0 + 113.0 * p.z;
+    return mix(mix(mix( hash(n +   0.0), hash(n +   1.0), f.x),
+                   mix( hash(n + 157.0), hash(n + 158.0), f.x), f.y),
+               mix(mix( hash(n + 113.0), hash(n + 114.0), f.x),
+                   mix( hash(n + 270.0), hash(n + 271.0), f.x), f.y), f.z);
+}
+
+// Fractal Brownian Motion Noise
+float fbm(vec3 pp){
+    float f = 0.0;
+    mat3 m = mat3( 0.00,  0.80,  0.60,
+                  -0.80,  0.36, -0.48,
+                  -0.60, -0.48,  0.64 ) * 2;
+    f  = 0.5000 * noise( pp ); pp = m*pp;
+    f += 0.2500 * noise( pp ); pp = m*pp;
+    f += 0.1250 * noise( pp ); pp = m*pp;
+    f += 0.0625 * noise( pp ); pp = m*pp;
+    f += 0.03125 * noise( pp ); pp = m*pp;
+    f += 0.0150625 * noise( pp ); pp = m*pp;
+    return f;
+};
 
 void main()
 {
@@ -108,7 +148,7 @@ void main()
 
 	float reflectance = 0;
 
-	vec3 splatTex = texture(splat, vec2(texCoord.x, 1.0-(texCoord.y))).rgb;
+	//vec3 splatTex = texture(splat, vec2(texCoord.x, 1.0-(texCoord.y))).rgb;
 	
 	vec3 norm = o_normal[2].xyz;
 	vec3 weights =  norm*norm;
@@ -133,23 +173,17 @@ void main()
 	//float specularSum = (splatTex.r * specular2 + splatTex.g * specular1 + splatTex.b * specular0).r;
 	//float roughnessSum = (splatTex.r * roughness2 + splatTex.g * roughness1 + splatTex.b * roughness0).r;
 	
-	float slopeBlend = pow(SlopeBlending(slopeAngle, norm.y, 0.2), hardness1);
-	float slopeBlend2 = pow(1-SlopeBlending(slopeAngle2, norm.y, 0.2), hardness2) * pow(1-SlopeBlending(slopeAngle2, normal1.y, 0.2), hardness2);
-	float blendAmount = pow(clamp(slopeBlend * HeightBlending(height, heightFalloff), 0.0, 1.0), 16);
+	float slopeBlend = pow(SlopeBlending(slopeAngle, 1-norm.y), hardness1);
+	float slopeBlend2 = pow(1-SlopeBlending(slopeAngle2, 1-norm.y), hardness2);
+	float blendAmount = clamp(slopeBlend * HeightBlending(height, heightFalloff), 0.0, 1.0);
 	float blendAmount2 = pow(clamp(slopeBlend2 * HeightBlending(height2, heightFalloff2), 0.0, 1.0), hardness3);
 
-	vec4 vTexColor;
+	vec4 vTexColor = vec4(0.0);
 	
-	vTexColor = mix(mix(tex0, tex1, blendAmount), tex2, blendAmount2);
-	specularSum = mix(mix(specular0, specular1, blendAmount), specular2, blendAmount2).r;
-	roughnessSum = mix(mix(roughness0, roughness1, blendAmount), roughness2, blendAmount2).r;
-	normalSum = mix(mix(normal0, normal1, blendAmount), normal2, blendAmount2).r;
-
-	//vec4 vTexColor = splatTex.r * tex2 + splatTex.g * tex1 + splatTex.b * tex0;
-	
-	//vTexColor.rgb = pow(vTexColor.rgb, vec3(GAMMA));
-
-	//vec3 Color = texture(AlbedoMap, vec2(uv.x,1.0-uv.y)).rgb;
+	vTexColor = mix(mix(tex1,tex0, blendAmount), tex2, blendAmount2);
+	float specularSum = mix(mix(specular0, specular1, blendAmount), specular2, blendAmount2).r;
+	float roughnessSum = mix(mix(roughness0, roughness1, blendAmount), roughness2, blendAmount2).r;
+	vec3 normalSum = mix(mix(normal0, normal1, blendAmount), normal2, blendAmount2);
 	
 	vec3 L = normalize(o_toLight);
     vec3 V = normalize(o_toCamera);
@@ -319,9 +353,6 @@ void main()
 	vec3 ambient = (kD * diffuse + specular) ;
 	
 	color.rgb = ambient + lo;
-
-	//color.rgb = color / (color + vec3(1.0f));
-	//color = pow(color, vec3(screenGamma));
 
 	resColor.xyz = color.rgb;
 	resColor.a = 1;
