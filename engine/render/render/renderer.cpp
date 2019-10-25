@@ -5,6 +5,7 @@
 #include "render/server/frameserver.h"
 #include "render/server/lightserver.h"
 #include "render/server/shaderserver.h"
+#include "foundation/math/math.h"
 
 namespace Render
 {
@@ -105,7 +106,7 @@ void Renderer::SetupUniformBuffer(Graphics::Camera* camera)
 	uniformBufferBlock.ScreenSize = this->renderResolution;
 
 	uniformBufferBlock.TimeAndRandom[0] = (GLfloat)glfwGetTime();
-	uniformBufferBlock.TimeAndRandom[1] = 0.f;
+	uniformBufferBlock.TimeAndRandom[1] = Math::Hash(glfwGetTime());
 
 	glBindBuffer(GL_UNIFORM_BUFFER, this->ubo[0]);
 	glBindBufferBase(GL_UNIFORM_BUFFER, 0, this->ubo[0]);

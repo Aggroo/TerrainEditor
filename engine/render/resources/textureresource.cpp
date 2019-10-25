@@ -118,7 +118,7 @@ void TextureResource::LoadFromRasterizer(Math::Rasterizer rast)
 
 void TextureResource::WriteToJPG(const char * filename, int w, int h, void* data, int quality)
 {
-	stbi_write_jpg(filename, w, h, 3, data, quality);
+	stbi_write_jpg(filename, w, h, 4, data, quality);
 }
 
 void TextureResource::WriteToPNG(const char * filename, int w, int h, int comp, void* data, int stride_bytes)

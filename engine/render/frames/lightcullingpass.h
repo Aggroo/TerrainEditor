@@ -16,7 +16,7 @@ public:
 
 	void Execute();
 
-	GLuint GetBuffer() { return this->buffer; }
+	//GLuint GetBuffer() { return this->buffer; }
 
 private:
 	struct UniformBlock
@@ -32,7 +32,7 @@ private:
 
 	GLuint lightCullingProgram;
 
-	GLuint buffer;
+	//GLuint buffer;
 
 };
 }

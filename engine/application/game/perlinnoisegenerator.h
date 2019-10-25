@@ -2,6 +2,7 @@
 #include "core/refcounted.h"
 #include "PerlinNoise.hpp"
 #include "render/resources/textureresource.h"
+#include "render/resources/shaderobject.h"
 
 namespace Generator
 {
@@ -10,19 +11,22 @@ struct Color
 	unsigned char r;
 	unsigned char g;
 	unsigned char b;
+	unsigned char a;
 
 	Color()
 	{
 		r = 255;
 		g = 255;
 		b = 255;
+		a = 255;
 	}
 
 	Color& operator =(const float& a)
 	{
-		r = a*255;
-		g = a*255;
-		b = a*255; 
+		this->r = a*255;
+		this->g = a*255;
+		this->b = a*255; 
+		this->a = a*255; 
 		return *this;
 	}
 };
@@ -62,6 +66,11 @@ private:
 	std::random_device rd;  //Will be used to obtain a seed for the random number engine
 	std::mt19937 gen; //Standard mersenne_twister_engine seeded with rd()
 	std::uniform_int_distribution<> dis;
+
+	GLuint perlinNoiseProgram;
+	Ptr<Render::ShaderObject> shader;
+
+	//GLuint buffer;
 };
 
 }

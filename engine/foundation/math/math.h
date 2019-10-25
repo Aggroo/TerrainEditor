@@ -22,7 +22,7 @@ static float InverseLerp(float a, float b, float value)
 	}
 	else
 	{
-		return ((value - a) / (b - a));
+		return (value - a) / (b - a);
 	}
 }
 
@@ -143,6 +143,16 @@ inline void RandomPointInSphere(const float& radius, Math::vec4& vec, float degr
 	vec[0] = rs * cosf(phi);
 	vec[1] = rs * sinf(phi);
 	vec[2] = radius * cosf(theta);
+}
+
+static uint32_t Hash(uint32_t a)
+{
+	a = (a ^ 61) ^ (a >> 16);
+	a = a + (a << 3);
+	a = a ^ (a >> 4);
+	a = a * 0x27d4eb2d;
+	a = a ^ (a >> 15);
+	return a;
 }
 
 }

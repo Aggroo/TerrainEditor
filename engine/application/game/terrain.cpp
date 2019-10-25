@@ -84,9 +84,9 @@ void Terrain::Activate()
 	this->shader->setupUniformInt("specular[1]", (GLuint)Render::TextureIndex::specular1);
 	this->shader->setupUniformInt("specular[2]", (GLuint)Render::TextureIndex::specular2);
 
-	this->shader->setupUniformInt("metallic[0]", (GLuint)Render::TextureIndex::roughness0);
-	this->shader->setupUniformInt("metallic[1]", (GLuint)Render::TextureIndex::roughness1);
-	this->shader->setupUniformInt("metallic[2]", (GLuint)Render::TextureIndex::roughness2);
+	this->shader->setupUniformInt("roughness[0]", (GLuint)Render::TextureIndex::roughness0);
+	this->shader->setupUniformInt("roughness[1]", (GLuint)Render::TextureIndex::roughness1);
+	this->shader->setupUniformInt("roughness[2]", (GLuint)Render::TextureIndex::roughness2);
 	
 	this->shader->setupUniformInt("splat", (GLuint) Render::TextureIndex::splat);
 	this->shader->setupUniformInt("environmentMap", (GLuint)Render::TextureIndex::environmentMap);

@@ -80,7 +80,7 @@ void TerrainSettings::Update()
 			if (ImGui::TreeNode("Blend 1"))
 			{
 				ImGui::LabelText("##slopeAngle", "Slope Angle");
-				if (ImGui::DragFloat("##slopeAngle", &terrain->tsVar.slopeAngle, 0.01f, 0.0f, 2.f))
+				if (ImGui::DragFloat("##slopeAngle", &terrain->tsVar.slopeAngle, 0.01f, 0.0f, 1.f))
 				{
 				}
 
@@ -95,7 +95,7 @@ void TerrainSettings::Update()
 				}
 
 				ImGui::LabelText("##Hardness1", "Hardness1");
-				if (ImGui::DragFloat("##Hardness1", &terrain->tsVar.hardness1, 0.1f, 0.0f, 10.f))
+				if (ImGui::DragFloat("##Hardness1", &terrain->tsVar.hardness1, 0.1f, 0.0f, 30.f))
 				{
 				}
 				ImGui::TreePop();
@@ -104,7 +104,7 @@ void TerrainSettings::Update()
 			if (ImGui::TreeNode("Blend 2"))
 			{
 				ImGui::LabelText("##slopeAngle2", "Slope Angle");
-				if (ImGui::DragFloat("##slopeAngle2", &terrain->tsVar.slopeAngle2, 0.01f, 0.0f, 2.f))
+				if (ImGui::DragFloat("##slopeAngle2", &terrain->tsVar.slopeAngle2, 0.01f, 0.0f, 1.f))
 				{
 				}
 
@@ -119,7 +119,7 @@ void TerrainSettings::Update()
 				}
 
 				ImGui::LabelText("##Hardness2", "Hardness 2");
-				if (ImGui::DragFloat("##Hardness2", &terrain->tsVar.hardness2, 0.1f, 0.0f, 10.f))
+				if (ImGui::DragFloat("##Hardness2", &terrain->tsVar.hardness2, 0.1f, 0.0f, 30.f))
 				{
 				}
 

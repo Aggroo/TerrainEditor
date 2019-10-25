@@ -138,7 +138,6 @@ float fbm(vec3 pp){
 void main()
 {
 	uint tileLights = 512;
-	
 	// Determine which tile this pixel belongs to
 	ivec2 location = ivec2(gl_FragCoord.xy);
 	ivec2 tileID = location / ivec2(TILE_SIZE, TILE_SIZE);
@@ -153,37 +152,37 @@ void main()
 	vec3 norm = o_normal[2].xyz;
 	vec3 weights =  norm*norm;
 	
-	vec4 tex0 = GetTexture(0, texUv0Multiplier * fragPos, weights);			
-	vec4 tex1 = GetTexture(1, texUv1Multiplier * fragPos, weights);					
-	vec4 tex2 = GetTexture(2, texUv2Multiplier * fragPos, weights);		
+	vec4 tex0 = GetTexture(0, texUv0Multiplier * fragPos, weights) * GetTexture(0, 0.4 * texUv0Multiplier * fragPos, weights) * 4;			
+	vec4 tex1 = GetTexture(1, texUv1Multiplier * fragPos, weights) * GetTexture(1, 0.4 * texUv1Multiplier * fragPos, weights) * 4;
+	vec4 tex2 = GetTexture(2, texUv2Multiplier * fragPos, weights) * GetTexture(2, 0.4 *texUv2Multiplier * fragPos, weights) * 4;		
 	
-	vec3 normal0 = GetNormal(0, texUv0Multiplier * fragPos);
-	vec3 normal1 = GetNormal(1, texUv1Multiplier * fragPos);
-	vec3 normal2 = GetNormal(2, texUv2Multiplier * fragPos);
+	vec3 normal0 = GetNormal(0, texUv0Multiplier * fragPos) * GetNormal(0, 0.4 * texUv0Multiplier * fragPos) * 4;
+	vec3 normal1 = GetNormal(1, texUv1Multiplier * fragPos) * GetNormal(1, 0.4 * texUv1Multiplier * fragPos) * 4;
+	vec3 normal2 = GetNormal(2, texUv2Multiplier * fragPos) * GetNormal(2, 0.4 * texUv2Multiplier * fragPos) * 4;
 	
-	vec3 specular0 = GetSpecular(0, texUv0Multiplier * fragPos, weights);
-	vec3 specular1 = GetSpecular(1, texUv1Multiplier * fragPos, weights);
-	vec3 specular2 = GetSpecular(2, texUv2Multiplier * fragPos, weights);
+	vec3 specular0 = GetSpecular(0, texUv0Multiplier * fragPos, weights) * GetSpecular(0, 0.4 * texUv0Multiplier * fragPos, weights) * 4;
+	vec3 specular1 = GetSpecular(1, texUv1Multiplier * fragPos, weights) * GetSpecular(1, 0.4 * texUv1Multiplier * fragPos, weights) * 4;
+	vec3 specular2 = GetSpecular(2, texUv2Multiplier * fragPos, weights) * GetSpecular(2, 0.4 * texUv2Multiplier * fragPos, weights) * 4;
 	
-	vec3 roughness0 = GetRoughness(0, texUv0Multiplier * fragPos, weights);
-	vec3 roughness1 = GetRoughness(1, texUv1Multiplier * fragPos, weights);
-	vec3 roughness2 = GetRoughness(2, texUv2Multiplier * fragPos, weights);
+	vec3 roughness0 = GetRoughness(0, texUv0Multiplier * fragPos, weights) * GetRoughness(0, 0.4 * texUv0Multiplier * fragPos, weights) * 4;
+	vec3 roughness1 = GetRoughness(1, texUv1Multiplier * fragPos, weights) * GetRoughness(1, 0.4 * texUv1Multiplier * fragPos, weights) * 4;
+	vec3 roughness2 = GetRoughness(2, texUv2Multiplier * fragPos, weights) * GetRoughness(2, 0.4 * texUv2Multiplier * fragPos, weights) * 4;
 
 	//vec3 normalSum = splatTex.r * normal2 + splatTex.g * normal1 + splatTex.b * normal0;
 	//float specularSum = (splatTex.r * specular2 + splatTex.g * specular1 + splatTex.b * specular0).r;
 	//float roughnessSum = (splatTex.r * roughness2 + splatTex.g * roughness1 + splatTex.b * roughness0).r;
 	
 	float slopeBlend = pow(SlopeBlending(slopeAngle, 1-norm.y), hardness1);
-	float slopeBlend2 = pow(1-SlopeBlending(slopeAngle2, 1-norm.y), hardness2);
-	float blendAmount = clamp(slopeBlend * HeightBlending(height, heightFalloff), 0.0, 1.0);
-	float blendAmount2 = pow(clamp(slopeBlend2 * HeightBlending(height2, heightFalloff2), 0.0, 1.0), hardness3);
+	float slopeBlend2 = pow(overlayBlend(SlopeBlending(slopeAngle2, 1-norm.y), texture2D(roughness[1], texCoord*40.0).r, 0.8), hardness2);
+	float blendAmount = clamp(slopeBlend * (1-HeightBlending(height, heightFalloff)), 0.0, 1.0);
+	float blendAmount2 = clamp(slopeBlend2 * HeightBlending(height2, heightFalloff2), 0.0, 1.0);
 
 	vec4 vTexColor = vec4(0.0);
 	
 	vTexColor = mix(mix(tex1,tex0, blendAmount), tex2, blendAmount2);
-	float specularSum = mix(mix(specular0, specular1, blendAmount), specular2, blendAmount2).r;
-	float roughnessSum = mix(mix(roughness0, roughness1, blendAmount), roughness2, blendAmount2).r;
-	vec3 normalSum = mix(mix(normal0, normal1, blendAmount), normal2, blendAmount2);
+	float specularSum = mix(mix(specular1, specular0, blendAmount), specular2, blendAmount2).r;
+	float roughnessSum = mix(mix(roughness1, roughness0, blendAmount), roughness2, blendAmount2).r;
+	vec3 normalSum = mix(mix(normal1, normal0, blendAmount), normal2, blendAmount2);
 	
 	vec3 L = normalize(o_toLight);
     vec3 V = normalize(o_toCamera);
@@ -201,8 +200,8 @@ void main()
 	uint offset = index * tileLights;   
 	
 	//Calculate lights
-	CalculatePointLights(lo, V, N, F0, roughnessSum, offset);
-	CalculateSpotLights(lo, V, N, F0, roughnessSum, offset);
+	CalculatePointLights(lo, V, N, F0, vTexColor, specularSum, roughnessSum, offset, tileLights);
+	CalculateSpotLights(lo, V, N, F0, vTexColor, specularSum, roughnessSum, offset, tileLights);
 	
 	float cosLo = max(0.0, dot(N, V));
 	

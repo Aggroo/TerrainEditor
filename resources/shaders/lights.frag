@@ -135,7 +135,7 @@ float GeometrySmith(in float NdotV, in float NdotL, in float roughness)
 	return ggxNV * ggxNL;
 }
 
-void CalculatePointLights(inout vec3 lo, vec3 V, vec3 N, vec3 F0, float roughnessSum, uint offset)
+void CalculatePointLights(inout vec3 lo, vec3 V, vec3 N, vec3 F0, vec4 vTexColor, float specularSum, float roughnessSum, uint offset, uint tileLights)
 {
 	/// Loop for Point Lights
 	for (uint i = 0; i < tileLights && visiblePointLightIndicesBuffer.data[offset + i].index != -1; i++)
@@ -193,7 +193,7 @@ void CalculatePointLights(inout vec3 lo, vec3 V, vec3 N, vec3 F0, float roughnes
 	}
 }
 
-void CalculateSpotLights(inout vec3 lo, vec3 V, vec3 N, vec3 F0, float roughnessSum, uint offset)
+void CalculateSpotLights(inout vec3 lo, vec3 V, vec3 N, vec3 F0, vec4 vTexColor, float specularSum, float roughnessSum, uint offset, uint tileLights)
 {
 	/// Loop for SpotLights
 	for (uint i = 0; i < tileLights && visibleSpotLightIndicesBuffer.data[offset + i].index != -1; i++)
