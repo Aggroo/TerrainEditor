@@ -5,6 +5,7 @@ in vec2 texCoord;
 in mat3 o_normal;
 in vec3 o_toLight;
 in vec3 o_toCamera;
+in mat3 model33Out;
 
 layout(location = 0) out vec4 resColor;
 layout(location = 1) out vec3 normalColor;
@@ -27,14 +28,17 @@ layout (std140, binding = 1) uniform TerrainVariables
 	float hardness3;
 };  
 
-uniform sampler2D textures[3];
+uniform sampler2D albedo[3];
 uniform sampler2D normals[3];
 uniform sampler2D specular[3];
 uniform sampler2D roughness[3];
-uniform sampler2D splat;
-uniform samplerCube environmentMap;
-uniform samplerCube irradianceMap;
-uniform sampler2D brdfLUT;
+layout(binding = 15) uniform sampler2D splat;
+layout(binding = 16) uniform sampler2D heightmap;
+layout(binding = 17) uniform samplerCube environmentMap;
+layout(binding = 18) uniform samplerCube irradianceMap;
+layout(binding = 19) uniform sampler2D brdfLUT;
+
+uniform float heightScale;
 
 uniform float u_matShininess; // = 64;
 
@@ -42,14 +46,29 @@ const float kPi = 3.14159265;
 
 #include("lights.frag")
 
+vec3 filterNormal(in vec2 uv, in float texelSize, in float texelAspect) 
+{     
+	vec4 h;
+	h[0] = textureLod(heightmap, uv + texelSize*vec2( 0,-1), 0).r * texelAspect;
+	h[1] = textureLod(heightmap, uv + texelSize*vec2(-1, 0), 0).r * texelAspect;
+	h[2] = textureLod(heightmap, uv + texelSize*vec2( 1, 0), 0).r * texelAspect;
+	h[3] = textureLod(heightmap, uv + texelSize*vec2( 0, 1), 0).r * texelAspect;
+	
+	vec3 n;
+	n.z = h[0] - h[3];
+	n.x = h[1] - h[2];
+	n.y = 2;
+	return normalize(n);
+} 
+
 vec4 GetTexture(int index, in vec3 uvwPos, in vec3 weights)
 {
-	return vec4(weights.xxx * texture2D(textures[index], uvwPos.yz).rgb +
-				weights.yyy * texture2D(textures[index], uvwPos.zx).rgb +
-				weights.zzz * texture2D(textures[index], uvwPos.xy).rgb, 
-				weights.x * texture2D(textures[index], uvwPos.yz).a + 
-				weights.y * texture2D(textures[index], uvwPos.zx).a + 
-				weights.z * texture2D(textures[index], uvwPos.xy).a);
+	return vec4(weights.xxx * texture2D(albedo[index], uvwPos.yz).rgb +
+				weights.yyy * texture2D(albedo[index], uvwPos.zx).rgb +
+				weights.zzz * texture2D(albedo[index], uvwPos.xy).rgb, 
+				weights.x * texture2D(albedo[index], uvwPos.yz).a + 
+				weights.y * texture2D(albedo[index], uvwPos.zx).a + 
+				weights.z * texture2D(albedo[index], uvwPos.xy).a);
 }
 
 vec3 GetSpecular(int index, in vec3 uvwPos, in vec3 weights)
@@ -66,9 +85,9 @@ vec3 GetRoughness(int index, in vec3 uvwPos, in vec3 weights)
 				weights.zzz * texture2D(roughness[index], uvwPos.xy).rgb).rgb;
 }
 
-vec3 GetNormal(int index, in vec3 uvwPos)
+vec3 GetNormal(int index, in vec3 uvwPos, in vec3 normal)
 {
-	vec3 blend_weights = abs( o_normal[2].xyz );   // Tighten up the blending zone:
+	vec3 blend_weights = abs( normal );   // Tighten up the blending zone:
 	blend_weights = (blend_weights - 0.2) * 7;
 	blend_weights = max(blend_weights, 0);      // Force weights to sum to 1.0 (very important!)
 	blend_weights /= (blend_weights.x + blend_weights.y + blend_weights.z ).xxx;
@@ -100,40 +119,7 @@ float overlayBlend(float value1, float value2, float opacity)
 	float blend = value1 < 0.5 ? 2*value1*value2 : 1 - 2*(1-value1)*(1-value2);     
 	return mix(value1, blend, opacity); 
 }
-float scaleContrast(float value, float contrast) 
-{     
-	return clamp((value-0.5)*contrast+0.5, 0.0, 1.0); 
-} 
 
-float hash( float n ) { return fract(sin(n) * 753.5453123); }
-
-float noise( in vec3 x )
-{
-    vec3 p = floor(x);
-    vec3 f = fract(x);
-    f = f * f * (3.0 - 2.0 * f);
-	
-    float n = p.x + p.y * 157.0 + 113.0 * p.z;
-    return mix(mix(mix( hash(n +   0.0), hash(n +   1.0), f.x),
-                   mix( hash(n + 157.0), hash(n + 158.0), f.x), f.y),
-               mix(mix( hash(n + 113.0), hash(n + 114.0), f.x),
-                   mix( hash(n + 270.0), hash(n + 271.0), f.x), f.y), f.z);
-}
-
-// Fractal Brownian Motion Noise
-float fbm(vec3 pp){
-    float f = 0.0;
-    mat3 m = mat3( 0.00,  0.80,  0.60,
-                  -0.80,  0.36, -0.48,
-                  -0.60, -0.48,  0.64 ) * 2;
-    f  = 0.5000 * noise( pp ); pp = m*pp;
-    f += 0.2500 * noise( pp ); pp = m*pp;
-    f += 0.1250 * noise( pp ); pp = m*pp;
-    f += 0.0625 * noise( pp ); pp = m*pp;
-    f += 0.03125 * noise( pp ); pp = m*pp;
-    f += 0.0150625 * noise( pp ); pp = m*pp;
-    return f;
-};
 
 void main()
 {
@@ -149,24 +135,25 @@ void main()
 
 	//vec3 splatTex = texture(splat, vec2(texCoord.x, 1.0-(texCoord.y))).rgb;
 	
-	vec3 norm = o_normal[2].xyz;
-	vec3 weights =  norm*norm;
+	float tSize = 1.0 / float(textureSize(heightmap,0));
+	vec3 norm = filterNormal(texCoord, tSize, heightScale);
+	vec3 weights = norm*norm;
 	
-	vec4 tex0 = GetTexture(0, texUv0Multiplier * fragPos, weights) * GetTexture(0, 0.4 * texUv0Multiplier * fragPos, weights) * 4;			
-	vec4 tex1 = GetTexture(1, texUv1Multiplier * fragPos, weights) * GetTexture(1, 0.4 * texUv1Multiplier * fragPos, weights) * 4;
-	vec4 tex2 = GetTexture(2, texUv2Multiplier * fragPos, weights) * GetTexture(2, 0.4 *texUv2Multiplier * fragPos, weights) * 4;		
+	vec4 tex0 = GetTexture(0, texUv0Multiplier * fragPos, weights);			
+	vec4 tex1 = GetTexture(1, texUv1Multiplier * fragPos, weights);
+	vec4 tex2 = GetTexture(2, texUv2Multiplier * fragPos, weights);		
 	
-	vec3 normal0 = GetNormal(0, texUv0Multiplier * fragPos) * GetNormal(0, 0.4 * texUv0Multiplier * fragPos) * 4;
-	vec3 normal1 = GetNormal(1, texUv1Multiplier * fragPos) * GetNormal(1, 0.4 * texUv1Multiplier * fragPos) * 4;
-	vec3 normal2 = GetNormal(2, texUv2Multiplier * fragPos) * GetNormal(2, 0.4 * texUv2Multiplier * fragPos) * 4;
+	vec3 normal0 = GetNormal(0, texUv0Multiplier * fragPos, norm);
+	vec3 normal1 = GetNormal(1, texUv1Multiplier * fragPos, norm);
+	vec3 normal2 = GetNormal(2, texUv2Multiplier * fragPos, norm);
 	
-	vec3 specular0 = GetSpecular(0, texUv0Multiplier * fragPos, weights) * GetSpecular(0, 0.4 * texUv0Multiplier * fragPos, weights) * 4;
-	vec3 specular1 = GetSpecular(1, texUv1Multiplier * fragPos, weights) * GetSpecular(1, 0.4 * texUv1Multiplier * fragPos, weights) * 4;
-	vec3 specular2 = GetSpecular(2, texUv2Multiplier * fragPos, weights) * GetSpecular(2, 0.4 * texUv2Multiplier * fragPos, weights) * 4;
+	vec3 specular0 = GetSpecular(0, texUv0Multiplier * fragPos, weights);
+	vec3 specular1 = GetSpecular(1, texUv1Multiplier * fragPos, weights);
+	vec3 specular2 = GetSpecular(2, texUv2Multiplier * fragPos, weights);
 	
-	vec3 roughness0 = GetRoughness(0, texUv0Multiplier * fragPos, weights) * GetRoughness(0, 0.4 * texUv0Multiplier * fragPos, weights) * 4;
-	vec3 roughness1 = GetRoughness(1, texUv1Multiplier * fragPos, weights) * GetRoughness(1, 0.4 * texUv1Multiplier * fragPos, weights) * 4;
-	vec3 roughness2 = GetRoughness(2, texUv2Multiplier * fragPos, weights) * GetRoughness(2, 0.4 * texUv2Multiplier * fragPos, weights) * 4;
+	vec3 roughness0 = GetRoughness(0, texUv0Multiplier * fragPos, weights);
+	vec3 roughness1 = GetRoughness(1, texUv1Multiplier * fragPos, weights);
+	vec3 roughness2 = GetRoughness(2, texUv2Multiplier * fragPos, weights);
 
 	//vec3 normalSum = splatTex.r * normal2 + splatTex.g * normal1 + splatTex.b * normal0;
 	//float specularSum = (splatTex.r * specular2 + splatTex.g * specular1 + splatTex.b * specular0).r;
@@ -174,19 +161,17 @@ void main()
 	
 	float slopeBlend = pow(SlopeBlending(slopeAngle, 1-norm.y), hardness1);
 	float slopeBlend2 = pow(overlayBlend(SlopeBlending(slopeAngle2, 1-norm.y), texture2D(roughness[1], texCoord*40.0).r, 0.8), hardness2);
-	float blendAmount = clamp(slopeBlend * (1-HeightBlending(height, heightFalloff)), 0.0, 1.0);
-	float blendAmount2 = clamp(slopeBlend2 * HeightBlending(height2, heightFalloff2), 0.0, 1.0);
+	float blendAmount = clamp(slopeBlend*(1-HeightBlending(height, heightFalloff)), 0.0, 1.0);
+	float blendAmount2 = clamp(slopeBlend2*HeightBlending(height2, heightFalloff2), 0.0, 1.0);
 
-	vec4 vTexColor = vec4(0.0);
-	
-	vTexColor = mix(mix(tex1,tex0, blendAmount), tex2, blendAmount2);
-	float specularSum = mix(mix(specular1, specular0, blendAmount), specular2, blendAmount2).r;
-	float roughnessSum = mix(mix(roughness1, roughness0, blendAmount), roughness2, blendAmount2).r;
-	vec3 normalSum = mix(mix(normal1, normal0, blendAmount), normal2, blendAmount2);
+	vec4 vTexColor = tex1 * (1-blendAmount) * (1-blendAmount2)+ tex0 * blendAmount + tex2 * blendAmount2;
+	float specularSum = (specular1 * (1-blendAmount) * (1-blendAmount2) + specular0 * blendAmount + specular2 * blendAmount2).r;
+	float roughnessSum = (roughness1 * (1-blendAmount) * (1-blendAmount2) + roughness0 * blendAmount + roughness2 * blendAmount2).r;
+	vec3 normalSum = (normal1 * (1-blendAmount) * (1-blendAmount2) + normal0 * blendAmount + normal2 * blendAmount2);
 	
 	vec3 L = normalize(o_toLight);
     vec3 V = normalize(o_toCamera);
-    vec3 N = normalize(o_normal[2] + normalSum);
+    vec3 N = normalize(norm + normalSum);
 	vec3 R = reflect(-V, N); 
 	
 	//F0 as 0.04 will usually look good for all dielectric (non-metal) surfaces

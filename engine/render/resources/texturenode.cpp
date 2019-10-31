@@ -27,11 +27,15 @@ void TextureNode::AddTexture(TextureIndex index, Ptr<TextureResource> texture)
 	this->textures.Add(index, texture);
 }
 
-void TextureNode::UpdateTexture(TextureIndex index, const char* filename) const
+void TextureNode::UpdateTexture(TextureIndex index, const char* filename)
 {
 	if (this->textures.Contains(index))
 	{
 		this->textures[index]->LoadTextureFile(filename);
+	}
+	else
+	{
+		this->textures.Add(index, Render::ResourceServer::Instance()->LoadTexture(filename));
 	}
 }
 

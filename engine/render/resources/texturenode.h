@@ -21,6 +21,7 @@ enum class TextureIndex
 	ao1,
 	ao2,
 	splat,
+	heightmap,
 	environmentMap,
 	irradiance,
 	brdf
@@ -35,7 +36,7 @@ public:
 
 	void AddTexture(TextureIndex index, const char * filename);
 	void AddTexture(TextureIndex index, Ptr<TextureResource> texture);
-	void UpdateTexture(TextureIndex index, const char * filename) const;
+	void UpdateTexture(TextureIndex index, const char * filename);
 	Ptr<TextureResource> GetTexture(TextureIndex index) const;
 	void BindTextures() const;
 	void UnbindTextures() const;

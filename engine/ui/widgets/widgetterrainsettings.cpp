@@ -11,7 +11,7 @@ namespace UI
 TerrainSettings::TerrainSettings(Display::Window* app) : Widget(app), heightPopup(false), texturesPopup(false)
 {
 	this->title = "Terrain Settings";
-	this->heightSettings.texture = Render::TextureResource::Create();
+	this->heightSettings.texture = 0;
 	this->curvePoints[0].x = -1; // init data so editor knows to take it from here
 }
 
@@ -56,7 +56,7 @@ void TerrainSettings::Update()
 			ImGui::InputText("##texture", (char*)heightSettings.texName.AsCharPtr(), 512, ImGuiInputTextFlags_ReadOnly);
 		}
 		ImGui::SameLine();
-		if (ImGui::ImageButton((void*)heightSettings.texture->GetTextureID(), ImVec2(ImGui::GetContentRegionAvailWidth() - 5, ImGui::GetContentRegionAvailWidth() - 5)))
+		if (ImGui::ImageButton((void*)heightSettings.texture, ImVec2(ImGui::GetContentRegionAvailWidth() - 5, ImGui::GetContentRegionAvailWidth() - 5)))
 		{
 			this->heightPopup = true;
 		}
@@ -253,7 +253,9 @@ void TerrainSettings::ModalWindow()
 			s.ConvertBackslashes();
 			heightSettings.texName = s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr();
 
-			heightSettings.texture = Render::ResourceServer::Instance()->LoadTexture(heightSettings.texName.AsCharPtr());
+			
+			terrain->GetTextures()->UpdateTexture(Render::TextureIndex::heightmap, heightSettings.texName.AsCharPtr());
+			heightSettings.texture = terrain->GetTextures()->GetTexture(Render::TextureIndex::heightmap)->GetTextureID();
 
 			this->heightPopup = false;
 			free(outpath);

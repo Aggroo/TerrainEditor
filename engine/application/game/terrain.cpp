@@ -35,7 +35,7 @@ Terrain::~Terrain()
 
 void Terrain::Activate()
 {	
-	GLuint vert = Render::ShaderServer::Instance()->LoadVertexShader("resources/shaders/PBR.vert");
+	GLuint vert = Render::ShaderServer::Instance()->LoadVertexShader("resources/shaders/terrainPBR.vert");
 	GLuint frag = Render::ShaderServer::Instance()->LoadFragmentShader("resources/shaders/terrainPBR.frag");
 
 	this->shader->AddShader(vert);
@@ -72,9 +72,9 @@ void Terrain::Activate()
 	//textures.AddTexture("resources/textures/pathway.jpg");
 
 
-	this->shader->setupUniformInt("textures[0]", (GLuint) Render::TextureIndex::albedo0);
-	this->shader->setupUniformInt("textures[1]", (GLuint) Render::TextureIndex::albedo1);
-	this->shader->setupUniformInt("textures[2]", (GLuint) Render::TextureIndex::albedo2);
+	this->shader->setupUniformInt("albedo[0]", (GLuint) Render::TextureIndex::albedo0);
+	this->shader->setupUniformInt("albedo[1]", (GLuint) Render::TextureIndex::albedo1);
+	this->shader->setupUniformInt("albedo[2]", (GLuint) Render::TextureIndex::albedo2);
 
 	this->shader->setupUniformInt("normals[0]", (GLuint) Render::TextureIndex::normal0);
 	this->shader->setupUniformInt("normals[1]", (GLuint) Render::TextureIndex::normal1);
@@ -124,38 +124,47 @@ bool Terrain::CreateTerrain(const char* filename, float widthMultiplier, float h
 	this->mesh->mesh.Reset();
 	this->mesh->indices.Reset();
 	int n;
-	unsigned char *image = stbi_load(filename, &terrainWidth, &terrainHeight, &n, 0);
+	
+	this->shader->BindProgram();
+	this->textures->AddTexture(Render::TextureIndex::heightmap, filename);
+	this->shader->setupUniformInt("heightmap", (GLuint)Render::TextureIndex::heightmap);
+	this->shader->setupUniformFloat("heightScale", heightMultiplier);
 
-	if (image == nullptr)
-	{
-		std::cerr << "Could not read file " << filename << ". File does not exist." << std::endl;
-		return false;
-	}
+	this->terrainWidth = 1024;
+	this->terrainHeight = 1024;
 
-	this->heightScale = heightMultiplier;
-	this->heightMap = new HeightmapValues[this->terrainWidth*this->terrainHeight];
+	//unsigned char *image = stbi_load(filename, &terrainWidth, &terrainHeight, &n, 0);
+	//
+	//if (image == nullptr)
+	//{
+	//	std::cerr << "Could not read file " << filename << ". File does not exist." << std::endl;
+	//	return false;
+	//}
+	//
+	//this->heightScale = heightMultiplier;
+	//this->heightMap = new HeightmapValues[this->terrainWidth*this->terrainHeight];
+	//
+	//float heightVal;
+	//int k = 0;
+	//int index;
+	//for (int y = 0; y < this->terrainHeight; ++y)
+	//{
+	//	for (int x = 0; x < this->terrainWidth; ++x)
+	//	{
+	//		heightVal = static_cast<float>(image[k]);
+	//		heightVal /= 255.f;
+	//
+	//		index = (this->terrainHeight * y) + x;
+	//
+	//		this->heightMap[index].x = static_cast<float>(x*widthMultiplier);
+	//		this->heightMap[index].y = static_cast<float>(ImGui::CurveValue(heightVal, 10, points)*heightMultiplier);
+	//		this->heightMap[index].z = static_cast<float>(y*widthMultiplier);
+	//
+	//		k += 3;
+	//	}
+	//}
 
-	float heightVal;
-	int k = 0;
-	int index;
-	for (int y = 0; y < this->terrainHeight; ++y)
-	{
-		for (int x = 0; x < this->terrainWidth; ++x)
-		{
-			heightVal = static_cast<float>(image[k]);
-			heightVal /= 255.f;
-
-			index = (this->terrainHeight * y) + x;
-
-			this->heightMap[index].x = static_cast<float>(x*widthMultiplier);
-			this->heightMap[index].y = static_cast<float>(ImGui::CurveValue(heightVal, 10, points)*heightMultiplier);
-			this->heightMap[index].z = static_cast<float>(y*widthMultiplier);
-
-			k += 3;
-		}
-	}
-
-	this->vertexCount = ((this->terrainWidth) * (this->terrainHeight));
+	this->vertexCount = this->terrainWidth * this->terrainHeight;
 	this->indexCount = vertexCount*6;
 
 	// Create the vertex array.
@@ -164,10 +173,10 @@ bool Terrain::CreateTerrain(const char* filename, float widthMultiplier, float h
 	// Create the index array.
 	this->mesh->indices.Fill(0, indexCount, 0);
 
-	SmoothenTerrain();
+	//SmoothenTerrain();
 
 	// Initialize the index to the vertex buffer.
-	index = 0;
+	int index = 0;
 	int index1, index2, index3, index4;
 	float uDiv = 1.f / this->terrainWidth;
 	float vDiv = 1.f / this->terrainHeight;
@@ -178,7 +187,7 @@ bool Terrain::CreateTerrain(const char* filename, float widthMultiplier, float h
 		for (int x = 0; x < (this->terrainWidth); ++x)
 		{
 			i = (this->terrainHeight * y) + x;
-			this->mesh->mesh.Append(Render::Vertex(Math::vec3(this->heightMap[i].x, this->heightMap[i].y, this->heightMap[i].z), Math::vec2(x*uDiv, -y*vDiv), Math::vec3()));
+			this->mesh->mesh.Append(Render::Vertex(Math::vec3(x*widthMultiplier, 0.0f, y*widthMultiplier), Math::vec2(x*uDiv, -y*vDiv), Math::vec3()));
 		}
 	}
 

@@ -37,7 +37,7 @@ struct TextureSettings
 struct HeightMapSettings
 {
 	Util::String texName;
-	Ptr<Render::TextureResource> texture;
+	GLuint texture;
 	float widthMultiplier = 1.f;
 	float heightMultiplier = 1.f;
 
