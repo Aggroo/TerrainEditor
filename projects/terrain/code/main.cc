@@ -3,7 +3,7 @@
 // (C) 2015 Individual contributors, see AUTHORS file
 //------------------------------------------------------------------------------
 #include "config.h"
-#include "CGlab.h"
+#include "application.h"
 
 
 int

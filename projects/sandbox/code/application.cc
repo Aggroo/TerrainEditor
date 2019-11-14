@@ -11,7 +11,7 @@
 #include "render/render/renderer.h"
 #include "application/basegamefeatures/entitymanager.h"
 #include "render/render/skybox.h"
-#include "foundation/util/threadpool.h"
+#include "foundation/util/JobSystem.h"
 #include "render/server/shaderserver.h"
 #include "render/server/lightserver.h"
 #include "application/game/entity.h"
@@ -56,6 +56,7 @@ Application::Open()
 
 	if (this->window->Open())
 	{
+		
 		shader = Render::ShaderObject::Create();
 
 		GLuint comp = Render::ShaderServer::Instance()->LoadComputeShader("resources/shaders/lightculling.comp");

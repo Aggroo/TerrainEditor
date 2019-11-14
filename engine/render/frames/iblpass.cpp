@@ -102,9 +102,9 @@ void IBLPass::Setup()
 		glBindTextureUnit(0, envMap->GetTextureID());
 
 		// Pre-filter rest of the mip chain.
-		const float deltaRoughness = 1.0f / Math::max(float(levels - 1), 1.0f);
+		const float deltaRoughness = 1.0f / Math::Max(float(levels - 1), 1.0f);
 		for (int level = 1, size = kEnvMapSize / 2; level <= levels; ++level, size /= 2) {
-			const GLuint numGroups = Math::max(1, size / 32);
+			const GLuint numGroups = Math::Max(1, size / 32);
 			glBindImageTexture(0, sp->GetTextureID(), level, GL_TRUE, 0, GL_WRITE_ONLY, GL_RGBA16F);
 			glProgramUniform1f(spmap->GetProgram(), 0, level * deltaRoughness);
 			glDispatchCompute(numGroups, numGroups, 6);

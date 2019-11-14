@@ -15,11 +15,12 @@ namespace TerrainEditor
 {
 __ImplementClass(TerrainEditor::Terrain, 'TETY', Game::EntityBase);
 
-Terrain::Terrain() : terrainWidth(0), terrainHeight(0), heightMap(nullptr)
+Terrain::Terrain() : terrainWidth(0), terrainHeight(0), heightMap(nullptr), generate(false)
 {
 	mesh = Render::MeshResources::Create();
 	shader = Render::ShaderObject::Create();
 	textures = Render::TextureNode::Create();
+
 	glGenBuffers(1, this->ubo);
 }
 
@@ -48,19 +49,19 @@ void Terrain::Activate()
 
 	this->textures->AddTexture(Render::TextureIndex::albedo0, "resources/textures/terrain_textures/mossy-ground/mixedmoss-albedo2.png");
 	this->textures->AddTexture(Render::TextureIndex::albedo1, "resources/textures/terrain_textures/slate-cliff/slatecliffrock-albedo.png");
-	this->textures->AddTexture(Render::TextureIndex::albedo2, "resources/textures/terrain_textures/marble-speckled/marble-speckled-albedo.png");
+	this->textures->AddTexture(Render::TextureIndex::albedo2, "resources/textures/terrain_textures/Snow/snow-packed12-Base_Color.png");
 
 	this->textures->AddTexture(Render::TextureIndex::normal0, "resources/textures/terrain_textures/mossy-ground/mixedmoss-normal2.png");
 	this->textures->AddTexture(Render::TextureIndex::normal1, "resources/textures/terrain_textures/slate-cliff/slatecliffrock_Normal.jpg");
-	this->textures->AddTexture(Render::TextureIndex::normal2, "resources/textures/terrain_textures/marble-speckled/marble-speckled-normal.png");
+	this->textures->AddTexture(Render::TextureIndex::normal2, "resources/textures/terrain_textures/Snow/snow-packed12-Normal-ogl.png");
 
 	this->textures->AddTexture(Render::TextureIndex::specular0, "resources/textures/terrain_textures/mossy-ground/mixedmoss-metalness.png");
 	this->textures->AddTexture(Render::TextureIndex::specular1, "resources/textures/terrain_textures/slate-cliff/slatecliffrock_Metallic.png");
-	this->textures->AddTexture(Render::TextureIndex::specular2, "resources/textures/terrain_textures/marble-speckled/marble-speckled-metalness.png");
+	this->textures->AddTexture(Render::TextureIndex::specular2, "resources/textures/terrain_textures/Snow/snow-packed12-Metallic.png");
 
 	this->textures->AddTexture(Render::TextureIndex::roughness0, "resources/textures/terrain_textures/mossy-ground/mixedmoss-roughness.png");
 	this->textures->AddTexture(Render::TextureIndex::roughness1, "resources/textures/terrain_textures/slate-cliff/slatecliffrock_Roughness2.png");
-	this->textures->AddTexture(Render::TextureIndex::roughness2, "resources/textures/terrain_textures/marble-speckled/marble-speckled-roughness.png");
+	this->textures->AddTexture(Render::TextureIndex::roughness2, "resources/textures/terrain_textures/Snow/snow-packed12-Roughness.png");
 			
 	this->textures->AddTexture(Render::TextureIndex::splat, "resources/textures/heightmaps/splat2.jpg");
 
@@ -103,6 +104,12 @@ void Terrain::Deactivate()
 
 void Terrain::Update()
 {
+	if (generate && !JobSystem::IsBusy(ctx))
+	{
+		this->mesh->genBuffer();
+		generate = false;
+	}
+		
 	this->BindShaderVariables();
 	this->shader->BindProgram();
 	this->textures->BindTextures();
@@ -119,7 +126,7 @@ void Terrain::OnUI()
 	
 }
 
-bool Terrain::CreateTerrain(const char* filename, float widthMultiplier, float heightMultiplier, ImVec2* points)
+bool Terrain::CreateTerrain(const char* filename, int size, float widthMultiplier, float heightMultiplier, ImVec2* points)
 {
 	this->mesh->mesh.Reset();
 	this->mesh->indices.Reset();
@@ -130,8 +137,9 @@ bool Terrain::CreateTerrain(const char* filename, float widthMultiplier, float h
 	this->shader->setupUniformInt("heightmap", (GLuint)Render::TextureIndex::heightmap);
 	this->shader->setupUniformFloat("heightScale", heightMultiplier);
 
-	this->terrainWidth = 1024;
-	this->terrainHeight = 1024;
+	this->terrainWidth = size;
+	this->terrainHeight = size;
+	this->sizeModifier = widthMultiplier;
 
 	//unsigned char *image = stbi_load(filename, &terrainWidth, &terrainHeight, &n, 0);
 	//
@@ -163,81 +171,78 @@ bool Terrain::CreateTerrain(const char* filename, float widthMultiplier, float h
 	//		k += 3;
 	//	}
 	//}
+	
+	generate = true;
 
-	this->vertexCount = this->terrainWidth * this->terrainHeight;
-	this->indexCount = vertexCount*6;
+	JobSystem::Execute(ctx, [this]() {
 
-	// Create the vertex array.
-	this->mesh->mesh.Reserve(vertexCount);
+		this->vertexCount = this->terrainWidth * this->terrainHeight;
+		this->indexCount = vertexCount * 6;
 
-	// Create the index array.
-	this->mesh->indices.Fill(0, indexCount, 0);
+		// Create the vertex array.
+		this->mesh->mesh.Reserve(vertexCount);
 
-	//SmoothenTerrain();
+		// Create the index array.
+		this->mesh->indices.Fill(0, indexCount, 0);
 
-	// Initialize the index to the vertex buffer.
-	int index = 0;
-	int index1, index2, index3, index4;
-	float uDiv = 1.f / this->terrainWidth;
-	float vDiv = 1.f / this->terrainHeight;
+		// Initialize the index to the vertex buffer.
+		int index = 0;
+		int index1, index2, index3, index4;
+		float uDiv = 1.f / this->terrainWidth;
+		float vDiv = 1.f / this->terrainHeight;
 
-	int i;
-	for (int y = 0; y < (this->terrainHeight); ++y)
-	{
-		for (int x = 0; x < (this->terrainWidth); ++x)
+		int i;
+		for (int y = 0; y < (this->terrainHeight); ++y)
 		{
-			i = (this->terrainHeight * y) + x;
-			this->mesh->mesh.Append(Render::Vertex(Math::vec3(x*widthMultiplier, 0.0f, y*widthMultiplier), Math::vec2(x*uDiv, -y*vDiv), Math::vec3()));
-		}
-	}
-
-	this->highestPoint = FLT_MIN;
-
-	// Load the vertex and index array with the terrain data.
-	for (int y = 0; y < (this->terrainHeight-1); ++y)
-	{
-		for (int x = 0; x < (this->terrainWidth-1); ++x)
-		{
-			index1 = (this->terrainHeight * y) + x;          // Bottom left.
-			index2 = (this->terrainHeight * y) + (x + 1);      // Bottom right.
-			index3 = (this->terrainHeight * (y + 1)) + x;      // Upper left.
-			index4 = (this->terrainHeight * (y + 1)) + (x + 1);  // Upper right.
-
-			// Upper left.
-			this->mesh->indices[index] = index3;
-			index++;
-
-			// Upper right.
-			this->mesh->indices[index] = index4;
-			index++;
-
-			// Bottom left.
-			this->mesh->indices[index] = index1;
-			index++;
-
-			// Bottom left.
-			this->mesh->indices[index] = index1;
-			index++;
-
-			// Upper right.
-			this->mesh->indices[index] = index4;
-			index++;
-
-			// Bottom right.
-			this->mesh->indices[index] = index2;
-			index++;
-
-			if (this->mesh->mesh[y*this->terrainWidth+x].pos.y() > this->highestPoint)
+			for (int x = 0; x < (this->terrainWidth); ++x)
 			{
-				this->highestPoint = this->mesh->mesh[y*this->terrainWidth + x].pos.y();
+				i = (this->terrainHeight * y) + x;
+				this->mesh->mesh.Append(Render::Vertex(Math::vec3(x*this->sizeModifier, 0.0f, y*this->sizeModifier), Math::vec2(x*uDiv, -y * vDiv), Math::vec3()));
 			}
-
 		}
-	}
 
-	GenerateNormals();
+		// Load the vertex and index array with the terrain data.
+		for (int y = 0; y < (this->terrainHeight - 1); ++y)
+		{
+			for (int x = 0; x < (this->terrainWidth - 1); ++x)
+			{
+				index1 = (this->terrainHeight * y) + x;          // Bottom left.
+				index2 = (this->terrainHeight * y) + (x + 1);      // Bottom right.
+				index3 = (this->terrainHeight * (y + 1)) + x;      // Upper left.
+				index4 = (this->terrainHeight * (y + 1)) + (x + 1);  // Upper right.
 
-	this->mesh->genBuffer();
+				// Upper left.
+				this->mesh->indices[index] = index3;
+				index++;
+
+				// Upper right.
+				this->mesh->indices[index] = index4;
+				index++;
+
+				// Bottom left.
+				this->mesh->indices[index] = index1;
+				index++;
+
+				// Bottom left.
+				this->mesh->indices[index] = index1;
+				index++;
+
+				// Upper right.
+				this->mesh->indices[index] = index4;
+				index++;
+
+				// Bottom right.
+				this->mesh->indices[index] = index2;
+				index++;
+
+			}
+		}
+	});
+	
+
+	//GenerateNormals();
+
+	//this->mesh->genBuffer();
 
 	return true;
 }
@@ -316,25 +321,25 @@ float Terrain::GetHeightScale()
 
 void Terrain::GenerateNormals()
 {
-	Math::vec3 p;
-	int a, b, c;
-	for (int i = 0; i < (indexCount - 3); i += 3)
-	{
-		a = mesh->indices[i];
-		b = mesh->indices[i + 1];
-		c = mesh->indices[i + 2];
-
-		p = Math::vec3::Cross(mesh->mesh[b].pos - mesh->mesh[a].pos, mesh->mesh[c].pos - mesh->mesh[a].pos);
-
-		mesh->mesh[mesh->indices[i]].norm += p;
-		mesh->mesh[mesh->indices[i + 1]].norm += p;
-		mesh->mesh[mesh->indices[i + 2]].norm += p;
-	}
-
-	for (int i = 0; i < vertexCount; ++i)
-	{
-		mesh->mesh[i].norm = Math::vec3::Normalize(mesh->mesh[i].norm);
-	}
+	//Math::vec3 p;
+	//int a, b, c;
+	//for (int i = 0; i < (indexCount - 3); i += 3)
+	//{
+	//	a = mesh->indices[i];
+	//	b = mesh->indices[i + 1];
+	//	c = mesh->indices[i + 2];
+	//
+	//	p = Math::vec3::Cross(mesh->mesh[b].pos - mesh->mesh[a].pos, mesh->mesh[c].pos - mesh->mesh[a].pos);
+	//
+	//	mesh->mesh[mesh->indices[i]].norm += p;
+	//	mesh->mesh[mesh->indices[i + 1]].norm += p;
+	//	mesh->mesh[mesh->indices[i + 2]].norm += p;
+	//}
+	//
+	//for (int i = 0; i < vertexCount; ++i)
+	//{
+	//	mesh->mesh[i].norm = Math::vec3::Normalize(mesh->mesh[i].norm);
+	//}
 
 	for (int i = 0; i < vertexCount; i += 3)
 	{

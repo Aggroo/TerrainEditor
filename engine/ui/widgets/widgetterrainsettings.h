@@ -38,6 +38,7 @@ struct HeightMapSettings
 {
 	Util::String texName;
 	GLuint texture;
+	int size = 512;
 	float widthMultiplier = 1.f;
 	float heightMultiplier = 1.f;
 

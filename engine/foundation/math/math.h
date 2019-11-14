@@ -3,6 +3,7 @@
 #define PI 3.14159265358979323846
 #define DEGTORAD (3.14159265358979323846 / 180)
 #define RADTODEG (180 / 3.14159265358979323846)
+#include "vec4.h"
 
 namespace Math
 {
@@ -38,11 +39,11 @@ static T Sign(const T& x)
 	return (x == 0 ? 0 : (x > 0 ? 1 : -1));
 }
 
-template <class T> constexpr const T& max(const T& a, const T& b) {
+template <class T> constexpr const T& Max(const T& a, const T& b) {
 	return (a < b) ? b : a;
 }
 
-template <class T> constexpr const T& min(const T& a, const T& b) {
+template <class T> constexpr const T& Min(const T& a, const T& b) {
 	return !(b < a) ? a : b;
 }
 

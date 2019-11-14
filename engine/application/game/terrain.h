@@ -7,6 +7,7 @@
 #include "render/resources/shaderobject.h"
 #include "imgui.h"
 #include "render/render/skybox.h"
+#include "foundation/util/jobsystem.h"
 
 namespace TerrainEditor
 {
@@ -29,12 +30,12 @@ private:
 		float texUv2Multiplier = 0.1f;
 		float slopeAngle = 0.8f;
 		float heightFalloff = 10.0f;
-		float height = 5.0f;
+		float height = 10.0f;
 		float slopeAngle2 = 0.8f;
 		float heightFalloff2 = 40.0f;
 		float height2 = 60.0f;
-		float hardness1 = 0.2f;
-		float hardness2 = 0.1f;
+		float hardness1 = 10.0f;
+		float hardness2 = 10.0f;
 		float hardness3 = 4.0f;
 	};
 
@@ -54,7 +55,7 @@ public:
 	virtual void OnUI();
 
 	///Generates the terrain from a Heightmap
-	bool CreateTerrain(const char* filename, float widthMultiplier, float heightMultiplier, ImVec2* points);
+	bool CreateTerrain(const char* filename, int size, float widthMultiplier, float heightMultiplier, ImVec2* points);
 
 	HeightmapValues Average(int x, int y);
 
@@ -79,6 +80,8 @@ private:
 	int terrainWidth;
 	int terrainHeight;
 
+	float sizeModifier;
+
 	float heightScale;
 	float highestPoint;
 
@@ -93,6 +96,8 @@ private:
 	Ptr<Render::MeshResources> mesh;
 	Ptr<Render::ShaderObject> shader;
 
+	bool generate;
+	JobSystem::Context ctx;
 };
 }
 

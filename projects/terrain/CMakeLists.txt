@@ -5,8 +5,8 @@
 PROJECT(terrain)
 
 SET(files_terrain 
-code/CGLab.cc 
-code/CGLab.h
+code/application.cc 
+code/application.h
 code/main.cc
 )
 SOURCE_GROUP("terraineditor" FILES ${files_terrain})

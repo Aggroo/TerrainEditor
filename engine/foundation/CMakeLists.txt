@@ -17,6 +17,7 @@ SET(files_foundation_math
 	)
 	
 SET(files_foundation_util
+	util/threadsaferingbuffer.h
 	util/jsonparser.h
 	util/jsonparser.cpp
 	util/string.h
@@ -29,7 +30,8 @@ SET(files_foundation_util
 	util/fixedarray.h
 	util/list.h
 	util/curve.hpp
-	util/threadpool.h
+	util/jobsystem.cpp
+	util/jobsystem.h
 	util/variant.h
 	)
 	

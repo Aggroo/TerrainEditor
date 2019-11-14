@@ -159,8 +159,8 @@ void main()
 	//float specularSum = (splatTex.r * specular2 + splatTex.g * specular1 + splatTex.b * specular0).r;
 	//float roughnessSum = (splatTex.r * roughness2 + splatTex.g * roughness1 + splatTex.b * roughness0).r;
 	
-	float slopeBlend = pow(SlopeBlending(slopeAngle, 1-norm.y), hardness1);
-	float slopeBlend2 = pow(overlayBlend(SlopeBlending(slopeAngle2, 1-norm.y), texture2D(roughness[1], texCoord*40.0).r, 0.8), hardness2);
+	float slopeBlend = pow(SlopeBlending(slopeAngle, 1-(norm.y)), hardness1);
+	float slopeBlend2 = pow(overlayBlend(SlopeBlending(slopeAngle2, 1-(norm.y + normal1.y)), texture2D(roughness[1], texCoord*40.0).r, 0.8), hardness2);
 	float blendAmount = clamp(slopeBlend*(1-HeightBlending(height, heightFalloff)), 0.0, 1.0);
 	float blendAmount2 = clamp(slopeBlend2*HeightBlending(height2, heightFalloff2), 0.0, 1.0);
 

@@ -25,7 +25,11 @@ void TerrainSettings::Update()
 	ImGui::Indent(10);
 	if (ImGui::Button("Generate##heightmap", ImVec2(ImGui::GetWindowContentRegionWidth() - 20, 25)))
 	{
-		terrain->CreateTerrain(heightSettings.texName.AsCharPtr(), heightSettings.widthMultiplier, heightSettings.heightMultiplier, curvePoints);
+		terrain->CreateTerrain(heightSettings.texName.AsCharPtr(), 
+								heightSettings.size,
+								heightSettings.widthMultiplier, 
+								heightSettings.heightMultiplier, 
+								curvePoints);
 	}
 	ImGui::Unindent(10);
 
@@ -60,6 +64,9 @@ void TerrainSettings::Update()
 		{
 			this->heightPopup = true;
 		}
+
+		ImGui::LabelText("##terrainwidth", "Width");
+		ImGui::DragInt("##terrainwidth", &heightSettings.size, 1, 16, 16384);
 
 		ImGui::LabelText("##widthmult", "Width Multiplier");
 		ImGui::DragFloat("##widthmult", &heightSettings.widthMultiplier, 0.1f, 0.0f, 1000.f);
@@ -126,10 +133,6 @@ void TerrainSettings::Update()
 				ImGui::TreePop();
 			}
 
-			ImGui::LabelText("##Hardness3", "Hardness 3");
-			if (ImGui::DragFloat("##Hardness3", &terrain->tsVar.hardness3, 0.1f, 0.0f, 10.f))
-			{
-			}
 			ImGui::TreePop();
 		}
 
