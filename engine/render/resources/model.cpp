@@ -1,8 +1,5 @@
 #include "config.h"
 #include "model.h"
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
 
 namespace Render
 {
@@ -25,10 +22,51 @@ void Model::LoadModel(Util::String path)
 		printf("ERROR::ASSIMP::%s", import.GetErrorString());
 		return;
 	}
-	directory = path.ExtractDirName();
+	this->directory = path.ExtractDirName();
 
 	ProcessNode(scene->mRootNode, scene);
 
+}
+
+void Model::LoadMaterial(aiMaterial* mat, aiTextureType type, int meshIndex)
+{
+	aiString str;
+	if (type == aiTextureType_DIFFUSE && mat->GetTextureCount(type) >= 1)
+	{
+		mat->GetTexture(aiTextureType_DIFFUSE, 0, &str);
+		Util::String filepath = str.C_Str();
+		Util::String file = "resources/textures/" + filepath.ExtractFileName();
+		textures[meshIndex]->AddTexture(TextureIndex::albedo0, file.AsCharPtr());
+	}
+	else if (type == aiTextureType_NORMALS && mat->GetTextureCount(type) >= 1)
+	{
+		mat->GetTexture(aiTextureType_NORMALS, 0, &str);
+		Util::String filepath = str.C_Str();
+		Util::String file = "resources/textures/" + filepath.ExtractFileName();
+		textures[meshIndex]->AddTexture(TextureIndex::normal0, file.AsCharPtr());
+	}
+	else if (type == aiTextureType_SHININESS && mat->GetTextureCount(type) >= 1)
+	{
+		mat->GetTexture(aiTextureType_SHININESS, 0, &str);
+		Util::String filepath = str.C_Str();
+		Util::String file = "resources/textures/" + filepath.ExtractFileName();
+		textures[meshIndex]->AddTexture(TextureIndex::roughness0, file.AsCharPtr());
+	}
+	else if (type == aiTextureType_SPECULAR && mat->GetTextureCount(type) >= 1)
+	{
+		mat->GetTexture(aiTextureType_SPECULAR, 0, &str);
+		Util::String filepath = str.C_Str();
+		Util::String file = "resources/textures/" + filepath.ExtractFileName();
+		textures[meshIndex]->AddTexture(TextureIndex::specular0, file.AsCharPtr());
+	}
+	else if (type == aiTextureType_LIGHTMAP && mat->GetTextureCount(type) >= 1)
+	{
+		mat->GetTexture(aiTextureType_LIGHTMAP, 0, &str);
+		Util::String filepath = str.C_Str();
+		Util::String file = "resources/textures/" + filepath.ExtractFileName();
+		textures[meshIndex]->AddTexture(TextureIndex::ao0, file.AsCharPtr());
+	}
+	
 }
 
 void Model::Draw()
@@ -36,7 +74,11 @@ void Model::Draw()
 	for (unsigned int i = 0; i < meshes.Size(); i++)
 	{
 		if (meshes[i]->IsRenderable())
+		{
+			textures[i]->BindTextures();
 			meshes[i]->drawMesh();
+		}
+			
 	}	
 }
 
@@ -46,6 +88,18 @@ void Model::ProcessNode(aiNode* node, const aiScene* scene)
 	for (unsigned int i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
+
+		if (mesh->mMaterialIndex >= 0)
+		{
+			textures.Append(Render::TextureNode::Create());
+			aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+			LoadMaterial(material, aiTextureType_DIFFUSE, i);
+			LoadMaterial(material, aiTextureType_NORMALS, i);
+			LoadMaterial(material, aiTextureType_SHININESS, i);
+			LoadMaterial(material, aiTextureType_SPECULAR, i);
+			LoadMaterial(material, aiTextureType_LIGHTMAP, i);
+		}
+
 		meshes.Append(ProcessMesh(mesh, scene));
 	}
 	// then do the same for each of its children

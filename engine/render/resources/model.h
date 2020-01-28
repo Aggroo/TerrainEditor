@@ -1,11 +1,11 @@
 #pragma once
 #include "foundation/util/array.h"
 #include "meshresource.h"
+#include "texturenode.h"
 #include "shaderobject.h"
-
-struct aiMesh;
-struct aiNode;
-struct aiScene;
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 
 namespace Render
@@ -18,11 +18,13 @@ public:
 	~Model();
 
 	void LoadModel(Util::String path);
+	void LoadMaterial(aiMaterial* mat, aiTextureType type, int meshIndex);
 
 	void Draw();
 
 private:
 	Util::Array<Ptr<MeshResources>> meshes;
+	Util::Array<Ptr<TextureNode>> textures;
 	Util::String directory;
 
 	void ProcessNode(aiNode *node, const aiScene *scene);

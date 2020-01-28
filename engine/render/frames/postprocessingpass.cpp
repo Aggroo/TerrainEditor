@@ -90,7 +90,7 @@ void PostProcessingPass::Execute()
 
 	this->postProcessingQuad->drawMesh();
 
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	FramePass::Execute();
 }

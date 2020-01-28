@@ -137,13 +137,13 @@ Application::Run()
 	sphere->Activate();
 
 	Ptr<Game::Entity> teapot = Game::Entity::Create();
-	teapot->SetName("Teapot");
-	teapot->SetMesh("resources/models/HelmetPresentationLightMap.fbx.fbx");
-	teapot->SetTextures("resources/textures/helmet/BaseColor.png",
+	teapot->SetName("Helmet");
+	teapot->SetMesh("resources/models/HelmetPresentationLightMap.fbx");
+	/*teapot->SetTextures("resources/textures/helmet/BaseColor.png",
 						"resources/textures/helmet/NormalMap.png",
 						"resources/textures/helmet/Metalness.png",
 						"resources/textures/helmet/Roughness.png",
-						"resources/textures/helmet/AOMap.png");
+						"resources/textures/helmet/AOMap.png");*/
 	teapot->SetShaders("resources/shaders/PBR.vert", "resources/shaders/PBR.frag", "PBR");
 	teapot->SetIBLMaps(skybox->GetCubemap(), Render::FrameServer::Instance()->GetIBLPass()->GetIrradianceMap(), Render::FrameServer::Instance()->GetIBLPass()->GetBRDFMap());
 	teapot->SetTransform(modelMat*Math::mat4::translationMatrix(Math::vec4(-120.0f, 0.0f, 0.0f))*Math::mat4::vectorScaling(10.0f, 10.0f, 10.0f));
@@ -152,11 +152,11 @@ Application::Run()
 	Ptr<Game::Entity> gun = Game::Entity::Create();
 	gun->SetName("Gun");
 	gun->SetMesh("resources/models/Cerberus_LP.FBX");
-	gun->SetTextures("resources/textures/cerberus/Cerberus_A.tga",
+	/*gun->SetTextures("resources/textures/cerberus/Cerberus_A.tga",
 					 "resources/textures/cerberus/Cerberus_N.tga",
 					 "resources/textures/cerberus/Cerberus_M.tga",
 					 "resources/textures/cerberus/Cerberus_R.tga",
-					 "resources/textures/cerberus/Cerberus_AO.tga");
+					 "resources/textures/cerberus/Cerberus_AO.tga");*/
 	gun->SetShaders("resources/shaders/PBR.vert", "resources/shaders/PBR.frag", "PBR");
 	gun->SetIBLMaps(skybox->GetCubemap(), Render::FrameServer::Instance()->GetIBLPass()->GetIrradianceMap(), Render::FrameServer::Instance()->GetIBLPass()->GetBRDFMap());
 	gun->SetTransform(modelMat*Math::mat4::translationMatrix(Math::vec4(0.0f, -20.0f, 50.0f))*Math::mat4::rotY(Math::Deg2Rad(-90))*Math::mat4::rotX(Math::Deg2Rad(-90)));

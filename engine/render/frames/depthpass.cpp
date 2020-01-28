@@ -82,7 +82,7 @@ void DepthPass::Execute()
 	BaseGameFeature::EntityManager::Instance()->Update();
 
 	//Unbind Depth FrameBufferObject
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	FramePass::Execute();
 }
