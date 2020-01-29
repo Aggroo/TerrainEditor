@@ -14,16 +14,16 @@ static inline void SetupImGuiStyle(bool bStyleDark_, float alpha_)
 	ImVec4 text = ImVec4(0.76f, 0.77f, 0.8f, 1.0f);
 	ImVec4 black = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
 	ImVec4 backgroundVeryDark = ImVec4(0.08f, 0.086f, 0.094f, 1.00f);
-	ImVec4 backgroundDark = ImVec4(0.117f, 0.121f, 0.145f, 1.00f);
-	ImVec4 backgroundMedium = ImVec4(0.26f, 0.26f, 0.27f, 1.0f);
+	ImVec4 backgroundDark = ImVec4(0.141f, 0.141f, 0.141f, 1.00f);
+	ImVec4 backgroundMedium = ImVec4(0.25f, 0.25f, 0.25f, 1.0f);
 	ImVec4 backgroundLight = ImVec4(0.37f, 0.38f, 0.39f, 1.0f);
-	ImVec4 highlightBlue = ImVec4(0.172f, 0.239f, 0.341f, 1.0f);
+	ImVec4 highlightBlue = ImVec4(0.345f, 0.345f, 0.345f, 1.0f);
 	ImVec4 highlightBlueActive = ImVec4(0.182f, 0.249f, 0.361f, 1.0f);
-	ImVec4 highlightBlueHovered = ImVec4(0.202f, 0.269f, 0.391f, 1.0f);
+	ImVec4 highlightBlueHovered = ImVec4(0.345f, 0.345f, 0.345f, 1.0f);
 	ImVec4 barBackground = ImVec4(0.078f, 0.082f, 0.09f, 1.0f);
-	ImVec4 bar = ImVec4(0.164f, 0.180f, 0.231f, 1.0f);
+	ImVec4 bar = ImVec4(0.2f, 0.2f, 0.2f, 1.0f);
 	ImVec4 barHovered = ImVec4(0.411f, 0.411f, 0.411f, 1.0f);
-	ImVec4 barActive = ImVec4(0.337f, 0.337f, 0.368f, 1.0f);
+	ImVec4 barActive = ImVec4(0.345f, 0.345f, 0.345f, 1.0f);
 
 	// Spatial
 	style.WindowBorderSize = 1.0f;
@@ -53,7 +53,7 @@ static inline void SetupImGuiStyle(bool bStyleDark_, float alpha_)
 	//style.Colors[ImGuiCol_BorderShadow]			= ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
 	style.Colors[ImGuiCol_FrameBg] = bar;
 	style.Colors[ImGuiCol_FrameBgHovered] = highlightBlue;
-	style.Colors[ImGuiCol_FrameBgActive] = highlightBlueHovered;
+	style.Colors[ImGuiCol_FrameBgActive] = backgroundMedium;
 	style.Colors[ImGuiCol_TitleBg] = backgroundVeryDark;
 	//style.Colors[ImGuiCol_TitleBgCollapsed]		= ImVec4(0.20f, 0.22f, 0.27f, 0.75f);
 	style.Colors[ImGuiCol_TitleBgActive] = bar;

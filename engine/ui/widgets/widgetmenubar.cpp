@@ -4,6 +4,7 @@
 #include "render/server/frameserver.h"
 #include "render/window.h"
 #include "ui/uiserver.h"
+#include "IconsFontAwesome5_c.h"
 
 namespace UI
 {
@@ -33,8 +34,14 @@ void MenuBar::Update()
 		}
 		if (ImGui::BeginMenu("Settings"))
 		{
-			if (ImGui::MenuItem("Terrain Settings", "P")) { UI::UIServer::Instance()->SetWidgetVisibility("Terrain Settings", true); }
-			if (ImGui::MenuItem("Render Settings", "O")) { UI::UIServer::Instance()->SetWidgetVisibility("Render Settings", true); }
+			Util::String terrainSettings = ICON_FA_MOUNTAIN;
+			terrainSettings.Append(" Terrain Settings");
+
+			Util::String renderSettings = ICON_FA_COGS;
+			renderSettings.Append(" Render Settings");
+
+			if (ImGui::MenuItem("Terrain Settings", "P")) { UI::UIServer::Instance()->SetWidgetVisibility(terrainSettings, true); }
+			if (ImGui::MenuItem("Render Settings", "O")) { UI::UIServer::Instance()->SetWidgetVisibility(renderSettings, true); }
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Debug"))

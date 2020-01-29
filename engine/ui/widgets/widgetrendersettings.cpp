@@ -5,12 +5,16 @@
 #include "render/render/renderer.h"
 #include <vector>
 #include "foundation/math/math.h"
+#include "IconsFontAwesome5_c.h"
 
 namespace UI
 {
 RenderSettings::RenderSettings(Display::Window* app) : Widget(app)
 {
-	this->title = "Render Settings";
+	Util::String title = ICON_FA_COGS;
+	title.Append(" Render Settings");
+	this->title = title;
+
 	flags |= ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoScrollbar;
 	isVisible = false;
 	envTexPopup = false;

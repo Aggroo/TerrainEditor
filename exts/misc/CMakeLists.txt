@@ -4,7 +4,9 @@ set (MISC_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(MISC_HEAD 
 	${MISC_DIR}/tinyxml2.h
 	${MISC_DIR}/PerlinNoise.hpp
-	${MISC_DIR}/json.hpp)
+	${MISC_DIR}/json.hpp
+	${MISC_DIR}/IconsFontAwesome4_c.h
+	${MISC_DIR}/IconsFontAwesome5_c.h)
 	
 set(MISC_SRC
 	${MISC_DIR}/tinyxml2.cpp

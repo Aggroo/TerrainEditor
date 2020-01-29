@@ -3,12 +3,15 @@
 #include "application/basegamefeatures/entitymanager.h"
 #include "application/game/entitybase.h"
 #include "render/server/lightserver.h"
+#include "IconsFontAwesome5_c.h"
 
 namespace UI
 {
 Inspector::Inspector(Display::Window* app) : Widget(app)
 {
-	this->title = "Inspector";
+	Util::String title = ICON_FA_INFO_CIRCLE;
+	title.Append(" Inspector");
+	this->title = title;
 }
 
 void Inspector::Update()
