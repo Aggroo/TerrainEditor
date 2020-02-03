@@ -5,6 +5,7 @@
 #include <map>
 #include <vector>
 #include "core/refcounted.h"
+#include <string>
 
 
 namespace Render

@@ -1,8 +1,6 @@
 #include "config.h"
 #include "model.h"
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
+#include <assimp/pbrmaterial.h>
 
 namespace Render
 {
@@ -15,6 +13,7 @@ Model::~Model()
 {
 }
 
+
 void Model::LoadModel(Util::String path)
 {
 	Assimp::Importer import;
@@ -25,10 +24,44 @@ void Model::LoadModel(Util::String path)
 		printf("ERROR::ASSIMP::%s", import.GetErrorString());
 		return;
 	}
-	directory = path.ExtractDirName();
+	this->directory = path.ExtractDirName();
 
 	ProcessNode(scene->mRootNode, scene);
 
+}
+
+void Model::LoadMaterial(aiMaterial* mat, aiTextureType type, int meshIndex)
+{
+	if (mat->GetTextureCount(type) >= 1)
+	{
+		aiString str;
+		if (type == aiTextureType_UNKNOWN)
+		{
+			mat->GetTexture(AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_METALLICROUGHNESS_TEXTURE, &str);
+			Util::String file = directory + str.C_Str();
+			textures[meshIndex]->AddTexture(TextureIndex::specular0, file.AsCharPtr());
+			textures[meshIndex]->AddTexture(TextureIndex::roughness0, file.AsCharPtr());
+		}
+		else
+		{
+			mat->GetTexture(type, 0, &str);
+			Util::String file = directory + str.C_Str();
+			textures[meshIndex]->AddTexture(TextureTypeToTextureIndex(type), file.AsCharPtr());
+		}
+	}
+	else
+	{
+		switch (type)
+		{
+		case aiTextureType_DIFFUSE: textures[meshIndex]->AddTexture(TextureIndex::albedo0, "resources/textures/placeholder.png"); break;
+		case aiTextureType_NORMALS: textures[meshIndex]->AddTexture(TextureIndex::normal0, "resources/textures/placeholder.png"); break;
+		case aiTextureType_SHININESS: textures[meshIndex]->AddTexture(TextureIndex::roughness0, "resources/textures/white.png"); break;
+		case aiTextureType_SPECULAR: textures[meshIndex]->AddTexture(TextureIndex::specular0, "resources/textures/white.png"); break;
+		case aiTextureType_LIGHTMAP: textures[meshIndex]->AddTexture(TextureIndex::ao0, "resources/textures/white.png"); break;
+		default:
+			break;
+		}
+	}
 }
 
 void Model::Draw()
@@ -36,8 +69,27 @@ void Model::Draw()
 	for (unsigned int i = 0; i < meshes.Size(); i++)
 	{
 		if (meshes[i]->IsRenderable())
+		{
+			textures[i]->BindTextures();
 			meshes[i]->drawMesh();
+		}
+			
 	}	
+}
+
+TextureIndex Model::TextureTypeToTextureIndex(const aiTextureType& type)
+{
+	switch (type)
+	{
+	case aiTextureType_DIFFUSE: return TextureIndex::albedo0;
+	case aiTextureType_NORMALS:	 return TextureIndex::normal0;
+	case aiTextureType_SHININESS: return TextureIndex::roughness0;
+	case aiTextureType_AMBIENT: return TextureIndex::specular0;
+	case aiTextureType_SPECULAR: return TextureIndex::specular0;
+	case aiTextureType_LIGHTMAP: return TextureIndex::ao0;
+	default: return TextureIndex::albedo0;
+	}
+	
 }
 
 void Model::ProcessNode(aiNode* node, const aiScene* scene)
@@ -46,6 +98,20 @@ void Model::ProcessNode(aiNode* node, const aiScene* scene)
 	for (unsigned int i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
+
+		if (mesh->mMaterialIndex >= 0)
+		{
+			textures.Append(Render::TextureNode::Create());
+			aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+			LoadMaterial(material, aiTextureType_DIFFUSE, i);
+			LoadMaterial(material, aiTextureType_NORMALS, i);
+			LoadMaterial(material, aiTextureType_SHININESS, i);
+			LoadMaterial(material, aiTextureType_AMBIENT, i);
+			LoadMaterial(material, aiTextureType_SPECULAR, i);
+			LoadMaterial(material, aiTextureType_LIGHTMAP, i);
+			LoadMaterial(material, aiTextureType_UNKNOWN, i);
+		}
+
 		meshes.Append(ProcessMesh(mesh, scene));
 
 	}

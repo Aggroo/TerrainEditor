@@ -12,7 +12,7 @@ layout (std140, binding = 1) uniform PostProcessOptions
 
 uniform sampler2D hdrBuffer;
 
-vec3 Reinhard(vec3 hdr, float k = 1.0f)
+vec3 Reinhard(vec3 hdr, float k)
 {
 	return hdr / (hdr + k);
 }
@@ -102,7 +102,7 @@ void main()
 	else if(toneMapping == 3.0)
 	{
 		// Reinhard tone mapping
-		mapped = Reinhard(hdrColor);
+		mapped = Reinhard(hdrColor, 1.0f);
 	}
 	
   

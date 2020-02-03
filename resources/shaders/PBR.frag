@@ -41,7 +41,7 @@ void main()
 	vec3 normal = texture(NormalMap, texCoord).rgb * 2.0f - 1.0f;
 	//vec3 spec = texture(SpecularMap, texCoord).rgb;
 	float metallic = texture(SpecularMap, texCoord).r;
-	float roughness = texture(RoughnessMap, texCoord).r;
+	float roughness = texture(RoughnessMap, texCoord).g;
 	float ao = texture(aoMap, texCoord).r;
 
 	//vec3 Color = texture(AlbedoMap, vec2(uv.x,1.0-uv.y)).rgb;
@@ -215,7 +215,7 @@ void main()
 	vec3 color = ambient + lo;
 
 	color = color / (color + vec3(1.0f));
-	color = pow(color, vec3(screenGamma));
+	//color = pow(color, vec3(screenGamma));
 
 	resColor = vec4(color, 1.0);
 	normalColor = N;

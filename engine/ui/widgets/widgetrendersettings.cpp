@@ -16,7 +16,7 @@ RenderSettings::RenderSettings(Display::Window* app) : Widget(app)
 	this->title = title;
 
 	flags |= ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoScrollbar;
-	isVisible = false;
+	isVisible = true;
 	envTexPopup = false;
 }
 
