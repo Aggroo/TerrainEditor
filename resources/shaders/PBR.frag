@@ -214,7 +214,7 @@ void main()
 	
 	vec3 color = ambient + lo;
 
-	color = color / (color + vec3(1.0f));
+	//color = color / (color + vec3(1.0f));
 	//color = pow(color, vec3(screenGamma));
 
 	resColor = vec4(color, 1.0);

@@ -1,6 +1,6 @@
 #include "config.h"
 #include "terrain.h"
-#include "render/resources/stb_image.h"
+#include "stb_image.h"
 #include <assert.h>
 #include <iostream>
 #include "foundation/util/curve.hpp"
@@ -174,70 +174,67 @@ bool Terrain::CreateTerrain(const char* filename, int size, float widthMultiplie
 	
 	generate = true;
 
-	JobSystem::Execute(ctx, [this]() {
+	this->vertexCount = this->terrainWidth * this->terrainHeight;
+	this->indexCount = vertexCount * 6;
 
-		this->vertexCount = this->terrainWidth * this->terrainHeight;
-		this->indexCount = vertexCount * 6;
+	// Create the vertex array.
+	this->mesh->mesh.Reserve(vertexCount);
 
-		// Create the vertex array.
-		this->mesh->mesh.Reserve(vertexCount);
+	// Create the index array.
+	this->mesh->indices.Fill(0, indexCount, 0);
 
-		// Create the index array.
-		this->mesh->indices.Fill(0, indexCount, 0);
+	// Initialize the index to the vertex buffer.
+	int index = 0;
+	int index1, index2, index3, index4;
+	float uDiv = 1.f / this->terrainWidth;
+	float vDiv = 1.f / this->terrainHeight;
 
-		// Initialize the index to the vertex buffer.
-		int index = 0;
-		int index1, index2, index3, index4;
-		float uDiv = 1.f / this->terrainWidth;
-		float vDiv = 1.f / this->terrainHeight;
-
-		int i;
-		for (int y = 0; y < (this->terrainHeight); ++y)
+	int i;
+	for (int y = 0; y < (this->terrainHeight); ++y)
+	{
+		for (int x = 0; x < (this->terrainWidth); ++x)
 		{
-			for (int x = 0; x < (this->terrainWidth); ++x)
-			{
-				i = (this->terrainHeight * y) + x;
-				this->mesh->mesh.Append(Render::Vertex(Math::vec3(x*this->sizeModifier, 0.0f, y*this->sizeModifier), Math::vec2(x*uDiv, -y * vDiv), Math::vec3()));
-			}
+			i = (this->terrainHeight * y) + x;
+			this->mesh->mesh.Append(Render::Vertex(Math::vec3(x*this->sizeModifier, 0.0f, y*this->sizeModifier), Math::vec2(x*uDiv, -y * vDiv), Math::vec3()));
 		}
+	}
 
-		// Load the vertex and index array with the terrain data.
-		for (int y = 0; y < (this->terrainHeight - 1); ++y)
+	// Load the vertex and index array with the terrain data.
+	for (int y = 0; y < (this->terrainHeight - 1); ++y)
+	{
+		for (int x = 0; x < (this->terrainWidth - 1); ++x)
 		{
-			for (int x = 0; x < (this->terrainWidth - 1); ++x)
-			{
-				index1 = (this->terrainHeight * y) + x;          // Bottom left.
-				index2 = (this->terrainHeight * y) + (x + 1);      // Bottom right.
-				index3 = (this->terrainHeight * (y + 1)) + x;      // Upper left.
-				index4 = (this->terrainHeight * (y + 1)) + (x + 1);  // Upper right.
+			index1 = (this->terrainHeight * y) + x;          // Bottom left.
+			index2 = (this->terrainHeight * y) + (x + 1);      // Bottom right.
+			index3 = (this->terrainHeight * (y + 1)) + x;      // Upper left.
+			index4 = (this->terrainHeight * (y + 1)) + (x + 1);  // Upper right.
 
-				// Upper left.
-				this->mesh->indices[index] = index3;
-				index++;
+			// Upper left.
+			this->mesh->indices[index] = index3;
+			index++;
 
-				// Upper right.
-				this->mesh->indices[index] = index4;
-				index++;
+			// Upper right.
+			this->mesh->indices[index] = index4;
+			index++;
 
-				// Bottom left.
-				this->mesh->indices[index] = index1;
-				index++;
+			// Bottom left.
+			this->mesh->indices[index] = index1;
+			index++;
 
-				// Bottom left.
-				this->mesh->indices[index] = index1;
-				index++;
+			// Bottom left.
+			this->mesh->indices[index] = index1;
+			index++;
 
-				// Upper right.
-				this->mesh->indices[index] = index4;
-				index++;
+			// Upper right.
+			this->mesh->indices[index] = index4;
+			index++;
 
-				// Bottom right.
-				this->mesh->indices[index] = index2;
-				index++;
+			// Bottom right.
+			this->mesh->indices[index] = index2;
+			index++;
 
-			}
 		}
-	});
+	}
 	
 
 	//GenerateNormals();

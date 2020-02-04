@@ -22,7 +22,6 @@ void Renderer::Setup(Display::Window* window)
 	this->window = window;
 	this->renderResolution = { window->GetWidth(), window->GetHeight() };
 	glGenBuffers(1, this->ubo);
-	glEnable(GL_FRAMEBUFFER_SRGB);
 
 	renderOptions.Add(OptionTonemapping, static_cast<float>(ToneMappingACES));
 	renderOptions.Add(OptionExposure, 0.0f);

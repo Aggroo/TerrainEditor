@@ -23,8 +23,6 @@ SET(files_render_resources
 	resources/texturenode.cpp
 	resources/rasterizer.h
 	resources/rasterizer.cpp
-	resources/stb_image.h
-	resources/stb_image_write.h
 	resources/model.h
 	resources/model.cpp
 	)
