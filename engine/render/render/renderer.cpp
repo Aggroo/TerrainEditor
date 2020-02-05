@@ -24,6 +24,8 @@ void Renderer::Setup(Display::Window* window)
 	glGenBuffers(1, this->ubo);
 	glEnable(GL_FRAMEBUFFER_SRGB);
 
+	renderFlags |= RenderSSAO;
+
 	renderOptions.Add(OptionTonemapping, static_cast<float>(ToneMappingACES));
 	renderOptions.Add(OptionExposure, 0.0f);
 	renderOptions.Add(OptionGamma, 2.2f);

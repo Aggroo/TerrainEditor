@@ -1,6 +1,7 @@
 #include "config.h"
 #include "entity.h"
 #include "render/server/shaderserver.h"
+#include "render/server/frameserver.h"
 #include "render/camera/camera.h"
 #include "imgui.h"
 #include "ImSequencer.h"
@@ -158,14 +159,9 @@ void Entity::SetTextures(Util::String albedo, Util::String normal, Util::String 
 	this->textures->AddTexture(Render::TextureIndex::normal0, normal.AsCharPtr());
 	this->textures->AddTexture(Render::TextureIndex::specular0, metallic.AsCharPtr());
 	this->textures->AddTexture(Render::TextureIndex::roughness0, roughness.AsCharPtr());
-	if (ao == "Default")
-	{
-		this->textures->AddTexture(Render::TextureIndex::ao0, "resources/textures/terrain_textures/default/defaultAO.png");
-	}
-	else
-	{
-		this->textures->AddTexture(Render::TextureIndex::ao0, ao.AsCharPtr());
-	}
+
+	this->textures->AddTexture(Render::TextureIndex::ao0, Render::FrameServer::Instance()->GetSSAOPass()->GetSSAOBuffer());
+
 }
 
 void Entity::SetShaders(Util::String vertexShader, Util::String fragmentShader, const char* name)
@@ -208,6 +204,8 @@ void Entity::SetIBLMaps(Ptr<Render::TextureResource> envmapID, Ptr<Render::Textu
 	this->brdf = brdfID;
 	textures->AddTexture(Render::TextureIndex::brdf, this->brdf);
 	this->shader->setupUniformInt("brdfLUT", (GLuint)Render::TextureIndex::brdf);
+
+	
 }
 
 Ptr<Render::TextureResource> Entity::GetEnvironmentMap()

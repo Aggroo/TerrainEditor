@@ -46,7 +46,7 @@ void PostProcessingPass::Setup()
 	const GLenum drawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
 	glDrawBuffers(1, &drawBuffers[0]);
 
-	_assert2(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "HDR Framebuffer Status Error!");
+	_assert2(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Post-processing Framebuffer Status Error!");
 	
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -74,8 +74,6 @@ void PostProcessingPass::Setup()
 void PostProcessingPass::Execute()
 {
 	this->BindFrameBuffer();
-
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//Has to be handled better...
 	this->postProcessingShader->BindProgram();

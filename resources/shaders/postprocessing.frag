@@ -104,7 +104,6 @@ void main()
 		// Reinhard tone mapping
 		mapped = Reinhard(hdrColor, 1.0f);
 	}
-	
   
     resColor = vec4(mapped, 1.0);
 }

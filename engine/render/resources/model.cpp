@@ -1,6 +1,7 @@
 #include "config.h"
 #include "model.h"
 #include <assimp/pbrmaterial.h>
+#include "render/server/frameserver.h"
 
 namespace Render
 {
@@ -55,9 +56,9 @@ void Model::LoadMaterial(aiMaterial* mat, aiTextureType type, int meshIndex)
 		{
 		case aiTextureType_DIFFUSE: textures[meshIndex]->AddTexture(TextureIndex::albedo0, "resources/textures/placeholder.png"); break;
 		case aiTextureType_NORMALS: textures[meshIndex]->AddTexture(TextureIndex::normal0, "resources/textures/placeholder.png"); break;
-		case aiTextureType_SHININESS: textures[meshIndex]->AddTexture(TextureIndex::roughness0, "resources/textures/white.png"); break;
-		case aiTextureType_SPECULAR: textures[meshIndex]->AddTexture(TextureIndex::specular0, "resources/textures/white.png"); break;
-		case aiTextureType_LIGHTMAP: textures[meshIndex]->AddTexture(TextureIndex::ao0, "resources/textures/white.png"); break;
+		//case aiTextureType_SHININESS: textures[meshIndex]->AddTexture(TextureIndex::roughness0, "resources/textures/white.png"); break;
+		//case aiTextureType_SPECULAR: textures[meshIndex]->AddTexture(TextureIndex::specular0, "resources/textures/white.png"); break;
+		case aiTextureType_LIGHTMAP: textures[meshIndex]->AddTexture(Render::TextureIndex::ao0, Render::FrameServer::Instance()->GetSSAOPass()->GetSSAOBuffer()); break;
 		default:
 			break;
 		}

@@ -16,7 +16,7 @@ RenderSettings::RenderSettings(Display::Window* app) : Widget(app)
 	this->title = title;
 
 	flags |= ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoScrollbar;
-	isVisible = true;
+	isVisible = false;
 	envTexPopup = false;
 }
 
@@ -105,6 +105,9 @@ void RenderSettings::Update()
 
 				ImGui::TreePop();
 			}
+
+			if (ImGui::CheckboxFlags("SSAO Enabled", Render::Renderer::Instance()->GetRenderFlags(), Render::RenderSSAO))
+
 
 			ModalWindows();
 		}

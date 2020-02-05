@@ -36,6 +36,13 @@ void FrameServer::SetupFramePasses()
 	this->framePassByName.Add(this->lightCullingPass->name, this->lightCullingPass);
 	this->framePasses.Append(this->lightCullingPass);
 
+	//SSAO shader pass
+	this->ssaoPass = SSAOPass::Create();
+	this->ssaoPass->name = "SSAO";
+	this->ssaoPass->Setup();
+	this->framePassByName.Add(this->ssaoPass->name, this->ssaoPass.downcast<Render::FramePass>());
+	this->framePasses.Append(this->ssaoPass.downcast<FramePass>());
+
 	// FlatGeometryLit pass
 	this->FlatGeometryLit = FlatGeometryLitPass::Create();
 	this->FlatGeometryLit->name = "FlatGeometryLit";
@@ -59,6 +66,7 @@ void FrameServer::SetupFramePasses()
 void FrameServer::UpdateResolutions() const
 {
 	this->Depth->UpdateResolution();
+	this->ssaoPass->UpdateResolution();
 	this->FlatGeometryLit->UpdateResolution();
 	this->postProcessing->UpdateResolution();
 }
@@ -98,5 +106,9 @@ Ptr<FramePass> FrameServer::GetLightCullingPass()
 Ptr<FlatGeometryLitPass> FrameServer::GetFlatGeometryLitPass()
 {
 	return this->FlatGeometryLit;
+}
+Ptr<SSAOPass> FrameServer::GetSSAOPass()
+{
+	return this->ssaoPass;
 }
 }

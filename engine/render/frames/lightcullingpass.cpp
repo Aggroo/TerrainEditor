@@ -52,7 +52,7 @@ void LightCullingPass::Execute()
 	//Bind depth texture to the light shader
 	glActiveTexture(GL_TEXTURE4);
 	glUniform1i(glGetUniformLocation(this->lightCullingProgram, "depthMap"), 4);
-	glBindTexture(GL_TEXTURE_2D, FrameServer::Instance()->GetDepthPass()->GetLinearDepthBuffer());
+	glBindTexture(GL_TEXTURE_2D, FrameServer::Instance()->GetDepthPass()->GetPositionBuffer());
 
 	//
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, lightServer->GetPointLightBuffer());

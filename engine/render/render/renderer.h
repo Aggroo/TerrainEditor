@@ -83,7 +83,7 @@ public:
 	float GetRenderOption(RendererOptions option) { return renderOptions[option]; }
 	void SetRenderOption(RendererOptions option, float val) { renderOptions[option] = val; }
 
-	auto GetRenderFlags() { return renderFlags; }
+	auto GetRenderFlags() { return &renderFlags; }
 	void SetRenderFlags(uint32_t flags) { renderFlags = flags; }
 	void SetRenderFlag(RendererSettings flag) { renderFlags |= flag; };
 	void UnsetRenderFlag(RendererSettings flag) { renderFlags &= ~flag; };
