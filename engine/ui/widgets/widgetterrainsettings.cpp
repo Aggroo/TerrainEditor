@@ -3,6 +3,7 @@
 #include "foundation/util/curve.hpp"
 #include "nfd.h"
 #include "render/server/resourceserver.h"
+#include "IconsFontAwesome5_c.h"
 
 namespace UI
 {
@@ -10,7 +11,9 @@ namespace UI
 
 TerrainSettings::TerrainSettings(Display::Window* app) : Widget(app), heightPopup(false), texturesPopup(false)
 {
-	this->title = "Terrain Settings";
+	Util::String title = ICON_FA_MOUNTAIN;
+	title.Append(" Terrain Settings");
+	this->title = title;
 	this->heightSettings.texture = 0;
 	this->curvePoints[0].x = -1; // init data so editor knows to take it from here
 }

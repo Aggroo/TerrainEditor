@@ -1,12 +1,15 @@
 #include "config.h"
 #include "widgetperlingenerator.h"
 #include "nfd.h"
+#include "IconsFontAwesome5_c.h"
 
 namespace UI
 {
 PerlinSettings::PerlinSettings(Display::Window* app) : Widget(app), openPopup(false)
 {
-	this->title = "Perlin Noise Settings";
+	Util::String title = ICON_FA_TOOLS;
+	title.Append(" Perlin Noise Settings");
+	this->title = title;
 }
 
 void PerlinSettings::Update()

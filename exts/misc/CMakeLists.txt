@@ -6,7 +6,9 @@ set(MISC_HEAD
 	${MISC_DIR}/stb_image.h
 	${MISC_DIR}/stb_image_write.h
 	${MISC_DIR}/PerlinNoise.hpp
-	${MISC_DIR}/json.hpp)
+	${MISC_DIR}/json.hpp
+	${MISC_DIR}/IconsFontAwesome4_c.h
+	${MISC_DIR}/IconsFontAwesome5_c.h)
 	
 set(MISC_SRC
 	${MISC_DIR}/tinyxml2.cpp

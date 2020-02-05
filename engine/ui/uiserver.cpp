@@ -7,6 +7,7 @@
 #include "ui/widgets/widgetterrainsettings.h"
 #include "ui/widgets/widgetview.h"
 #include "ImGuizmo.h"
+#include "IconsFontAwesome5_c.h"
 
 namespace UI
 {
@@ -18,6 +19,15 @@ UIServer::UIServer()
 void UIServer::Setup(Display::Window* window)
 {
 	this->window = window;
+
+	ImGuiIO& io = ImGui::GetIO();
+
+	// merge in icons from Font Awesome
+	ImFontConfig cfg;
+	cfg.MergeMode = true;
+	cfg.GlyphMinAdvanceX = 14.0f;
+	static const ImWchar icon_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
+	io.Fonts->AddFontFromFileTTF("resources/fonts/fa-solid-900.ttf", 16.0f, &cfg, icon_ranges);
 
 	ApplyStyle();
 }
@@ -72,7 +82,7 @@ void UIServer::SetWidgetVisibility(Util::String widgetName, bool visibility)
 	}
 }
 
-	void UIServer::ApplyStyle()
+void UIServer::ApplyStyle()
 {
 	ImGui::StyleColorsDark();
 	ImGuiStyle& style = ImGui::GetStyle();
@@ -83,16 +93,16 @@ void UIServer::SetWidgetVisibility(Util::String widgetName, bool visibility)
 	ImVec4 text = ImVec4(0.76f, 0.77f, 0.8f, 1.0f);
 	ImVec4 black = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
 	ImVec4 backgroundVeryDark = ImVec4(0.08f, 0.086f, 0.094f, 1.00f);
-	ImVec4 backgroundDark = ImVec4(0.117f, 0.121f, 0.145f, 1.00f);
-	ImVec4 backgroundMedium = ImVec4(0.26f, 0.26f, 0.27f, 1.0f);
+	ImVec4 backgroundDark = ImVec4(0.141f, 0.141f, 0.141f, 1.00f);
+	ImVec4 backgroundMedium = ImVec4(0.25f, 0.25f, 0.25f, 1.0f);
 	ImVec4 backgroundLight = ImVec4(0.37f, 0.38f, 0.39f, 1.0f);
-	ImVec4 highlightBlue = ImVec4(0.172f, 0.239f, 0.341f, 1.0f);
-	ImVec4 highlightBlueActive = ImVec4(0.182f, 0.249f, 0.361f, 1.0f);
-	ImVec4 highlightBlueHovered = ImVec4(0.202f, 0.269f, 0.391f, 1.0f);
+	ImVec4 highlightBlue = ImVec4(0.345f, 0.345f, 0.345f, 1.0f);
+	ImVec4 highlightBlueActive = ImVec4(0.5f, 0.5f, 0.5f, 1.0f);
+	ImVec4 highlightBlueHovered = ImVec4(0.345f, 0.345f, 0.345f, 1.0f);
 	ImVec4 barBackground = ImVec4(0.078f, 0.082f, 0.09f, 1.0f);
-	ImVec4 bar = ImVec4(0.164f, 0.180f, 0.231f, 1.0f);
+	ImVec4 bar = ImVec4(0.2f, 0.2f, 0.2f, 1.0f);
 	ImVec4 barHovered = ImVec4(0.411f, 0.411f, 0.411f, 1.0f);
-	ImVec4 barActive = ImVec4(0.337f, 0.337f, 0.368f, 1.0f);
+	ImVec4 barActive = ImVec4(0.345f, 0.345f, 0.345f, 1.0f);
 
 	// Spatial
 	style.WindowBorderSize = 1.0f;
@@ -121,11 +131,11 @@ void UIServer::SetWidgetVisibility(Util::String widgetName, bool visibility)
 	style.Colors[ImGuiCol_Border] = black;
 	//style.Colors[ImGuiCol_BorderShadow]			= ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
 	style.Colors[ImGuiCol_FrameBg] = bar;
-	style.Colors[ImGuiCol_FrameBgHovered] = highlightBlue;
-	style.Colors[ImGuiCol_FrameBgActive] = highlightBlueHovered;
+	style.Colors[ImGuiCol_FrameBgHovered] = barActive;
+	style.Colors[ImGuiCol_FrameBgActive] = backgroundMedium;
 	style.Colors[ImGuiCol_TitleBg] = backgroundVeryDark;
 	//style.Colors[ImGuiCol_TitleBgCollapsed]		= ImVec4(0.20f, 0.22f, 0.27f, 0.75f);
-	style.Colors[ImGuiCol_TitleBgActive] = bar;
+	style.Colors[ImGuiCol_TitleBgActive] = backgroundVeryDark;
 	style.Colors[ImGuiCol_MenuBarBg] = backgroundVeryDark;
 	style.Colors[ImGuiCol_ScrollbarBg] = barBackground;
 	style.Colors[ImGuiCol_ScrollbarGrab] = bar;
@@ -135,11 +145,11 @@ void UIServer::SetWidgetVisibility(Util::String widgetName, bool visibility)
 	style.Colors[ImGuiCol_SliderGrab] = bar;
 	style.Colors[ImGuiCol_SliderGrabActive] = barActive;
 	style.Colors[ImGuiCol_Button] = barActive;
-	style.Colors[ImGuiCol_ButtonHovered] = highlightBlue;
-	style.Colors[ImGuiCol_ButtonActive] = highlightBlueHovered;
-	style.Colors[ImGuiCol_Header] = highlightBlue; // selected items (tree, menu bar etc.)
-	style.Colors[ImGuiCol_HeaderHovered] = highlightBlueHovered; // hovered items (tree, menu bar etc.)
-	style.Colors[ImGuiCol_HeaderActive] = highlightBlueActive;
+	style.Colors[ImGuiCol_ButtonHovered] = highlightBlueActive;
+	style.Colors[ImGuiCol_ButtonActive] = backgroundMedium;
+	style.Colors[ImGuiCol_Header] = barActive; // selected items (tree, menu bar etc.)
+	style.Colors[ImGuiCol_HeaderHovered] = highlightBlueActive; // hovered items (tree, menu bar etc.)
+	style.Colors[ImGuiCol_HeaderActive] = backgroundMedium;
 	style.Colors[ImGuiCol_Separator] = backgroundLight;
 	//style.Colors[ImGuiCol_SeparatorHovered]		= ImVec4(0.92f, 0.18f, 0.29f, 0.78f);
 	//style.Colors[ImGuiCol_SeparatorActive]		= ImVec4(0.92f, 0.18f, 0.29f, 1.00f);
@@ -153,6 +163,17 @@ void UIServer::SetWidgetVisibility(Util::String widgetName, bool visibility)
 	style.Colors[ImGuiCol_TextSelectedBg] = highlightBlue;
 	style.Colors[ImGuiCol_PopupBg] = backgroundVeryDark;
 	style.Colors[ImGuiCol_DragDropTarget] = backgroundLight;
+	style.Colors[ImGuiCol_Tab] = bar; 
+	style.Colors[ImGuiCol_TabHovered] = highlightBlueActive; 
+	style.Colors[ImGuiCol_TabActive] = backgroundMedium;
+	style.Colors[ImGuiCol_TabUnfocused] = bar; 
+	style.Colors[ImGuiCol_TabUnfocusedActive] = backgroundMedium;
+	style.Colors[ImGuiCol_NavHighlight] = bar;
+	style.Colors[ImGuiCol_NavWindowingHighlight] = bar;
+	style.Colors[ImGuiCol_NavWindowingDimBg] = bar;
+	style.Colors[ImGuiCol_ModalWindowDimBg] = bar;
+
+
 	//style.Colors[ImGuiCol_ModalWindowDarkening]	= ImVec4(0.20f, 0.22f, 0.27f, 0.73f);
 }
 }

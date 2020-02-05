@@ -3,12 +3,15 @@
 #include "render/render/renderer.h"
 #include "ImGuizmo.h"
 #include "imgui_internal.h"
+#include "IconsFontAwesome5_c.h"
 
 namespace UI
 {
 View::View(Display::Window* app) : Widget(app)
 {
-	this->title = "View";
+	Util::String camera = ICON_FA_VIDEO;
+	camera.Append(" View");
+	this->title = camera;
 	this->flags |= ImGuiWindowFlags_AlwaysAutoResize;
 }
 
