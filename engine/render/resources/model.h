@@ -28,6 +28,7 @@ public:
 	void LoadMaterial(aiMaterial* mat, aiTextureType type, int meshIndex);
 
 	void Draw();
+	void DrawDepth();
 
 private:
 	Util::Array<Ptr<MeshResources>> meshes;

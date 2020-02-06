@@ -46,7 +46,7 @@ void PostProcessingPass::Setup()
 	const GLenum drawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
 	glDrawBuffers(1, &drawBuffers[0]);
 
-	_assert2(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "HDR Framebuffer Status Error!");
+	_assert2(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Post-processing Framebuffer Status Error!");
 	
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -62,6 +62,7 @@ void PostProcessingPass::Setup()
 	this->postProcessingShader->BindProgram();
 
 	this->postProcessingShader->setupUniformInt("hdrBuffer", 0);
+	this->postProcessingShader->setupUniformInt("ao", 1);
 
 	this->postProcessingQuad->createQuad();
 	this->postProcessingQuad->genBuffer();
@@ -74,13 +75,14 @@ void PostProcessingPass::Setup()
 void PostProcessingPass::Execute()
 {
 	this->BindFrameBuffer();
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//Has to be handled better...
 	this->postProcessingShader->BindProgram();
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, FrameServer::Instance()->GetFlatGeometryLitPass()->GetTextureBuffer());
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, FrameServer::Instance()->GetSSAOPass()->GetSSAOBuffer()->GetTextureID());
 
 	UpdateUBOValues();
 

@@ -17,13 +17,17 @@ public:
 
 	void UpdateResolution();
 
-	//Returns the handle of the linear depth buffer
-	GLuint GetLinearDepthBuffer() { return this->linearDepthBuffer; }
+	//Returns the handle of the position buffer
+	GLuint& GetPositionBuffer() { return this->gPosition; }
+
+	//Returns the handle of the normal buffer
+	GLuint& GetNormalBuffer() { return this->gNormal; }
 
 private:
 
 	//Linearized depth buffer. Used for various screen-space effects.
-	GLuint linearDepthBuffer, gNormal, gAlbedoSpec;
+	GLuint gPosition, gNormal, gAlbedoSpec;
+
 };
 
 }

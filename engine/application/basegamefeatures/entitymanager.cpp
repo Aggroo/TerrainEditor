@@ -39,7 +39,7 @@ void EntityManager::UnregisterEntity(const int& ID)
 	}
 }
 
-void EntityManager::Update()
+void EntityManager::Update(bool depth)
 {
 	double currentTime = glfwGetTime();
 
@@ -62,7 +62,7 @@ void EntityManager::Update()
 	{
 		Ptr<Game::EntityBase> entity = it->second;
 		if (entity->IsActive())
-			entity->Update();
+			entity->Update(depth);
 	}
 
 	lastTime = currentTime;

@@ -6,6 +6,7 @@
 #include "render/frames/flatgeometrylitpass.h"
 #include "render/frames/iblpass.h"
 #include "render/frames/postprocessingpass.h"
+#include "render/frames/ssaopass.h"
 
 namespace Render
 {
@@ -26,6 +27,8 @@ public:
 	Ptr<IBLPass> GetIBLPass();
 	Ptr<FramePass> GetLightCullingPass();
 	Ptr<FlatGeometryLitPass> GetFlatGeometryLitPass();
+	Ptr<SSAOPass> GetSSAOPass();
+	Ptr<PostProcessingPass> GetPostProcessingPass();
 
 private:
 
@@ -46,6 +49,9 @@ private:
 
 	/// For lit objects
 	Ptr<FlatGeometryLitPass> FlatGeometryLit;
+
+	/// For SSAO
+	Ptr<SSAOPass> ssaoPass;
 
 	/// For post processing techniques
 	Ptr<PostProcessingPass> postProcessing;

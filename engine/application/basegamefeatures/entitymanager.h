@@ -29,8 +29,11 @@ public:
 	//Deletes an entity by ID. Unregisters it from gamehandler. 
 	void UnregisterEntity(const int& ID);
 
+	//Draws all meshes for depth pass
+	void DrawDepthPass();
+
 	//Calls all entities update and fixedUpdate functions.
-	void Update();
+	void Update(bool depth = false);
 
 	//Returns time since last update multiplied with UPDATE_MULTIPLIER
 	double DeltaTime();

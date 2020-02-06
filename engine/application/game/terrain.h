@@ -50,7 +50,7 @@ public:
 	void Activate();
 	void Deactivate();
 
-	virtual void Update();
+	virtual void Update(bool depth = false);
 
 	virtual void OnUI();
 

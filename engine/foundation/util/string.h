@@ -180,8 +180,10 @@ public:
     void SetFloat(float val);
     /// set as bool value
     void SetBool(bool val);
+	/// set as vec3 value
     void SetVec2(const Math::vec2& v);
-
+	/// set as vec3 value
+	void SetVec3(const Math::vec3& v);
     /// set as vec4 value
     void SetVec4(const Math::vec4& v);
     /// set as mat4 value
@@ -273,7 +275,8 @@ public:
     static String FromBool(bool b);
 	/// construct a string from vec2
     static String FromVec2(const Math::vec2& v);
-
+	/// construct a string from vec3
+	static String FromVec3(const Math::vec3& v);
     /// construct a string from vec4
     static String FromVec4(const Math::vec4& v);
     /// construct a string from mat4
@@ -602,6 +605,15 @@ inline void
 String::SetVec2(const Math::vec2& v)
 {
 	this->Format("%.6f,%.6f", v.x(), v.y());
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+inline void
+String::SetVec3(const Math::vec3& v)
+{
+	this->Format("%.6f,%.6f,%.6f", v.x(), v.y(), v.z());
 }
 
 //------------------------------------------------------------------------------
@@ -1071,6 +1083,18 @@ String::FromVec2(const Math::vec2& v)
 {
 	String str;
 	str.SetVec2(v);
+	return str;
+}
+
+
+//------------------------------------------------------------------------------
+/**
+*/
+inline String
+String::FromVec3(const Math::vec3& v)
+{
+	String str;
+	str.SetVec3(v);
 	return str;
 }
 

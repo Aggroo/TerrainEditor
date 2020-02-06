@@ -1,6 +1,7 @@
 #include "config.h"
 #include "entity.h"
 #include "render/server/shaderserver.h"
+#include "render/server/frameserver.h"
 #include "render/camera/camera.h"
 #include "imgui.h"
 #include "ImSequencer.h"
@@ -17,6 +18,7 @@ Entity::Entity() : entityName("")
 {
 	this->mesh = Render::Model::Create();
 	this->shader = Render::ShaderObject::Create();
+	this->depthShader = Render::ShaderObject::Create();
 	this->textures = Render::TextureNode::Create();
 }
 
@@ -31,7 +33,16 @@ void Entity::Activate()
 	this->shader->setupUniformInt("NormalMap", (GLuint)Render::TextureIndex::normal0);
 	this->shader->setupUniformInt("SpecularMap", (GLuint)Render::TextureIndex::specular0);
 	this->shader->setupUniformInt("RoughnessMap", (GLuint)Render::TextureIndex::roughness0);
-	this->shader->setupUniformInt("aoMap", (GLuint)Render::TextureIndex::ao0);
+	//this->shader->setupUniformInt("aoMap", (GLuint)Render::TextureIndex::ao0);
+
+	GLuint vert = Render::ShaderServer::Instance()->LoadVertexShader("resources/shaders/gBuffer.vert");
+	GLuint frag = Render::ShaderServer::Instance()->LoadFragmentShader("resources/shaders/gBuffer.frag");
+
+	this->depthShader->AddShader(vert);
+	this->depthShader->AddShader(frag);
+	this->depthShader->LinkShaders();
+
+	
 
 	EntityBase::Activate();
 }
@@ -41,14 +52,24 @@ void Entity::Deactivate()
 	EntityBase::Deactivate();
 }
 
-void Entity::Update()
+void Entity::Update(bool depth)
 {
-	this->shader->BindProgram();
-	this->textures->BindTextures();
-	this->shader->setupMatrix4fv("Model", this->transform);
-
+	if (!depth)
+	{
+		this->shader->BindProgram();
+		this->textures->BindTextures();
+		this->shader->setupMatrix4fv("Model", this->transform);
+		this->mesh->Draw();
+	}
+	else
+	{
+		this->depthShader->BindProgram();
+		this->depthShader->setupMatrix4fv("Model", this->transform);
+		this->mesh->DrawDepth();
+	}
+	
 	//if (this->mesh->IsRenderable())
-	this->mesh->Draw();
+	
 }
 
 void Entity::OnUI()
@@ -158,14 +179,9 @@ void Entity::SetTextures(Util::String albedo, Util::String normal, Util::String 
 	this->textures->AddTexture(Render::TextureIndex::normal0, normal.AsCharPtr());
 	this->textures->AddTexture(Render::TextureIndex::specular0, metallic.AsCharPtr());
 	this->textures->AddTexture(Render::TextureIndex::roughness0, roughness.AsCharPtr());
-	if (ao == "Default")
-	{
-		this->textures->AddTexture(Render::TextureIndex::ao0, "resources/textures/terrain_textures/default/defaultAO.png");
-	}
-	else
-	{
-		this->textures->AddTexture(Render::TextureIndex::ao0, ao.AsCharPtr());
-	}
+
+	//this->textures->AddTexture(Render::TextureIndex::ao0, Render::FrameServer::Instance()->GetSSAOPass()->GetSSAOBuffer());
+
 }
 
 void Entity::SetShaders(Util::String vertexShader, Util::String fragmentShader, const char* name)
@@ -208,6 +224,8 @@ void Entity::SetIBLMaps(Ptr<Render::TextureResource> envmapID, Ptr<Render::Textu
 	this->brdf = brdfID;
 	textures->AddTexture(Render::TextureIndex::brdf, this->brdf);
 	this->shader->setupUniformInt("brdfLUT", (GLuint)Render::TextureIndex::brdf);
+
+	
 }
 
 Ptr<Render::TextureResource> Entity::GetEnvironmentMap()

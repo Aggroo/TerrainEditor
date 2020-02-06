@@ -31,7 +31,7 @@ namespace Game
 	{
 	}
 
-	void EntityBase::Update()
+	void EntityBase::Update(bool depth)
 	{
 	}
 
