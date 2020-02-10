@@ -32,7 +32,7 @@ void Entity::Activate()
 	this->shader->setupUniformInt("NormalMap", (GLuint)Render::TextureIndex::normal0);
 	this->shader->setupUniformInt("SpecularMap", (GLuint)Render::TextureIndex::specular0);
 	this->shader->setupUniformInt("RoughnessMap", (GLuint)Render::TextureIndex::roughness0);
-	this->shader->setupUniformInt("aoMap", (GLuint)Render::TextureIndex::ao0);
+	//this->shader->setupUniformInt("aoMap", (GLuint)Render::TextureIndex::ao0);
 
 	EntityBase::Activate();
 }
@@ -160,7 +160,7 @@ void Entity::SetTextures(Util::String albedo, Util::String normal, Util::String 
 	this->textures->AddTexture(Render::TextureIndex::specular0, metallic.AsCharPtr());
 	this->textures->AddTexture(Render::TextureIndex::roughness0, roughness.AsCharPtr());
 
-	this->textures->AddTexture(Render::TextureIndex::ao0, Render::FrameServer::Instance()->GetSSAOPass()->GetSSAOBuffer());
+	//this->textures->AddTexture(Render::TextureIndex::ao0, Render::FrameServer::Instance()->GetSSAOPass()->GetSSAOBuffer());
 
 }
 

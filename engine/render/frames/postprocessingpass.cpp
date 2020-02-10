@@ -62,6 +62,7 @@ void PostProcessingPass::Setup()
 	this->postProcessingShader->BindProgram();
 
 	this->postProcessingShader->setupUniformInt("hdrBuffer", 0);
+	this->postProcessingShader->setupUniformInt("AO", 1);
 
 	this->postProcessingQuad->createQuad();
 	this->postProcessingQuad->genBuffer();
@@ -79,6 +80,8 @@ void PostProcessingPass::Execute()
 	this->postProcessingShader->BindProgram();
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, FrameServer::Instance()->GetFlatGeometryLitPass()->GetTextureBuffer());
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, FrameServer::Instance()->GetSSAOPass()->GetSSAOBuffer()->GetTextureID());
 
 	UpdateUBOValues();
 

@@ -11,6 +11,7 @@ layout (std140, binding = 1) uniform PostProcessOptions
 };
 
 uniform sampler2D hdrBuffer;
+uniform sampler2D AO;
 
 vec3 Reinhard(vec3 hdr, float k)
 {
@@ -78,6 +79,7 @@ void main()
 {    
 	vec3 mapped;
     vec3 hdrColor = texture(hdrBuffer, TexCoords).rgb;
+	float ao = texture(AO, TexCoords).r;
 	
 	hdrColor = pow(abs(hdrColor), vec3(1.0f / gamma));
 	

@@ -18,7 +18,7 @@ Model::~Model()
 void Model::LoadModel(Util::String path)
 {
 	Assimp::Importer import;
-	const aiScene *scene = import.ReadFile(path.AsCharPtr(), aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices | aiProcess_CalcTangentSpace);
+	const aiScene *scene = import.ReadFile(path.AsCharPtr(), aiProcessPreset_TargetRealtime_Fast | aiProcess_FlipUVs);
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
