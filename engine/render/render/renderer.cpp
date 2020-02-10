@@ -23,7 +23,7 @@ void Renderer::Setup(Display::Window* window)
 	this->renderResolution = { window->GetWidth(), window->GetHeight() };
 	glGenBuffers(1, this->ubo);
 
-	renderFlags |= RenderSSAO;
+	//renderFlags |= RenderSSAO;
 
 	renderOptions.Add(OptionTonemapping, static_cast<float>(ToneMappingACES));
 	renderOptions.Add(OptionExposure, 0.0f);

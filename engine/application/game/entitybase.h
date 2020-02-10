@@ -21,7 +21,7 @@ public:
 	///Updates this entity and calls all its properties FixedUpdate() functions. This is called much less frequently than Update()
 	virtual void FixedUpdate();
 	///Updates this entity and calls all its properties Update() functions.
-	virtual void Update(bool depth = false);
+	virtual void Update();
 
 	virtual void OnUI();
 

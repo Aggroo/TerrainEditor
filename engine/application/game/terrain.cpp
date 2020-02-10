@@ -102,7 +102,7 @@ void Terrain::Deactivate()
 	EntityBase::Deactivate();
 }
 
-void Terrain::Update(bool depth)
+void Terrain::Update()
 {
 	if (generate && !JobSystem::IsBusy(ctx))
 	{

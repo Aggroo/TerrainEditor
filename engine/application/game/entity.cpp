@@ -52,24 +52,15 @@ void Entity::Deactivate()
 	EntityBase::Deactivate();
 }
 
-void Entity::Update(bool depth)
+void Entity::Update()
 {
-	if (!depth)
-	{
-		this->shader->BindProgram();
-		this->textures->BindTextures();
-		this->shader->setupMatrix4fv("Model", this->transform);
-		this->mesh->Draw();
-	}
-	else
-	{
-		this->depthShader->BindProgram();
-		this->depthShader->setupMatrix4fv("Model", this->transform);
-		this->mesh->DrawDepth();
-	}
-	
+
+	this->shader->BindProgram();
+	this->textures->BindTextures();
+	this->shader->setupMatrix4fv("Model", this->transform);
+	this->mesh->Draw();
+
 	//if (this->mesh->IsRenderable())
-	
 }
 
 void Entity::OnUI()
