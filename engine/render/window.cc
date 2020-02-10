@@ -242,6 +242,12 @@ Window::Open()
 	glfwSetScrollCallback(this->window, Window::StaticMouseScrollCallback);
 	glfwSetWindowSizeCallback(this->window, Window::StaticWindowResizeCallback);
 
+	GLFWimage images[2];
+	int channels;
+	images[0].pixels = stbi_load("resources/iconx48.png", &images[0].width, &images[0].height, &channels, 0);
+	images[1].pixels = stbi_load("resources/iconx16.png", &images[1].width, &images[1].height, &channels, 0);
+	glfwSetWindowIcon(window, 2, images);
+
 	// setup imgui implementation
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
