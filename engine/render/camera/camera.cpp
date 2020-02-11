@@ -8,7 +8,7 @@ __ImplementClass(Graphics::Camera, 'CAMB', Core::RefCounted);
 Camera::Camera() :
 	aspectRatio(0.0f),
 	fov(1.5708f),
-	nearZ(0.05f),
+	nearZ(0.5f),
 	farZ(3000.0f)
 {
 	this->view = Math::mat4::identity();

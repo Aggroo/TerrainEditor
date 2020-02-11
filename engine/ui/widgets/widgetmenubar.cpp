@@ -46,15 +46,25 @@ void MenuBar::Update()
 		}
 		if (ImGui::BeginMenu("Debug"))
 		{
-			ImGui::MenuItem("Show Framebuffer:");
+			ImGui::Text("Show Framebuffer:");
 			ImGui::Separator();
 
-			if (ImGui::MenuItem("FlatGeometryLit Color")) { Render::Renderer::Instance()->SetFinalColorBuffer(Render::FrameServer::Instance()->GetFlatGeometryLitPass()->GetTextureBuffer()); }
-			if (ImGui::MenuItem("Depth")) { Render::Renderer::Instance()->SetFinalColorBuffer(Render::FrameServer::Instance()->GetDepthPass()->GetTextureBuffer()); }
-			if (ImGui::MenuItem("Linear Depth")) { Render::Renderer::Instance()->SetFinalColorBuffer(Render::FrameServer::Instance()->GetDepthPass()->GetPositionBuffer()); }
-			if (ImGui::MenuItem("FlatGeometryLit Normals")) { Render::Renderer::Instance()->SetFinalColorBuffer(Render::FrameServer::Instance()->GetFlatGeometryLitPass()->GetNormalBuffer()); }
-			if (ImGui::MenuItem("FlatGeometryLit Specular")) { Render::Renderer::Instance()->SetFinalColorBuffer(Render::FrameServer::Instance()->GetFlatGeometryLitPass()->GetSpecularBuffer()); }
-			if (ImGui::MenuItem("FlatGeometryLit Roughness")) { Render::Renderer::Instance()->SetFinalColorBuffer(Render::FrameServer::Instance()->GetFlatGeometryLitPass()->GetRoughnessBuffer()); }
+			if (ImGui::MenuItem("Final Render")) { Render::Renderer::Instance()->SetFinalColorBuffer(Render::FrameServer::Instance()->GetPostProcessingPass()->GetTextureBuffer()); }
+			if (ImGui::BeginMenu("Depth Buffers##Menu"))
+			{
+				if (ImGui::MenuItem("Depth")) { Render::Renderer::Instance()->SetFinalColorBuffer(Render::FrameServer::Instance()->GetDepthPass()->GetTextureBuffer()); }
+				if (ImGui::MenuItem("Postition")) { Render::Renderer::Instance()->SetFinalColorBuffer(Render::FrameServer::Instance()->GetDepthPass()->GetPositionBuffer()); }
+				if (ImGui::MenuItem("Normals")) { Render::Renderer::Instance()->SetFinalColorBuffer(Render::FrameServer::Instance()->GetDepthPass()->GetNormalBuffer()); }
+				ImGui::EndMenu();
+			}
+			if (ImGui::BeginMenu("FlatGeometryLit Buffers"))
+			{
+				if (ImGui::MenuItem("FlatGeometryLit Color")) { Render::Renderer::Instance()->SetFinalColorBuffer(Render::FrameServer::Instance()->GetFlatGeometryLitPass()->GetTextureBuffer()); }
+				if (ImGui::MenuItem("FlatGeometryLit Normals")) { Render::Renderer::Instance()->SetFinalColorBuffer(Render::FrameServer::Instance()->GetFlatGeometryLitPass()->GetNormalBuffer()); }
+				if (ImGui::MenuItem("FlatGeometryLit Specular")) { Render::Renderer::Instance()->SetFinalColorBuffer(Render::FrameServer::Instance()->GetFlatGeometryLitPass()->GetSpecularBuffer()); }
+				if (ImGui::MenuItem("FlatGeometryLit Roughness")) { Render::Renderer::Instance()->SetFinalColorBuffer(Render::FrameServer::Instance()->GetFlatGeometryLitPass()->GetRoughnessBuffer()); }
+				ImGui::EndMenu();
+			}
 			if (ImGui::MenuItem("SSAO")) { Render::Renderer::Instance()->SetFinalColorBuffer(Render::FrameServer::Instance()->GetSSAOPass()->GetSSAOBuffer()->GetTextureID()); }
 			ImGui::Separator();
 			ImGui::EndMenu();

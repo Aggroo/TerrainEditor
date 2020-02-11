@@ -129,7 +129,7 @@ void SSAOPass::Setup()
 	this->ssaoQuad->createQuad();
 	this->ssaoQuad->genBuffer();
 
-	this->defaultAO->LoadTextureFile("resources/textures/white.png");
+	this->defaultAO->LoadTextureFile("resources/textures/terrain_textures/default/defaultAO.png");
 
 	FramePass::Setup();
 }

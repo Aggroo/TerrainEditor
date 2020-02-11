@@ -28,6 +28,7 @@ public:
 	Ptr<FramePass> GetLightCullingPass();
 	Ptr<FlatGeometryLitPass> GetFlatGeometryLitPass();
 	Ptr<SSAOPass> GetSSAOPass();
+	Ptr<PostProcessingPass> GetPostProcessingPass();
 
 private:
 

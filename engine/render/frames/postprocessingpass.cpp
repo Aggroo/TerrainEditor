@@ -75,6 +75,7 @@ void PostProcessingPass::Setup()
 void PostProcessingPass::Execute()
 {
 	this->BindFrameBuffer();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//Has to be handled better...
 	this->postProcessingShader->BindProgram();

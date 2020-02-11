@@ -9,12 +9,12 @@ uniform sampler2D texNoise;
 uniform vec3 samples[64];
 
 // parameters (you'd probably want to use them as uniforms to more easily tweak the effect)
-int kernelSize = 16;
+int kernelSize = 32;
 float radius = 0.5;
 float bias = 0.025;
 
 // tile noise texture over screen based on screen dimensions divided by noise size
-const vec2 noiseScale = vec2(ScreenSize.x/8.0, ScreenSize.y/8.0); 
+const vec2 noiseScale = vec2(ScreenSize.x/4.0, ScreenSize.y/4.0); 
 
 void main()
 {

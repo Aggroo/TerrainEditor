@@ -27,6 +27,7 @@ private:
 
 	//Linearized depth buffer. Used for various screen-space effects.
 	GLuint gPosition, gNormal, gAlbedoSpec;
+
 };
 
 }

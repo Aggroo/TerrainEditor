@@ -1,6 +1,7 @@
 #include "config.h"
 #include "depthpass.h"
 #include "render/render/renderer.h"
+#include "render/server/shaderserver.h"
 #include "application/basegamefeatures/entitymanager.h"
 
 namespace Render
@@ -8,7 +9,6 @@ namespace Render
 __ImplementClass(Render::DepthPass, 'REDE', Render::DrawPass)
 DepthPass::DepthPass()
 {
-
 }
 
 DepthPass::~DepthPass()
@@ -37,9 +37,9 @@ void DepthPass::Setup()
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, res.x, res.y, 0, GL_RGB, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	//glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
 	// - normal color buffer
 	glGenTextures(1, &this->gNormal);
@@ -77,7 +77,7 @@ void DepthPass::Setup()
 void DepthPass::Execute()
 {
 	this->BindFrameBuffer();
-	glClear(GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	BaseGameFeature::EntityManager::Instance()->Update();
 

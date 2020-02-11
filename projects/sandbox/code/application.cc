@@ -131,7 +131,7 @@ Application::Run()
 	sphere->SetMesh("resources/assets/sponza/sponza.gltf");
 	sphere->SetShaders("resources/shaders/PBR.vert", "resources/shaders/PBR.frag", "PBR");
 	sphere->SetIBLMaps(skybox->GetCubemap(), Render::FrameServer::Instance()->GetIBLPass()->GetIrradianceMap(), Render::FrameServer::Instance()->GetIBLPass()->GetBRDFMap());
-	sphere->SetTransform(modelMat*Math::mat4::translationMatrix(Math::vec4(-50.0f, 0.0f, 0.0f)));
+	sphere->SetTransform(modelMat*Math::mat4::translationMatrix(Math::vec4(0.0f, 0.0f, 0.0f)));
 	sphere->Activate();
 	
 	Ptr<Game::Entity> gun = Game::Entity::Create();
@@ -139,22 +139,22 @@ Application::Run()
 	gun->SetMesh("resources/assets/Cerberus/Cerberus_LP.FBX");
 	gun->SetShaders("resources/shaders/PBR.vert", "resources/shaders/PBR.frag", "PBR");
 	gun->SetIBLMaps(skybox->GetCubemap(), Render::FrameServer::Instance()->GetIBLPass()->GetIrradianceMap(), Render::FrameServer::Instance()->GetIBLPass()->GetBRDFMap());
-	gun->SetTransform(modelMat*Math::mat4::translationMatrix(Math::vec4(0.0f, -20.0f, 50.0f))*Math::mat4::rotY(Math::Deg2Rad(-90))*Math::mat4::rotX(Math::Deg2Rad(-90)));
+	gun->SetTransform(modelMat*Math::mat4::translationMatrix(Math::vec4(0.0f, 50.0f, 0.0f))*Math::mat4::rotY(Math::Deg2Rad(-90))*Math::mat4::rotX(Math::Deg2Rad(-90)));
 	gun->Activate();
 
-	lNode.setShaders(Render::ShaderServer::Instance()->GetShader("PBR"));
-	
-	lNode.setPos(0.0f, 250.0f, 0.0f);
-	lNode.setIntensity(0.6f, 0.6f, 0.6f);
-	lNode.setColour(0.2f, 0.2f, 0.2f);
-    lNode.apply();
+	//lNode.setShaders(Render::ShaderServer::Instance()->GetShader("PBR"));
+	//
+	//lNode.setPos(0.0f, 250.0f, 0.0f);
+	//lNode.setIntensity(0.6f, 0.6f, 0.6f);
+	//lNode.setColour(0.2f, 0.2f, 0.2f);
+    //lNode.apply();
 
 
 	//terrain->SetSkybox(skybox);
 
     std::chrono::high_resolution_clock::time_point before = std::chrono::high_resolution_clock::now();
 
-	Render::LightServer::Instance()->CreatePointLight(Math::vec4(0, 800, 3), Math::vec4(0.3f, 0.3f, 0.3f), 10.0f);
+	//Render::LightServer::Instance()->CreatePointLight(Math::vec4(0, 800, 3), Math::vec4(0.3f, 0.3f, 0.3f), 10.0f);
 
 	while (this->window->IsOpen())
 	{        
@@ -171,7 +171,7 @@ Application::Run()
 		
 		//gN.draw();	
 
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        //glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 		this->window->SwapBuffers();
 	}

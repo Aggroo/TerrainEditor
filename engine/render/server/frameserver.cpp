@@ -111,4 +111,9 @@ Ptr<SSAOPass> FrameServer::GetSSAOPass()
 {
 	return this->ssaoPass;
 }
+
+Ptr<PostProcessingPass> FrameServer::GetPostProcessingPass()
+{
+	return this->postProcessing;
+}
 }

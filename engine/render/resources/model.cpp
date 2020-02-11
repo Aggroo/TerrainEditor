@@ -58,7 +58,7 @@ void Model::LoadMaterial(aiMaterial* mat, aiTextureType type, int meshIndex)
 		case aiTextureType_NORMALS: textures[meshIndex]->AddTexture(TextureIndex::normal0, "resources/textures/placeholder.png"); break;
 		//case aiTextureType_SHININESS: textures[meshIndex]->AddTexture(TextureIndex::roughness0, "resources/textures/white.png"); break;
 		//case aiTextureType_SPECULAR: textures[meshIndex]->AddTexture(TextureIndex::specular0, "resources/textures/white.png"); break;
-		case aiTextureType_LIGHTMAP: textures[meshIndex]->AddTexture(Render::TextureIndex::ao0, Render::FrameServer::Instance()->GetSSAOPass()->GetSSAOBuffer()); break;
+		//case aiTextureType_LIGHTMAP: textures[meshIndex]->AddTexture(Render::TextureIndex::ao0, Render::FrameServer::Instance()->GetSSAOPass()->GetSSAOBuffer()); break;
 		default:
 			break;
 		}
@@ -76,6 +76,19 @@ void Model::Draw()
 		}
 			
 	}	
+}
+
+void Model::DrawDepth()
+{
+	for (unsigned int i = 0; i < meshes.Size(); i++)
+	{
+		if (meshes[i]->IsRenderable())
+		{
+			//textures[i]->BindTextures();
+			meshes[i]->drawMesh();
+		}
+
+	}
 }
 
 TextureIndex Model::TextureTypeToTextureIndex(const aiTextureType& type)
