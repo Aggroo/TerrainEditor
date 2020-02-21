@@ -127,7 +127,7 @@ void SSAOPass::Setup()
 	this->ssaoShader->setupUniformInt("ssaoInput", 0);
 
 	this->ssaoQuad->createQuad();
-	this->ssaoQuad->genBuffer();
+	this->ssaoQuad->GenerateBuffers();
 
 	this->defaultAO->LoadTextureFile("resources/textures/terrain_textures/default/defaultAO.png");
 

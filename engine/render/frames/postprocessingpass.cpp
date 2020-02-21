@@ -65,7 +65,7 @@ void PostProcessingPass::Setup()
 	this->postProcessingShader->setupUniformInt("AO", 1);
 
 	this->postProcessingQuad->createQuad();
-	this->postProcessingQuad->genBuffer();
+	this->postProcessingQuad->GenerateBuffers();
 
 	UpdateUBOValues();
 

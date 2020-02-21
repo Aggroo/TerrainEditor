@@ -106,7 +106,7 @@ void Terrain::Update()
 {
 	if (generate && !JobSystem::IsBusy(ctx))
 	{
-		this->mesh->genBuffer();
+		this->mesh->GenerateBuffers();
 		generate = false;
 	}
 		
@@ -239,7 +239,7 @@ bool Terrain::CreateTerrain(const char* filename, int size, float widthMultiplie
 
 	//GenerateNormals();
 
-	//this->mesh->genBuffer();
+	//this->mesh->GenerateBuffers();
 
 	return true;
 }

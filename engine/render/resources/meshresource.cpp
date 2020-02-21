@@ -21,7 +21,7 @@ MeshResources::~MeshResources()
 	glDeleteBuffers(1, &ibo[0]);
 }
 
-void MeshResources::genBuffer()
+void MeshResources::GenerateBuffers()
 {
 	glGenVertexArrays(1, &vao[0]);
 	glBindVertexArray(vao[0]);
