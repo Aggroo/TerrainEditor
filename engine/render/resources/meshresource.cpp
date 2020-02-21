@@ -2,20 +2,16 @@
 #include "meshresource.h"
 #include <iostream>
 #include <fstream>
-#include <string>
 #include <cstring>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 namespace Render
 {
 __ImplementClass(Render::MeshResources, 'MSHR', Core::RefCounted)
-MeshResources::MeshResources() : tSize(0), iSize(0), vertexSize(0), vertexPtr(nullptr), indexSize(0), indexPtr(nullptr), renderable(false)
+MeshResources::MeshResources() : vertexComponentMask(0), vertexSize(0), numVertices(0), vertexWidth(0), vertexPtr(nullptr), numIndices(0), indexSize(0), indexPtr(nullptr), renderable(false)
 {
-}
-
-MeshResources::MeshResources(Util::Array<Render::Vertex> mesh, Util::Array<GLuint> indices) : tSize(0), iSize(0), vertexSize(0), vertexPtr(nullptr), indexSize(0), indexPtr(nullptr), renderable(false)
-{
-	this->mesh = mesh;
-	this->indices = indices;
 }
 
 MeshResources::~MeshResources()
@@ -51,163 +47,215 @@ void MeshResources::genBuffer()
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint)*indices.Size(), &indices[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
+	this->numIndices = sizeof(GLuint) * indices.Size();
 	renderable = true;
 }
 
-void MeshResources::genSkinnedBuffer(size_t vertexSize, uchar* vertexPtr, size_t indexSize, uchar* indexPtr, GLuint size)
+bool MeshResources::LoadMesh(const char* filename)
 {
-	this->vertexSize = vertexSize;
-	this->vertexPtr = vertexPtr;
-	this->indexSize = indexSize;
-	this->indexPtr = indexPtr;
-	this->iSize = size;
+	Assimp::Importer import;
+	const aiScene* scene = import.ReadFile(filename, aiProcessPreset_TargetRealtime_Fast | aiProcess_FlipUVs);
 
-	glGenVertexArrays(1, &vao[0]);
-	glBindVertexArray(vao[0]);
-
-	glGenBuffers(1, &vbo[0]);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-	glBufferData(GL_ARRAY_BUFFER, this->vertexSize, this->vertexPtr, GL_STATIC_DRAW);
-
-	glGenBuffers(1, &ibo[0]);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo[0]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->indexSize, this->indexPtr, GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-}
-
-bool MeshResources::loadObj(const char* filename)
-{		
-	struct FaceVertex
+	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
-		int pos = 0;
-		int uv = 0;
-		int norm = 0;
-	};
-
-	typedef std::vector<FaceVertex> Faces;
-
-	std::vector<unsigned int> vertexIndices, uvIndices, normalIndices;
-	std::vector<Math::vec3> temp_vertices;
-	std::vector<Math::vec2> temp_uvs;
-	std::vector<Math::vec3> temp_normals;
-
-
-	std::vector<Faces> faces;
-
-	FILE * file = fopen(filename, "r");
-	if (file == NULL){
-		printf("Impossible to open the file !\n");
+		printf("ERROR::ASSIMP::%s", import.GetErrorString());
+		return false;
 	}
 
-	int32 index = 0;
+	Util::String path = filename;
 
-	while (true){
+	this->name = path.ExtractFileName();
+	this->filePath = filename;
 
+	aiMesh* firstMesh = scene->mMeshes[0];
 
-		char lineHeader[128];
-		// read the first word of the line
-		int res = fscanf(file, "%s", lineHeader);
-		if (res == EOF)
-			break; // EOF = End Of File. Quit the loop.
+	this->primitiveGroups.Reserve(scene->mNumMeshes);
 
-		// else : parse lineHeader
+	for (size_t i = 0; i < scene->mNumMeshes; i++)
+		this->primitiveGroups.Append(PrimitiveGroup());
 
-		//Push all vertices into a temporary list
-		if (strcmp(lineHeader, "v") == 0){
-			GLfloat vertex[3];
-			fscanf(file, "%f %f %f\n", &vertex[0], &vertex[1], &vertex[2]);
-
-			temp_vertices.push_back(vertex);
-		}
-		//Push all texture coordinates in a temporary list
-		else if (strcmp(lineHeader, "vt") == 0){
-			GLfloat uv[2];
-			fscanf(file, "%f %f\n", &uv[0], &uv[1]);
-			temp_uvs.push_back(uv);
-		}
-		//Push all normals in a temporary list
-		else if (strcmp(lineHeader, "vn") == 0){
-			GLfloat normal[3];
-			fscanf(file, "%f %f %f\n", &normal[0], &normal[1], &normal[2]);
-			temp_normals.push_back(normal);
-		}
-		//Push all faces in a temporary list
-		else if (strcmp(lineHeader, "f") == 0){
-			unsigned int vertexIndex[4], uvIndex[4], normalIndex[4];
-			int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2], &vertexIndex[3], &uvIndex[3], &normalIndex[3]);
-			if (!(matches == 9 || matches == 12))
-			{
-				printf("File can't be read by ourstd::vector<FaceVertex> simple parser :-( Try exporting with other options\n");
-				return false;
-			}
-			//Create a list for all vertices in a face
-			Faces faceVertexList;
-			int verticesPerFace = 4 - (matches % 4);
-
-			//Push all vertices in the list
-			for (int i = 0; i < verticesPerFace; i++)
-			{
-				FaceVertex vert;
-				vert.pos = vertexIndex[i] - 1;
-				vert.uv = uvIndex[i] - 1;
-				vert.norm = normalIndex[i] - 1;
-
-				faceVertexList.push_back(vert);
-
-			}
-			//Push each face into a list of faces
-			faces.push_back(faceVertexList);
-
-		}
-		else{
-			// Probably a comment, eat up the rest of the line
-			char stupidBuffer[1000];
-			fgets(stupidBuffer, 1000, file);
-		}
-	}
-	//Loop through all faces
-	for (int i = 0; i < faces.size(); ++i)
+	if (firstMesh->HasPositions())
 	{
-		Render::Face faceVertList = Face();
-		for (int j = 0; j < faces[i].size(); ++j)
+		VertexComponent::SemanticName sem = VertexComponent::Position;
+		VertexComponent::Format fmt = VertexComponent::Float3;
+		this->vertexComponents.Append(VertexComponent(sem, 0, fmt));
+		this->vertexWidth += 3;
+		this->vertexComponentMask |= VertexComponentBits::Coord;
+	}
+	if (firstMesh->HasNormals())
+	{
+		VertexComponent::SemanticName sem = VertexComponent::Normal;
+		VertexComponent::Format fmt = VertexComponent::Float3;
+		this->vertexComponents.Append(VertexComponent(sem, 0, fmt));
+		this->vertexWidth += 3;
+		this->vertexComponentMask |= VertexComponentBits::Normal;
+	}
+	if (firstMesh->HasTextureCoords(0))
+	{
+		VertexComponent::SemanticName sem = VertexComponent::TexCoord1;
+		VertexComponent::Format fmt = VertexComponent::Float2;
+		this->vertexComponents.Append(VertexComponent(sem, 0, fmt));
+		this->vertexWidth += 2;
+		this->vertexComponentMask |= VertexComponentBits::Uv0;
+	}
+	if (firstMesh->HasTangentsAndBitangents())
+	{
+		VertexComponent::SemanticName sem = VertexComponent::Tangent;
+		VertexComponent::Format fmt = VertexComponent::Float3;
+		this->vertexComponents.Append(VertexComponent(sem, 0, fmt));
+		this->vertexWidth += 3;
+		this->vertexComponentMask |= VertexComponentBits::Tangent;
+
+		sem = VertexComponent::Binormal;
+		fmt = VertexComponent::Float3;
+		this->vertexComponents.Append(VertexComponent(sem, 0, fmt));
+		this->vertexWidth += 3;
+		this->vertexComponentMask |= VertexComponentBits::Binormal;
+	}
+	if (firstMesh->HasVertexColors(0))
+	{
+		VertexComponent::SemanticName sem = VertexComponent::Color;
+		VertexComponent::Format fmt = VertexComponent::Float3;
+		this->vertexComponents.Append(VertexComponent(sem, 0, fmt));
+		this->vertexWidth += 3;
+		this->vertexComponentMask |= VertexComponentBits::Color;
+	}
+	//Sort to make sure that our components are in the correct order when we construct our vertexbuffer
+	this->vertexComponents.Sort();
+
+	//Count numverices and numindices
+		//Set size and name for our primitive groups
+	for (uint i = 0; i < scene->mNumMeshes; ++i)
+	{
+		//Add to total amount of vertices
+		this->numVertices += scene->mMeshes[i]->mNumVertices;
+		this->primitiveGroups[i].name = scene->mMeshes[i]->mName.C_Str();
+		this->primitiveGroups[i].numIndices = 0;
+
+		//count indices
+		for (uint j = 0; j < scene->mMeshes[i]->mNumFaces; ++j)
 		{
-			int pos = faces[i][j].pos;
-			int uv = faces[i][j].uv;
-			int norm = faces[i][j].norm;
-			std::string key = this->FaceKey(pos, uv, norm);
-			if (this->vertexMap.find(key) == this->vertexMap.end())
-			{
-				Render::Vertex tempVertex;
-
-				tempVertex.pos = temp_vertices[pos];
-				tempVertex.uv = temp_uvs[uv];
-				tempVertex.norm = temp_normals[norm];
-
-				this->vertexMap[key] = this->mesh.Size();
-				faceVertList.verts.push_back(this->mesh.Size());
-				this->mesh.Append(tempVertex);
-
-			}
-			else
-			{
-				faceVertList.verts.push_back(this->vertexMap[key]);
-			}
+			this->numIndices += scene->mMeshes[i]->mFaces[j].mNumIndices;
+			this->primitiveGroups[i].numIndices += scene->mMeshes[i]->mFaces[j].mNumIndices;
 		}
-		this->meshFaces.Append(faceVertList);
 	}
-	//For each face loop through to create triangles of all the vertices.
-	for (int i = 0; i < this->meshFaces.Size(); ++i)
+
+	this->vertexSize = this->numVertices * this->vertexWidth * sizeof(GLfloat);
+	this->indexSize = this->numIndices * sizeof(int);
+
+	this->meshPtr = new byte[this->vertexSize];
+	this->indicesPtr = new byte[this->indexSize];
+
+	//Point to the first element in our indexbuffer
+	this->indexPtr = this->indicesPtr;
+
+	this->vertexPtr = this->meshPtr;
+
+	//Construct our vertex and indexbuffer
 	{
-		for (int j = 1; j < this->meshFaces[i].verts.size() - 1; ++j)
+		const byte triangleByteSize = 3 * sizeof(int);
+
+		size_t sumNumVertices = 0;
+		for (size_t i = 0; i < scene->mNumMeshes; ++i)
 		{
-			this->indices.Append(this->meshFaces[i].verts[0]);
-			this->indices.Append(this->meshFaces[i].verts[j]);
-			this->indices.Append(this->meshFaces[i].verts[j + 1]);
+			firstMesh = scene->mMeshes[i];
+
+			for (size_t i = 0; i < firstMesh->mNumVertices; ++i)
+			{
+				for (uint j = 0; j < this->vertexComponents.Size(); j++)
+				{
+					size_t byteSize = this->vertexComponents[j].GetByteSize();
+
+					switch (this->vertexComponents[j].GetSemanticName())
+					{
+					case VertexComponent::SemanticName::Position:
+					{
+						memcpy(this->vertexPtr, &firstMesh->mVertices[i], byteSize);
+						break;
+					}
+					case VertexComponent::SemanticName::Normal:
+					{
+						memcpy(this->vertexPtr, &firstMesh->mNormals[i], byteSize);
+						break;
+					}
+					case VertexComponent::SemanticName::TexCoord1:
+					{
+						memcpy(this->vertexPtr, &firstMesh->mTextureCoords[0][i], byteSize);
+						break;
+					}
+					case VertexComponent::SemanticName::TexCoord2:
+					{
+						//Currently not supported
+						memcpy(this->vertexPtr, &firstMesh->mTextureCoords[1][i], byteSize);
+						break;
+					}
+					case VertexComponent::SemanticName::Tangent:
+					{
+						memcpy(this->vertexPtr, &firstMesh->mTangents[i], byteSize);
+						break;
+					}
+					case VertexComponent::SemanticName::Binormal:
+					{
+						memcpy(this->vertexPtr, &firstMesh->mBitangents[i], byteSize);
+						break;
+					}
+					case VertexComponent::SemanticName::Color:
+					{
+						memcpy(this->vertexPtr, &firstMesh->mColors[0][i], byteSize);
+						break;
+					}
+					}
+
+					this->vertexPtr = (byte*)vertexPtr + byteSize;
+				}
+			}
+
+			for (size_t j = 0; j < firstMesh->mNumFaces; ++j)
+			{
+				if (firstMesh->mFaces[j].mNumIndices == 3)
+				{
+					//Triangles. Just append everything to the indexbuffer
+					memcpy(this->indexPtr, firstMesh->mFaces[j].mIndices, triangleByteSize);
+
+					//We need to compensate for appending them to the same indexbuffer. We do this by increasing every index with the sum of the number of vertices that are in the meshes before it
+					*(GLuint*)indexPtr = *(GLuint*)this->indexPtr + (GLuint)sumNumVertices;
+					*((GLuint*)indexPtr + 1) = *((GLuint*)indexPtr + 1) + (GLuint)sumNumVertices;
+					*((GLuint*)indexPtr + 2) = *((GLuint*)indexPtr + 2) + (GLuint)sumNumVertices;
+
+					this->indexPtr = (byte*)indexPtr + triangleByteSize;
+				}
+				else if (firstMesh->mFaces[j].mNumIndices == 2)
+				{
+					printf("ERROR: Meshloader does not support lines within meshes!");
+					assert(false);
+				}
+				else if (firstMesh->mFaces[j].mNumIndices == 4)
+				{
+					printf("ERROR: Meshloader does not support quads within meshes!");
+					assert(false);
+				}
+			}
+			sumNumVertices += firstMesh->mNumVertices;
 		}
 	}
+
+	this->primitiveGroups[0].indexOffset = 0;
+
+	size_t offset = 0;
+
+	for (size_t i = 0; i < scene->mNumMeshes; ++i)
+	{
+		//this->primitiveGroups[i].vertices = (size_t*)this->mesh + this->primitiveGroups[i - 1].vertexDataSize;
+		this->primitiveGroups[i].indexOffset = offset;
+		offset += this->primitiveGroups[i].numIndices * sizeof(int);
+	}
+
+	SetupVertexBuffer();
+	SetupIndexBuffer();
+
+	import.FreeScene();
+
 	return true;
-		
 }
 
 void MeshResources::createQuad()
@@ -288,50 +336,84 @@ void MeshResources::createQuad2()
 
 }
 
-void MeshResources::drawMesh()
+void MeshResources::Draw()
 {
 	glBindVertexArray(vao[0]);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo[0]);
-	glDrawElements(GL_TRIANGLES, indices.Size(), GL_UNSIGNED_INT, NULL);
+	glDrawElements(GL_TRIANGLES, this->numIndices, GL_UNSIGNED_INT, NULL);
 		
 }
 
-void MeshResources::drawSkinnedMesh()
+void MeshResources::DrawPrimitiveGroup(const unsigned int& group)
 {
-	glBindVertexArray(vao[0]);
-
-	/*glBindBuffer(GL_ARRAY_BUFFER, ibo[0]);
-	glDrawArrays(GL_TRIANGLES, 0, mesh.size());*/
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo[0]);
-	glDrawElements(GL_TRIANGLES, this->iSize, GL_UNSIGNED_INT, NULL);
-
-}
-	
-std::string MeshResources::FaceKey(int pos, int uv, int norm) const
-{
-	std::string posString = std::to_string(pos);
-	std::string uvString = std::to_string(uv);
-	std::string normString = std::to_string(norm);
-		
-	std::string result = posString+uvString+normString;
-	return result;	
-}
-	
-Util::Array< Render::Face >& MeshResources::GetMeshFaces()
-{
-	return this->meshFaces;
+	GLsizei numind = (GLsizei)primitiveGroups[group].numIndices;
+	uint offset = primitiveGroups[group].indexOffset;
+	glDrawElements(GL_TRIANGLES, (GLsizei)primitiveGroups[group].numIndices, GL_UNSIGNED_INT, (void*)primitiveGroups[group].indexOffset);
 }
 
-Util::Array<Vertex> MeshResources::GetMesh()
+void MeshResources::SetupVertexBuffer()
 {
-	return this->mesh;
+	// setup new vertex buffer
+
+	glGenVertexArrays(1, &vao[0]); // Create our Vertex Array Object  
+	glBindVertexArray(vao[0]); // Bind our Vertex Array Object so we can use it  
+
+	glGenBuffers(1, this->vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, this->vbo[0]);
+	glBufferData(GL_ARRAY_BUFFER, this->vertexSize, this->meshPtr, GL_STATIC_DRAW);
+
+
+	uint attributeIndex = 0;
+	size_t byteSize = 0;
+	VertexComponent::Format format;
+	GLenum type;
+	GLboolean normalized;
+	GLint components;
+
+	GLbyte* offset = NULL;
+
+	for (uint i = 0; i < this->vertexComponents.Size(); i++)
+	{
+
+		attributeIndex = (uint)this->vertexComponents[i].GetSemanticName();
+
+		byteSize = this->vertexComponents[i].GetByteSize();
+		format = this->vertexComponents[i].GetFormat();
+
+		glEnableVertexAttribArray(attributeIndex);
+
+		switch (format)
+		{
+		case VertexComponent::Float:	type = GL_FLOAT;		normalized = GL_FALSE;	components = 1;	break;
+		case VertexComponent::Float2:	type = GL_FLOAT;		normalized = GL_FALSE;	components = 2;	break;
+		case VertexComponent::Float3:	type = GL_FLOAT;		normalized = GL_FALSE;	components = 3;	break;
+		case VertexComponent::Float4:	type = GL_FLOAT;		normalized = GL_FALSE;	components = 4;	break;
+		case VertexComponent::UByte4:	type = GL_UNSIGNED_BYTE;	normalized = GL_FALSE;	components = 4;	break;
+		case VertexComponent::Byte4:	type = GL_BYTE;			normalized = GL_FALSE;	components = 4;	break;
+		case VertexComponent::Short2:	type = GL_SHORT;		normalized = GL_FALSE;	components = 2;	break;
+		case VertexComponent::Short4:	type = GL_SHORT;		normalized = GL_FALSE;	components = 4;	break;
+		case VertexComponent::UByte4N:	type = GL_UNSIGNED_BYTE;	normalized = GL_TRUE;	components = 4;	break;
+		case VertexComponent::Byte4N:	type = GL_BYTE;			normalized = GL_TRUE;	components = 4;	break;
+		case VertexComponent::Short2N:	type = GL_SHORT;		normalized = GL_TRUE;	components = 2;	break;
+		case VertexComponent::Short4N:	type = GL_SHORT;		normalized = GL_TRUE;	components = 4;	break;
+		}
+
+		glVertexAttribPointer(attributeIndex, components, type, normalized, sizeof(GLfloat) * this->vertexWidth, (GLvoid*)offset);
+
+		offset += byteSize;
+	}
 }
-	
-Util::Array<GLuint> MeshResources::getIndices()
+
+void MeshResources::SetupIndexBuffer()
 {
-	return this->indices;
+	glGenBuffers(1, this->ibo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ibo[0]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->indexSize, this->indicesPtr, GL_STATIC_DRAW);
+
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 }

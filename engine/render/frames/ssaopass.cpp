@@ -157,7 +157,7 @@ void SSAOPass::Execute()
 		glBindTexture(GL_TEXTURE_2D, FrameServer::Instance()->GetDepthPass()->GetNormalBuffer());
 		this->noiseTexture->bindTex(2);
 
-		this->ssaoQuad->drawMesh();
+		this->ssaoQuad->Draw();
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		
 		glBindFramebuffer(GL_FRAMEBUFFER, this->ssaoBlurFBO);
@@ -165,7 +165,7 @@ void SSAOPass::Execute()
 
 		this->ssaoBlurShader->BindProgram();
 		this->ssaoColorBuffer->bindTex(0);
-		this->ssaoQuad->drawMesh();
+		this->ssaoQuad->Draw();
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		FramePass::Execute();

@@ -25,6 +25,7 @@ SET(files_render_resources
 	resources/rasterizer.cpp
 	resources/model.h
 	resources/model.cpp
+	resources/vertexcomponent.h
 	)
 	
 SET(files_render_camera

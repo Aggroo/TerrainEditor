@@ -32,6 +32,7 @@ void PerlinSettings::Update()
 		ImGui::DragFloat("Frequency", &perlinSettings.lacunarity, 0.1f, 0.0001f, 1000.f);
 
 	}
+
 	ModalWindows();
 }
 

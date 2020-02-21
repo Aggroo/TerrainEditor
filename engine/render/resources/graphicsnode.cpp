@@ -91,7 +91,7 @@ namespace Render
 		this->shader->setupMatrix3fv("normalMat", Math::mat3::Transpose(Math::mat3::fromMatrix4D(this->transMat).invert()));
 
 		if (this->mesh->mesh.Size() != 0)
-			this->mesh->drawMesh();
+			this->mesh->Draw();
 	}
 
 	void GraphicsNode::drawSkinned()
@@ -99,7 +99,6 @@ namespace Render
 		this->shader->BindProgram();
 		this->tex->BindTextures();
 		this->shader->setupMatrix4fv("transMatrix", this->transMat);
-		this->mesh->drawSkinnedMesh();
 	}
 
 }

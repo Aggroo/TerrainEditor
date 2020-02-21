@@ -72,7 +72,7 @@ void Model::Draw()
 		if (meshes[i]->IsRenderable())
 		{
 			textures[i]->BindTextures();
-			meshes[i]->drawMesh();
+			meshes[i]->Draw();
 		}
 			
 	}	
@@ -85,7 +85,7 @@ void Model::DrawDepth()
 		if (meshes[i]->IsRenderable())
 		{
 			//textures[i]->BindTextures();
-			meshes[i]->drawMesh();
+			meshes[i]->Draw();
 		}
 
 	}
@@ -197,7 +197,7 @@ Ptr<MeshResources> Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 	Ptr<MeshResources> finalMesh = MeshResources::Create();
 	finalMesh->indices = indices;
 	finalMesh->mesh = vertices;
-	finalMesh->genBuffer();
+	finalMesh->GenerateBuffers();
 	return finalMesh;
 }
 }

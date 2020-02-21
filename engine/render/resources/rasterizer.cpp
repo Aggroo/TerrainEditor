@@ -276,7 +276,7 @@ namespace Math
 	void Rasterizer::draw(mat4 pMat, mat4 tMat)
 	{
 		meshData = mesh->GetMesh();
-		indices = mesh->getIndices();
+		indices = mesh->GetIndices();
 
 		for (int i = 0; i < indices.Size(); i += 3)
 		{

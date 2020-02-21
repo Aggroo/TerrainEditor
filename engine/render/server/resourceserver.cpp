@@ -3,11 +3,16 @@
 
 namespace Render
 {
+//------------------------------------------------------------------------------
+/**
+*/
 ResourceServer::ResourceServer()
 {
 
 }
-
+//------------------------------------------------------------------------------
+/**
+*/
 Ptr<TextureResource> ResourceServer::LoadTexture(const Util::String& filepath)
 {
 	if(!this->HasTextureNamed(filepath))
@@ -24,21 +29,40 @@ Ptr<TextureResource> ResourceServer::LoadTexture(const Util::String& filepath)
 	}
 }
 
-Ptr<TextureResource> ResourceServer::GetTexture(const Util::String& filepath)
-{
-	if (this->HasTextureNamed(filepath))
-	{
-		return this->textures[filepath];
-	}
-	else
-	{
-		return this->LoadTexture(filepath);
-	}
-}
 
+//------------------------------------------------------------------------------
+/**
+*/
 bool ResourceServer::HasTextureNamed(const Util::String& nName) const
 {
 	return this->textures.Contains(nName); 
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+Ptr<MeshResources> ResourceServer::LoadMesh(const Util::String& filepath)
+{
+	if (!this->HasMeshNamed(filepath))
+	{
+		Ptr<MeshResources> mesh = MeshResources::Create();
+		mesh->LoadMesh(filepath.AsCharPtr());
+		this->meshes.Add(filepath, mesh);
+
+		return mesh;
+	}
+	else
+	{
+		return this->meshes[filepath];
+	}
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+bool ResourceServer::HasMeshNamed(const Util::String& nName) const
+{
+	return this->meshes.Contains(nName);
 }
 
 }

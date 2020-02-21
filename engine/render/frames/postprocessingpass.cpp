@@ -90,7 +90,7 @@ void PostProcessingPass::Execute()
 	glBindBufferBase(GL_UNIFORM_BUFFER, 1, this->ubo[0]);
 	glBufferData(GL_UNIFORM_BUFFER, sizeof(PostProcessOptions), &postProcessVar, GL_STATIC_DRAW);
 
-	this->postProcessingQuad->drawMesh();
+	this->postProcessingQuad->Draw();
 
 	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 

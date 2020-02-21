@@ -116,7 +116,7 @@ void Terrain::Update()
 	this->shader->setupMatrix4fv("Model", this->transform);
 	
 	if(this->mesh->IsRenderable())
-		this->mesh->drawMesh();
+		this->mesh->Draw();
 
 	this->textures->UnbindTextures();
 }
