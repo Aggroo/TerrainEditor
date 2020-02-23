@@ -43,7 +43,6 @@ private:
 	Math::vec4 vec;
 
 	Display::Window* window;
-	Render::GraphicsNode gN;
 	Render::LightNode lNode;
 
 	Ptr<TerrainEditor::Terrain> terrain;
