@@ -52,15 +52,6 @@ Application::Open()
 	{
 		JobSystem::Initialize();
 
-		shader = Render::ShaderObject::Create();
-
-		GLuint comp = Render::ShaderServer::Instance()->LoadComputeShader("resources/shaders/lightculling.comp");
-
-		shader->AddShader(comp);
-		shader->LinkShaders();
-
-		Render::ShaderServer::Instance()->AddShaderObject("LightCulling", shader);
-
 		Render::Renderer::Instance()->Setup(this->window);
 
 

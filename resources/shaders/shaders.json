@@ -41,6 +41,20 @@
 			"VertexShader": "resources/shaders/vertex/skybox.vert",
 			"FragmentShader": "resources/shaders/fragment/skybox.frag",
 			"RenderState": "resources/shaders/state/opaque.state"
+		},
+		{
+			"name": "ssao",
+			"desc": "Shader used for the ssao pass",
+			"VertexShader": "resources/shaders/vertex/ssao.vert",
+			"FragmentShader": "resources/shaders/fragment/ssao.frag",
+			"RenderState": "resources/shaders/state/opaque.state"
+		},
+		{
+			"name": "ssaoblur",
+			"desc": "Blur shader used for the ssao pass",
+			"VertexShader": "resources/shaders/vertex/ssao.vert",
+			"FragmentShader": "resources/shaders/fragment/ssaoblur.frag",
+			"RenderState": "resources/shaders/state/opaque.state"
 		}
 	],
 	"ComputeShaders": [

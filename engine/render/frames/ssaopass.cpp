@@ -101,27 +101,15 @@ void SSAOPass::Setup()
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	GLuint vert = Render::ShaderServer::Instance()->LoadVertexShader("resources/shaders/ssao.vert");
-	GLuint frag = Render::ShaderServer::Instance()->LoadFragmentShader("resources/shaders/ssao.frag");
 
-	this->ssaoShader->AddShader(vert);
-	this->ssaoShader->AddShader(frag);
-	this->ssaoShader->LinkShaders();
-
-	Render::ShaderServer::Instance()->AddShaderObject("ssao", this->ssaoShader);
+	this->ssaoShader = Render::ShaderServer::Instance()->GetShader("ssao");
 
 	this->ssaoShader->BindProgram();
 	this->ssaoShader->setupUniformInt("gPosition", 0);
 	this->ssaoShader->setupUniformInt("gNormal", 1);
 	this->ssaoShader->setupUniformInt("texNoise", 2);
 
-	GLuint fragBlur = Render::ShaderServer::Instance()->LoadFragmentShader("resources/shaders/ssaoblur.frag");
-
-	this->ssaoBlurShader->AddShader(vert);
-	this->ssaoBlurShader->AddShader(fragBlur);
-	this->ssaoBlurShader->LinkShaders();
-
-	Render::ShaderServer::Instance()->AddShaderObject("ssaoblur", this->ssaoBlurShader);
+	this->ssaoBlurShader = Render::ShaderServer::Instance()->GetShader("ssaoblur");
 
 	this->ssaoBlurShader->BindProgram();
 	this->ssaoShader->setupUniformInt("ssaoInput", 0);

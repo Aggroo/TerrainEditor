@@ -4,13 +4,14 @@
 #include "core/ptr.h"
 #include "foundation/util/dictionary.h"
 #include "foundation/util/string.h"
-#include "render/render/shadervariables.h"
+
 #include <mutex>
 
 namespace Render
 {
 
 class ShaderObject;
+struct RenderState;
 
 class ShaderServer
 {
@@ -39,25 +40,27 @@ public:
 	//Load and compile a compute shader
 	GLuint LoadComputeShader(const Util::String& file, bool reload = false);
 
-	void AddShaderObject(const char* name, Ptr<ShaderObject> shaderObj);
+	Render::RenderState LoadRenderState(const Util::String& file);
 
 	//Checks shader files for change
 	void ListenToFileChanges();
-
 	//Reloaded the updated shader
 	void ReloadShader(ShaderInfo* shader);
 
 	//Run a update each frame
 	void Update();
-
 	//Clean up the listener thread
 	void CleanUp();
+
+	//Checks whether render state with given name has already been loaded
+	bool HasRenderStateLoaded(const Util::String& name) const;
 
 	//Checks whether a shader with given name has already been loaded
 	bool HasShaderProgramLoaded(const Util::String& name) const;
 	//Checks whether a shader object with given name exists
 	bool HasShaderNamed(const Util::String& name) const;
 private:
+
 	//Reads a shader file and returns it's content as a Util::String
 	Util::String ReadFromFile(const Util::String &filename) const;
 

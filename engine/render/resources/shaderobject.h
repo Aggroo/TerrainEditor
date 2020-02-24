@@ -5,6 +5,7 @@
 #include "foundation/math/mat4.h"
 #include "core/refcounted.h"
 #include "foundation/util/Variant.h"
+#include "render/render/shadervariables.h"
 
 namespace Render
 {
@@ -27,6 +28,8 @@ public:
 	void BindProgram();
 	GLuint GetProgram() const { return program; }
 
+	void EnableRenderState();
+
 	bool ContainsShader(const GLuint& shader);
 
 	void setupMatrix4fv(const GLchar* name, Math::mat4 mat);
@@ -43,6 +46,8 @@ public:
 private:
 	friend class ShaderServer;
 
+	void SetRenderState(const RenderState& state);
+
 	void ReloadUniforms(const char* name, Util::Variant variance);
 	bool CheckUniformMap(Util::Array<Util::Pair<Util::String, Util::Variant>> map, const GLchar* name);
 
@@ -55,5 +60,7 @@ private:
 
 	//Array of shaders linked to program
 	Util::Array<GLuint> shaders;
+
+	Render::RenderState renderState;
 };
 }

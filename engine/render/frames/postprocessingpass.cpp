@@ -74,8 +74,8 @@ void PostProcessingPass::Execute()
 	this->postProcessingShader->BindProgram();
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, FrameServer::Instance()->GetFlatGeometryLitPass()->GetTextureBuffer());
-	//glActiveTexture(GL_TEXTURE1);
-	//glBindTexture(GL_TEXTURE_2D, FrameServer::Instance()->GetSSAOPass()->GetSSAOBuffer()->GetTextureID());
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, FrameServer::Instance()->GetSSAOPass()->GetSSAOBuffer()->GetTextureID());
 
 	UpdateUBOValues();
 

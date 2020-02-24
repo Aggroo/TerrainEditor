@@ -8,16 +8,25 @@ namespace Render
 {
 __ImplementClass(Render::ShaderObject, 'RESO', Core::RefCounted)
 
+//------------------------------------------------------------------------------
+/**
+*/
 ShaderObject::ShaderObject() : reloading(false)
 {
 	this->program = glCreateProgram();
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 ShaderObject::~ShaderObject()
 {
 	glDeleteProgram(this->program);
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 void ShaderObject::ReloadShaders(const GLuint& oldProgram, const GLuint& newProgram)
 {
 	if(ContainsShader(oldProgram))
@@ -35,12 +44,18 @@ void ShaderObject::ReloadShaders(const GLuint& oldProgram, const GLuint& newProg
 	}	
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 void ShaderObject::AddShader(const GLuint& shaderProgram)
 {
 	this->shaders.Append(shaderProgram);
 	glAttachShader(this->program, shaderProgram);
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 void ShaderObject::LinkShaders()
 {
 	this->program = glCreateProgram();
@@ -59,11 +74,64 @@ void ShaderObject::LinkShaders()
 	}
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 void ShaderObject::BindProgram()
 {
 	glUseProgram(this->program);
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
+void ShaderObject::EnableRenderState()
+{
+	if (this->renderState.cullface == GL_TRUE)
+	{
+		glEnable(GL_CULL_FACE);
+		glCullFace(this->renderState.cullmode);
+		glFrontFace(this->renderState.frontface);
+	}
+	else
+	{
+		glDisable(GL_CULL_FACE);
+	}
+
+	if (this->renderState.blend == GL_TRUE)
+	{
+		glEnable(GL_BLEND);
+		glBlendFunc(this->renderState.blendsourcefunc, this->renderState.blenddestinationfunc);
+	}
+	else
+	{
+		glDisable(GL_BLEND);
+	}
+
+	if (this->renderState.alphatest == GL_TRUE)
+	{
+		glEnable(GL_ALPHA_TEST);
+		glAlphaFunc(this->renderState.alphafunc, this->renderState.alphaclamp);
+	}
+	else
+	{
+		glDisable(GL_ALPHA_TEST);
+	}
+
+	if (this->renderState.depthtest == GL_TRUE)
+	{
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(this->renderState.depthfunc);
+	}
+	else
+	{
+		glDisable(GL_DEPTH_TEST);
+	}
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
 bool ShaderObject::ContainsShader(const GLuint& shader)
 {
 	for(const auto& s : this->shaders)
@@ -74,6 +142,9 @@ bool ShaderObject::ContainsShader(const GLuint& shader)
 	return false;
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 void ShaderObject::setupMatrix4fv(const GLchar* name, Math::mat4 mat)
 {
 	GLuint shaderMatrix = glGetUniformLocation(this->program, name);
@@ -89,6 +160,9 @@ void ShaderObject::setupMatrix4fv(const GLchar* name, Math::mat4 mat)
 	}
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 void ShaderObject::setupMatrix4fvt(const GLchar* name, Math::mat4 mat)
 {
 	GLuint shaderMatrix = glGetUniformLocation(this->program, name);
@@ -103,6 +177,10 @@ void ShaderObject::setupMatrix4fvt(const GLchar* name, Math::mat4 mat)
 		}
 	}
 }
+
+//------------------------------------------------------------------------------
+/**
+*/
 void ShaderObject::setupMatrix4fv(const GLchar* name, Util::Array<Math::mat4> mat, GLint count)
 {
 	GLuint shaderMatrix = glGetUniformLocation(this->program, name);
@@ -118,6 +196,9 @@ void ShaderObject::setupMatrix4fv(const GLchar* name, Util::Array<Math::mat4> ma
 	}
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 void ShaderObject::setupMatrix3fv(const GLchar* name, Math::mat3 mat)
 {
 	GLuint shaderMatrix = glGetUniformLocation(this->program, name);
@@ -125,6 +206,9 @@ void ShaderObject::setupMatrix3fv(const GLchar* name, Math::mat3 mat)
 	glUniformMatrix3fv(shaderMatrix, 1, GL_FALSE, (!mat).getPointer());
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 void ShaderObject::setupVector4f(const GLchar* name, GLfloat x, GLfloat y, GLfloat z, GLfloat w)
 {
 	GLuint shaderMatrix = glGetUniformLocation(this->program, name);
@@ -141,6 +225,9 @@ void ShaderObject::setupVector4f(const GLchar* name, GLfloat x, GLfloat y, GLflo
 
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 void ShaderObject::setupVector4f(const GLchar* name, Math::vec4 vec)
 {
 	GLfloat x, y, z, w;
@@ -163,7 +250,9 @@ void ShaderObject::setupVector4f(const GLchar* name, Math::vec4 vec)
 	}
 }
 
-
+//------------------------------------------------------------------------------
+/**
+*/
 void ShaderObject::setupVector3f(const GLchar* name, GLfloat x, GLfloat y, GLfloat z)
 {
 	GLuint shaderMatrix = glGetUniformLocation(this->program, name);
@@ -172,6 +261,9 @@ void ShaderObject::setupVector3f(const GLchar* name, GLfloat x, GLfloat y, GLflo
 	//uMap[name] = Math::vec3(x,y,z);
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 void ShaderObject::setupVector3f(const GLchar* name, Math::vec3 vec)
 {
 	GLuint shaderMatrix = glGetUniformLocation(this->program, name);
@@ -180,6 +272,9 @@ void ShaderObject::setupVector3f(const GLchar* name, Math::vec3 vec)
 	//uMap[name] = vec;
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 void ShaderObject::setupUniformFloat(const GLchar* name, GLfloat val)
 {
 	GLuint shaderMatrix = glGetUniformLocation(this->program, name);
@@ -195,6 +290,9 @@ void ShaderObject::setupUniformFloat(const GLchar* name, GLfloat val)
 	}
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 void ShaderObject::setupUniformInt(const GLchar *name, GLint val)
 {
 	GLuint shaderMatrix = glGetUniformLocation(this->program, name);
@@ -211,6 +309,17 @@ void ShaderObject::setupUniformInt(const GLchar *name, GLint val)
 		
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
+void ShaderObject::SetRenderState(const RenderState & state)
+{
+	this->renderState = state;
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
 void ShaderObject::ReloadUniforms(const char* name, Util::Variant variant)
 {
 	switch (variant.GetType())
@@ -238,6 +347,9 @@ void ShaderObject::ReloadUniforms(const char* name, Util::Variant variant)
 	}
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 bool ShaderObject::CheckUniformMap(Util::Array<Util::Pair<Util::String, Util::Variant>> map, const GLchar *name)
 {
 	for (auto pair : map)

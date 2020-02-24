@@ -5,6 +5,7 @@
 #include <fstream>
 #include <filesystem>
 #include "json.hpp"
+#include "render/render/shadervariables.h"
 #include "render/resources/materialcomponents.h"
 
 using json = nlohmann::json;
@@ -12,16 +13,25 @@ using json = nlohmann::json;
 namespace Render
 {
 namespace fs = std::filesystem;
+//------------------------------------------------------------------------------
+/**
+*/
 ShaderServer::ShaderServer() : stopListening(false)
 {
 	this->fileChangeListener = std::thread(&ShaderServer::ListenToFileChanges, this);
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 ShaderServer::~ShaderServer()
 {
 	CleanUp();
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 Ptr<ShaderObject> ShaderServer::GetShader(const char* name)
 {
 	if (this->HasShaderNamed(name))
@@ -36,6 +46,9 @@ Ptr<ShaderObject> ShaderServer::GetShader(const char* name)
 	}
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 bool ShaderServer::SetupShaders(const Util::String & file)
 {
 	std::ifstream i(file.AsCharPtr());
@@ -67,8 +80,6 @@ bool ShaderServer::SetupShaders(const Util::String & file)
 
 			shd->AddShader(comp);
 
-			/* TODO: ADD RENDERSTATES TO SHADEROBJECT AND A LOADRENDERSTATE FUNCTION */
-
 			shd->LinkShaders();
 
 			this->shaderObjects.Add(shader.name.c_str(), shd);
@@ -93,7 +104,8 @@ bool ShaderServer::SetupShaders(const Util::String & file)
 			shd->AddShader(vert);
 			shd->AddShader(frag);
 
-			/* TODO: ADD RENDERSTATES TO SHADEROBJECT AND A LOADRENDERSTATE FUNCTION */
+			Render::RenderState states = LoadRenderState(shader.renderState.c_str());
+			shd->SetRenderState(states);
 
 			shd->LinkShaders();
 
@@ -106,6 +118,9 @@ bool ShaderServer::SetupShaders(const Util::String & file)
 	return true;
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 GLuint ShaderServer::LoadVertexShader(const Util::String& file, bool reload)
 {
 	if (!this->HasShaderProgramLoaded(file) || reload)
@@ -174,6 +189,9 @@ GLuint ShaderServer::LoadVertexShader(const Util::String& file, bool reload)
 	return this->shaders[file].program;
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 GLuint ShaderServer::LoadFragmentShader(const Util::String& file, bool reload)
 {
 	if (!this->HasShaderProgramLoaded(file) || reload)
@@ -240,6 +258,9 @@ GLuint ShaderServer::LoadFragmentShader(const Util::String& file, bool reload)
 
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 GLuint ShaderServer::LoadComputeShader(const Util::String& file, bool reload)
 {
 	if (!this->HasShaderProgramLoaded(file) || reload)
@@ -307,11 +328,216 @@ GLuint ShaderServer::LoadComputeShader(const Util::String& file, bool reload)
 	return this->shaders[file].program;
 }
 
-void ShaderServer::AddShaderObject(const char* name, Ptr<ShaderObject> shaderObj)
+//------------------------------------------------------------------------------
+/**
+* TODO: Look over the file structure of the render states
+*/
+Render::RenderState ShaderServer::LoadRenderState(const Util::String & file)
 {
-	this->shaderObjects.Add(name, shaderObj);
+	//Make sure we've not already loaded this render state
+	if (!this->HasRenderStateLoaded(file))
+	{
+		if (!file.CheckFileExtension("state"))
+		{
+			_error("[SHADER LOAD ERROR]: File is not a .state file!");
+			_assert(false);
+			return RenderState();
+		}
+
+		RenderState state;
+
+		std::ifstream fin(file.AsCharPtr());
+		std::string line;
+		std::istringstream sin;
+
+		std::string sVal;
+		float fVal;
+
+		while (std::getline(fin, line))
+		{
+			sin.str(line.substr(line.find("=") + 1));
+			if (line.find("CullFace ") != std::string::npos)
+			{
+				sin >> sVal;
+				GLboolean glVal;
+
+				if (sVal == "true") { glVal = GL_TRUE; }
+				else if (sVal == "false") { glVal = GL_FALSE; }
+				else { _assert2(false, "[SHADER LOAD ERROR]: [STATE LOAD]: Syntax error in CullFace value!\n"); }
+
+				state.cullface = glVal;
+			}
+			else if (line.find("FrontFace ") != std::string::npos)
+			{
+				sin >> sVal;
+				GLenum glVal;
+
+				if (sVal == "cw") { glVal = GL_CW; }
+				else if (sVal == "ccw") { glVal = GL_CCW; }
+				else { _assert2(false, "[SHADER LOAD ERROR]: [STATE LOAD]: Syntax error in FrontFace value!\n"); }
+
+				state.frontface = glVal;
+			}
+			else if (line.find("CullMode ") != std::string::npos)
+			{
+				sin >> sVal;
+				GLenum glVal;
+
+				if (sVal == "back") { glVal = GL_BACK; }
+				else if (sVal == "front") { glVal = GL_FRONT; }
+				else if (sVal == "front_and_back") { glVal = GL_FRONT_AND_BACK; }
+				else { _assert2(false, "[SHADER LOAD ERROR]: [STATE LOAD]: Syntax error in CullMode value!\n"); }
+
+				state.cullmode = glVal;
+			}
+			else if (line.find("Blend ") != std::string::npos)
+			{
+				sin >> sVal;
+				GLboolean glVal;
+
+				if (sVal == "true") { glVal = GL_TRUE; }
+				else if (sVal == "false") { glVal = GL_FALSE; }
+				else { _assert2(false, "[SHADER LOAD ERROR]: [STATE LOAD]: Syntax error in Blend value!\n"); }
+
+				state.blend = glVal;
+			}
+			else if (line.find("BlendSourceFunc ") != std::string::npos)
+			{
+				sin >> sVal;
+				GLenum glVal;
+
+				if (sVal == "zero") { glVal = GL_ZERO; }
+				else if (sVal == "one") { glVal = GL_ONE; }
+				else if (sVal == "src_color") { glVal = GL_SRC_COLOR; }
+				else if (sVal == "one_minus_src_color") { glVal = GL_ONE_MINUS_SRC_COLOR; }
+				else if (sVal == "dst_color") { glVal = GL_DST_COLOR; }
+				else if (sVal == "one_minus_dst_color") { glVal = GL_ONE_MINUS_DST_COLOR; }
+				else if (sVal == "src_alpha") { glVal = GL_SRC_ALPHA; }
+				else if (sVal == "one_minus_src_alpha") { glVal = GL_ONE_MINUS_SRC_ALPHA; }
+				else if (sVal == "dst_alpha") { glVal = GL_DST_ALPHA; }
+				else if (sVal == "one_minus_dst_alpha") { glVal = GL_ONE_MINUS_DST_ALPHA; }
+				else if (sVal == "constant_color") { glVal = GL_CONSTANT_COLOR; }
+				else if (sVal == "one_minus_constant_color") { glVal = GL_ONE_MINUS_CONSTANT_COLOR; }
+				else if (sVal == "constant_alpha") { glVal = GL_CONSTANT_ALPHA; }
+				else if (sVal == "one_minus_constant_alpha") { glVal = GL_ONE_MINUS_CONSTANT_ALPHA; }
+				else if (sVal == "src_alpha_saturate") { glVal = GL_SRC_ALPHA_SATURATE; }
+				else { _assert2(false, "[SHADER LOAD ERROR]: [STATE LOAD]: Syntax error in BlendSourceFunc value!\n"); }
+
+				state.blendsourcefunc = glVal;
+			}
+			else if (line.find("BlendDestinationFunc ") != std::string::npos)
+			{
+				sin >> sVal;
+				GLenum glVal;
+
+				if (sVal == "zero") { glVal = GL_ZERO; }
+				else if (sVal == "one") { glVal = GL_ONE; }
+				else if (sVal == "src_color") { glVal = GL_SRC_COLOR; }
+				else if (sVal == "one_minus_src_color") { glVal = GL_ONE_MINUS_SRC_COLOR; }
+				else if (sVal == "dst_color") { glVal = GL_DST_COLOR; }
+				else if (sVal == "one_minus_dst_color") { glVal = GL_ONE_MINUS_DST_COLOR; }
+				else if (sVal == "src_alpha") { glVal = GL_SRC_ALPHA; }
+				else if (sVal == "one_minus_src_alpha") { glVal = GL_ONE_MINUS_SRC_ALPHA; }
+				else if (sVal == "dst_alpha") { glVal = GL_DST_ALPHA; }
+				else if (sVal == "one_minus_dst_alpha") { glVal = GL_ONE_MINUS_DST_ALPHA; }
+				else if (sVal == "constant_color") { glVal = GL_CONSTANT_COLOR; }
+				else if (sVal == "one_minus_constant_color") { glVal = GL_ONE_MINUS_CONSTANT_COLOR; }
+				else if (sVal == "constant_alpha") { glVal = GL_CONSTANT_ALPHA; }
+				else if (sVal == "one_minus_constant_alpha") { glVal = GL_ONE_MINUS_CONSTANT_ALPHA; }
+				else { _assert2(false, "[SHADER LOAD ERROR]: [STATE LOAD]: Syntax error in BlendSourceFunc value!\n"); }
+
+				state.blenddestinationfunc = glVal;
+			}
+			else if (line.find("AlphaTest ") != std::string::npos)
+			{
+				sin >> sVal;
+				GLboolean glVal;
+
+				if (sVal == "true") { glVal = GL_TRUE; }
+				else if (sVal == "false") { glVal = GL_FALSE; }
+				else { _assert2(false, "[SHADER LOAD ERROR]: [STATE LOAD]: Syntax error in AlphaTest value!\n"); }
+
+				state.alphatest = glVal;
+			}
+			else if (line.find("AlphaFunc ") != std::string::npos)
+			{
+				sin >> sVal;
+				GLenum glVal;
+
+				if (sVal == "never") { glVal = GL_NEVER; }
+				else if (sVal == "less") { glVal = GL_LESS; }
+				else if (sVal == "equal") { glVal = GL_EQUAL; }
+				else if (sVal == "lequal") { glVal = GL_LEQUAL; }
+				else if (sVal == "greater") { glVal = GL_GREATER; }
+				else if (sVal == "notequal") { glVal = GL_NOTEQUAL; }
+				else if (sVal == "gequal") { glVal = GL_GEQUAL; }
+				else if (sVal == "always") { glVal = GL_ALWAYS; }
+				else { _assert2(false, "[SHADER LOAD ERROR]: [STATE LOAD]: Syntax error in AlphaFunc value!\n"); }
+
+				state.alphafunc = glVal;
+			}
+			else if (line.find("AlphaClamp ") != std::string::npos)
+			{
+				sin >> fVal;
+				_assert2((fVal > 0.0f || fVal < 1.0f), "[SHADER LOAD ERROR]: [STATE LOAD]: AlphaClamp value can not be less than 0.0 or greater than 1.0!\n");
+				state.alphaclamp = fVal;
+			}
+			else if (line.find("DepthTest ") != std::string::npos)
+			{
+				sin >> sVal;
+				GLboolean glVal;
+
+				if (sVal == "true") { glVal = GL_TRUE; }
+				else if (sVal == "false") { glVal = GL_FALSE; }
+				else { _assert2(false, "[SHADER LOAD ERROR]: [STATE LOAD]: Syntax error in DepthTest value!\n"); }
+
+				state.depthtest = glVal;
+			}
+			else if (line.find("DepthFunc ") != std::string::npos)
+			{
+				sin >> sVal;
+				GLenum glVal;
+
+				if (sVal == "never") { glVal = GL_NEVER; }
+				else if (sVal == "less") { glVal = GL_LESS; }
+				else if (sVal == "equal") { glVal = GL_EQUAL; }
+				else if (sVal == "lequal") { glVal = GL_LEQUAL; }
+				else if (sVal == "greater") { glVal = GL_GREATER; }
+				else if (sVal == "notequal") { glVal = GL_NOTEQUAL; }
+				else if (sVal == "gequal") { glVal = GL_GEQUAL; }
+				else if (sVal == "always") { glVal = GL_ALWAYS; }
+				else { _assert2(false, "[SHADER LOAD ERROR]: [STATE LOAD]: Syntax error in DepthFunc value!\n"); }
+
+				state.depthfunc = glVal;
+			}
+			else if (line.find("DepthWrite ") != std::string::npos)
+			{
+				sin >> sVal;
+				GLboolean glVal;
+
+				if (sVal == "true") { glVal = GL_TRUE; }
+				else if (sVal == "false") { glVal = GL_FALSE; }
+				else { _assert2(false, "[SHADER LOAD ERROR]: [STATE LOAD]: Syntax error in DepthWrite value!\n"); }
+
+				state.depthwrite = glVal;
+			}
+
+			sin.clear();
+		}
+
+		this->renderStates.Add(file, state);
+		return state;
+	}
+	else
+	{
+		//Return existing render state from list
+		return this->renderStates[file];
+	}
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 void ShaderServer::ListenToFileChanges()
 {
 	using namespace std::chrono_literals;
@@ -333,6 +559,9 @@ void ShaderServer::ListenToFileChanges()
 	}
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 void ShaderServer::ReloadShader(ShaderInfo* shader)
 {
 	switch (shader->type)
@@ -344,6 +573,9 @@ void ShaderServer::ReloadShader(ShaderInfo* shader)
 	}
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 void ShaderServer::Update()
 {
 	std::lock_guard<std::mutex> lock_guard(this->fileChangesMutex);
@@ -356,22 +588,42 @@ void ShaderServer::Update()
 	
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 void ShaderServer::CleanUp()
 {
 	this->stopListening = true;
 	this->fileChangeListener.join();
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
+bool ShaderServer::HasRenderStateLoaded(const Util::String& name) const
+{
+	return this->renderStates.Contains(name);
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
 bool ShaderServer::HasShaderProgramLoaded(const Util::String& name) const
 {
 	return this->shaders.Contains(name);
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 bool ShaderServer::HasShaderNamed(const Util::String& name) const
 {
 	return this->shaderObjects.Contains(name);
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 Util::String ShaderServer::ReadFromFile(const Util::String& filename) const
 {
 	Util::String fileContent;
