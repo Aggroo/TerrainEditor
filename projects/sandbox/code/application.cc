@@ -57,18 +57,12 @@ Application::Open()
 
 	if (this->window->Open())
 	{
-		
-		shader = Render::ShaderObject::Create();
 
-		GLuint comp = Render::ShaderServer::Instance()->LoadComputeShader("resources/shaders/lightculling.comp");
-
-		shader->AddShader(comp);
-		shader->LinkShaders();
-
-		Render::ShaderServer::Instance()->AddShaderObject("LightCulling", shader);
 		Render::Renderer::Instance()->Setup(this->window);
 		Render::Renderer::Instance()->SetWindowResolution(1280, 900);
 		Render::Renderer::Instance()->SetRenderResolution(1280, 900);
+
+		shader = Render::ShaderServer::Instance()->GetShader("lightculling");
 
 		Input::InputManager::Instance()->Setup(window, &lNode);
 
@@ -129,7 +123,7 @@ Application::Run()
 	Ptr<Game::Entity> sphere = Game::Entity::Create();
 	sphere->SetName("Sphere");
 	sphere->SetMesh("resources/assets/sponza/sponza.gltf");
-	sphere->SetShaders("resources/shaders/PBR.vert", "resources/shaders/PBR.frag", "PBR");
+	sphere->SetShader("defaultLit");
 	sphere->SetIBLMaps(skybox->GetCubemap(), Render::FrameServer::Instance()->GetIBLPass()->GetIrradianceMap(), Render::FrameServer::Instance()->GetIBLPass()->GetBRDFMap());
 	sphere->SetTransform(modelMat*Math::mat4::translationMatrix(Math::vec4(0.0f, 0.0f, 0.0f)));
 	sphere->Activate();
@@ -137,7 +131,7 @@ Application::Run()
 	Ptr<Game::Entity> gun = Game::Entity::Create();
 	gun->SetName("Gun");
 	gun->SetMesh("resources/assets/Cerberus/Cerberus_LP.FBX");
-	gun->SetShaders("resources/shaders/PBR.vert", "resources/shaders/PBR.frag", "PBR");
+	gun->SetShader("defaultLit");
 	gun->SetIBLMaps(skybox->GetCubemap(), Render::FrameServer::Instance()->GetIBLPass()->GetIrradianceMap(), Render::FrameServer::Instance()->GetIBLPass()->GetBRDFMap());
 	gun->SetTransform(modelMat*Math::mat4::translationMatrix(Math::vec4(0.0f, 50.0f, 0.0f))*Math::mat4::rotY(Math::Deg2Rad(-90))*Math::mat4::rotX(Math::Deg2Rad(-90)));
 	gun->Activate();

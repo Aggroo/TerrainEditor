@@ -29,6 +29,8 @@ void Renderer::Setup(Display::Window* window)
 	renderOptions.Add(OptionExposure, 0.0f);
 	renderOptions.Add(OptionGamma, 2.2f);
 
+	Render::ShaderServer::Instance()->SetupShaders("resources/shaders/shaders.json");
+
 	//Setup framepasses before materials
 	Render::FrameServer::Instance()->SetupFramePasses();
 

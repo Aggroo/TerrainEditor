@@ -37,11 +37,7 @@ void IBLPass::Setup()
 	glTextureParameterf(envMap->GetTextureID(), GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy);
 
 	{
-		Ptr<ShaderObject> eq2Cubemap = ShaderObject::Create();
-		GLuint comp = Render::ShaderServer::Instance()->LoadComputeShader("resources/shaders/eq2cube.comp");
-		eq2Cubemap->AddShader(comp);
-		eq2Cubemap->LinkShaders();
-		Render::ShaderServer::Instance()->AddShaderObject("EQ2CUBE", eq2Cubemap);
+		Ptr<ShaderObject> eq2Cubemap = Render::ShaderServer::Instance()->GetShader("eq2cube");
 
 		Ptr<TextureResource> hdr = TextureResource::Create();
 		hdr->LoadTextureFile(hdrTexPath.AsCharPtr());
@@ -74,13 +70,8 @@ void IBLPass::Setup()
 	}
 
 	{
-		Ptr<ShaderObject> spmap = ShaderObject::Create();
-		GLuint comp = Render::ShaderServer::Instance()->LoadComputeShader("resources/shaders/spmap.comp");
-		spmap->AddShader(comp);
-		spmap->LinkShaders();
-		Render::ShaderServer::Instance()->AddShaderObject("SP", spmap);
+		Ptr<ShaderObject> spmap = Render::ShaderServer::Instance()->GetShader("spmap");
 		
-
 		glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &sp->GetTextureID());
 		int levels = numMipMapLevels(kEnvMapSize, kEnvMapSize);
 		glTextureStorage2D(sp->GetTextureID(), levels, GL_RGBA16F, kEnvMapSize, kEnvMapSize);
@@ -113,12 +104,7 @@ void IBLPass::Setup()
 	}
 	
 	{
-		Ptr<ShaderObject> irmap = ShaderObject::Create();
-		GLuint comp = Render::ShaderServer::Instance()->LoadComputeShader("resources/shaders/irmap.comp");
-		irmap->AddShader(comp);
-		irmap->LinkShaders();
-		Render::ShaderServer::Instance()->AddShaderObject("IR", irmap);
-		irmap->BindProgram();
+		Ptr<ShaderObject> irmap = Render::ShaderServer::Instance()->GetShader("irmap");		
 
 		glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &ir->GetTextureID());
 		//int levels = numMipMapLevels(kIrradianceMapSize, kIrradianceMapSize);
@@ -135,13 +121,8 @@ void IBLPass::Setup()
 	}
 	
 	{
-		Ptr<ShaderObject> brdfmap = ShaderObject::Create();
-		GLuint comp = Render::ShaderServer::Instance()->LoadComputeShader("resources/shaders/brdf.comp");
-		brdfmap->AddShader(comp);
-		brdfmap->LinkShaders();
-		Render::ShaderServer::Instance()->AddShaderObject("BRDF", brdfmap);
+		Ptr<ShaderObject> brdfmap = Render::ShaderServer::Instance()->GetShader("brdf");
 		
-
 		glCreateTextures(GL_TEXTURE_2D, 1, &brdf->GetTextureID());
 		glTextureStorage2D(brdf->GetTextureID(), 1, GL_RG16F, kBRDF_LUT_Size, kBRDF_LUT_Size);
 		glTextureParameteri(brdf->GetTextureID(), GL_TEXTURE_MIN_FILTER, GL_LINEAR);

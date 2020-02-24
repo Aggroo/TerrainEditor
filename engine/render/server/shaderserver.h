@@ -4,8 +4,8 @@
 #include "core/ptr.h"
 #include "foundation/util/dictionary.h"
 #include "foundation/util/string.h"
+#include "render/render/shadervariables.h"
 #include <mutex>
-
 
 namespace Render
 {
@@ -27,14 +27,17 @@ public:
 	~ShaderServer();
 
 	//Retrives a shader object by name
-	Ptr<ShaderObject> GetShader(const char* file);
+	Ptr<ShaderObject> GetShader(const char* name);
+
+	//Load shader settings from json file and sets up all the shaders
+	bool SetupShaders(const Util::String& file);
 
 	//Load and compile a vertex shader
-	GLuint LoadVertexShader(Util::String file, bool reload = false);
+	GLuint LoadVertexShader(const Util::String& file, bool reload = false);
 	//Load and compile a fragment shader
-	GLuint LoadFragmentShader(Util::String file, bool reload = false);
+	GLuint LoadFragmentShader(const Util::String& file, bool reload = false);
 	//Load and compile a compute shader
-	GLuint LoadComputeShader(Util::String file, bool reload = false);
+	GLuint LoadComputeShader(const Util::String& file, bool reload = false);
 
 	void AddShaderObject(const char* name, Ptr<ShaderObject> shaderObj);
 
@@ -67,6 +70,10 @@ private:
 	//Contains all current shader objects
 	//Key is filename and value is a shaderObject pointer
 	Util::Dictionary<Util::String, Ptr<ShaderObject>> shaderObjects;
+
+	//Contains all render states
+	//Key must be unique to each state, and in this case, the key is the state's filename
+	Util::Dictionary<Util::String, Render::RenderState> renderStates;
 
 	std::mutex fileChangesMutex;
 	

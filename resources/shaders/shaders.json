@@ -71,7 +71,7 @@
 		},
 		{
 			"name": "spmap",
-			"desc": "Compute shader to calculate spmap for perlinnoise",
+			"desc": "Compute shader to calculate spmap for IBL",
 			"shader": "resources/shaders/compute/spmap.comp"
 		}
 	]

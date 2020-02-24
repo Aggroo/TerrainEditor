@@ -157,7 +157,7 @@ Ptr<MeshResources> Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 		vector[2] = mesh->mNormals[i].z;
 		vertex.norm = vector;
 		// texture coordinates
-		if (mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
+		if (mesh->HasTextureCoords(0)) // does the mesh contain texture coordinates?
 		{
 			Math::vec2 vec;
 			// a vertex can contain up to 8 different texture coordinates. We thus make the assumption that we won't 

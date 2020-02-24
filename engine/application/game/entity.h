@@ -36,7 +36,7 @@ public:
 
 	void SetTextures(Util::String albedo, Util::String normal, Util::String metallic, Util::String roughness, Util::String ao = "Default");
 
-	void SetShaders(Util::String vertexShader, Util::String fragmentShader, const char* name);
+	void SetShader(const char* name);
 	Ptr<Render::ShaderObject> GetShader();
 
 	void SetName(Util::String name);

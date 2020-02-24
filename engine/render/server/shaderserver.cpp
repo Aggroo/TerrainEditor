@@ -4,7 +4,10 @@
 #include <sstream>
 #include <fstream>
 #include <filesystem>
-#include "render/render/shadervariables.h"
+#include "json.hpp"
+#include "render/resources/materialcomponents.h"
+
+using json = nlohmann::json;
 
 namespace Render
 {
@@ -19,11 +22,11 @@ ShaderServer::~ShaderServer()
 	CleanUp();
 }
 
-Ptr<ShaderObject> ShaderServer::GetShader(const char* file)
+Ptr<ShaderObject> ShaderServer::GetShader(const char* name)
 {
-	if (this->HasShaderNamed(file))
+	if (this->HasShaderNamed(name))
 	{
-		return this->shaderObjects[file];
+		return this->shaderObjects[name];
 	}
 	else
 	{
@@ -33,7 +36,77 @@ Ptr<ShaderObject> ShaderServer::GetShader(const char* file)
 	}
 }
 
-GLuint ShaderServer::LoadVertexShader(Util::String file, bool reload)
+bool ShaderServer::SetupShaders(const Util::String & file)
+{
+	std::ifstream i(file.AsCharPtr());
+
+	if (!i) {
+		printf("[SHADER LOAD ERROR]: Couldn't find shaders.json!");
+		_assert(false);
+		return false;
+	}
+
+	json j;
+	i >> j;
+
+	this->shaderObjects.BeginBulkAdd();
+
+	for (auto& element : j.at("ComputeShaders"))
+	{
+		auto shader = element.get<Components::ComputeShader>();
+
+		if (this->HasShaderNamed(shader.name.c_str()))
+		{
+			_warning("Duplicate shader loaded: \" %s \". Using previously loaded shader...", shader.name.c_str());
+		}
+		else
+		{
+			Ptr<ShaderObject> shd = ShaderObject::Create();
+
+			GLuint comp = LoadComputeShader(shader.shader.c_str());
+
+			shd->AddShader(comp);
+
+			/* TODO: ADD RENDERSTATES TO SHADEROBJECT AND A LOADRENDERSTATE FUNCTION */
+
+			shd->LinkShaders();
+
+			this->shaderObjects.Add(shader.name.c_str(), shd);
+		}
+	}
+
+	for (auto& element : j.at("Shaders")) 
+	{
+		auto shader = element.get<Components::Shader>();
+
+		if (this->HasShaderNamed(shader.name.c_str()))
+		{
+			_warning("Duplicate shader loaded: \" %s \". Using previously loaded shader...", shader.name.c_str());
+		}
+		else
+		{
+			Ptr<ShaderObject> shd = ShaderObject::Create();
+
+			GLuint vert = LoadVertexShader(shader.vertexShader.c_str());
+			GLuint frag = LoadFragmentShader(shader.fragmentShader.c_str());
+
+			shd->AddShader(vert);
+			shd->AddShader(frag);
+
+			/* TODO: ADD RENDERSTATES TO SHADEROBJECT AND A LOADRENDERSTATE FUNCTION */
+
+			shd->LinkShaders();
+
+			this->shaderObjects.Add(shader.name.c_str(), shd);
+		}
+	}
+
+	this->shaderObjects.EndBulkAdd();
+
+	return true;
+}
+
+GLuint ShaderServer::LoadVertexShader(const Util::String& file, bool reload)
 {
 	if (!this->HasShaderProgramLoaded(file) || reload)
 	{
@@ -101,7 +174,7 @@ GLuint ShaderServer::LoadVertexShader(Util::String file, bool reload)
 	return this->shaders[file].program;
 }
 
-GLuint ShaderServer::LoadFragmentShader(Util::String file, bool reload)
+GLuint ShaderServer::LoadFragmentShader(const Util::String& file, bool reload)
 {
 	if (!this->HasShaderProgramLoaded(file) || reload)
 	{
@@ -167,7 +240,7 @@ GLuint ShaderServer::LoadFragmentShader(Util::String file, bool reload)
 
 }
 
-GLuint ShaderServer::LoadComputeShader(Util::String file, bool reload)
+GLuint ShaderServer::LoadComputeShader(const Util::String& file, bool reload)
 {
 	if (!this->HasShaderProgramLoaded(file) || reload)
 	{
@@ -322,7 +395,7 @@ Util::String ShaderServer::ReadFromFile(const Util::String& filename) const
 			if (tokens[0] == "#include")
 			{
 				Util::String filename = tokens[1].ExtractRange(1, tokens[1].Length()-3);
-				line = ReadFromFile("resources/shaders/"+ filename).AsCharPtr();
+				line = ReadFromFile("resources/shaders/fragment/"+ filename).AsCharPtr();
 			}
 		}
 		fileContent.Append(line.c_str() + Util::String("\n"));
@@ -332,4 +405,5 @@ Util::String ShaderServer::ReadFromFile(const Util::String& filename) const
 
 	return fileContent;
 }
+
 }

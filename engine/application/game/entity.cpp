@@ -164,16 +164,9 @@ void Entity::SetTextures(Util::String albedo, Util::String normal, Util::String 
 
 }
 
-void Entity::SetShaders(Util::String vertexShader, Util::String fragmentShader, const char* name)
+void Entity::SetShader(const char* name)
 {
-	GLuint vert = Render::ShaderServer::Instance()->LoadVertexShader(vertexShader);
-	GLuint frag = Render::ShaderServer::Instance()->LoadFragmentShader(fragmentShader);
-
-	this->shader->AddShader(vert);
-	this->shader->AddShader(frag);
-	this->shader->LinkShaders();
-
-	Render::ShaderServer::Instance()->AddShaderObject(name, this->shader);
+	this->shader = Render::ShaderServer::Instance()->GetShader(name);
 }
 
 Ptr<Render::ShaderObject> Entity::GetShader()

@@ -21,7 +21,7 @@ LightCullingPass::~LightCullingPass()
 
 void LightCullingPass::Setup()
 {
-	this->lightCullingProgram = ShaderServer::Instance()->GetShader("LightCulling")->GetProgram();
+	this->lightCullingProgram = ShaderServer::Instance()->GetShader("lightculling")->GetProgram();
 
 	//glGenTextures(1, &this->buffer);
 	//glBindTexture(GL_TEXTURE_2D, this->buffer);

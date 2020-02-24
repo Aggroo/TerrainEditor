@@ -23,14 +23,7 @@ Skybox::~Skybox()
 
 void Skybox::Activate()
 {
-	GLuint vert = Render::ShaderServer::Instance()->LoadVertexShader("resources/shaders/skybox.vert");
-	GLuint frag = Render::ShaderServer::Instance()->LoadFragmentShader("resources/shaders/skybox.frag");
-
-	shader->AddShader(vert);
-	shader->AddShader(frag);
-	shader->LinkShaders();
-
-	Render::ShaderServer::Instance()->AddShaderObject("Skybox", shader);
+	this->shader = Render::ShaderServer::Instance()->GetShader("skybox");
 
 	cubemap = Render::FrameServer::Instance()->GetIBLPass()->GetEnvironmentMap();
 	GenerateCube();

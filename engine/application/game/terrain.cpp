@@ -36,14 +36,7 @@ Terrain::~Terrain()
 
 void Terrain::Activate()
 {	
-	GLuint vert = Render::ShaderServer::Instance()->LoadVertexShader("resources/shaders/terrainPBR.vert");
-	GLuint frag = Render::ShaderServer::Instance()->LoadFragmentShader("resources/shaders/terrainPBR.frag");
-
-	this->shader->AddShader(vert);
-	this->shader->AddShader(frag);
-	this->shader->LinkShaders();
-
-	Render::ShaderServer::Instance()->AddShaderObject("Terrain-PBR", this->shader);
+	this->shader = Render::ShaderServer::Instance()->GetShader("defaultTerrain");
 
 	this->shader->BindProgram();
 

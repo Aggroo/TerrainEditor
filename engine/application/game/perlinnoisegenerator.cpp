@@ -13,14 +13,7 @@ __ImplementClass(Generator::PerlinNoiseGenerator, 'GEPN', Core::RefCounted)
 PerlinNoiseGenerator::PerlinNoiseGenerator() : gen(rd()), dis(0, 3000), noiseMap(nullptr)
 {
 	this->texture = Render::TextureResource::Create();
-	this->shader = Render::ShaderObject::Create();
-
-	const GLuint comp = Render::ShaderServer::Instance()->LoadComputeShader("resources/shaders/perlinnoise.comp");
-
-	this->shader->AddShader(comp);
-	this->shader->LinkShaders();
-
-	Render::ShaderServer::Instance()->AddShaderObject("PerlinNoise", this->shader);
+	this->shader = Render::ShaderServer::Instance()->GetShader("perlinnoise");
 
 	this->shader->BindProgram();
 
@@ -53,23 +46,6 @@ void PerlinNoiseGenerator::GenerateNoiseMap(const char* filename, int mapWidth, 
 	this->shader->setupUniformFloat("persistance", persistance);
 	this->shader->setupUniformFloat("lacunarity", lacunarity);
 	this->shader->setupUniformFloat("width", mapWidth);
-
-	//uniformBlock.pointLightCount = (GLint)LightServer::Instance()->GetNumPointLights();
-	//uniformBlock.spotLightCount = (GLint)LightServer::Instance()->GetNumSpotLights();
-	//
-	////Bind uniform buffer block
-	//glBindBuffer(GL_UNIFORM_BUFFER, this->ubo[0]);
-	//glBindBufferBase(GL_UNIFORM_BUFFER, 24, this->ubo[0]);
-	//glBufferData(GL_UNIFORM_BUFFER, sizeof(UniformBlock), &uniformBlock, GL_STATIC_DRAW);
-
-	//
-	//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, lightServer->GetPointLightBuffer());
-	//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 11, lightServer->GetSpotLightBuffer());
-	//
-	//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, lightServer->GetVisiblePointLightIndexBuffer());
-	//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 12, lightServer->GetVisibleSpotLightIndexBuffer());
-
-	
 
 	glBindImageTexture(0, texture->GetTextureID(), 0, GL_TRUE, 0, GL_READ_WRITE, GL_RGBA16F);
 	glDispatchCompute(mapWidth / 16, mapHeight / 16, 1);

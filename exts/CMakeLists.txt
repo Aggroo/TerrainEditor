@@ -21,10 +21,6 @@ SET_TARGET_PROPERTIES(assimp PROPERTIES FOLDER "exts/assimp")
 TARGET_INCLUDE_DIRECTORIES(exts INTERFACE assimp/include)
 target_link_libraries(exts INTERFACE assimp)
 
-ADD_SUBDIRECTORY(misc)
-SET_TARGET_PROPERTIES(misc PROPERTIES FOLDER "exts/misc")
-TARGET_INCLUDE_DIRECTORIES(exts INTERFACE misc)
-
 OPTION(DEFINE_GLEW "Define IMGUI GLEW" ON)
 
 IF(DEFINE_GLEW)
@@ -104,9 +100,25 @@ ADD_LIBRARY(nativefiledialog STATIC
 			nativefiledialog/src/nfd_common.c
 			${files_nativefiledialog}
 			)
-			
 
 TARGET_LINK_LIBRARIES(nativefiledialog PUBLIC exts ${GTK3_LIBRARIES})
 SET_TARGET_PROPERTIES(nativefiledialog PROPERTIES FOLDER "exts/nativefiledialog")
 TARGET_INCLUDE_DIRECTORIES(exts INTERFACE nativefiledialog nativefiledialog/src/include)
 TARGET_LINK_LIBRARIES(exts INTERFACE nativefiledialog)
+
+ADD_LIBRARY(misc STATIC 
+			misc/tinyxml2.h
+			misc/stb_image.h
+			misc/stb_image_write.h
+			misc/PerlinNoise.hpp
+			misc/json.hpp
+			misc/IconsFontAwesome4_c.h
+			misc/IconsFontAwesome5_c.h
+			misc/tinyxml2.cpp
+			)
+
+TARGET_LINK_LIBRARIES(misc PUBLIC exts)
+TARGET_INCLUDE_DIRECTORIES(misc PUBLIC misc)
+SET_TARGET_PROPERTIES(misc PROPERTIES FOLDER "exts/misc")
+TARGET_LINK_LIBRARIES(exts INTERFACE misc)
+
