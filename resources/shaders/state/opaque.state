@@ -1,0 +1,12 @@
+CullFace = true
+FrontFace = ccw
+CullMode = back
+Blend = false
+BlendSourceFunc = one
+BlendDestinationFunc = zero
+AlphaTest = false
+AlphaFunc = always
+AlphaClamp = 0.0
+DepthTest = true
+DepthFunc = lequal
+DepthWrite = true

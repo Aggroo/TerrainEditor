@@ -1,0 +1,12 @@
+CullFace = false
+FrontFace = cw
+CullMode = front
+Blend = false
+BlendSourceFunc = src_alpha
+BlendDestinationFunc = one_minus_src_alpha
+AlphaTest = true
+AlphaFunc = greater
+AlphaClamp = 0.5
+DepthTest = true
+DepthFunc = lequal
+DepthWrite = true

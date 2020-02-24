@@ -26,6 +26,7 @@ SET(files_render_resources
 	resources/model.h
 	resources/model.cpp
 	resources/vertexcomponent.h
+	resources/materialcomponents.h
 	)
 	
 SET(files_render_camera

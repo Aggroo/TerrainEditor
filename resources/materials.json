@@ -1,0 +1,100 @@
+{
+	"Materials":[
+		{
+			"name": "PBR",
+			"desc": "A lit opaque PBR material",
+			"Pass": [
+				{
+					"name": "Depth",
+					"shader": "depth"
+				},
+				{
+					"name": "FlatGeometryLit",
+					"shader": "defaultLit"
+				}
+			],
+			"Parameters": [
+				{
+					"name": "AlbedoMap",
+					"defaultValue": "resources/textures/placeholder.png"
+				},
+				{
+					"name": "NormalMap",
+					"defaultValue": "resources/textures/placeholder.png"
+				},
+				{
+					"name": "SpecularMap",
+					"defaultValue": "resources/textures/placeholder.png"
+				},
+				{
+					"name": "RoughnessMap",
+					"defaultValue": "resources/textures/placeholder.png"
+				},
+			]
+		},
+		{
+			"name": "TerrainPBR",
+			"desc": "A lit opaque PBR material for terrain",
+			"Pass": [
+				{
+					"name": "Depth",
+					"shader": "depth"
+				},
+				{
+					"name": "FlatGeometryLit",
+					"shader": "defaultTerrain"
+				}
+			],
+			"Parameters": [
+				{
+					"name": "albedo",
+					"defaultValue": "resources/textures/placeholder.png"
+				},
+				{
+					"name": "normals",
+					"defaultValue": "resources/textures/placeholder.png"
+				},
+				{
+					"name": "specular",
+					"defaultValue": "resources/textures/placeholder.png"
+				},
+				{
+					"name": "roughness",
+					"defaultValue": "resources/textures/placeholder.png"
+				},
+			]
+		},
+		{
+			"name": "PBRAlphaCutout",
+			"desc": "A lit alpha cutout PBR material",
+			"Pass": [
+				{
+					"name": "Depth",
+					"shader": "depth"
+				},
+				{
+					"name": "FlatGeometryLit",
+					"shader": "defaultLitAlphaCutout"
+				}
+			],
+			"Parameters": [
+				{
+					"name": "AlbedoMap",
+					"defaultValue": "resources/textures/placeholder.png"
+				},
+				{
+					"name": "NormalMap",
+					"defaultValue": "resources/textures/placeholder.png"
+				},
+				{
+					"name": "SpecularMap",
+					"defaultValue": "resources/textures/placeholder.png"
+				},
+				{
+					"name": "RoughnessMap",
+					"defaultValue": "resources/textures/placeholder.png"
+				},
+			]
+		},
+	]
+}

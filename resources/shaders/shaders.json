@@ -1,0 +1,78 @@
+{
+	"Shaders": [
+		{
+			"name": "depth",
+			"desc": "Default shader for depth buffer",
+			"VertexShader": "resources/shaders/vertex/depth.vert",
+			"FragmentShader": "resources/shaders/fragment/depth.frag",
+			"RenderState": "resources/shaders/state/opaque.state"
+		},
+		{
+			"name": "defaultLit",
+			"desc": "Default shader for rendering opaque lit geometry",
+			"VertexShader": "resources/shaders/vertex/PBR.vert",
+			"FragmentShader": "resources/shaders/fragment/PBR.frag",
+			"RenderState": "resources/shaders/state/opaque.state"
+		},
+		{
+			"name": "defaultLitAlphaCutout",
+			"desc": "Default shader for rendering alpha cutout lit geometry",
+			"VertexShader": "resources/shaders/vertex/PBR.vert",
+			"FragmentShader": "resources/shaders/fragment/PBR.frag",
+			"RenderState": "resources/shaders/state/alphacutout.state"
+		},
+		{
+			"name": "defaultTerrain",
+			"desc": "Default shader for rendering terrain",
+			"VertexShader": "resources/shaders/vertex/terrainPBR.vert",
+			"FragmentShader": "resources/shaders/fragment/terrainPBR.frag",
+			"RenderState": "resources/shaders/state/opaque.state"
+		},
+		{
+			"name": "postprocess",
+			"desc": "Shader for post-processing",
+			"VertexShader": "resources/shaders/vertex/postprocessing.vert",
+			"FragmentShader": "resources/shaders/fragment/postprocessing.frag",
+			"RenderState": "resources/shaders/state/opaque.state"
+		},
+		{
+			"name": "skybox",
+			"desc": "Default shader for skybox",
+			"VertexShader": "resources/shaders/vertex/skybox.vert",
+			"FragmentShader": "resources/shaders/fragment/skybox.frag",
+			"RenderState": "resources/shaders/state/opaque.state"
+		}
+	],
+	"ComputeShaders": [
+		{
+			"name": "lightculling",
+			"desc": "Compute shader for light culling",
+			"shader": "resources/shaders/compute/lightculling.comp"
+		},
+		{
+			"name": "brdf",
+			"desc": "Compute shader to create a brdf lookup texture",
+			"shader": "resources/shaders/compute/brdf.comp"
+		},
+		{
+			"name": "eq2cube",
+			"desc": "Compute shader to transform equirectangular to cubemap",
+			"shader": "resources/shaders/compute/eq2cube.comp"
+		},
+		{
+			"name": "irmap",
+			"desc": "Compute shader to create irradiance map",
+			"shader": "resources/shaders/compute/irmap.comp"
+		},
+		{
+			"name": "perlinnoise",
+			"desc": "Compute shader to generate perlinnoise texture",
+			"shader": "resources/shaders/compute/perlinnoise.comp"
+		},
+		{
+			"name": "spmap",
+			"desc": "Compute shader to calculate spmap for perlinnoise",
+			"shader": "resources/shaders/compute/spmap.comp"
+		}
+	]
+}
