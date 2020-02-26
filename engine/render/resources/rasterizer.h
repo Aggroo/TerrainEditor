@@ -1,4 +1,13 @@
 #pragma once
+//------------------------------------------------------------------------------
+/**
+	Old rasterizer code from my university days
+	Utilizes bresenhams line algorithm and barycentric coordinates
+
+	(C) 2020 Anton Grönberg
+*/
+//------------------------------------------------------------------------------
+
 #include "foundation/math/vec2.h"
 #include "foundation/math/vec3.h"
 #include "foundation/math/vec4.h"

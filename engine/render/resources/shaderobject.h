@@ -49,7 +49,7 @@ private:
 	void SetRenderState(const RenderState& state);
 
 	void ReloadUniforms(const char* name, Util::Variant variance);
-	bool CheckUniformMap(Util::Array<Util::Pair<Util::String, Util::Variant>> map, const GLchar* name);
+	bool CheckUniformMap(const Util::Array<Util::Pair<Util::String, Util::Variant>>& map, const GLchar* name);
 
 	Util::Array<Util::Pair<Util::String, Util::Variant>> uMap;
 	//Util::Dictionary<Util::String, Util::Variant> uMap;

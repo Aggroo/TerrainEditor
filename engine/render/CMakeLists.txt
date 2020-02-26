@@ -25,6 +25,8 @@ SET(files_render_resources
 	resources/rasterizer.cpp
 	resources/model.h
 	resources/model.cpp
+	resources/material.h
+	resources/material.cpp
 	resources/vertexcomponent.h
 	resources/materialcomponents.h
 	)
@@ -60,13 +62,7 @@ SET(files_render_frames
 	frames/iblpass.h
 	frames/iblpass.cpp
 	)
-	
-SET(files_render_material
-	material/material.h
-	material/material.cpp
-	material/materialparameter.h
-	material/materialparameter.cpp)
-	
+
 SET(files_render_server
 	server/resourceserver.h
 	server/resourceserver.cpp
@@ -88,8 +84,6 @@ SOURCE_GROUP("render" FILES ${files_render_render})
 
 SOURCE_GROUP("frames" FILES ${files_render_frames})
 
-SOURCE_GROUP("material" FILES ${files_render_material})
-
 SOURCE_GROUP("server" FILES ${files_render_server})
 
 SET(files_render
@@ -98,7 +92,6 @@ SET(files_render
 	${files_render_camera}
 	${files_render_render}
 	${files_render_frames}
-	${files_render_material}
 	${files_render_server}
 	${files_render_pch})
 

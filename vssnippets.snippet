@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets
+    xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+
+
+<!-- header  -->
+    <CodeSnippet Format="1.0.0">
+        <Header>
+            <Title>Engine Namespace Header</Title>
+            <Shortcut>cheader</Shortcut>
+        </Header>
+        <Snippet>
+            <Declarations>
+                <Object>
+                    <ID>description</ID>
+                    <Type>String of text</Type>
+                    <ToolTip>Write a description of this header file.</ToolTip>
+                    <Default>WRITE ME OR ELSE!</Default>
+                </Object>
+                <Object>
+                    <ID>namespace</ID>
+                    <Type>Namespace</Type>
+                    <ToolTip>Select a namespace.</ToolTip>
+                    <Default>Base</Default>
+                </Object>
+                <Object>
+                    <ID>year</ID>
+                    <Type>Current year</Type>
+                    <ToolTip>Please insert this year, and not some other year...</ToolTip>
+                    <Default>2019</Default>
+                </Object>
+            </Declarations>
+            <Code Language="cpp">
+                <![CDATA[#pragma once
+//------------------------------------------------------------------------------
+/**
+    $description$
+
+    (C) $year$ Individual contributors, see AUTHORS file
+*/
+//------------------------------------------------------------------------------
+namespace $namespace$
+{
+$end$
+} // namespace $namespace$
+                ]]>
+            </Code>
+        </Snippet>
+    </CodeSnippet>
+
+    <CodeSnippet Format="1.0.0">
+    	<Header>
+    		<Title>Engine Function</Title>
+    		<Shortcut>customFunc</Shortcut>
+    	</Header>
+    	<Snippet>
+    		<Declarations>
+    			<Object>
+    				<ID>Classname</ID>
+    				<Type>String of text</Type>
+    				<Default>Class</Default>
+    			</Object>    			
+    		</Declarations>
+    		<Code Language="cpp">
+    			<![CDATA[//------------------------------------------------------------------------------
+/**
+*/
+void
+$Classname$::$end$()
+{
+	//FIXME: empty
+}
+
+    			]]>
+    		</Code>
+    	</Snippet>
+    </CodeSnippet>
+
+
+<!-- source  -->
+    <CodeSnippet Format="1.0.0">
+        <Header>
+            <Title>Engine Namespace Source</Title>
+            <Shortcut>csource</Shortcut>
+        </Header>
+        <Snippet>
+            <Declarations>
+                <Object>
+                    <ID>filename</ID>
+                    <Type>String of text</Type>
+                    <ToolTip>Write a description of this header file.</ToolTip>
+                    <Default>WRITE ME OR ELSE!</Default>
+                </Object>
+                <Object>
+                    <ID>namespace</ID>
+                    <Type>Namespace</Type>
+                    <ToolTip>Select a namespace.</ToolTip>
+                    <Default>Base</Default>
+                </Object>
+                <Object>
+                    <ID>year</ID>
+                    <Type>Current year</Type>
+                    <ToolTip>Please insert this year, and not some other year...</ToolTip>
+                    <Default>2019</Default>
+                </Object>
+            </Declarations>
+            <Code Language="cpp">
+                <![CDATA[//------------------------------------------------------------------------------
+//  $filename$.cc
+//  (C) $year$ Individual contributors, see AUTHORS file
+//------------------------------------------------------------------------------
+#include "config.h"
+#include "$filename$.h"
+namespace $namespace$
+{
+$end$
+} // namespace $namespace$
+                ]]>
+            </Code>
+        </Snippet>
+    </CodeSnippet>
+
+
+
+<!-- comment  -->
+    <CodeSnippet Format="1.0.0">
+        <Header>
+            <Title>Engine function comment</Title>
+            <Shortcut>ccomment</Shortcut>
+        </Header>
+        <Snippet>
+
+            <Code Language="cpp">
+                <![CDATA[//------------------------------------------------------------------------------
+/**
+*/$end$]]>
+            </Code>
+        </Snippet>
+    </CodeSnippet>
+
+<!-- component declaration  -->
+    <CodeSnippet Format="1.0.0">
+        <Header>
+            <Title>Engine Class Declaration</Title>
+            <Shortcut>cclassdecl</Shortcut>
+        </Header>
+        <Snippet>
+            <Declarations>
+                <Object>
+                    <ID>classname</ID>
+                    <Type>String of text</Type>
+                    <ToolTip>Name of this class</ToolTip>
+                    <Default>MyClass</Default>
+                </Object>
+            </Declarations>
+            <Code Language="cpp">
+                <![CDATA[
+// -! MOVE THIS TO INCLUDES !-
+#include "core/refcounted.h"
+
+class $classname$ : public Core::Refcounted
+{
+__DeclareClass($classname$);
+public:
+    $classname$();
+	~$classname$();
+
+private:    
+	
+
+    $end$
+};]]>
+            </Code>
+        </Snippet>
+    </CodeSnippet>
+
+<!-- component definition -->
+    <CodeSnippet Format="1.0.0">
+        <Header>
+            <Title>Engine Class Implementation</Title>
+            <Shortcut>cclassimpl</Shortcut>
+        </Header>
+        <Snippet>
+            <Declarations>
+				<Object>
+                    <ID>namespace</ID>
+                    <Type>Namespace</Type>
+                    <ToolTip>Select a namespace.</ToolTip>
+                    <Default>Base</Default>
+                </Object>
+                <Object>
+                    <ID>classname</ID>
+                    <Type>String of text</Type>
+                    <ToolTip>Name of this class</ToolTip>
+                    <Default>MyClass</Default>
+                </Object>
+				<Object>
+                    <ID>rtti</ID>
+                    <Type>RTTI</Type>
+                    <ToolTip>Select a RTTI.</ToolTip>
+                    <Default>'BASE'</Default>
+                </Object>
+				<Object>
+                    <ID>inheritance</ID>
+                    <Type>String of text</Type>
+                    <ToolTip>Select a inheritance class.</ToolTip>
+                    <Default>Core::Refcounted</Default>
+                </Object>
+            </Declarations>
+            <Code Language="cpp">
+                <![CDATA[
+__ImplementClass($namespace$::$classname$, $rtti$, $inheritance$);
+
+$end$]]>
+            </Code>
+        </Snippet>
+    </CodeSnippet>
+</CodeSnippets>

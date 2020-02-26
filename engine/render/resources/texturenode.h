@@ -43,6 +43,7 @@ public:
 
 private:
 
+	/// The textures that have been added, uses TextureIndex as a key
 	Util::Dictionary<TextureIndex, Ptr<TextureResource>> textures;
 
 };
