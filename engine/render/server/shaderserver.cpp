@@ -4,7 +4,6 @@
 #include <sstream>
 #include <fstream>
 #include <filesystem>
-#include "json.hpp"
 #include "render/render/shadervariables.h"
 #include "render/resources/materialcomponents.h"
 

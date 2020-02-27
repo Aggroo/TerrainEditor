@@ -6,6 +6,8 @@
 
 namespace Render
 {
+class Material;
+
 class DrawPass : public FramePass
 {
 __DeclareClass(DrawPass)
@@ -18,6 +20,8 @@ public:
 
 	//Get this framebuffer objects render texture
 	GLuint& GetTextureBuffer() { return this->buffer; }
+
+	void AddMaterial(Material* mat) { this->materials.Append(mat); }
 
 	//Binds the Framebuffer object
 	void BindFrameBuffer();
@@ -43,5 +47,6 @@ protected:
 private:
 	//Ptr<Render::Skybox> skybox;
 
+	Util::Array<Material*> materials;
 };
 }

@@ -1,10 +1,12 @@
 #pragma once
 #include "core/singleton.h"
 #include "core/refcounted.h"
+#include "render/resources/material.h"
 #include "render/resources/textureresource.h"
 
 namespace Render
 {
+
 class ResourceServer
 {
 __DeclareSingleton(ResourceServer)
@@ -20,6 +22,11 @@ public:
 	///Check if mesh is loaded
 	bool HasMeshNamed(const Util::String& nName) const;
 
+	///Loads a material .json file and adds all materials to the list if they're not already defined
+	Ptr<Material> GetMaterial(const Util::String& name);
+	bool SetupMaterials(const Util::String& fileName);
+	bool HasMaterialNamed(const Util::String& name);
+
 private:
 
 	///This contains all textures.
@@ -29,6 +36,10 @@ private:
 	///This contains all meshes.
 	///Key must be unique to each mesh. the key is the mesh name loaded
 	Util::Dictionary<Util::String, Ptr<MeshResources>> meshes;
+
+	///Contains all Materials.
+	///Key must be unique to each Material. the key is the material name
+	Util::Dictionary<Util::String, Ptr<Material>> materials;
 
 };	
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "json.hpp"
+
 using nlohmann::json;
 
 namespace Components
@@ -14,14 +15,7 @@ struct Pass
 	std::string shader;
 };
 
-void to_json(json& j, const Pass& p) {
-	j = json{
-		{"name", p.name},
-		{"shader", p.shader}
-	};
-};
-
-void from_json(const json& j, Pass& p) {
+inline void from_json(const json& j, Pass& p) {
 	j.at("name").get_to(p.name);
 	j.at("shader").get_to(p.shader);
 };
@@ -35,14 +29,7 @@ struct Parameter
 	std::string defaultValue;
 };
 
-void to_json(json& j, const Parameter& p) {
-	j = json{
-		{"name", p.name},
-		{"defaultValue", p.defaultValue}
-	};
-};
-
-void from_json(const json& j, Parameter& p) {
+inline void from_json(const json& j, Parameter& p) {
 	j.at("name").get_to(p.name);
 	j.at("defaultValue").get_to(p.defaultValue);
 };
@@ -50,7 +37,7 @@ void from_json(const json& j, Parameter& p) {
 //------------------------------------------------------------------------------
 /**
 */
-struct Material
+struct Materials
 {
 	std::string name;
 	std::string desc;
@@ -58,16 +45,7 @@ struct Material
 	std::vector<Parameter> parameter;
 };
 
-void to_json(json& j, const Material& m) {
-	j = json{
-		{"name", m.name},
-		{"desc", m.desc},
-		{"Pass", m.pass},
-		{"Parameters", m.parameter}
-	};
-};
-
-void from_json(const json& j, Material& m) {
+inline void from_json(const json& j, Materials& m) {
 	j.at("name").get_to(m.name);
 	j.at("desc").get_to(m.desc);
 	j.at("Pass").get_to(m.pass);
@@ -86,7 +64,7 @@ struct Shader
 	std::string renderState;
 };
 
-void to_json(json& j, const Shader& s) {
+inline void to_json(json& j, const Shader& s) {
 	j = json{ 
 		{"name", s.name}, 
 		{"desc", s.desc}, 
@@ -96,7 +74,7 @@ void to_json(json& j, const Shader& s) {
 	};
 };
 
-void from_json(const json& j, Shader& s) {
+inline void from_json(const json& j, Shader& s) {
 	j.at("name").get_to(s.name);
 	j.at("desc").get_to(s.desc);
 	j.at("VertexShader").get_to(s.vertexShader);
@@ -114,7 +92,7 @@ struct ComputeShader
 	std::string shader;
 };
 
-void to_json(json& j, const ComputeShader& s) {
+inline void to_json(json& j, const ComputeShader& s) {
 	j = json{
 		{"name", s.name},
 		{"desc", s.desc},
@@ -122,7 +100,7 @@ void to_json(json& j, const ComputeShader& s) {
 	};
 };
 
-void from_json(const json& j, ComputeShader& s) {
+inline void from_json(const json& j, ComputeShader& s) {
 	j.at("name").get_to(s.name);
 	j.at("desc").get_to(s.desc);
 	j.at("shader").get_to(s.shader);

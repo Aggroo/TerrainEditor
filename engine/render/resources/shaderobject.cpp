@@ -350,7 +350,7 @@ void ShaderObject::ReloadUniforms(const char* name, Util::Variant variant)
 //------------------------------------------------------------------------------
 /**
 */
-bool ShaderObject::CheckUniformMap(Util::Array<Util::Pair<Util::String, Util::Variant>> map, const GLchar *name)
+bool ShaderObject::CheckUniformMap(const Util::Array<Util::Pair<Util::String, Util::Variant>>& map, const GLchar *name)
 {
 	for (auto pair : map)
 	{

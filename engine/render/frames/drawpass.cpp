@@ -1,6 +1,7 @@
 #include "config.h"
 #include "drawpass.h"
 #include "application/basegamefeatures/entitymanager.h"
+#include "render/resources/material.h"
 
 
 namespace Render

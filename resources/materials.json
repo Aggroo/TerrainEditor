@@ -29,7 +29,7 @@
 				{
 					"name": "RoughnessMap",
 					"defaultValue": "resources/textures/placeholder.png"
-				},
+				}
 			]
 		},
 		{
@@ -47,21 +47,53 @@
 			],
 			"Parameters": [
 				{
-					"name": "albedo",
+					"name": "albedo0",
 					"defaultValue": "resources/textures/placeholder.png"
 				},
 				{
-					"name": "normals",
+					"name": "albedo1",
 					"defaultValue": "resources/textures/placeholder.png"
 				},
 				{
-					"name": "specular",
+					"name": "albedo2",
 					"defaultValue": "resources/textures/placeholder.png"
 				},
 				{
-					"name": "roughness",
+					"name": "normal0",
 					"defaultValue": "resources/textures/placeholder.png"
 				},
+				{
+					"name": "normal1",
+					"defaultValue": "resources/textures/placeholder.png"
+				},
+				{
+					"name": "normal2",
+					"defaultValue": "resources/textures/placeholder.png"
+				},
+				{
+					"name": "specular0",
+					"defaultValue": "resources/textures/placeholder.png"
+				},
+				{
+					"name": "specular1",
+					"defaultValue": "resources/textures/placeholder.png"
+				},
+				{
+					"name": "specular2",
+					"defaultValue": "resources/textures/placeholder.png"
+				},
+				{
+					"name": "roughness0",
+					"defaultValue": "resources/textures/placeholder.png"
+				},
+				{
+					"name": "roughness1",
+					"defaultValue": "resources/textures/placeholder.png"
+				},
+				{
+					"name": "roughness2",
+					"defaultValue": "resources/textures/placeholder.png"
+				}
 			]
 		},
 		{
@@ -93,8 +125,8 @@
 				{
 					"name": "RoughnessMap",
 					"defaultValue": "resources/textures/placeholder.png"
-				},
+				}
 			]
-		},
+		}
 	]
 }

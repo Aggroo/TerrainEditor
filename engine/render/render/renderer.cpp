@@ -5,6 +5,7 @@
 #include "render/server/frameserver.h"
 #include "render/server/lightserver.h"
 #include "render/server/shaderserver.h"
+#include "render/server/resourceserver.h"
 #include "foundation/math/math.h"
 
 namespace Render
@@ -33,6 +34,8 @@ void Renderer::Setup(Display::Window* window)
 
 	//Setup framepasses before materials
 	Render::FrameServer::Instance()->SetupFramePasses();
+
+	Render::ResourceServer::Instance()->SetupMaterials("resources/materials.json");
 
 }
 

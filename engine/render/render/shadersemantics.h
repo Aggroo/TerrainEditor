@@ -22,3 +22,8 @@
 #define TERRAIN_SEMANTIC_NORMALMAP					"NormalMap"
 #define TERRAIN_SEMANTIC_SPECULARMAP				"SpecularMap"
 #define TERRAIN_SEMANTIC_ROUGHNESSMAP				"RoughnessMap"
+
+#define TERRAIN_SEMANTIC_TERRAINALBEDO(x)			"albedo"#x
+#define TERRAIN_SEMANTIC_TERRAINNORMAL(x)			"normal"#x
+#define TERRAIN_SEMANTIC_TERRAINSPECULAR(x)			"specular"#x
+#define TERRAIN_SEMANTIC_TERRAINROUGHNESS(x)		"roughness"#x
