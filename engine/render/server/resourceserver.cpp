@@ -35,9 +35,9 @@ Ptr<TextureResource> ResourceServer::LoadTexture(const Util::String& filepath)
 //------------------------------------------------------------------------------
 /**
 */
-bool ResourceServer::HasTextureNamed(const Util::String& nName) const
+bool ResourceServer::HasTextureNamed(const Util::String& name) const
 {
-	return this->textures.Contains(nName); 
+	return this->textures.Contains(name);
 }
 
 //------------------------------------------------------------------------------
@@ -62,9 +62,9 @@ Ptr<MeshResources> ResourceServer::LoadMesh(const Util::String& filepath)
 //------------------------------------------------------------------------------
 /**
 */
-bool ResourceServer::HasMeshNamed(const Util::String& nName) const
+bool ResourceServer::HasMeshNamed(const Util::String& name) const
 {
-	return this->meshes.Contains(nName);
+	return this->meshes.Contains(name);
 }
 
 Ptr<Material> ResourceServer::GetMaterial(const Util::String& name)
@@ -116,7 +116,7 @@ bool ResourceServer::SetupMaterials(const Util::String& fileName)
 
 			for (auto parameter : material.parameter)
 			{
-				Util::Variant var = Util::Variant::FromString(parameter.defaultValue.c_str());
+				Util::Variant var = Util::Variant::FromString(parameter.value.c_str());
 				
 				mat->AddParameter(parameter.name.c_str(), var);
 			}

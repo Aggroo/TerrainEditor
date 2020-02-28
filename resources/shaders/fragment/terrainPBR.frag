@@ -9,8 +9,8 @@ in mat3 model33Out;
 
 layout(location = 0) out vec4 resColor;
 layout(location = 1) out vec3 normalColor;
-layout(location = 2) out vec3 specularOut;
-layout(location = 3) out vec3 roughnessOut;
+layout(location = 2) out vec3 SpecularMapOut;
+layout(location = 3) out vec3 RoughnessMapOut;
 
 layout (std140, binding = 1) uniform TerrainVariables
 {
@@ -28,10 +28,10 @@ layout (std140, binding = 1) uniform TerrainVariables
 	float hardness3;
 };  
 
-uniform sampler2D albedo[3];
-uniform sampler2D normals[3];
-uniform sampler2D specular[3];
-uniform sampler2D roughness[3];
+uniform sampler2D AlbedoMap[3];
+uniform sampler2D NormalMap[3];
+uniform sampler2D SpecularMap[3];
+uniform sampler2D RoughnessMap[3];
 layout(binding = 15) uniform sampler2D splat;
 layout(binding = 16) uniform sampler2D heightmap;
 layout(binding = 17) uniform samplerCube environmentMap;
@@ -63,26 +63,26 @@ vec3 filterNormal(in vec2 uv, in float texelSize, in float texelAspect)
 
 vec4 GetTexture(int index, in vec3 uvwPos, in vec3 weights)
 {
-	return vec4(weights.xxx * texture2D(albedo[index], uvwPos.yz).rgb +
-				weights.yyy * texture2D(albedo[index], uvwPos.zx).rgb +
-				weights.zzz * texture2D(albedo[index], uvwPos.xy).rgb, 
-				weights.x * texture2D(albedo[index], uvwPos.yz).a + 
-				weights.y * texture2D(albedo[index], uvwPos.zx).a + 
-				weights.z * texture2D(albedo[index], uvwPos.xy).a);
+	return vec4(weights.xxx * texture2D(AlbedoMap[index], uvwPos.yz).rgb +
+				weights.yyy * texture2D(AlbedoMap[index], uvwPos.zx).rgb +
+				weights.zzz * texture2D(AlbedoMap[index], uvwPos.xy).rgb, 
+				weights.x * texture2D(AlbedoMap[index], uvwPos.yz).a + 
+				weights.y * texture2D(AlbedoMap[index], uvwPos.zx).a + 
+				weights.z * texture2D(AlbedoMap[index], uvwPos.xy).a);
 }
 
-vec3 GetSpecular(int index, in vec3 uvwPos, in vec3 weights)
+vec3 GetSpecularMap(int index, in vec3 uvwPos, in vec3 weights)
 {
-	return vec3(weights.xxx * texture2D(specular[index], uvwPos.yz).rgb +
-				weights.yyy * texture2D(specular[index], uvwPos.zx).rgb +
-				weights.zzz * texture2D(specular[index], uvwPos.xy).rgb).rgb;
+	return vec3(weights.xxx * texture2D(SpecularMap[index], uvwPos.yz).rgb +
+				weights.yyy * texture2D(SpecularMap[index], uvwPos.zx).rgb +
+				weights.zzz * texture2D(SpecularMap[index], uvwPos.xy).rgb).rgb;
 }
 
-vec3 GetRoughness(int index, in vec3 uvwPos, in vec3 weights)
+vec3 GetRoughnessMap(int index, in vec3 uvwPos, in vec3 weights)
 {
-	return vec3(weights.xxx * texture2D(roughness[index], uvwPos.yz).rgb +
-				weights.yyy * texture2D(roughness[index], uvwPos.zx).rgb +
-				weights.zzz * texture2D(roughness[index], uvwPos.xy).rgb).rgb;
+	return vec3(weights.xxx * texture2D(RoughnessMap[index], uvwPos.yz).rgb +
+				weights.yyy * texture2D(RoughnessMap[index], uvwPos.zx).rgb +
+				weights.zzz * texture2D(RoughnessMap[index], uvwPos.xy).rgb).rgb;
 }
 
 vec3 GetNormal(int index, in vec3 uvwPos, in vec3 normal)
@@ -92,9 +92,9 @@ vec3 GetNormal(int index, in vec3 uvwPos, in vec3 normal)
 	blend_weights = max(blend_weights, 0);      // Force weights to sum to 1.0 (very important!)
 	blend_weights /= (blend_weights.x + blend_weights.y + blend_weights.z ).xxx;
 	
-	vec2 bumpFetch0 = texture2D(normals[index], uvwPos.yz).xy - 0.5;
-	vec2 bumpFetch1 = texture2D(normals[index], uvwPos.zx).xy - 0.5;
-	vec2 bumpFetch2 = texture2D(normals[index], uvwPos.xy).xy - 0.5;
+	vec2 bumpFetch0 = texture2D(NormalMap[index], uvwPos.yz).xy - 0.5;
+	vec2 bumpFetch1 = texture2D(NormalMap[index], uvwPos.zx).xy - 0.5;
+	vec2 bumpFetch2 = texture2D(NormalMap[index], uvwPos.xy).xy - 0.5;
 	vec3 bump1 = vec3(0, bumpFetch0.x, bumpFetch0.y);
 	vec3 bump2 = vec3(bumpFetch1.y, 0, bumpFetch1.x);
 	vec3 bump3 = vec3(bumpFetch2.x, bumpFetch2.y, 0);
@@ -147,37 +147,37 @@ void main()
 	vec3 normal1 = GetNormal(1, texUv1Multiplier * fragPos, norm);
 	vec3 normal2 = GetNormal(2, texUv2Multiplier * fragPos, norm);
 	
-	vec3 specular0 = GetSpecular(0, texUv0Multiplier * fragPos, weights);
-	vec3 specular1 = GetSpecular(1, texUv1Multiplier * fragPos, weights);
-	vec3 specular2 = GetSpecular(2, texUv2Multiplier * fragPos, weights);
+	vec3 SpecularMap0 = GetSpecularMap(0, texUv0Multiplier * fragPos, weights);
+	vec3 SpecularMap1 = GetSpecularMap(1, texUv1Multiplier * fragPos, weights);
+	vec3 SpecularMap2 = GetSpecularMap(2, texUv2Multiplier * fragPos, weights);
 	
-	vec3 roughness0 = GetRoughness(0, texUv0Multiplier * fragPos, weights);
-	vec3 roughness1 = GetRoughness(1, texUv1Multiplier * fragPos, weights);
-	vec3 roughness2 = GetRoughness(2, texUv2Multiplier * fragPos, weights);
+	vec3 RoughnessMap0 = GetRoughnessMap(0, texUv0Multiplier * fragPos, weights);
+	vec3 RoughnessMap1 = GetRoughnessMap(1, texUv1Multiplier * fragPos, weights);
+	vec3 RoughnessMap2 = GetRoughnessMap(2, texUv2Multiplier * fragPos, weights);
 
-	//vec3 normalSum = splatTex.r * normal2 + splatTex.g * normal1 + splatTex.b * normal0;
-	//float specularSum = (splatTex.r * specular2 + splatTex.g * specular1 + splatTex.b * specular0).r;
-	//float roughnessSum = (splatTex.r * roughness2 + splatTex.g * roughness1 + splatTex.b * roughness0).r;
+	//vec3 NormalMapum = splatTex.r * normal2 + splatTex.g * normal1 + splatTex.b * normal0;
+	//float SpecularMapSum = (splatTex.r * SpecularMap2 + splatTex.g * SpecularMap1 + splatTex.b * SpecularMap0).r;
+	//float RoughnessMapSum = (splatTex.r * RoughnessMap2 + splatTex.g * RoughnessMap1 + splatTex.b * RoughnessMap0).r;
 	
 	float slopeBlend = pow(SlopeBlending(slopeAngle, 1-(norm.y)), hardness1);
-	float slopeBlend2 = pow(overlayBlend(SlopeBlending(slopeAngle2, 1-(norm.y + normal1.y)), texture2D(roughness[1], texCoord*40.0).r, 0.8), hardness2);
+	float slopeBlend2 = pow(overlayBlend(SlopeBlending(slopeAngle2, 1-(norm.y + normal1.y)), texture2D(RoughnessMap[1], texCoord*40.0).r, 0.8), hardness2);
 	float blendAmount = clamp(slopeBlend*(1-HeightBlending(height, heightFalloff)), 0.0, 1.0);
 	float blendAmount2 = clamp(slopeBlend2*HeightBlending(height2, heightFalloff2), 0.0, 1.0);
 
 	vec4 vTexColor = tex1 * (1-blendAmount) * (1-blendAmount2)+ tex0 * blendAmount + tex2 * blendAmount2;
-	float specularSum = (specular1 * (1-blendAmount) * (1-blendAmount2) + specular0 * blendAmount + specular2 * blendAmount2).r;
-	float roughnessSum = (roughness1 * (1-blendAmount) * (1-blendAmount2) + roughness0 * blendAmount + roughness2 * blendAmount2).r;
-	vec3 normalSum = (normal1 * (1-blendAmount) * (1-blendAmount2) + normal0 * blendAmount + normal2 * blendAmount2);
+	float SpecularMapSum = (SpecularMap1 * (1-blendAmount) * (1-blendAmount2) + SpecularMap0 * blendAmount + SpecularMap2 * blendAmount2).r;
+	float RoughnessMapSum = (RoughnessMap1 * (1-blendAmount) * (1-blendAmount2) + RoughnessMap0 * blendAmount + RoughnessMap2 * blendAmount2).r;
+	vec3 NormalMapum = (normal1 * (1-blendAmount) * (1-blendAmount2) + normal0 * blendAmount + normal2 * blendAmount2);
 	
 	vec3 L = normalize(o_toLight);
     vec3 V = normalize(o_toCamera);
-    vec3 N = normalize(norm + normalSum);
+    vec3 N = normalize(norm + NormalMapum);
 	vec3 R = reflect(-V, N); 
 	
 	//F0 as 0.04 will usually look good for all dielectric (non-metal) surfaces
 	vec3 F0 = vec3(0.04);
-	//for metallic surfaces we interpolate between F0 and the albedo value with metallic value as our lerp weight
-	F0 = mix(F0, vTexColor.rgb, specularSum);
+	//for metallic surfaces we interpolate between F0 and the AlbedoMap value with metallic value as our lerp weight
+	F0 = mix(F0, vTexColor.rgb, SpecularMapSum);
 	
 	vec3 lo = vec3(0.0f, 0.0f, 0.0f);
 	
@@ -185,32 +185,32 @@ void main()
 	uint offset = index * tileLights;   
 	
 	//Calculate lights
-	CalculatePointLights(lo, V, N, F0, vTexColor, specularSum, roughnessSum, offset, tileLights);
-	CalculateSpotLights(lo, V, N, F0, vTexColor, specularSum, roughnessSum, offset, tileLights);
+	CalculatePointLights(lo, V, N, F0, vTexColor, SpecularMapSum, RoughnessMapSum, offset, tileLights);
+	CalculateSpotLights(lo, V, N, F0, vTexColor, SpecularMapSum, RoughnessMapSum, offset, tileLights);
 	
 	float cosLo = max(0.0, dot(N, V));
 	
 	// ambient lighting (we now use IBL as the ambient term)
-    vec3 F = fresnelSchlickRoughness(cosLo, F0, roughnessSum);
+    vec3 F = fresnelSchlickRoughnessMap(cosLo, F0, RoughnessMapSum);
 
-    vec3 kD = mix(vec3(1.0) - F, vec3(0.0), specularSum);
+    vec3 kD = mix(vec3(1.0) - F, vec3(0.0), SpecularMapSum);
 	
 	vec3 irradiance = texture(irradianceMap, N).rgb;
     vec3 diffuse = irradiance * vTexColor.rgb;
 	
 	const float MAX_REFLECTION_LOD = 4.0;
-    vec3 prefilteredColor = textureLod(environmentMap, R,  roughnessSum * MAX_REFLECTION_LOD).rgb;   
-	vec2 envBRDF  = texture(brdfLUT, vec2(cosLo, roughnessSum)).rg;	
-    vec3 specular = prefilteredColor * (F * envBRDF.x + envBRDF.y);
+    vec3 prefilteredColor = textureLod(environmentMap, R,  RoughnessMapSum * MAX_REFLECTION_LOD).rgb;   
+	vec2 envBRDF  = texture(brdfLUT, vec2(cosLo, RoughnessMapSum)).rg;	
+    vec3 SpecularMap = prefilteredColor * (F * envBRDF.x + envBRDF.y);
 	
-	vec3 ambient = (kD * diffuse + specular) ;
+	vec3 ambient = (kD * diffuse + SpecularMap) ;
 	
 	color.rgb = ambient + lo;
 
 	resColor.xyz = color.rgb;
 	resColor.a = 1;
 	normalColor = N;
-	specularOut.rgb = specular;
-	roughnessOut = vec3(roughnessSum);
+	SpecularMapOut.rgb = SpecularMap;
+	RoughnessMapOut = vec3(RoughnessMapSum);
 }
 

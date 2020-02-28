@@ -96,51 +96,51 @@ void Material::AddParameter(const Util::String& name, const Util::Variant& varia
 */
 TextureIndex Material::TextureIndexFromString(const Util::String& parameter)
 {
-	if (parameter == TERRAIN_SEMANTIC_ALBEDOMAP || parameter == TERRAIN_SEMANTIC_TERRAINALBEDO(0))
+	if (parameter == TERRAIN_SEMANTIC_ALBEDOMAP || parameter == TERRAIN_SEMANTIC_ALBEDOMAP_MULTI(0))
 	{
 		return TextureIndex::albedo0;
 	}
-	else if (parameter == TERRAIN_SEMANTIC_TERRAINALBEDO(1))
+	else if (parameter == TERRAIN_SEMANTIC_ALBEDOMAP_MULTI(1))
 	{
 		return TextureIndex::albedo1;
 	}
-	else if (parameter == TERRAIN_SEMANTIC_TERRAINALBEDO(2))
+	else if (parameter == TERRAIN_SEMANTIC_ALBEDOMAP_MULTI(2))
 	{
 		return TextureIndex::albedo2;
 	}
-	else if (parameter == TERRAIN_SEMANTIC_NORMALMAP || parameter == TERRAIN_SEMANTIC_TERRAINNORMAL(0))
+	else if (parameter == TERRAIN_SEMANTIC_NORMALMAP || parameter == TERRAIN_SEMANTIC_NORMALMAP_MULTI(0))
 	{
 		return TextureIndex::normal0;
 	}
-	else if (parameter == TERRAIN_SEMANTIC_TERRAINNORMAL(1))
+	else if (parameter == TERRAIN_SEMANTIC_NORMALMAP_MULTI(1))
 	{
 		return TextureIndex::normal1;
 	}
-	else if (parameter == TERRAIN_SEMANTIC_TERRAINNORMAL(2))
+	else if (parameter == TERRAIN_SEMANTIC_NORMALMAP_MULTI(2))
 	{
 		return TextureIndex::normal2;
 	}
-	else if (parameter == TERRAIN_SEMANTIC_SPECULARMAP || parameter == TERRAIN_SEMANTIC_TERRAINSPECULAR(0))
+	else if (parameter == TERRAIN_SEMANTIC_SPECULARMAP || parameter == TERRAIN_SEMANTIC_SPECULARMAP_MULTI(0))
 	{
 		return TextureIndex::specular0;
 	}
-	else if (parameter == TERRAIN_SEMANTIC_TERRAINSPECULAR(1))
+	else if (parameter == TERRAIN_SEMANTIC_SPECULARMAP_MULTI(1))
 	{
 		return TextureIndex::specular1;
 	}
-	else if (parameter == TERRAIN_SEMANTIC_TERRAINSPECULAR(2))
+	else if (parameter == TERRAIN_SEMANTIC_SPECULARMAP_MULTI(2))
 	{
 		return TextureIndex::specular2;
 	}
-	else if (parameter == TERRAIN_SEMANTIC_ROUGHNESSMAP || parameter == TERRAIN_SEMANTIC_TERRAINROUGHNESS(0))
+	else if (parameter == TERRAIN_SEMANTIC_ROUGHNESSMAP || parameter == TERRAIN_SEMANTIC_ROUGHNESSMAP_MULTI(0))
 	{
 		return TextureIndex::roughness0;
 	}
-	else if (parameter == TERRAIN_SEMANTIC_TERRAINROUGHNESS(1))
+	else if (parameter == TERRAIN_SEMANTIC_ROUGHNESSMAP_MULTI(1))
 	{
 		return TextureIndex::roughness1;
 	}
-	else if (parameter == TERRAIN_SEMANTIC_TERRAINROUGHNESS(2))
+	else if (parameter == TERRAIN_SEMANTIC_ROUGHNESSMAP_MULTI(2))
 	{
 		return TextureIndex::roughness2;
 	}
@@ -148,6 +148,82 @@ TextureIndex Material::TextureIndexFromString(const Util::String& parameter)
 	{
 		_assert2(false, "ERROR: Texture index name does not exist in semantics!");
 		return TextureIndex::albedo0;
+	}
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+Util::String Material::UniformNameFromString(const Util::String& parameter)
+{
+	if (parameter == TERRAIN_SEMANTIC_ALBEDOMAP)
+	{
+		return TERRAIN_SEMANTIC_ALBEDOMAP;
+	}
+	else if (parameter == TERRAIN_SEMANTIC_ALBEDOMAP_MULTI(0))
+	{
+		return TERRAIN_SEMANTIC_ALBEDOMAP_MULTI_STR("[0]");
+	}
+	else if (parameter == TERRAIN_SEMANTIC_ALBEDOMAP_MULTI(1))
+	{
+		return  TERRAIN_SEMANTIC_ALBEDOMAP_MULTI_STR("[1]");
+	}
+	else if (parameter == TERRAIN_SEMANTIC_ALBEDOMAP_MULTI(2))
+	{
+		return  TERRAIN_SEMANTIC_ALBEDOMAP_MULTI_STR("[2]");
+	}
+	else if (parameter == TERRAIN_SEMANTIC_NORMALMAP)
+	{
+		return TERRAIN_SEMANTIC_NORMALMAP;
+	}
+	else if (parameter == TERRAIN_SEMANTIC_NORMALMAP_MULTI(0))
+	{
+		return TERRAIN_SEMANTIC_NORMALMAP_MULTI_STR("[0]");
+	}
+	else if (parameter == TERRAIN_SEMANTIC_NORMALMAP_MULTI(1))
+	{
+		return  TERRAIN_SEMANTIC_NORMALMAP_MULTI_STR("[1]");
+	}
+	else if (parameter == TERRAIN_SEMANTIC_NORMALMAP_MULTI(2))
+	{
+		return  TERRAIN_SEMANTIC_NORMALMAP_MULTI_STR("[2]");
+	}
+	else if (parameter == TERRAIN_SEMANTIC_SPECULARMAP)
+	{
+		return TERRAIN_SEMANTIC_SPECULARMAP;
+	}
+	else if (parameter == TERRAIN_SEMANTIC_SPECULARMAP_MULTI(0))
+	{
+		return TERRAIN_SEMANTIC_SPECULARMAP_MULTI_STR("[0]");
+	}
+	else if (parameter == TERRAIN_SEMANTIC_SPECULARMAP_MULTI(1))
+	{
+		return  TERRAIN_SEMANTIC_SPECULARMAP_MULTI_STR("[1]");
+	}
+	else if (parameter == TERRAIN_SEMANTIC_SPECULARMAP_MULTI(2))
+	{
+		return  TERRAIN_SEMANTIC_SPECULARMAP_MULTI_STR("[2]");
+	}
+	else if (parameter == TERRAIN_SEMANTIC_ROUGHNESSMAP)
+	{
+		return TERRAIN_SEMANTIC_ROUGHNESSMAP;
+	}
+	else if (parameter == TERRAIN_SEMANTIC_ROUGHNESSMAP_MULTI(0))
+	{
+		return TERRAIN_SEMANTIC_ROUGHNESSMAP_MULTI_STR("[0]");
+	}
+	else if (parameter == TERRAIN_SEMANTIC_ROUGHNESSMAP_MULTI(1))
+	{
+		return  TERRAIN_SEMANTIC_ROUGHNESSMAP_MULTI_STR("[1]");
+	}
+	else if (parameter == TERRAIN_SEMANTIC_ROUGHNESSMAP_MULTI(2))
+	{
+		return  TERRAIN_SEMANTIC_ROUGHNESSMAP_MULTI_STR("[2]");
+	}
+	else
+	{
+		_assert2(false, "ERROR: Texture index name does not exist in semantics!");
+		return TERRAIN_SEMANTIC_ALBEDOMAP;
 	}
 }
 

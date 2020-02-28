@@ -47,51 +47,51 @@
 			],
 			"Parameters": [
 				{
-					"name": "albedo0",
+					"name": "AlbedoMap0",
 					"defaultValue": "resources/textures/placeholder.png"
 				},
 				{
-					"name": "albedo1",
+					"name": "AlbedoMap1",
 					"defaultValue": "resources/textures/placeholder.png"
 				},
 				{
-					"name": "albedo2",
+					"name": "AlbedoMap2",
 					"defaultValue": "resources/textures/placeholder.png"
 				},
 				{
-					"name": "normal0",
+					"name": "NormalMap0",
 					"defaultValue": "resources/textures/placeholder.png"
 				},
 				{
-					"name": "normal1",
+					"name": "NormalMap1",
 					"defaultValue": "resources/textures/placeholder.png"
 				},
 				{
-					"name": "normal2",
+					"name": "NormalMap2",
 					"defaultValue": "resources/textures/placeholder.png"
 				},
 				{
-					"name": "specular0",
+					"name": "SpecularMap0",
 					"defaultValue": "resources/textures/placeholder.png"
 				},
 				{
-					"name": "specular1",
+					"name": "SpecularMap1",
 					"defaultValue": "resources/textures/placeholder.png"
 				},
 				{
-					"name": "specular2",
+					"name": "SpecularMap2",
 					"defaultValue": "resources/textures/placeholder.png"
 				},
 				{
-					"name": "roughness0",
+					"name": "RoughnessMap0",
 					"defaultValue": "resources/textures/placeholder.png"
 				},
 				{
-					"name": "roughness1",
+					"name": "RoughnessMap1",
 					"defaultValue": "resources/textures/placeholder.png"
 				},
 				{
-					"name": "roughness2",
+					"name": "RoughnessMap2",
 					"defaultValue": "resources/textures/placeholder.png"
 				}
 			]

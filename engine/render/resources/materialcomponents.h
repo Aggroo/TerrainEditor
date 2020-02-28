@@ -6,6 +6,21 @@ using nlohmann::json;
 
 namespace Components
 {
+
+//------------------------------------------------------------------------------
+/**
+*/
+struct Surface 
+{
+	std::string name;
+	std::vector<Parameter> param;
+};
+
+inline void from_json(const json& j, Surface& p) {
+	j.at("name").get_to(p.name);
+	j.at("Parameters").get_to(p.param);
+};
+
 //------------------------------------------------------------------------------
 /**
 */
@@ -26,12 +41,12 @@ inline void from_json(const json& j, Pass& p) {
 struct Parameter
 {
 	std::string name;
-	std::string defaultValue;
+	std::string value;
 };
 
 inline void from_json(const json& j, Parameter& p) {
 	j.at("name").get_to(p.name);
-	j.at("defaultValue").get_to(p.defaultValue);
+	j.at("defaultValue").get_to(p.value);
 };
 
 //------------------------------------------------------------------------------

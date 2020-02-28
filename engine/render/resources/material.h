@@ -33,6 +33,7 @@ public:
 	void AddParameter(const Util::String& name, const Util::Variant& variable);
 
 	TextureIndex TextureIndexFromString(const Util::String& parameter);
+	Util::String UniformNameFromString(const Util::String& parameter);
 
 	Ptr<ShaderObject> GetShader(const Util::String& pass);
 

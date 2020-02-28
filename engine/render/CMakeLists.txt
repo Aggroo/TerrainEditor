@@ -21,6 +21,8 @@ SET(files_render_resources
 	resources/textureresource.cpp
 	resources/texturenode.h
 	resources/texturenode.cpp
+	resources/surface.h
+	resources/surface.cpp
 	resources/rasterizer.h
 	resources/rasterizer.cpp
 	resources/model.h

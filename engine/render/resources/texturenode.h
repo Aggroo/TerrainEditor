@@ -46,6 +46,9 @@ private:
 	/// The textures that have been added, uses TextureIndex as a key
 	Util::Dictionary<TextureIndex, Ptr<TextureResource>> textures;
 
+	/// Uses TextureIndex as key and value holds the uniform name in the shader
+	Util::Dictionary<TextureIndex, Util::String> uniformTextureName;
+
 };
 
 }

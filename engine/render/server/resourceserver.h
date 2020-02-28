@@ -15,12 +15,18 @@ public:
 	///Returns a texture if it exists, otherwise loads it and then returns the new textureResource
 	Ptr<TextureResource> LoadTexture(const Util::String& filepath);
 	///Check if Texture is loaded
-	bool HasTextureNamed(const Util::String& nName) const;
+	bool HasTextureNamed(const Util::String& name) const;
 
 	///Returns a mesh if it exists, otherwise loads it and then returns the new meshResource
 	Ptr<MeshResources> LoadMesh(const Util::String& filepath);
 	///Check if mesh is loaded
-	bool HasMeshNamed(const Util::String& nName) const;
+	bool HasMeshNamed(const Util::String& name) const;
+
+	///Returns a surface if it exists, otherwise load it and then return the new Surface
+	Ptr<Surface> LoadSurface(const Util::String& filepath);
+	///Check if surface is loaded
+	bool HasSurfaceNamed(const Util::String& name) const;
+
 
 	///Loads a material .json file and adds all materials to the list if they're not already defined
 	Ptr<Material> GetMaterial(const Util::String& name);

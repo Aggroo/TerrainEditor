@@ -1,0 +1,23 @@
+{
+	"Surface": {
+		"material": "PBR",
+		"Parameters": [
+			{
+				"name": "AlbedoMap",
+				"value": "resources/assets/Cerberus/Textures/Cerberus_A.tga"
+			},
+			{
+				"name": "NormalMap",
+				"value": "resources/assets/Cerberus/Textures/Cerberus_N.tga"
+			},
+			{
+				"name": "SpecularMap",
+				"value": "resources/assets/Cerberus/Textures/Cerberus_M.tga"
+			},
+			{
+				"name": "RoughnessMap",
+				"value": "resources/assets/Cerberus/Textures/Cerberus_R.tga"
+			}
+		]
+	}
+}
