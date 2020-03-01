@@ -158,7 +158,7 @@ $end$
 // -! MOVE THIS TO INCLUDES !-
 #include "core/refcounted.h"
 
-class $classname$ : public Core::Refcounted
+class $classname$ : public Core::RefCounted
 {
 __DeclareClass($classname$);
 public:
@@ -204,7 +204,7 @@ private:
                     <ID>inheritance</ID>
                     <Type>String of text</Type>
                     <ToolTip>Select a inheritance class.</ToolTip>
-                    <Default>Core::Refcounted</Default>
+                    <Default>Core::RefCounted</Default>
                 </Object>
             </Declarations>
             <Code Language="cpp">

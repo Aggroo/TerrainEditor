@@ -27,10 +27,9 @@ public:
 	///Check if surface is loaded
 	bool HasSurfaceNamed(const Util::String& name) const;
 
-
 	///Loads a material .json file and adds all materials to the list if they're not already defined
 	Ptr<Material> GetMaterial(const Util::String& name);
-	bool SetupMaterials(const Util::String& fileName);
+	bool SetupMaterials(const Util::String& filepath);
 	bool HasMaterialNamed(const Util::String& name);
 
 private:
@@ -46,6 +45,10 @@ private:
 	///Contains all Materials.
 	///Key must be unique to each Material. the key is the material name
 	Util::Dictionary<Util::String, Ptr<Material>> materials;
+
+	///Contains all Surfaces.
+	///Key must be unique to each Surface. the key is the Surface name
+	Util::Dictionary<Util::String, Ptr<Surface>> surfaces;
 
 };	
 }

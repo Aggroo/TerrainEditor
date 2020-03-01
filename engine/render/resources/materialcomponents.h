@@ -10,20 +10,6 @@ namespace Components
 //------------------------------------------------------------------------------
 /**
 */
-struct Surface 
-{
-	std::string name;
-	std::vector<Parameter> param;
-};
-
-inline void from_json(const json& j, Surface& p) {
-	j.at("name").get_to(p.name);
-	j.at("Parameters").get_to(p.param);
-};
-
-//------------------------------------------------------------------------------
-/**
-*/
 struct Pass
 {
 	std::string name;
@@ -46,7 +32,7 @@ struct Parameter
 
 inline void from_json(const json& j, Parameter& p) {
 	j.at("name").get_to(p.name);
-	j.at("defaultValue").get_to(p.value);
+	j.at("value").get_to(p.value);
 };
 
 //------------------------------------------------------------------------------
@@ -65,6 +51,20 @@ inline void from_json(const json& j, Materials& m) {
 	j.at("desc").get_to(m.desc);
 	j.at("Pass").get_to(m.pass);
 	j.at("Parameters").get_to(m.parameter);
+};
+
+//------------------------------------------------------------------------------
+/**
+*/
+struct Surface
+{
+	std::string material;
+	std::vector<Parameter> param;
+};
+
+inline void from_json(const json& j, Surface& p) {
+	j.at("material").get_to(p.material);
+	j.at("Parameters").get_to(p.param);
 };
 
 //------------------------------------------------------------------------------

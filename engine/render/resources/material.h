@@ -10,9 +10,11 @@
 #include "foundation/util/variant.h"
 #include "render/resources/texturenode.h"
 #include "render/resources/shaderobject.h"
+#include "render/resources/surface.h"
 
 namespace Render
 {
+
 struct MaterialParameter
 {
 	Util::String name;
@@ -32,29 +34,37 @@ public:
 	MaterialParameter* GetParameterByName(const Util::String& name);
 	void AddParameter(const Util::String& name, const Util::Variant& variable);
 
-	TextureIndex TextureIndexFromString(const Util::String& parameter);
+	static TextureIndex TextureIndexFromString(const Util::String& parameter);
 	Util::String UniformNameFromString(const Util::String& parameter);
 
+	Util::Array<Ptr<Surface>>& SurfaceList() { return this->surfaces; };
+
 	Ptr<ShaderObject> GetShader(const Util::String& pass);
+	Util::Array<Ptr<ShaderObject>> GetShaders();
 
 	void SetName(const Util::String& name) { this->name = name; }
 	const Util::String& GetName() { return name; }
+
 private:
 
 	friend class ResourceServer;
 
-	//Name of the material
+	///Name of the material
 	Util::String name;
 
 	///What frampasses this material and shader will be used in
 	Util::Dictionary<Util::String, Ptr<ShaderObject>> framepasses;
 
 	///This materials loaded textures
-	Render::TextureNode textures;
+	Ptr<Render::TextureNode> textures;
 
-	//Loaded material Parameters
+	///Loaded material Parameters
 	Util::Dictionary<Util::String, MaterialParameter*> parametersByName;
 	Util::Array<MaterialParameter*> parameters;
+
+	/// all surfaces that currently use this material
+	Util::Array<Ptr<Surface>> surfaces;
+
 };
 
 } // namespace Render

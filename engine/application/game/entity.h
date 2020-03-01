@@ -5,6 +5,11 @@
 #include "render/resources/model.h"
 #include "ImGuizmo.h"
 
+namespace Render
+{
+class Surface;
+}
+
 namespace Game
 {
 
@@ -36,6 +41,8 @@ public:
 
 	void SetTextures(Util::String albedo, Util::String normal, Util::String metallic, Util::String roughness, Util::String ao = "Default");
 
+	void SetSurface(Ptr<Render::Surface> surface);
+
 	void SetShader(const char* name);
 	Ptr<Render::ShaderObject> GetShader();
 
@@ -47,6 +54,7 @@ public:
 
 private:
 
+	Ptr<Render::Surface> surface;
 	Ptr<Render::TextureNode> textures;
 	Ptr<Render::Model> mesh;
 	Ptr<Render::ShaderObject> shader;

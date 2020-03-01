@@ -120,18 +120,18 @@ Application::Run()
 	Ptr<Render::Skybox> skybox = Render::Skybox::Create();
 	skybox->Activate();
 
-	Ptr<Game::Entity> sphere = Game::Entity::Create();
-	sphere->SetName("Sphere");
-	sphere->SetMesh("resources/assets/sponza/sponza.gltf");
-	sphere->SetShader("defaultLit");
-	sphere->SetIBLMaps(skybox->GetCubemap(), Render::FrameServer::Instance()->GetIBLPass()->GetIrradianceMap(), Render::FrameServer::Instance()->GetIBLPass()->GetBRDFMap());
-	sphere->SetTransform(modelMat*Math::mat4::translationMatrix(Math::vec4(0.0f, 0.0f, 0.0f)));
-	sphere->Activate();
+	//Ptr<Game::Entity> sphere = Game::Entity::Create();
+	//sphere->SetName("Sphere");
+	//sphere->SetMesh("resources/assets/sponza/sponza.gltf");
+	//sphere->SetShader("defaultLit");
+	//sphere->SetIBLMaps(skybox->GetCubemap(), Render::FrameServer::Instance()->GetIBLPass()->GetIrradianceMap(), Render::FrameServer::Instance()->GetIBLPass()->GetBRDFMap());
+	//sphere->SetTransform(modelMat*Math::mat4::translationMatrix(Math::vec4(0.0f, 0.0f, 0.0f)));
+	//sphere->Activate();
 	
 	Ptr<Game::Entity> gun = Game::Entity::Create();
 	gun->SetName("Gun");
 	gun->SetMesh("resources/assets/Cerberus/Cerberus_LP.FBX");
-	gun->SetShader("defaultLit");
+	gun->SetSurface(Render::ResourceServer::Instance()->LoadSurface("resources/surfaces/cerberus.sur"));
 	gun->SetIBLMaps(skybox->GetCubemap(), Render::FrameServer::Instance()->GetIBLPass()->GetIrradianceMap(), Render::FrameServer::Instance()->GetIBLPass()->GetBRDFMap());
 	gun->SetTransform(modelMat*Math::mat4::translationMatrix(Math::vec4(0.0f, 50.0f, 0.0f))*Math::mat4::rotY(Math::Deg2Rad(-90))*Math::mat4::rotX(Math::Deg2Rad(-90)));
 	gun->Activate();

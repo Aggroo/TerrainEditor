@@ -1,6 +1,7 @@
 #include "config.h"
 #include "resourceserver.h"
 #include <fstream>
+#include "render/resources/surface.h"
 #include "render/resources/materialcomponents.h"
 
 namespace Render
@@ -67,6 +68,58 @@ bool ResourceServer::HasMeshNamed(const Util::String& name) const
 	return this->meshes.Contains(name);
 }
 
+Ptr<Surface> ResourceServer::LoadSurface(const Util::String & filepath)
+{
+	std::ifstream i(filepath.AsCharPtr());
+
+	if (!i) {
+		printf("[SHADER LOAD ERROR]: Couldn't find shaders.json!");
+		_assert(false);
+		return false;
+	}
+
+	nlohmann::json j;
+	i >> j;
+
+	auto surface = j.at("Surface").get<Components::Surface>();
+
+	if (!this->HasMaterialNamed(surface.material.c_str()))
+	{
+		_warning("Duplicate shader loaded: \" %s \". Using previously loaded shader...", surface.material.c_str());
+	}
+	else
+	{
+		Ptr<Render::Surface> sur = Surface::Create();
+
+		sur->material = this->GetMaterial(surface.material.c_str());
+
+		sur->name = filepath.ExtractFileName().AsCharPtr();
+		sur->filepath = filepath.AsCharPtr();
+
+		for (auto parameter : surface.param)
+		{
+			Util::Variant var = Util::Variant::FromString(parameter.value.c_str());
+
+			sur->AddParameter(parameter.name.c_str(), var);
+		}
+
+		sur->SetupShaderUniforms();
+
+		this->surfaces.Add(filepath.ExtractFileName().AsCharPtr(), sur);
+
+		sur->material->surfaces.Append(sur);
+
+		return sur;
+	}
+	
+	return nullptr;
+}
+
+bool ResourceServer::HasSurfaceNamed(const Util::String & name) const
+{
+	return this->surfaces.Contains(name);
+}
+
 Ptr<Material> ResourceServer::GetMaterial(const Util::String& name)
 {
 	if (this->HasMaterialNamed(name))
@@ -81,9 +134,9 @@ Ptr<Material> ResourceServer::GetMaterial(const Util::String& name)
 	}
 }
 
-bool ResourceServer::SetupMaterials(const Util::String& fileName)
+bool ResourceServer::SetupMaterials(const Util::String& filepath)
 {
-	std::ifstream i(fileName.AsCharPtr());
+	std::ifstream i(filepath.AsCharPtr());
 
 	if (!i) {
 		printf("[SHADER LOAD ERROR]: Couldn't find shaders.json!");

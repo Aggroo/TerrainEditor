@@ -66,21 +66,21 @@ void Terrain::Activate()
 	//textures.AddTexture("resources/textures/pathway.jpg");
 
 
-	this->shader->setupUniformInt("albedo[0]", (GLuint) Render::TextureIndex::albedo0);
-	this->shader->setupUniformInt("albedo[1]", (GLuint) Render::TextureIndex::albedo1);
-	this->shader->setupUniformInt("albedo[2]", (GLuint) Render::TextureIndex::albedo2);
+	this->shader->setupUniformInt("AlbedoMap[0]", (GLuint) Render::TextureIndex::albedo0);
+	this->shader->setupUniformInt("AlbedoMap[1]", (GLuint) Render::TextureIndex::albedo1);
+	this->shader->setupUniformInt("AlbedoMap[2]", (GLuint) Render::TextureIndex::albedo2);
 
-	this->shader->setupUniformInt("normals[0]", (GLuint) Render::TextureIndex::normal0);
-	this->shader->setupUniformInt("normals[1]", (GLuint) Render::TextureIndex::normal1);
-	this->shader->setupUniformInt("normals[2]", (GLuint) Render::TextureIndex::normal2);
+	this->shader->setupUniformInt("NormalMap[0]", (GLuint) Render::TextureIndex::normal0);
+	this->shader->setupUniformInt("NormalMap[1]", (GLuint) Render::TextureIndex::normal1);
+	this->shader->setupUniformInt("NormalMap[2]", (GLuint) Render::TextureIndex::normal2);
 
-	this->shader->setupUniformInt("specular[0]", (GLuint)Render::TextureIndex::specular0);
-	this->shader->setupUniformInt("specular[1]", (GLuint)Render::TextureIndex::specular1);
-	this->shader->setupUniformInt("specular[2]", (GLuint)Render::TextureIndex::specular2);
+	this->shader->setupUniformInt("SpecularMap[0]", (GLuint)Render::TextureIndex::specular0);
+	this->shader->setupUniformInt("SpecularMap[1]", (GLuint)Render::TextureIndex::specular1);
+	this->shader->setupUniformInt("SpecularMap[2]", (GLuint)Render::TextureIndex::specular2);
 
-	this->shader->setupUniformInt("roughness[0]", (GLuint)Render::TextureIndex::roughness0);
-	this->shader->setupUniformInt("roughness[1]", (GLuint)Render::TextureIndex::roughness1);
-	this->shader->setupUniformInt("roughness[2]", (GLuint)Render::TextureIndex::roughness2);
+	this->shader->setupUniformInt("RoughnessMap[0]", (GLuint)Render::TextureIndex::roughness0);
+	this->shader->setupUniformInt("RoughnessMap[1]", (GLuint)Render::TextureIndex::roughness1);
+	this->shader->setupUniformInt("RoughnessMap[2]", (GLuint)Render::TextureIndex::roughness2);
 	
 	this->shader->setupUniformInt("splat", (GLuint) Render::TextureIndex::splat);
 	this->shader->setupUniformInt("environmentMap", (GLuint)Render::TextureIndex::environmentMap);

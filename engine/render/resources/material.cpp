@@ -16,7 +16,7 @@ __ImplementClass(Render::Material, 'MATL', Core::RefCounted);
 */
 Material::Material()
 {
-
+	this->textures = Render::TextureNode::Create();
 }
 
 //------------------------------------------------------------------------------
@@ -79,7 +79,7 @@ void Material::AddParameter(const Util::String& name, const Util::Variant& varia
 	{
 		//HACK: Since we're loading a string, we're probably loading a texture
 		//This should probably be done in some other way
-		this->textures.AddTexture(Material::TextureIndexFromString(name.AsCharPtr()), variable.GetString().AsCharPtr());
+		this->textures->AddTexture(Material::TextureIndexFromString(name.AsCharPtr()), variable.GetString().AsCharPtr());
 	}
 	else
 	{
@@ -233,6 +233,11 @@ Util::String Material::UniformNameFromString(const Util::String& parameter)
 Ptr<ShaderObject> Material::GetShader(const Util::String& pass)
 {
 	return this->framepasses[pass];
+}
+
+Util::Array<Ptr<ShaderObject>> Material::GetShaders()
+{
+	return this->framepasses.ValuesAsArray();
 }
 
 } // namespace Render

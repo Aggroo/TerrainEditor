@@ -9,6 +9,7 @@
 #include "imgui_internal.h"
 #include "render/render/renderer.h"
 #include "foundation/input/inputmanager.h"
+#include "render/resources/surface.h"
 
 
 namespace Game
@@ -27,11 +28,11 @@ Entity::~Entity()
 
 void Entity::Activate()
 {
-	this->shader->BindProgram();
-	this->shader->setupUniformInt("AlbedoMap", (GLuint)Render::TextureIndex::albedo0);
-	this->shader->setupUniformInt("NormalMap", (GLuint)Render::TextureIndex::normal0);
-	this->shader->setupUniformInt("SpecularMap", (GLuint)Render::TextureIndex::specular0);
-	this->shader->setupUniformInt("RoughnessMap", (GLuint)Render::TextureIndex::roughness0);
+	//this->shader->BindProgram();
+	//this->shader->setupUniformInt("AlbedoMap", (GLuint)Render::TextureIndex::albedo0);
+	//this->shader->setupUniformInt("NormalMap", (GLuint)Render::TextureIndex::normal0);
+	//this->shader->setupUniformInt("SpecularMap", (GLuint)Render::TextureIndex::specular0);
+	//this->shader->setupUniformInt("RoughnessMap", (GLuint)Render::TextureIndex::roughness0);
 	//this->shader->setupUniformInt("aoMap", (GLuint)Render::TextureIndex::ao0);
 
 	EntityBase::Activate();
@@ -44,8 +45,17 @@ void Entity::Deactivate()
 
 void Entity::Update()
 {
-	this->shader->BindProgram();
-	this->textures->BindTextures();
+	if (this->surface != nullptr)
+	{
+		this->surface->GetTextureList()->BindTextures();
+		this->textures->BindTextures();
+	}
+	else
+	{
+		this->shader->BindProgram();
+		
+	}
+	
 	this->shader->setupMatrix4fv("Model", this->transform);
 
 	//if (this->mesh->IsRenderable())
@@ -162,6 +172,12 @@ void Entity::SetTextures(Util::String albedo, Util::String normal, Util::String 
 
 	//this->textures->AddTexture(Render::TextureIndex::ao0, Render::FrameServer::Instance()->GetSSAOPass()->GetSSAOBuffer());
 
+}
+
+void Entity::SetSurface(Ptr<Render::Surface> surface)
+{
+	this->surface = surface; 
+	surface->AddEntity(this->mesh);
 }
 
 void Entity::SetShader(const char* name)

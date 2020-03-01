@@ -71,7 +71,7 @@ void Model::Draw()
 	{
 		if (meshes[i]->IsRenderable())
 		{
-			textures[i]->BindTextures();
+			//textures[i]->BindTextures();
 			meshes[i]->Draw();
 		}
 			

@@ -2,6 +2,7 @@
 #include "drawpass.h"
 #include "application/basegamefeatures/entitymanager.h"
 #include "render/resources/material.h"
+#include "application/game/entity.h"
 
 
 namespace Render
@@ -25,14 +26,38 @@ void DrawPass::BindFrameBuffer()
 
 void DrawPass::Setup()
 {
-
 	FramePass::Setup();
 }
 
 void DrawPass::Execute()
 {
+	GLuint currentProgram = 0;
 
-	BaseGameFeature::EntityManager::Instance()->Update();
+	for (Material* material : this->materials)
+	{
+		auto shader = material->GetShader(this->name);
+
+		if (shader->GetProgram() != currentProgram)
+		{
+			currentProgram = shader->GetProgram();
+			glUseProgram(currentProgram);
+		}
+
+		shader->EnableRenderState();
+
+		for (auto surface : material->SurfaceList())
+		{
+			surface->GetTextureList()->BindTextures();
+
+
+			for (auto modelNode : surface->GetEntites())
+			{
+				//Bind mesh
+				//TODO: We should probably check and make sure we don't bind these more than once
+				modelNode->Draw();
+			}
+		}
+	}
 
 	FramePass::Execute();
 }

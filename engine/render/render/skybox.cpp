@@ -25,7 +25,7 @@ void Skybox::Activate()
 {
 	this->shader = Render::ShaderServer::Instance()->GetShader("skybox");
 
-	cubemap = Render::FrameServer::Instance()->GetIBLPass()->GetEnvironmentMap();
+	this->cubemap = Render::FrameServer::Instance()->GetIBLPass()->GetEnvironmentMap();
 	GenerateCube();
 
 	Game::EntityBase::Activate();
