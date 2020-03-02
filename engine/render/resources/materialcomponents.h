@@ -121,4 +121,33 @@ inline void from_json(const json& j, ComputeShader& s) {
 	j.at("shader").get_to(s.shader);
 };
 
+//------------------------------------------------------------------------------
+/**
+*/
+struct Primitives
+{
+	int node;
+	std::string surface;
+};
+
+inline void from_json(const json& j, Primitives& p) {
+	j.at("node").get_to(p.node);
+	j.at("surface").get_to(p.surface);
+};
+
+//------------------------------------------------------------------------------
+/**
+*/
+struct Model
+{
+	std::string mesh;
+	std::vector<Primitives> primitives;
+};
+
+inline void from_json(const json& j, Model& p) {
+	j.at("mesh").get_to(p.mesh);
+	j.at("primitives").get_to(p.primitives);
+};
+
+
 }

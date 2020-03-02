@@ -36,7 +36,7 @@ public:
 
 	virtual void OnUI();
 
-	void SetMesh(Util::String filename);
+	void SetModel(Util::String filename);
 	Ptr<Render::Model> GetMesh();
 
 	void SetTextures(Util::String albedo, Util::String normal, Util::String metallic, Util::String roughness, Util::String ao = "Default");

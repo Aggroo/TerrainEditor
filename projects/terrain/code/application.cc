@@ -61,9 +61,6 @@ Application::Open()
 		terrain = TerrainEditor::Terrain::Create();
 		terrain->Activate();
 
-		skybox = Render::Skybox::Create();
-		skybox->Activate();
-
 
 		Input::InputManager::Instance()->Setup(window, &lNode);
 

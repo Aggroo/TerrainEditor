@@ -3,7 +3,7 @@
 		"mesh": "resources/assets/Cerberus/Cerberus_LP.FBX",
 		"primitives": [
 			{
-				"node": "0",
+				"node": 0,
 				"surface": "resources/surfaces/cerberus.sur"
 			}
 		]

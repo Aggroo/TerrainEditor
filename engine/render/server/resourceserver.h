@@ -3,6 +3,7 @@
 #include "core/refcounted.h"
 #include "render/resources/material.h"
 #include "render/resources/textureresource.h"
+#include "render/resources/model.h"
 
 namespace Render
 {
@@ -27,6 +28,11 @@ public:
 	///Check if surface is loaded
 	bool HasSurfaceNamed(const Util::String& name) const;
 
+	///Returns a model if it exists, otherwise load it and then return the new model
+	Ptr<Model> LoadModel(const Util::String& filepath);
+	///Check if model is loaded
+	bool HasModelNamed(const Util::String& name) const;
+
 	///Loads a material .json file and adds all materials to the list if they're not already defined
 	Ptr<Material> GetMaterial(const Util::String& name);
 	bool SetupMaterials(const Util::String& filepath);
@@ -49,6 +55,9 @@ private:
 	///Contains all Surfaces.
 	///Key must be unique to each Surface. the key is the Surface name
 	Util::Dictionary<Util::String, Ptr<Surface>> surfaces;
+
+	///This contains all Models currently in-game.
+	Util::Dictionary<Util::String, Ptr<Model>> models;
 
 };	
 }

@@ -43,10 +43,11 @@ protected:
 	//Texture buffer
 	GLuint buffer;
 
+	Util::Array<Material*> materials;
 
 private:
 	//Ptr<Render::Skybox> skybox;
 
-	Util::Array<Material*> materials;
+	
 };
 }

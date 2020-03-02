@@ -1,6 +1,7 @@
 #include "config.h"
 #include "entity.h"
 #include "render/server/shaderserver.h"
+#include "render/server/resourceserver.h"
 #include "render/server/frameserver.h"
 #include "render/camera/camera.h"
 #include "imgui.h"
@@ -152,9 +153,9 @@ void Entity::OnUI()
 	}
 }
 
-void Entity::SetMesh(Util::String filename)
+void Entity::SetModel(Util::String filename)
 {
-	//this->mesh->LoadModel(filename.AsCharPtr());
+	this->mesh = Render::ResourceServer::Instance()->LoadModel(filename);
 }
 
 Ptr<Render::Model> Entity::GetMesh()
@@ -177,7 +178,6 @@ void Entity::SetTextures(Util::String albedo, Util::String normal, Util::String 
 void Entity::SetSurface(Ptr<Render::Surface> surface)
 {
 	this->surface = surface; 
-	surface->AddEntity(this->mesh);
 }
 
 void Entity::SetShader(const char* name)

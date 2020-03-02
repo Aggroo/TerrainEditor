@@ -345,11 +345,25 @@ void MeshResources::Draw()
 		
 }
 
-void MeshResources::DrawPrimitiveGroup(const unsigned int& group)
+void MeshResources::Draw(const unsigned int& group)
 {
 	GLsizei numind = (GLsizei)primitiveGroups[group].numIndices;
 	uint offset = primitiveGroups[group].indexOffset;
 	glDrawElements(GL_TRIANGLES, (GLsizei)primitiveGroups[group].numIndices, GL_UNSIGNED_INT, (void*)primitiveGroups[group].indexOffset);
+}
+
+void MeshResources::Bind()
+{
+	glBindVertexArray(vao[0]);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo[0]);
+}
+
+void MeshResources::Unbind()
+{
+	glBindVertexArray(0);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 void MeshResources::SetupVertexBuffer()

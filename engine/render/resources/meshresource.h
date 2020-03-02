@@ -68,7 +68,10 @@ public:
 	///Draws all primitive groups
 	void Draw();
 	///Draw a single primitive group mesh
-	void DrawPrimitiveGroup(const unsigned int& group);
+	void Draw(const unsigned int& group);
+
+	void Bind();
+	void Unbind();
 
 	Util::Array<Render::Vertex>& GetMesh() { return mesh; };
 	Util::Array<Render::Face>& GetMeshFaces() { return meshFaces; };

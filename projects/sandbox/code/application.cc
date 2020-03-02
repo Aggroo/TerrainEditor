@@ -127,8 +127,8 @@ Application::Run()
 	
 	Ptr<Game::Entity> gun = Game::Entity::Create();
 	gun->SetName("Gun");
-	gun->SetMesh("resources/assets/Cerberus/Cerberus_LP.FBX");
-	gun->SetSurface(Render::ResourceServer::Instance()->LoadSurface("resources/surfaces/cerberus.sur"));
+	gun->SetModel("resources/models/cerberus.mdl");
+	//gun->SetSurface(Render::ResourceServer::Instance()->LoadSurface("resources/surfaces/cerberus.sur"));
 	gun->SetIBLMaps(Render::FrameServer::Instance()->GetIBLPass()->GetEnvironmentMap(), Render::FrameServer::Instance()->GetIBLPass()->GetIrradianceMap(), Render::FrameServer::Instance()->GetIBLPass()->GetBRDFMap());
 	gun->SetTransform(modelMat*Math::mat4::translationMatrix(Math::vec4(0.0f, 50.0f, 0.0f))*Math::mat4::rotY(Math::Deg2Rad(-90))*Math::mat4::rotX(Math::Deg2Rad(-90)));
 	gun->Activate();

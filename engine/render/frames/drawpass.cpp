@@ -1,9 +1,7 @@
 #include "config.h"
 #include "drawpass.h"
-#include "application/basegamefeatures/entitymanager.h"
 #include "render/resources/material.h"
-#include "application/game/entity.h"
-
+#include "render/resources/model.h"
 
 namespace Render
 {
@@ -50,11 +48,17 @@ void DrawPass::Execute()
 			surface->GetTextureList()->BindTextures();
 
 
-			for (auto modelNode : surface->GetEntites())
+			for (auto modelNode : surface->GetModelNodes())
 			{
 				//Bind mesh
 				//TODO: We should probably check and make sure we don't bind these more than once
 				//modelNode->Draw();
+				modelNode->modelInstance->GetMesh()->Bind();
+
+				shader->setupMatrix4fv("Model", Math::mat4::identity());
+				modelNode->modelInstance->GetMesh()->Draw(modelNode->primitiveGroup);
+
+				modelNode->modelInstance->GetMesh()->Unbind();
 			}
 		}
 	}

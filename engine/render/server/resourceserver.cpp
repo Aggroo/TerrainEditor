@@ -2,6 +2,7 @@
 #include "resourceserver.h"
 #include <fstream>
 #include "render/resources/surface.h"
+
 #include "render/resources/materialcomponents.h"
 
 namespace Render
@@ -84,7 +85,7 @@ Ptr<Surface> ResourceServer::LoadSurface(const Util::String & filepath)
 
 	if (!this->HasMaterialNamed(surface.material.c_str()))
 	{
-		_warning("Duplicate shader loaded: \" %s \". Using previously loaded shader...", surface.material.c_str());
+		_warning("[ERROR] No material with name: %s!", surface.material.c_str());
 	}
 	else
 	{
@@ -117,6 +118,60 @@ Ptr<Surface> ResourceServer::LoadSurface(const Util::String & filepath)
 bool ResourceServer::HasSurfaceNamed(const Util::String & name) const
 {
 	return this->surfaces.Contains(name);
+}
+
+Ptr<Model> ResourceServer::LoadModel(const Util::String & filepath)
+{
+	std::ifstream i(filepath.AsCharPtr());
+
+	if (!i) {
+		printf("[MODEL LOAD ERROR]: Couldn't find %s!", filepath);
+		_assert(false);
+		return false;
+	}
+
+	nlohmann::json j;
+	i >> j;
+
+	auto model = j.at("Model").get<Components::Model>();
+
+	if (this->HasModelNamed(filepath))
+	{
+		_warning("Duplicate model loaded: \" %s \". Using previously loaded model...", filepath);
+	}
+	else
+	{
+		Ptr<Render::Model> mdl = Render::Model::Create();
+
+		this->models.Add(filepath, mdl);
+
+		mdl->directory = filepath;
+
+		mdl->mesh = this->LoadMesh(model.mesh.c_str());
+
+		for (auto primitives : model.primitives)
+		{
+			ModelNode* node = new ModelNode;
+
+			node->modelInstance = mdl.get();
+			node->primitiveGroup = primitives.node;
+
+			auto surface = this->LoadSurface(primitives.surface.c_str());
+			node->surface = surface;
+
+			mdl->nodes.Append(node);
+			surface->modelNodes.Append(node);
+		}
+
+		return mdl;
+	}
+
+	return this->models[filepath];
+}
+
+bool ResourceServer::HasModelNamed(const Util::String & name) const
+{
+	return this->models.Contains(name);
 }
 
 Ptr<Material> ResourceServer::GetMaterial(const Util::String& name)

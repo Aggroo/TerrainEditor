@@ -2,7 +2,8 @@
 #include "depthpass.h"
 #include "render/render/renderer.h"
 #include "render/server/shaderserver.h"
-#include "application/basegamefeatures/entitymanager.h"
+#include "render/resources/material.h"
+#include "render/resources/model.h"
 
 namespace Render
 {
@@ -79,7 +80,39 @@ void DepthPass::Execute()
 	this->BindFrameBuffer();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	BaseGameFeature::EntityManager::Instance()->Update();
+	GLuint currentProgram = 0;
+
+	for (Material* material : this->materials)
+	{
+		auto shader = material->GetShader(this->name);
+
+		if (shader->GetProgram() != currentProgram)
+		{
+			currentProgram = shader->GetProgram();
+			glUseProgram(currentProgram);
+		}
+
+		shader->EnableRenderState();
+
+		for (auto surface : material->SurfaceList())
+		{
+			//surface->GetTextureList()->BindTextures();
+
+			
+			for (auto modelNode : surface->GetModelNodes())
+			{
+				//Bind mesh
+				//TODO: We should probably check and make sure we don't bind these more than once
+				//modelNode->Draw();
+				modelNode->modelInstance->GetMesh()->Bind();
+
+				shader->setupMatrix4fv("Model", Math::mat4::identity());
+				modelNode->modelInstance->GetMesh()->Draw(modelNode->primitiveGroup);
+
+				modelNode->modelInstance->GetMesh()->Unbind();
+			}
+		}
+	}
 
 	//Unbind Depth FrameBufferObject
 	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
