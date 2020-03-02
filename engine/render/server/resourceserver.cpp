@@ -32,7 +32,6 @@ Ptr<TextureResource> ResourceServer::LoadTexture(const Util::String& filepath)
 	}
 }
 
-
 //------------------------------------------------------------------------------
 /**
 */

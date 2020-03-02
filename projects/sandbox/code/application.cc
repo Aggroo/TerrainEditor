@@ -116,9 +116,6 @@ Application::Run()
 {
 
 	Math::mat4 modelMat = Math::mat4::translationMatrix(Math::vec4(0.0f, 0.0f, 0.0f));
-	//TODO: Fix IBL pipeline with prefilter map, irradience map and BRDF map
-	Ptr<Render::Skybox> skybox = Render::Skybox::Create();
-	skybox->Activate();
 
 	//Ptr<Game::Entity> sphere = Game::Entity::Create();
 	//sphere->SetName("Sphere");
@@ -132,7 +129,7 @@ Application::Run()
 	gun->SetName("Gun");
 	gun->SetMesh("resources/assets/Cerberus/Cerberus_LP.FBX");
 	gun->SetSurface(Render::ResourceServer::Instance()->LoadSurface("resources/surfaces/cerberus.sur"));
-	gun->SetIBLMaps(skybox->GetCubemap(), Render::FrameServer::Instance()->GetIBLPass()->GetIrradianceMap(), Render::FrameServer::Instance()->GetIBLPass()->GetBRDFMap());
+	gun->SetIBLMaps(Render::FrameServer::Instance()->GetIBLPass()->GetEnvironmentMap(), Render::FrameServer::Instance()->GetIBLPass()->GetIrradianceMap(), Render::FrameServer::Instance()->GetIBLPass()->GetBRDFMap());
 	gun->SetTransform(modelMat*Math::mat4::translationMatrix(Math::vec4(0.0f, 50.0f, 0.0f))*Math::mat4::rotY(Math::Deg2Rad(-90))*Math::mat4::rotX(Math::Deg2Rad(-90)));
 	gun->Activate();
 

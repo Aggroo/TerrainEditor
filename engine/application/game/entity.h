@@ -58,7 +58,6 @@ private:
 	Ptr<Render::TextureNode> textures;
 	Ptr<Render::Model> mesh;
 	Ptr<Render::ShaderObject> shader;
-	Ptr<Render::ShaderObject> depthShader;
 	Ptr<Render::TextureResource> environmentMap, irradiance, brdf, ssao;
 
 	Util::String entityName;

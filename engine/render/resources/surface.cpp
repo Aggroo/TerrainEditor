@@ -59,14 +59,25 @@ Render::MaterialParameter* Surface::GetParameterByName(const Util::String & name
 	return this->parametersByName[name];
 }
 
-void Surface::AddEntity(Ptr<Render::Model> entity)
+void Surface::AddModelNode(ModelNode* node)
 {
-	this->entites.Append(entity);
+	this->modelNodes.Append(node);
 }
 
-const Util::Array<Ptr<Render::Model>>& Surface::GetEntites()
+bool Surface::RemoveModelNode(ModelNode* node)
 {
-	return this->entites;
+	auto n = this->modelNodes.Find(node);
+	if (n != nullptr)
+	{
+		this->modelNodes.Remove(n);
+		return true;
+	}
+	return false;
+}
+
+const Util::Array<ModelNode*>& Surface::GetModelNodes()
+{
+	return this->modelNodes;
 }
 
 void Surface::AddParameter(const Util::String & name, const Util::Variant & variable)

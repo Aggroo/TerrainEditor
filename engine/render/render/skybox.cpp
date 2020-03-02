@@ -8,7 +8,7 @@
 
 namespace Render
 {
-__ImplementClass(Render::Skybox, 'RSKY', Game::EntityBase)
+__ImplementClass(Render::Skybox, 'RSKY', Core::RefCounted)
 Skybox::Skybox()
 {
 	cubemap = TextureResource::Create();
@@ -27,13 +27,11 @@ void Skybox::Activate()
 
 	this->cubemap = Render::FrameServer::Instance()->GetIBLPass()->GetEnvironmentMap();
 	GenerateCube();
-
-	Game::EntityBase::Activate();
 }
 
 void Skybox::Deactivate()
 {
-	Game::EntityBase::Deactivate();
+
 }
 
 void Skybox::Update()

@@ -80,6 +80,9 @@ void FlatGeometryLitPass::Setup()
 	
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+	skybox = Render::Skybox::Create();
+	skybox->Activate();
+
 	FramePass::Setup();
 }
 
@@ -89,6 +92,8 @@ void FlatGeometryLitPass::Execute()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	DrawPass::Execute();
+
+	skybox->Update();
 
 	FramePass::Execute();
 }

@@ -1,11 +1,11 @@
 #pragma once
-#include "application/game/entitybase.h"
+#include "core/refcounted.h"
 #include "render/resources/textureresource.h"
 #include "render/resources/shaderobject.h"
 
 namespace Render
 {
-class Skybox : public Game::EntityBase
+class Skybox : public Core::RefCounted
 {
 __DeclareClass(Skybox)
 public:

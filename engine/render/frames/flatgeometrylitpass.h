@@ -28,6 +28,7 @@ private:
 	GLuint specularBuffer;
 	GLuint roughnessBuffer;
 
+	Ptr<Render::Skybox> skybox;
 
 };
 }

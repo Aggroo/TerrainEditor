@@ -54,7 +54,7 @@ void DrawPass::Execute()
 			{
 				//Bind mesh
 				//TODO: We should probably check and make sure we don't bind these more than once
-				modelNode->Draw();
+				//modelNode->Draw();
 			}
 		}
 	}

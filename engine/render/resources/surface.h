@@ -17,6 +17,7 @@ namespace Render
 struct MaterialParameter;
 class TextureNode;
 class Model;
+class ModelNode;
 
 class Surface : public Core::RefCounted
 {
@@ -32,8 +33,9 @@ public:
 
 	Ptr<Render::TextureNode> GetTextureList() { return textures; }
 
-	void AddEntity(Ptr<Render::Model> entity);
-	const Util::Array<Ptr<Render::Model>>& GetEntites();
+	void AddModelNode(ModelNode* node);
+	bool RemoveModelNode(ModelNode* node);
+	const Util::Array<ModelNode*>& GetModelNodes();
 
 private:
 	friend class Material;
@@ -54,7 +56,7 @@ private:
 	Util::Dictionary<Util::String, MaterialParameter*> parametersByName;
 	Util::Array<MaterialParameter*> parameters;
 
-	Util::Array<Ptr<Render::Model>> entites;
+	Util::Array<ModelNode*> modelNodes;
 
 };
 } // namespace Render

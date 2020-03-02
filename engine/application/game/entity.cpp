@@ -59,7 +59,7 @@ void Entity::Update()
 	this->shader->setupMatrix4fv("Model", this->transform);
 
 	//if (this->mesh->IsRenderable())
-	this->mesh->Draw();
+	//this->mesh->Draw();
 }
 
 void Entity::OnUI()
@@ -154,7 +154,7 @@ void Entity::OnUI()
 
 void Entity::SetMesh(Util::String filename)
 {
-	this->mesh->LoadModel(filename.AsCharPtr());
+	//this->mesh->LoadModel(filename.AsCharPtr());
 }
 
 Ptr<Render::Model> Entity::GetMesh()
