@@ -228,6 +228,8 @@ bool ResourceServer::SetupMaterials(const Util::String& filepath)
 				mat->AddParameter(parameter.name.c_str(), var);
 			}
 
+			mat->SetupUniformParameters();
+
 			this->materials.Add(material.name.c_str(), mat);
 		}
 	}

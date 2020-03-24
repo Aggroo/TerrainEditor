@@ -24,7 +24,10 @@ void TextureNode::AddTexture(TextureIndex index, const char* filename)
 
 void TextureNode::AddTexture(TextureIndex index, Ptr<TextureResource> texture)
 {
-	this->textures.Add(index, texture);
+	if (!this->textures.Contains(index))
+	{
+		this->textures.Add(index, texture);
+	}
 }
 
 void TextureNode::UpdateTexture(TextureIndex index, const char* filename)

@@ -8,16 +8,16 @@ namespace Render
 enum VertexComponentBits
 {
 	Coord = (1 << 0),      // 3 floats
-	Normal = (1 << 1),      // 3 floats
-	NormalB4N = (1 << 2),      // 4 unsigned bytes, normalized
-	Uv0 = (1 << 3),      // 2 floats
-	Uv0S2 = (1 << 4),      // 2 shorts, 4.12 fixed point
-	Uv1 = (1 << 5),      // 2 floats
-	Uv1S2 = (1 << 6),      // 2 shorts, 4.12 fixed point
-	Uv2 = (1 << 7),      // 2 floats
-	Uv2S2 = (1 << 8),      // 2 shorts, 4.12 fixed point
-	Uv3 = (1 << 9),      // 2 floats
-	Uv3S2 = (1 << 10),     // 2 shorts, 4.12 fixed point
+	Uv0 = (1 << 1),      // 2 floats
+	Uv0S2 = (1 << 2),      // 2 shorts, 4.12 fixed point
+	Uv1 = (1 << 3),      // 2 floats
+	Uv1S2 = (1 << 4),      // 2 shorts, 4.12 fixed point
+	Uv2 = (1 << 5),      // 2 floats
+	Uv2S2 = (1 << 6),      // 2 shorts, 4.12 fixed point
+	Uv3 = (1 << 7),      // 2 floats
+	Uv3S2 = (1 << 8),     // 2 shorts, 4.12 fixed point
+	Normal = (1 << 9),      // 3 floats
+	NormalB4N = (1 << 10),      // 4 unsigned bytes, normalized
 	Color = (1 << 11),     // 4 floats
 	ColorUB4N = (1 << 12),     // 4 unsigned bytes, normalized
 	Tangent = (1 << 13),     // 3 floats
@@ -40,8 +40,8 @@ public:
 	enum SemanticName
 	{
 		Position = 0,
-		Normal = 1,
-		TexCoord1 = 2,
+		TexCoord1 = 1,
+		Normal = 2,
 		Tangent = 3,
 		Binormal = 4,
 		Color = 5,

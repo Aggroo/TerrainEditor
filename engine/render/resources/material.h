@@ -45,6 +45,8 @@ public:
 	void SetName(const Util::String& name) { this->name = name; }
 	const Util::String& GetName() { return name; }
 
+	void SetupUniformParameters();
+
 private:
 
 	friend class ResourceServer;

@@ -55,11 +55,12 @@ void DrawPass::Execute()
 				//modelNode->Draw();
 				modelNode->modelInstance->GetMesh()->Bind();
 
-				shader->setupMatrix4fv("Model", Math::mat4::identity());
+				shader->setupMatrix4fv("Model", modelNode->modelInstance->transform);
 				modelNode->modelInstance->GetMesh()->Draw(modelNode->primitiveGroup);
 
 				modelNode->modelInstance->GetMesh()->Unbind();
 			}
+			surface->GetTextureList()->UnbindTextures();
 		}
 	}
 

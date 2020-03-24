@@ -17,6 +17,10 @@
 			{
 				"name": "RoughnessMap",
 				"value": "resources/assets/Cerberus/Textures/Cerberus_R.tga"
+			},
+			{
+				"name": "IBL",
+				"value": "true"
 			}
 		]
 	}

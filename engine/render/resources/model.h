@@ -32,6 +32,8 @@ public:
 
 	const Util::Array<ModelNode*>& GetModelNodes() { return this->nodes; }
 
+	Math::mat4 transform;
+
 private:
 
 	friend class ResourceServer;
@@ -40,6 +42,7 @@ private:
 	Ptr<MeshResources> mesh;
 	//A list of model nodes with a surface and a index to it's primitive group
 	Util::Array<ModelNode*> nodes;
+
 
 	Util::String directory;
 };

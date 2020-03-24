@@ -29,6 +29,10 @@
 				{
 					"name": "RoughnessMap",
 					"value": "resources/textures/placeholder.png"
+				},
+				{
+					"name": "IBL",
+					"value": "true"
 				}
 			]
 		},
@@ -93,6 +97,10 @@
 				{
 					"name": "RoughnessMap2",
 					"value": "resources/textures/placeholder.png"
+				},
+				{
+					"name": "IBL",
+					"value": "true"
 				}
 			]
 		},

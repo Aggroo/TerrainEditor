@@ -46,18 +46,18 @@ void Entity::Deactivate()
 
 void Entity::Update()
 {
-	if (this->surface != nullptr)
-	{
-		this->surface->GetTextureList()->BindTextures();
-		this->textures->BindTextures();
-	}
-	else
-	{
-		this->shader->BindProgram();
-		
-	}
-	
-	this->shader->setupMatrix4fv("Model", this->transform);
+	//if (this->surface != nullptr)
+	//{
+	//	this->surface->GetTextureList()->BindTextures();
+	//	this->textures->BindTextures();
+	//}
+	//else
+	//{
+	//	this->shader->BindProgram();
+	//	
+	//}
+	this->mesh->transform = this->transform;
+	//this->shader->setupMatrix4fv("Model", this->transform);
 
 	//if (this->mesh->IsRenderable())
 	//this->mesh->Draw();

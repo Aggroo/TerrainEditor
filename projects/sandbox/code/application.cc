@@ -129,7 +129,7 @@ Application::Run()
 	gun->SetName("Gun");
 	gun->SetModel("resources/models/cerberus.mdl");
 	//gun->SetSurface(Render::ResourceServer::Instance()->LoadSurface("resources/surfaces/cerberus.sur"));
-	gun->SetIBLMaps(Render::FrameServer::Instance()->GetIBLPass()->GetEnvironmentMap(), Render::FrameServer::Instance()->GetIBLPass()->GetIrradianceMap(), Render::FrameServer::Instance()->GetIBLPass()->GetBRDFMap());
+	//gun->SetIBLMaps(Render::FrameServer::Instance()->GetIBLPass()->GetEnvironmentMap(), Render::FrameServer::Instance()->GetIBLPass()->GetIrradianceMap(), Render::FrameServer::Instance()->GetIBLPass()->GetBRDFMap());
 	gun->SetTransform(modelMat*Math::mat4::translationMatrix(Math::vec4(0.0f, 50.0f, 0.0f))*Math::mat4::rotY(Math::Deg2Rad(-90))*Math::mat4::rotX(Math::Deg2Rad(-90)));
 	gun->Activate();
 
@@ -157,6 +157,9 @@ Application::Run()
 		Input::InputManager::Instance()->CameraMovement();
 
 		//gN.setTransMat(modelMat);
+
+		BaseGameFeature::EntityManager::Instance()->Update();
+
 		//Render the scene
 		Render::Renderer::Instance()->Render(false);
 		

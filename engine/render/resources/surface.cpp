@@ -9,6 +9,7 @@
 #include "texturenode.h"
 #include "foundation/util/variant.h"
 #include "model.h"
+#include "render/server/frameserver.h"
 
 namespace Render
 {
@@ -44,7 +45,17 @@ void Surface::SetupShaderUniforms()
 			case Util::Variant::Type::vec4:
 				shaders[i]->setupVector4f(param->name.AsCharPtr(), param->var.Getvec4());
 				break;
-
+			case Util::Variant::Type::Bool:
+				if (param->name == "IBL" && param->var.GetBool())
+				{
+					shaders[i]->setupUniformInt("environmentMap", (GLuint)Render::TextureIndex::environmentMap);
+					shaders[i]->setupUniformInt("irradianceMap", (GLuint)Render::TextureIndex::irradiance);
+					shaders[i]->setupUniformInt("brdfLUT", (GLuint)Render::TextureIndex::brdf);
+					this->textures->AddTexture(Render::TextureIndex::environmentMap, Render::FrameServer::Instance()->GetIBLPass()->GetEnvironmentMap());
+					this->textures->AddTexture(Render::TextureIndex::irradiance, Render::FrameServer::Instance()->GetIBLPass()->GetIrradianceMap());
+					this->textures->AddTexture(Render::TextureIndex::brdf, Render::FrameServer::Instance()->GetIBLPass()->GetBRDFMap());
+				}
+				break;
 			default:
 				printf("ERROR : Parameter might not be fully implemented! \n");
 				assert(false);
@@ -87,6 +98,12 @@ void Surface::AddParameter(const Util::String & name, const Util::Variant & vari
 		//HACK: Since we're loading a string, we're probably loading a texture
 		//This should probably be done in some other way
 		this->textures->AddTexture(Material::TextureIndexFromString(name.AsCharPtr()), variable.GetString().AsCharPtr());
+
+		MaterialParameter* param = new MaterialParameter();
+		param->name = name;
+		param->var = variable;
+		this->parametersByName.Add(name, param);
+		parameters.Append(param);
 	}
 	else
 	{

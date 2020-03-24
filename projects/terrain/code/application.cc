@@ -130,6 +130,8 @@ Application::Run()
 		this->window->Update();
 		Input::InputManager::Instance()->Update();
 		
+		BaseGameFeature::EntityManager::Instance()->Update();
+
 		//Render the scene
 		Render::Renderer::Instance()->Render(false);
 

@@ -11,18 +11,13 @@ layout(location = 1) out vec3 normalColor;
 layout(location = 2) out vec3 specularOut;
 layout(location = 3) out vec3 roughnessOut;
 
-layout (std140, binding = 1) uniform TerrainVariables
-{
-	float texUvMultiplier[4];
-};
-
 uniform sampler2D AlbedoMap;
 uniform sampler2D NormalMap;
 uniform sampler2D SpecularMap;
 uniform sampler2D RoughnessMap;
 //uniform sampler2D aoMap;
 uniform samplerCube environmentMap;
-uniform samplerCube irradiance;
+uniform samplerCube irradianceMap;
 uniform sampler2D brdfLUT;
 
 
@@ -70,7 +65,7 @@ void main()
 
     vec3 kD = mix(vec3(1.0) - F, vec3(0.0), metallic);
 	
-	vec3 irradiance = texture(irradiance, N).rgb;
+	vec3 irradiance = texture(irradianceMap, N).rgb;
     vec3 diffuse = irradiance * albedo;
 	
 	const float MAX_REFLECTION_LOD = 4.0;

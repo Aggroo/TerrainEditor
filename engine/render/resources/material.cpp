@@ -80,6 +80,12 @@ void Material::AddParameter(const Util::String& name, const Util::Variant& varia
 		//HACK: Since we're loading a string, we're probably loading a texture
 		//This should probably be done in some other way
 		this->textures->AddTexture(Material::TextureIndexFromString(name.AsCharPtr()), variable.GetString().AsCharPtr());
+
+		MaterialParameter* param = new MaterialParameter();
+		param->name = name;
+		param->var = variable;
+		this->parametersByName.Add(name, param);
+		parameters.Append(param);
 	}
 	else
 	{
@@ -238,6 +244,44 @@ Ptr<ShaderObject> Material::GetShader(const Util::String& pass)
 Util::Array<Ptr<ShaderObject>> Material::GetShaders()
 {
 	return this->framepasses.ValuesAsArray();
+}
+
+void Material::SetupUniformParameters()
+{
+	Util::Array<Ptr<ShaderObject>> shaders = GetShaders();
+
+	for (size_t i = 0; i < shaders.Size(); i++)
+	{
+		shaders[i]->BindProgram();
+
+		for (auto param : parameters)
+		{
+			switch (param->var.GetType())
+			{
+			case Util::Variant::Type::String:
+				shaders[i]->setupUniformInt(UniformNameFromString(param->name).AsCharPtr(), (GLuint)TextureIndexFromString(param->name));
+				break;
+			case Util::Variant::Type::Float:
+				shaders[i]->setupUniformFloat(param->name.AsCharPtr(), param->var.GetFloat());
+				break;
+			case Util::Variant::Type::vec4:
+				shaders[i]->setupVector4f(param->name.AsCharPtr(), param->var.Getvec4());
+				break;
+			case Util::Variant::Type::Bool:
+				if (param->name == "IBL" && param->var.GetBool())
+				{
+					shaders[i]->setupUniformInt("environmentMap", (GLuint)Render::TextureIndex::environmentMap);
+					shaders[i]->setupUniformInt("irradianceMap", (GLuint)Render::TextureIndex::irradiance);
+					shaders[i]->setupUniformInt("brdfLUT", (GLuint)Render::TextureIndex::brdf);
+				}
+				break;
+			default:
+				printf("ERROR : Parameter might not be fully implemented! \n");
+				assert(false);
+				break;
+			}
+		}
+	}
 }
 
 } // namespace Render
