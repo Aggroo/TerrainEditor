@@ -16,6 +16,10 @@ struct Pass
 	std::string shader;
 };
 
+inline void to_json(json& j, const Pass& p) {
+	j = json{ {"name", p.name}, {"shader", p.shader} };
+}
+
 inline void from_json(const json& j, Pass& p) {
 	j.at("name").get_to(p.name);
 	j.at("shader").get_to(p.shader);
@@ -29,6 +33,10 @@ struct Parameter
 	std::string name;
 	std::string value;
 };
+
+inline void to_json(json& j, const Parameter& p) {
+	j = json{ {"name", p.name}, {"value", p.value} };
+}
 
 inline void from_json(const json& j, Parameter& p) {
 	j.at("name").get_to(p.name);
@@ -46,6 +54,10 @@ struct Materials
 	std::vector<Parameter> parameter;
 };
 
+inline void to_json(json& j, const Materials& p) {
+	j = json{ {"name", p.name}, {"desc", p.desc}, {"Pass", p.pass}, {"Parameters", p.parameter} };
+}
+
 inline void from_json(const json& j, Materials& m) {
 	j.at("name").get_to(m.name);
 	j.at("desc").get_to(m.desc);
@@ -61,6 +73,10 @@ struct Surface
 	std::string material;
 	std::vector<Parameter> param;
 };
+
+inline void to_json(json& j, const Surface& p) {
+	j = json{ {"material", p.material}, {"Parameters", p.param} };
+}
 
 inline void from_json(const json& j, Surface& p) {
 	j.at("material").get_to(p.material);
@@ -130,6 +146,10 @@ struct Primitives
 	std::string surface;
 };
 
+inline void to_json(json& j, const Primitives& p) {
+	j = json{ {"node", p.node}, {"surface", p.surface} };
+}
+
 inline void from_json(const json& j, Primitives& p) {
 	j.at("node").get_to(p.node);
 	j.at("surface").get_to(p.surface);
@@ -143,6 +163,10 @@ struct Model
 	std::string mesh;
 	std::vector<Primitives> primitives;
 };
+
+inline void to_json(json& j, const Model& p) {
+	j = json{ {"mesh", p.mesh}, {"primitives", p.primitives} };
+}
 
 inline void from_json(const json& j, Model& p) {
 	j.at("mesh").get_to(p.mesh);

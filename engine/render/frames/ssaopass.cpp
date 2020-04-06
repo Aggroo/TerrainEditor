@@ -140,7 +140,7 @@ void SSAOPass::Execute()
 		}
 			
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, FrameServer::Instance()->GetDepthPass()->GetPositionBuffer());
+		glBindTexture(GL_TEXTURE_2D, FrameServer::Instance()->GetDepthPass()->GetTextureBuffer());
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, FrameServer::Instance()->GetDepthPass()->GetNormalBuffer());
 		this->noiseTexture->bindTex(2);

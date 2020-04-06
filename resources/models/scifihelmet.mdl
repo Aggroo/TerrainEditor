@@ -1,0 +1,11 @@
+{
+	"Model": {
+		"mesh": "resources/assets/SciFiHelmet/SciFiHelmet.gltf",
+		"primitives": [
+			{
+				"node": 0,
+				"surface": "resources/surfaces/scifihelmet.sur"
+			}
+		]
+	}
+}

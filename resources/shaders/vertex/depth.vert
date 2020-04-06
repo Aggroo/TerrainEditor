@@ -12,7 +12,7 @@ out vec3 Normal;
 void main()
 {
     vec4 worldPos = Model * vec4(aPos, 1.0);
-    FragPos = worldPos.xyz; 
+    FragPos = (worldPos).xyz; 
     TexCoords = aTexCoords;
     
     mat3 normalMatrix = mat3(Model);

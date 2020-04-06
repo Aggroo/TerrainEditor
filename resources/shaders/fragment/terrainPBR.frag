@@ -14,6 +14,7 @@ layout(location = 3) out vec3 RoughnessMapOut;
 
 layout (std140, binding = 1) uniform TerrainVariables
 {
+	float heightScale;
 	float texUv0Multiplier;
 	float texUv1Multiplier;
 	float texUv2Multiplier;
@@ -26,6 +27,7 @@ layout (std140, binding = 1) uniform TerrainVariables
 	float hardness1;
 	float hardness2;
 	float hardness3;
+	float padding[3];
 };  
 
 uniform sampler2D AlbedoMap[3];
@@ -37,8 +39,6 @@ layout(binding = 16) uniform sampler2D heightmap;
 layout(binding = 17) uniform samplerCube environmentMap;
 layout(binding = 18) uniform samplerCube irradianceMap;
 layout(binding = 19) uniform sampler2D brdfLUT;
-
-uniform float heightScale;
 
 uniform float u_matShininess; // = 64;
 

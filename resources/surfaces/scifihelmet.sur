@@ -1,0 +1,27 @@
+{
+	"Surface": {
+		"material": "PBR",
+		"Parameters": [
+			{
+				"name": "AlbedoMap",
+				"value": "resources/assets/SciFiHelmet/SciFiHelmet_BaseColor.png"
+			},
+			{
+				"name": "NormalMap",
+				"value": "resources/assets/SciFiHelmet/SciFiHelmet_Normal.png"
+			},
+			{
+				"name": "SpecularMap",
+				"value": "resources/assets/SciFiHelmet/SciFiHelmet_MetallicRoughness.png"
+			},
+			{
+				"name": "RoughnessMap",
+				"value": "resources/assets/SciFiHelmet/SciFiHelmet_MetallicRoughness.png"
+			},
+			{
+				"name": "IBL",
+				"value": "true"
+			}
+		]
+	}
+}

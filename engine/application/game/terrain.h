@@ -2,12 +2,12 @@
 #include "GL/glew.h"
 #include "application/game/entitybase.h"
 #include <memory>
-#include "render/resources/meshresource.h"
-#include "render/resources/texturenode.h"
-#include "render/resources/shaderobject.h"
+#include "render/resources/surface.h"
 #include "imgui.h"
-#include "render/render/skybox.h"
 #include "foundation/util/jobsystem.h"
+#include "render/resources/meshresource.h"
+#include "render/resources/Model.h"
+
 
 namespace TerrainEditor
 {
@@ -25,6 +25,7 @@ class Terrain : public Game::EntityBase
 private:
 	struct TerrainShaderVariables
 	{
+		float heightScale = 1.0f;
 		float texUv0Multiplier = 0.1f;
 		float texUv1Multiplier = 0.1f;
 		float texUv2Multiplier = 0.1f;
@@ -37,6 +38,7 @@ private:
 		float hardness1 = 10.0f;
 		float hardness2 = 10.0f;
 		float hardness3 = 4.0f;
+		float padding[3];
 	};
 
 	///uniform buffer object
@@ -63,9 +65,8 @@ public:
 
 	float GetHeightScale();
 
-	Ptr<Render::MeshResources> GetMesh() { return mesh; }
-	Ptr<Render::ShaderObject> GetShader() { return shader; }
-	Ptr<Render::TextureNode> GetTextures() { return textures; }
+	Ptr<Render::Model> GetModel() { return mesh; }
+	Ptr<Render::Surface> GetSurface() { return surface; }
 
 	///Shader Settings
 	TerrainShaderVariables tsVar;
@@ -92,9 +93,13 @@ private:
 	GLuint indexCount;
 	GLuint vertexCount;
 
-	Ptr<Render::TextureNode> textures;
-	Ptr<Render::MeshResources> mesh;
-	Ptr<Render::ShaderObject> shader;
+	Ptr<Render::Surface> surface;
+	Ptr<Render::Model> mesh;
+
+	Util::Array<Render::Vertex> vertices;
+	Util::Array<GLuint> indices;
+
+	Render::ModelNode* node;
 
 	bool generate;
 	JobSystem::Context ctx;

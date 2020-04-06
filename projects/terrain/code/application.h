@@ -47,7 +47,6 @@ private:
 
 	Ptr<TerrainEditor::Terrain> terrain;
 	Ptr<Render::ShaderObject> shader;
-	Ptr<Render::Skybox> skybox;
 
 	bool initializeStarted;
 	JobSystem::Context ctx;

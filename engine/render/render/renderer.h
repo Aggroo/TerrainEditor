@@ -37,6 +37,12 @@ enum RendererOptions
 	OptionGamma
 };
 
+struct UBOInfo
+{
+	size_t bufferSize;
+	void* buffer;
+};
+
 class Renderer
 {
 __DeclareSingleton(Renderer)

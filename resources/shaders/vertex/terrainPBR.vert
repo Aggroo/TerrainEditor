@@ -5,7 +5,24 @@ layout(location=3) in vec3 tangent;
 layout(location=4) in vec3 biNormal;
 
 uniform sampler2D heightmap;
-uniform float heightScale;
+
+layout (std140, binding = 1) uniform TerrainVariables
+{
+	float heightScale;
+	float texUv0Multiplier;
+	float texUv1Multiplier;
+	float texUv2Multiplier;
+	float slopeAngle;
+	float heightFalloff;
+	float height;
+	float slopeAngle2;
+	float heightFalloff2;
+	float height2;
+	float hardness1;
+	float hardness2;
+	float hardness3;
+	float padding[3];
+};  
 
 out vec3 fragPos;
 out vec2 texCoord;

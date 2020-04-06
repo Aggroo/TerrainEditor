@@ -93,11 +93,11 @@ void DepthPass::Execute()
 		}
 
 		shader->EnableRenderState();
-
+		
 		for (auto surface : material->SurfaceList())
 		{
 			//surface->GetTextureList()->BindTextures();
-
+			surface->BindUniformBuffer();
 			
 			for (auto modelNode : surface->GetModelNodes())
 			{

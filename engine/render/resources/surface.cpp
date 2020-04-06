@@ -10,6 +10,7 @@
 #include "foundation/util/variant.h"
 #include "model.h"
 #include "render/server/frameserver.h"
+#include "render/render/renderer.h"
 
 namespace Render
 {
@@ -18,6 +19,8 @@ __ImplementClass(Render::Surface, 'SRFC', Core::RefCounted);
 Surface::Surface()
 {
 	this->textures = Render::TextureNode::Create();
+	glGenBuffers(1, this->ubo);
+	uniformBufferExist = false;
 }
 
 Surface::~Surface()
@@ -65,9 +68,32 @@ void Surface::SetupShaderUniforms()
 	}
 }
 
+void Surface::BindUniformBuffer()
+{
+	if (this->uniformBufferExist)
+	{
+		glBindBuffer(GL_UNIFORM_BUFFER, this->ubo[0]);
+		glBindBufferBase(GL_UNIFORM_BUFFER, 1, this->ubo[0]);
+		glBufferData(GL_UNIFORM_BUFFER, uboBuffer->bufferSize, uboBuffer->buffer, GL_STATIC_DRAW);
+	}
+	
+}
+
 Render::MaterialParameter* Surface::GetParameterByName(const Util::String & name)
 {
 	return this->parametersByName[name];
+}
+
+void Surface::UpdateParameterByName(const Util::String & name, const Util::Variant & newValue)
+{
+	Render::MaterialParameter* param = this->parametersByName[name];
+
+	int findIndex = this->parameters.FindIndex(param);
+	if (findIndex != -1 && param->var.GetType() == newValue.GetType())
+	{
+		param->var = newValue;
+		this->parameters[findIndex]->var = newValue;
+	}
 }
 
 void Surface::AddModelNode(ModelNode* node)
@@ -89,6 +115,12 @@ bool Surface::RemoveModelNode(ModelNode* node)
 const Util::Array<ModelNode*>& Surface::GetModelNodes()
 {
 	return this->modelNodes;
+}
+
+void Surface::SetUniformBuffer(Render::UBOInfo* buffer)
+{
+	this->uboBuffer = buffer;
+	uniformBufferExist = true;
 }
 
 void Surface::AddParameter(const Util::String & name, const Util::Variant & variable)

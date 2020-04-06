@@ -213,7 +213,7 @@ void TerrainSettings::GetImagePicker(Util::String texName, Render::TextureIndex 
 	}
 	ImGui::SameLine();
 	Util::String dot = "..." + label;
-	if (ImGui::ImageButton((void*)terrain->GetTextures()->GetTexture(index)->GetTextureID(), ImVec2(ImGui::GetContentRegionAvailWidth() - 10, ImGui::GetContentRegionAvailWidth() - 10)))
+	if (ImGui::ImageButton((void*)terrain->GetSurface()->GetTextureList()->GetTexture(index)->GetTextureID(), ImVec2(ImGui::GetContentRegionAvailWidth() - 10, ImGui::GetContentRegionAvailWidth() - 10)))
 	{
 		texSettings.chosenIndex = index;
 		this->texturesPopup = true;
@@ -260,8 +260,8 @@ void TerrainSettings::ModalWindow()
 			heightSettings.texName = s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr();
 
 			
-			terrain->GetTextures()->UpdateTexture(Render::TextureIndex::heightmap, heightSettings.texName.AsCharPtr());
-			heightSettings.texture = terrain->GetTextures()->GetTexture(Render::TextureIndex::heightmap)->GetTextureID();
+			terrain->GetSurface()->GetTextureList()->UpdateTexture(Render::TextureIndex::heightmap, heightSettings.texName.AsCharPtr());
+			heightSettings.texture = terrain->GetSurface()->GetTextureList()->GetTexture(Render::TextureIndex::heightmap)->GetTextureID();
 
 			this->heightPopup = false;
 			free(outpath);
@@ -311,7 +311,7 @@ void TerrainSettings::ModalWindow()
 			default:break;
 			}
 
-			terrain->GetTextures()->UpdateTexture(texSettings.chosenIndex, s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr());
+			terrain->GetSurface()->GetTextureList()->UpdateTexture(texSettings.chosenIndex, s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr());
 
 			this->texturesPopup = false;
 			free(outpath);

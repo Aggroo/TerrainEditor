@@ -32,6 +32,8 @@ public:
 
 	const Util::Array<ModelNode*>& GetModelNodes() { return this->nodes; }
 
+	void AddModelNode(ModelNode* node) { nodes.Append(node); }
+
 	Math::mat4 transform;
 
 private:

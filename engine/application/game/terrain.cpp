@@ -6,20 +6,18 @@
 #include "foundation/util/curve.hpp"
 #include "render/camera/camera.h"
 #include "render/render/renderer.h"
-#include "render/server/shaderserver.h"
+#include "render/server/resourceserver.h"
 #include "application/basegamefeatures/entitymanager.h"
-#include "render/render/skybox.h"
-#include "render/server/frameserver.h"
+#include "render/resources/model.h"
 
 namespace TerrainEditor
 {
 __ImplementClass(TerrainEditor::Terrain, 'TETY', Game::EntityBase);
 
-Terrain::Terrain() : terrainWidth(0), terrainHeight(0), heightMap(nullptr), generate(false)
+Terrain::Terrain() : terrainWidth(0), terrainHeight(0), heightMap(nullptr), generate(false), node(nullptr)
 {
-	mesh = Render::MeshResources::Create();
-	shader = Render::ShaderObject::Create();
-	textures = Render::TextureNode::Create();
+	mesh = Render::Model::Create();
+	this->surface = Render::Surface::Create();
 
 	glGenBuffers(1, this->ubo);
 }
@@ -36,56 +34,12 @@ Terrain::~Terrain()
 
 void Terrain::Activate()
 {	
-	this->shader = Render::ShaderServer::Instance()->GetShader("defaultTerrain");
 
-	this->shader->BindProgram();
+	this->surface = Render::ResourceServer::Instance()->LoadSurface("resources/surfaces/terrain.sur");
 
-	this->textures->AddTexture(Render::TextureIndex::albedo0, "resources/textures/terrain_textures/mossy-ground/mixedmoss-albedo2.png");
-	this->textures->AddTexture(Render::TextureIndex::albedo1, "resources/textures/terrain_textures/slate-cliff/slatecliffrock-albedo.png");
-	this->textures->AddTexture(Render::TextureIndex::albedo2, "resources/textures/terrain_textures/Snow/snow-packed12-Base_Color.png");
+	Render::UBOInfo* bufferInfo = new Render::UBOInfo{ sizeof(TerrainShaderVariables), &tsVar };
 
-	this->textures->AddTexture(Render::TextureIndex::normal0, "resources/textures/terrain_textures/mossy-ground/mixedmoss-normal2.png");
-	this->textures->AddTexture(Render::TextureIndex::normal1, "resources/textures/terrain_textures/slate-cliff/slatecliffrock_Normal.jpg");
-	this->textures->AddTexture(Render::TextureIndex::normal2, "resources/textures/terrain_textures/Snow/snow-packed12-Normal-ogl.png");
-
-	this->textures->AddTexture(Render::TextureIndex::specular0, "resources/textures/terrain_textures/mossy-ground/mixedmoss-metalness.png");
-	this->textures->AddTexture(Render::TextureIndex::specular1, "resources/textures/terrain_textures/slate-cliff/slatecliffrock_Metallic.png");
-	this->textures->AddTexture(Render::TextureIndex::specular2, "resources/textures/terrain_textures/Snow/snow-packed12-Metallic.png");
-
-	this->textures->AddTexture(Render::TextureIndex::roughness0, "resources/textures/terrain_textures/mossy-ground/mixedmoss-roughness.png");
-	this->textures->AddTexture(Render::TextureIndex::roughness1, "resources/textures/terrain_textures/slate-cliff/slatecliffrock_Roughness2.png");
-	this->textures->AddTexture(Render::TextureIndex::roughness2, "resources/textures/terrain_textures/Snow/snow-packed12-Roughness.png");
-			
-	this->textures->AddTexture(Render::TextureIndex::splat, "resources/textures/heightmaps/splat2.jpg");
-
-	this->textures->AddTexture(Render::TextureIndex::environmentMap, Render::FrameServer::Instance()->GetIBLPass()->GetEnvironmentMap());
-	this->textures->AddTexture(Render::TextureIndex::irradiance, Render::FrameServer::Instance()->GetIBLPass()->GetIrradianceMap());
-	this->textures->AddTexture(Render::TextureIndex::brdf, Render::FrameServer::Instance()->GetIBLPass()->GetBRDFMap());
-	
-
-	//textures.AddTexture("resources/textures/pathway.jpg");
-
-
-	this->shader->setupUniformInt("AlbedoMap[0]", (GLuint) Render::TextureIndex::albedo0);
-	this->shader->setupUniformInt("AlbedoMap[1]", (GLuint) Render::TextureIndex::albedo1);
-	this->shader->setupUniformInt("AlbedoMap[2]", (GLuint) Render::TextureIndex::albedo2);
-
-	this->shader->setupUniformInt("NormalMap[0]", (GLuint) Render::TextureIndex::normal0);
-	this->shader->setupUniformInt("NormalMap[1]", (GLuint) Render::TextureIndex::normal1);
-	this->shader->setupUniformInt("NormalMap[2]", (GLuint) Render::TextureIndex::normal2);
-
-	this->shader->setupUniformInt("SpecularMap[0]", (GLuint)Render::TextureIndex::specular0);
-	this->shader->setupUniformInt("SpecularMap[1]", (GLuint)Render::TextureIndex::specular1);
-	this->shader->setupUniformInt("SpecularMap[2]", (GLuint)Render::TextureIndex::specular2);
-
-	this->shader->setupUniformInt("RoughnessMap[0]", (GLuint)Render::TextureIndex::roughness0);
-	this->shader->setupUniformInt("RoughnessMap[1]", (GLuint)Render::TextureIndex::roughness1);
-	this->shader->setupUniformInt("RoughnessMap[2]", (GLuint)Render::TextureIndex::roughness2);
-	
-	this->shader->setupUniformInt("splat", (GLuint) Render::TextureIndex::splat);
-	this->shader->setupUniformInt("environmentMap", (GLuint)Render::TextureIndex::environmentMap);
-	this->shader->setupUniformInt("irradianceMap", (GLuint)Render::TextureIndex::irradiance);
-	this->shader->setupUniformInt("brdfLUT", (GLuint)Render::TextureIndex::brdf);
+	this->surface->SetUniformBuffer(bufferInfo);
 
 	EntityBase::Activate();
 }
@@ -97,21 +51,7 @@ void Terrain::Deactivate()
 
 void Terrain::Update()
 {
-	if (generate && !JobSystem::IsBusy(ctx))
-	{
-		this->mesh->GenerateBuffers();
-		generate = false;
-	}
-		
-	this->BindShaderVariables();
-	this->shader->BindProgram();
-	this->textures->BindTextures();
-	this->shader->setupMatrix4fv("Model", this->transform);
-	
-	if(this->mesh->IsRenderable())
-		this->mesh->Draw();
-
-	this->textures->UnbindTextures();
+	this->mesh->transform = this->transform;
 }
 
 void Terrain::OnUI()
@@ -121,49 +61,16 @@ void Terrain::OnUI()
 
 bool Terrain::CreateTerrain(const char* filename, int size, float widthMultiplier, float heightMultiplier, ImVec2* points)
 {
-	this->mesh->mesh.Reset();
-	this->mesh->indices.Reset();
-	int n;
+
+	this->vertices.Reset();
+	this->indices.Reset();
+	this->mesh->GetMesh() = Render::MeshResources::Create();
 	
-	this->shader->BindProgram();
-	this->textures->AddTexture(Render::TextureIndex::heightmap, filename);
-	this->shader->setupUniformInt("heightmap", (GLuint)Render::TextureIndex::heightmap);
-	this->shader->setupUniformFloat("heightScale", heightMultiplier);
+	tsVar.heightScale = heightMultiplier;
 
 	this->terrainWidth = size;
 	this->terrainHeight = size;
 	this->sizeModifier = widthMultiplier;
-
-	//unsigned char *image = stbi_load(filename, &terrainWidth, &terrainHeight, &n, 0);
-	//
-	//if (image == nullptr)
-	//{
-	//	std::cerr << "Could not read file " << filename << ". File does not exist." << std::endl;
-	//	return false;
-	//}
-	//
-	//this->heightScale = heightMultiplier;
-	//this->heightMap = new HeightmapValues[this->terrainWidth*this->terrainHeight];
-	//
-	//float heightVal;
-	//int k = 0;
-	//int index;
-	//for (int y = 0; y < this->terrainHeight; ++y)
-	//{
-	//	for (int x = 0; x < this->terrainWidth; ++x)
-	//	{
-	//		heightVal = static_cast<float>(image[k]);
-	//		heightVal /= 255.f;
-	//
-	//		index = (this->terrainHeight * y) + x;
-	//
-	//		this->heightMap[index].x = static_cast<float>(x*widthMultiplier);
-	//		this->heightMap[index].y = static_cast<float>(ImGui::CurveValue(heightVal, 10, points)*heightMultiplier);
-	//		this->heightMap[index].z = static_cast<float>(y*widthMultiplier);
-	//
-	//		k += 3;
-	//	}
-	//}
 	
 	generate = true;
 
@@ -171,10 +78,10 @@ bool Terrain::CreateTerrain(const char* filename, int size, float widthMultiplie
 	this->indexCount = vertexCount * 6;
 
 	// Create the vertex array.
-	this->mesh->mesh.Reserve(vertexCount);
+	this->vertices.Reserve(vertexCount);
 
 	// Create the index array.
-	this->mesh->indices.Fill(0, indexCount, 0);
+	this->indices.Fill(0, indexCount, 0);
 
 	// Initialize the index to the vertex buffer.
 	int index = 0;
@@ -188,7 +95,7 @@ bool Terrain::CreateTerrain(const char* filename, int size, float widthMultiplie
 		for (int x = 0; x < (this->terrainWidth); ++x)
 		{
 			i = (this->terrainHeight * y) + x;
-			this->mesh->mesh.Append(Render::Vertex(Math::vec3(x*this->sizeModifier, 0.0f, y*this->sizeModifier), Math::vec2(x*uDiv, -y * vDiv), Math::vec3()));
+			this->vertices.Append(Render::Vertex(Math::vec3(x*this->sizeModifier, 0.0f, y*this->sizeModifier), Math::vec2(x*uDiv, -y * vDiv), Math::vec3()));
 		}
 	}
 
@@ -203,32 +110,45 @@ bool Terrain::CreateTerrain(const char* filename, int size, float widthMultiplie
 			index4 = (this->terrainHeight * (y + 1)) + (x + 1);  // Upper right.
 
 			// Upper left.
-			this->mesh->indices[index] = index3;
+			this->indices[index] = index3;
 			index++;
 
 			// Upper right.
-			this->mesh->indices[index] = index4;
+			this->indices[index] = index4;
 			index++;
 
 			// Bottom left.
-			this->mesh->indices[index] = index1;
+			this->indices[index] = index1;
 			index++;
 
 			// Bottom left.
-			this->mesh->indices[index] = index1;
+			this->indices[index] = index1;
 			index++;
 
 			// Upper right.
-			this->mesh->indices[index] = index4;
+			this->indices[index] = index4;
 			index++;
 
 			// Bottom right.
-			this->mesh->indices[index] = index2;
+			this->indices[index] = index2;
 			index++;
 
 		}
 	}
-	
+
+	this->mesh->GetMesh()->CreateMesh(this->vertices, vertexCount, this->indices, this->indexCount, 
+		Render::VertexComponentBits::Coord | Render::VertexComponentBits::Uv0 | Render::VertexComponentBits::Normal | Render::VertexComponentBits::Tangent);
+
+	if (this->node == NULL)
+	{
+		this->node = new Render::ModelNode;
+		this->node->modelInstance = mesh;
+		this->node->primitiveGroup = 0;
+		this->node->surface = this->surface.get();
+
+		this->mesh->AddModelNode(node);
+		this->surface->AddModelNode(node);
+	}
 
 	//GenerateNormals();
 
@@ -334,30 +254,30 @@ void Terrain::GenerateNormals()
 	for (int i = 0; i < vertexCount; i += 3)
 	{
 		// Edges of the triangle : position delta
-		Math::vec3 deltaPos1 = mesh->mesh[i+1].pos - mesh->mesh[i].pos;
-		Math::vec3 deltaPos2 = mesh->mesh[i + 2].pos - mesh->mesh[i].pos;
+		Math::vec3 deltaPos1 = this->vertices[i+1].pos - this->vertices[i].pos;
+		Math::vec3 deltaPos2 = this->vertices[i + 2].pos - this->vertices[i].pos;
 
 		// UV delta
-		Math::vec2 deltaUV1 = mesh->mesh[i + 1].uv - mesh->mesh[i].uv;
-		Math::vec2 deltaUV2 = mesh->mesh[i + 2].uv - mesh->mesh[i].uv;
+		Math::vec2 deltaUV1 = this->vertices[i + 1].uv - this->vertices[i].uv;
+		Math::vec2 deltaUV2 = this->vertices[i + 2].uv - this->vertices[i].uv;
 
 		float r = 1.0f / (deltaUV1[0] * deltaUV2[1] - deltaUV1[1] * deltaUV2[0]);
 		Math::vec3 tangent = (deltaPos1 * deltaUV2[1] - deltaPos2 * deltaUV1[1])*r;
 		Math::vec3 bitangent = (deltaPos2 * deltaUV1[0] - deltaPos1 * deltaUV2[0])*r;
 
-		mesh->mesh[i + 0].tangent = tangent;
-		mesh->mesh[i + 1].tangent = tangent;
-		mesh->mesh[i + 2].tangent = tangent;
+		this->vertices[i + 0].tangent = tangent;
+		this->vertices[i + 1].tangent = tangent;
+		this->vertices[i + 2].tangent = tangent;
 
-		mesh->mesh[i + 0].binormal = bitangent;
-		mesh->mesh[i + 1].binormal = bitangent;
-		mesh->mesh[i + 2].binormal = bitangent;
+		this->vertices[i + 0].binormal = bitangent;
+		this->vertices[i + 1].binormal = bitangent;
+		this->vertices[i + 2].binormal = bitangent;
 	}
 }
 
 float Terrain::GetHeight(int x, int y) const
 {
-	return mesh->mesh[y*terrainWidth + x].pos.y();
+	return this->vertices[y*terrainWidth + x].pos.y();
 }
 
 void Terrain::BindShaderVariables()

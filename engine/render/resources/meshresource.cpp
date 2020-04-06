@@ -258,6 +258,99 @@ bool MeshResources::LoadMesh(const char* filename)
 	return true;
 }
 
+bool MeshResources::CreateMesh(const Util::Array<Render::Vertex>& vertexData, const size_t & numVertices, const Util::Array<GLuint>& indexData, const size_t & numIndices, int compBits)
+{
+	//Create a local variables and overwrite the member variable to stop adding too much to the member variables
+	uint vertexComponentMask = 0;
+	Util::Array<VertexComponent> vertexComponents;
+	uint vertexWidth = 0;
+
+	if (numVertices == 0 || numIndices == 0)
+	{
+		printf("ERROR: the number of vertice or indices are 0 in CreateMesh!");
+		return false;
+	}
+	if (compBits & VertexComponentBits::Coord)
+	{
+		VertexComponent::SemanticName sem = VertexComponent::Position;
+		VertexComponent::Format fmt = VertexComponent::Float3;
+		vertexComponents.Append(VertexComponent(sem, 0, fmt));
+		vertexWidth += 3;
+		vertexComponentMask |= VertexComponentBits::Coord;
+	}
+	if (compBits & VertexComponentBits::Normal)
+	{
+		VertexComponent::SemanticName sem = VertexComponent::Normal;
+		VertexComponent::Format fmt = VertexComponent::Float3;
+		vertexComponents.Append(VertexComponent(sem, 0, fmt));
+		vertexWidth += 3;
+		vertexComponentMask |= VertexComponentBits::Normal;
+	}
+	if (compBits & VertexComponentBits::Uv0)
+	{
+		VertexComponent::SemanticName sem = VertexComponent::TexCoord1;
+		VertexComponent::Format fmt = VertexComponent::Float2;
+		vertexComponents.Append(VertexComponent(sem, 0, fmt));
+		vertexWidth += 2;
+		vertexComponentMask |= VertexComponentBits::Uv0;
+	}
+	if (compBits & (VertexComponentBits::Tangent | VertexComponentBits::Binormal))
+	{
+		VertexComponent::SemanticName sem = VertexComponent::Tangent;
+		VertexComponent::Format fmt = VertexComponent::Float3;
+		vertexComponents.Append(VertexComponent(sem, 0, fmt));
+		vertexWidth += 3;
+		vertexComponentMask |= VertexComponentBits::Tangent;
+
+		sem = VertexComponent::Binormal;
+		fmt = VertexComponent::Float3;
+		vertexComponents.Append(VertexComponent(sem, 0, fmt));
+		vertexWidth += 3;
+		vertexComponentMask |= VertexComponentBits::Binormal;
+	}
+	if (compBits & VertexComponentBits::Color)
+	{
+		VertexComponent::SemanticName sem = VertexComponent::Color;
+		VertexComponent::Format fmt = VertexComponent::Float3;
+		vertexComponents.Append(VertexComponent(sem, 0, fmt));
+		vertexWidth += 3;
+		vertexComponentMask |= VertexComponentBits::Color;
+	}
+	//Sort to make sure that our components are in the correct order when we construct our vertexbuffer
+	vertexComponents.Sort();
+
+	this->vertexComponentMask = vertexComponentMask;
+	this->vertexComponents = vertexComponents;
+	this->vertexWidth = vertexWidth;
+
+	this->numVertices = numVertices;
+	this->numIndices = numIndices;
+
+	this->vertexSize = this->numVertices * this->vertexWidth * sizeof(GLfloat);
+	this->indexSize = this->numIndices * sizeof(GLuint);
+
+	this->meshPtr = &vertexData[0];
+	this->indicesPtr = &indexData[0];
+
+	//Point to the first element in our indexbuffer
+	this->indexPtr = this->indicesPtr;
+	this->vertexPtr = this->meshPtr;
+
+	//Create a local array and overwrite the member variable to overwrite the primitive groups instead of appending
+	Util::Array<PrimitiveGroup> primitiveGroups;
+	primitiveGroups.Append(PrimitiveGroup());
+	primitiveGroups[0].name = "GeneratedMesh";
+	primitiveGroups[0].indexOffset = 0;
+	primitiveGroups[0].numIndices = this->indexSize;
+
+	this->primitiveGroups = primitiveGroups;
+
+	SetupVertexBuffer();
+	SetupIndexBuffer();
+
+	return true;
+}
+
 void MeshResources::createQuad()
 {
 	GLuint ibuff[6]

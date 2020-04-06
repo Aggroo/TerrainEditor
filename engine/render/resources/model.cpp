@@ -18,6 +18,7 @@ ModelNode::~ModelNode()
 
 Model::Model()
 {
+	mesh = MeshResources::Create();
 }
 
 Model::~Model()

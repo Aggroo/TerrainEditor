@@ -61,6 +61,7 @@ public:
 
 	///Imports a mesh using assimp
 	bool LoadMesh(const char* filename);
+	bool CreateMesh(const Util::Array<Render::Vertex>& vertexData, const size_t& numVertices, const Util::Array<GLuint>& indexData, const size_t& numIndices, int compBits);
 
 	void createQuad();
 	void createQuad2();

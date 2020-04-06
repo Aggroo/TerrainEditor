@@ -7,6 +7,7 @@
 */
 //------------------------------------------------------------------------------
 #include "core/refcounted.h"
+#include "GL/glew.h"
 
 namespace Util 
 {
@@ -15,6 +16,7 @@ class Variant;
 namespace Render
 {
 struct MaterialParameter;
+struct UBOInfo;
 class TextureNode;
 class Model;
 class ModelNode;
@@ -28,8 +30,10 @@ public:
     ~Surface();
 
 	void SetupShaderUniforms();
+	void BindUniformBuffer();
 
 	Render::MaterialParameter* GetParameterByName(const Util::String& name);
+	void UpdateParameterByName(const Util::String& name, const Util::Variant& newValue);
 
 	Ptr<Render::TextureNode> GetTextureList() { return textures; }
 
@@ -37,9 +41,13 @@ public:
 	bool RemoveModelNode(ModelNode* node);
 	const Util::Array<ModelNode*>& GetModelNodes();
 
+	void SetUniformBuffer(Render::UBOInfo* buffer);
+
 private:
 	friend class Material;
 	friend class ResourceServer;
+
+	GLuint ubo[1];
 
 	void AddParameter(const Util::String &name, const Util::Variant &variable);
 
@@ -57,6 +65,9 @@ private:
 	Util::Array<MaterialParameter*> parameters;
 
 	Util::Array<ModelNode*> modelNodes;
+
+	Render::UBOInfo* uboBuffer;
+	bool uniformBufferExist;
 
 };
 } // namespace Render

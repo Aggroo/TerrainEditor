@@ -1,0 +1,63 @@
+{
+	"Surface": {
+		"material": "TerrainPBR",
+		"Parameters": [
+			{
+				"name": "AlbedoMap0",
+				"value": "resources/textures/terrain_textures/mossy-ground/mixedmoss-albedo2.png"
+			},
+			{
+				"name": "AlbedoMap1",
+				"value": "resources/textures/terrain_textures/slate-cliff/slatecliffrock-albedo.png"
+			},
+			{
+				"name": "AlbedoMap2",
+				"value": "resources/textures/terrain_textures/Snow/snow-packed12-Base_Color.png"
+			},
+			{
+				"name": "NormalMap0",
+				"value": "resources/textures/terrain_textures/mossy-ground/mixedmoss-normal2.png"
+			},
+			{
+				"name": "NormalMap1",
+				"value": "resources/textures/terrain_textures/slate-cliff/slatecliffrock_Normal.jpg"
+			},
+			{
+				"name": "NormalMap2",
+				"value": "resources/textures/terrain_textures/Snow/snow-packed12-Normal-ogl.png"
+			},
+			{
+				"name": "SpecularMap0",
+				"value": "resources/textures/terrain_textures/mossy-ground/mixedmoss-metalness.png"
+			},
+			{
+				"name": "SpecularMap1",
+				"value": "resources/textures/terrain_textures/slate-cliff/slatecliffrock_Metallic.png"
+			},
+			{
+				"name": "SpecularMap2",
+				"value": "resources/textures/terrain_textures/Snow/snow-packed12-Metallic.png"
+			},
+			{
+				"name": "RoughnessMap0",
+				"value": "resources/textures/terrain_textures/mossy-ground/mixedmoss-roughness.png"
+			},
+			{
+				"name": "RoughnessMap1",
+				"value": "resources/textures/terrain_textures/slate-cliff/slatecliffrock_Roughness2.png"
+			},
+			{
+				"name": "RoughnessMap2",
+				"value": "resources/textures/terrain_textures/Snow/snow-packed12-Roughness.png"
+			},
+			{
+				"name": "heightmap",
+				"value": "resources/textures/terrain_textures/Snow/snow-packed12-Roughness.png"
+			},
+			{
+				"name": "IBL",
+				"value": "true"
+			}
+		]
+	}
+}

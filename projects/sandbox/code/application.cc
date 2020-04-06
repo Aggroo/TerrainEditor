@@ -117,29 +117,17 @@ Application::Run()
 
 	Math::mat4 modelMat = Math::mat4::translationMatrix(Math::vec4(0.0f, 0.0f, 0.0f));
 
-	//Ptr<Game::Entity> sphere = Game::Entity::Create();
-	//sphere->SetName("Sphere");
-	//sphere->SetMesh("resources/assets/sponza/sponza.gltf");
-	//sphere->SetShader("defaultLit");
-	//sphere->SetIBLMaps(skybox->GetCubemap(), Render::FrameServer::Instance()->GetIBLPass()->GetIrradianceMap(), Render::FrameServer::Instance()->GetIBLPass()->GetBRDFMap());
-	//sphere->SetTransform(modelMat*Math::mat4::translationMatrix(Math::vec4(0.0f, 0.0f, 0.0f)));
-	//sphere->Activate();
+	Ptr<Game::Entity> helmet = Game::Entity::Create();
+	helmet->SetName("Helmet");
+	helmet->SetModel("resources/models/scifihelmet.mdl");
+	helmet->SetTransform(modelMat*Math::mat4::translationMatrix(Math::vec4(0.0f, 0.0f, 120.0f))*Math::mat4::rotY(Math::Deg2Rad(-180))*Math::mat4::vectorScaling(30.0f,30.0f,30.0f));
+	helmet->Activate();
 	
 	Ptr<Game::Entity> gun = Game::Entity::Create();
 	gun->SetName("Gun");
 	gun->SetModel("resources/models/cerberus.mdl");
-	//gun->SetSurface(Render::ResourceServer::Instance()->LoadSurface("resources/surfaces/cerberus.sur"));
-	//gun->SetIBLMaps(Render::FrameServer::Instance()->GetIBLPass()->GetEnvironmentMap(), Render::FrameServer::Instance()->GetIBLPass()->GetIrradianceMap(), Render::FrameServer::Instance()->GetIBLPass()->GetBRDFMap());
 	gun->SetTransform(modelMat*Math::mat4::translationMatrix(Math::vec4(0.0f, 50.0f, 0.0f))*Math::mat4::rotY(Math::Deg2Rad(-90))*Math::mat4::rotX(Math::Deg2Rad(-90)));
 	gun->Activate();
-
-	//lNode.setShaders(Render::ShaderServer::Instance()->GetShader("PBR"));
-	//
-	//lNode.setPos(0.0f, 250.0f, 0.0f);
-	//lNode.setIntensity(0.6f, 0.6f, 0.6f);
-	//lNode.setColour(0.2f, 0.2f, 0.2f);
-    //lNode.apply();
-
 
 	//terrain->SetSkybox(skybox);
 

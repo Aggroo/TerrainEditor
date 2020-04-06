@@ -150,6 +150,10 @@ TextureIndex Material::TextureIndexFromString(const Util::String& parameter)
 	{
 		return TextureIndex::roughness2;
 	}
+	else if (parameter == TERRAIN_SEMANTIC_HEIGHTMAP)
+	{
+		return TextureIndex::heightmap;
+	}
 	else
 	{
 		_assert2(false, "ERROR: Texture index name does not exist in semantics!");
@@ -225,6 +229,10 @@ Util::String Material::UniformNameFromString(const Util::String& parameter)
 	else if (parameter == TERRAIN_SEMANTIC_ROUGHNESSMAP_MULTI(2))
 	{
 		return  TERRAIN_SEMANTIC_ROUGHNESSMAP_MULTI_STR("[2]");
+	}
+	else if (parameter == TERRAIN_SEMANTIC_HEIGHTMAP)
+	{
+		return TERRAIN_SEMANTIC_HEIGHTMAP;
 	}
 	else
 	{

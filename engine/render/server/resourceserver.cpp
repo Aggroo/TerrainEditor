@@ -73,7 +73,7 @@ Ptr<Surface> ResourceServer::LoadSurface(const Util::String & filepath)
 	std::ifstream i(filepath.AsCharPtr());
 
 	if (!i) {
-		printf("[SHADER LOAD ERROR]: Couldn't find shaders.json!");
+		printf("[SHADER LOAD ERROR]: Couldn't find %s!", filepath.ExtractFileName().AsCharPtr());
 		_assert(false);
 		return false;
 	}
