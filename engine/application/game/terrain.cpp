@@ -14,6 +14,9 @@ namespace TerrainEditor
 {
 __ImplementClass(TerrainEditor::Terrain, 'TETY', Game::EntityBase);
 
+//------------------------------------------------------------------------------
+/**
+*/
 Terrain::Terrain() : terrainWidth(0), terrainHeight(0), heightMap(nullptr), generate(false), node(nullptr)
 {
 	mesh = Render::Model::Create();
@@ -22,6 +25,9 @@ Terrain::Terrain() : terrainWidth(0), terrainHeight(0), heightMap(nullptr), gene
 	glGenBuffers(1, this->ubo);
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 Terrain::~Terrain()
 {
 	if (heightMap)
@@ -32,6 +38,9 @@ Terrain::~Terrain()
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 void Terrain::Activate()
 {	
 
@@ -44,21 +53,33 @@ void Terrain::Activate()
 	EntityBase::Activate();
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 void Terrain::Deactivate()
 {
 	EntityBase::Deactivate();
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 void Terrain::Update()
 {
 	this->mesh->transform = this->transform;
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 void Terrain::OnUI()
 {
 	
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 bool Terrain::CreateTerrain(const char* filename, int size, float widthMultiplier, float heightMultiplier, ImVec2* points)
 {
 
@@ -157,7 +178,9 @@ bool Terrain::CreateTerrain(const char* filename, int size, float widthMultiplie
 	return true;
 }
 
-
+//------------------------------------------------------------------------------
+/**
+*/
 void Terrain::SmoothenTerrain()
 {
 	HeightmapValues* dest = new HeightmapValues[terrainWidth*terrainHeight];
@@ -178,6 +201,9 @@ void Terrain::SmoothenTerrain()
 	delete[] dest;
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 HeightmapValues Terrain::Average(int x, int y)
 {
 	HeightmapValues avg;
@@ -201,6 +227,9 @@ HeightmapValues Terrain::Average(int x, int y)
 	return avg;
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 float Terrain::GetSteepness(int x, int y)
 {
 	float slopeX = GetHeight(x <  terrainWidth - 1 ? x + 1 : x, y) - GetHeight(x > 0 ? x - 1 : x, y);
@@ -218,17 +247,25 @@ float Terrain::GetSteepness(int x, int y)
 	return acos(Math::vec3::Dot(normal, Math::vec3(0.f, 1.f, 0.f)));
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 bool Terrain::inBounds(int x, int y)
 {
 	return ((x >= 0 && x < this->terrainWidth) && (y >= 0 && y < this->terrainHeight));
 }
 
-
+//------------------------------------------------------------------------------
+/**
+*/
 float Terrain::GetHeightScale()
 {
 	return this->heightScale;
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 void Terrain::GenerateNormals()
 {
 	//Math::vec3 p;
@@ -275,11 +312,17 @@ void Terrain::GenerateNormals()
 	}
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 float Terrain::GetHeight(int x, int y) const
 {
 	return this->vertices[y*terrainWidth + x].pos.y();
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 void Terrain::BindShaderVariables()
 {
 	glBindBuffer(GL_UNIFORM_BUFFER, this->ubo[0]);

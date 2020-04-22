@@ -7,6 +7,31 @@
 
 namespace Render
 {
+enum TextureWrapMode
+{
+	ClampToEdge,
+	Repeat,
+	MirroredRepeat
+};
+
+enum TextureFilterMode
+{
+	Nearest,
+	Linear,
+	NearestMipmapNearest,
+	NearestMipmapLinear,
+	LinearMipmapNearest,
+	LinearMipmapLinear
+};
+
+struct TextureParameters
+{
+	TextureWrapMode wrapU;
+	TextureWrapMode wrapV;
+	TextureFilterMode minFilter;
+	TextureFilterMode maxFilter;
+};
+
 struct textVert
 {
     textVert(Math::vec2 p, Math::vec2 t)
@@ -46,6 +71,8 @@ public:
 	{
 		return reinterpret_cast<const T*>(image);
 	}
+
+	
 
 private:
 
