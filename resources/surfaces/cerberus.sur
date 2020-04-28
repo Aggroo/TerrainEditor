@@ -1,23 +1,30 @@
 {
 	"Surface": {
 		"material": "PBR",
-		"Parameters": [
+		"Textures": [
 			{
 				"name": "AlbedoMap",
+				"sampler": "RepeatBilinear",
 				"value": "resources/assets/Cerberus/Textures/Cerberus_A.tga"
 			},
 			{
 				"name": "NormalMap",
+				"sampler": "RepeatBilinear",
 				"value": "resources/assets/Cerberus/Textures/Cerberus_N.tga"
 			},
 			{
 				"name": "SpecularMap",
+				"sampler": "RepeatBilinear",
 				"value": "resources/assets/Cerberus/Textures/Cerberus_M.tga"
 			},
 			{
 				"name": "RoughnessMap",
+				"sampler": "RepeatBilinear",
 				"value": "resources/assets/Cerberus/Textures/Cerberus_R.tga"
-			},
+			}
+			
+		],
+		"Parameters": [
 			{
 				"name": "IBL",
 				"value": "true"

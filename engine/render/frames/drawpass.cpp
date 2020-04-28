@@ -45,8 +45,9 @@ void DrawPass::Execute()
 
 		for (auto surface : material->SurfaceList())
 		{
+			surface->GetTextureSamplers().BindSamplers();
 			surface->GetTextureList()->BindTextures();
-
+			surface->BindUniformBuffer();
 
 			for (auto modelNode : surface->GetModelNodes())
 			{
@@ -61,6 +62,7 @@ void DrawPass::Execute()
 				modelNode->modelInstance->GetMesh()->Unbind();
 			}
 			surface->GetTextureList()->UnbindTextures();
+			surface->GetTextureSamplers().UnbindSamplers();
 		}
 	}
 

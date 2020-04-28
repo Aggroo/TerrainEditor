@@ -25,6 +25,7 @@ Surface::Surface()
 
 Surface::~Surface()
 {
+	glDeleteSamplers(textureSamplers.samplerIDs.Size(), &textureSamplers.samplerIDs[0]);
 }
 
 void Surface::SetupShaderUniforms()
@@ -77,6 +78,34 @@ void Surface::BindUniformBuffer()
 		glBufferData(GL_UNIFORM_BUFFER, uboBuffer->bufferSize, uboBuffer->buffer, GL_STATIC_DRAW);
 	}
 	
+}
+
+void Surface::SetupTextureSampler(const Util::String& sampler)
+{
+	if (sampler == "ClampBorderBilinear")
+	{
+		this->textureSamplers.ClampBorderBilinear();
+	}
+	else if (sampler == "ClampEdgeBilinear")
+	{
+		this->textureSamplers.ClampEdgeBilinear();
+	}
+	else if (sampler == "ClampBorderPoint")
+	{
+		this->textureSamplers.ClampBorderPoint();
+	}
+	else if(sampler == "ClampEdgePoint")
+	{ 
+		this->textureSamplers.ClampEdgePoint();
+	}
+	else if(sampler == "RepeatBilinear")
+	{ 
+		this->textureSamplers.RepeatBilinear();
+	}
+	else if (sampler == "RepeatPoint")
+	{
+		this->textureSamplers.RepeatPoint();
+	}
 }
 
 Render::MaterialParameter* Surface::GetParameterByName(const Util::String & name)

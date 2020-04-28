@@ -46,22 +46,44 @@ inline void from_json(const json& j, Parameter& p) {
 //------------------------------------------------------------------------------
 /**
 */
+struct Textures
+{
+	std::string name;
+	std::string sampler;
+	std::string value;
+};
+
+inline void to_json(json& j, const Textures& p) {
+	j = json{ {"name", p.name}, {"sampler", p.sampler}, {"value", p.value} };
+}
+
+inline void from_json(const json& j, Textures& p) {
+	j.at("name").get_to(p.name);
+	j.at("sampler").get_to(p.sampler);
+	j.at("value").get_to(p.value);
+};
+
+//------------------------------------------------------------------------------
+/**
+*/
 struct Materials
 {
 	std::string name;
 	std::string desc;
 	std::vector<Pass> pass;
+	std::vector<Textures> textures;
 	std::vector<Parameter> parameter;
 };
 
 inline void to_json(json& j, const Materials& p) {
-	j = json{ {"name", p.name}, {"desc", p.desc}, {"Pass", p.pass}, {"Parameters", p.parameter} };
+	j = json{ {"name", p.name}, {"desc", p.desc}, {"Pass", p.pass}, {"Textures", p.textures}, {"Parameters", p.parameter} };
 }
 
 inline void from_json(const json& j, Materials& m) {
 	j.at("name").get_to(m.name);
 	j.at("desc").get_to(m.desc);
 	j.at("Pass").get_to(m.pass);
+	j.at("Textures").get_to(m.textures);
 	j.at("Parameters").get_to(m.parameter);
 };
 
@@ -71,15 +93,17 @@ inline void from_json(const json& j, Materials& m) {
 struct Surface
 {
 	std::string material;
+	std::vector<Textures> textures;
 	std::vector<Parameter> param;
 };
 
 inline void to_json(json& j, const Surface& p) {
-	j = json{ {"material", p.material}, {"Parameters", p.param} };
+	j = json{ {"material", p.material}, {"Textures", p.textures}, {"Parameters", p.param} };
 }
 
 inline void from_json(const json& j, Surface& p) {
 	j.at("material").get_to(p.material);
+	j.at("Textures").get_to(p.textures);
 	j.at("Parameters").get_to(p.param);
 };
 

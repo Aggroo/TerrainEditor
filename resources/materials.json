@@ -13,23 +13,29 @@
 					"shader": "defaultLit"
 				}
 			],
-			"Parameters": [
+			"Textures": [
 				{
 					"name": "AlbedoMap",
+					"sampler": "RepeatBilinear",
 					"value": "resources/textures/placeholder.png"
 				},
 				{
 					"name": "NormalMap",
+					"sampler": "RepeatBilinear",
 					"value": "resources/textures/placeholder.png"
 				},
 				{
 					"name": "SpecularMap",
+					"sampler": "RepeatBilinear",
 					"value": "resources/textures/placeholder.png"
 				},
 				{
 					"name": "RoughnessMap",
+					"sampler": "RepeatBilinear",
 					"value": "resources/textures/placeholder.png"
-				},
+				}
+			],
+			"Parameters": [
 				{
 					"name": "IBL",
 					"value": "true"
@@ -49,55 +55,69 @@
 					"shader": "defaultTerrain"
 				}
 			],
-			"Parameters": [
+			"Textures": [
 				{
 					"name": "AlbedoMap0",
+					"sampler": "RepeatBilinear",
 					"value": "resources/textures/placeholder.png"
 				},
 				{
 					"name": "AlbedoMap1",
+					"sampler": "RepeatBilinear",
 					"value": "resources/textures/placeholder.png"
 				},
 				{
 					"name": "AlbedoMap2",
+					"sampler": "RepeatBilinear",
 					"value": "resources/textures/placeholder.png"
 				},
 				{
 					"name": "NormalMap0",
+					"sampler": "RepeatBilinear",
 					"value": "resources/textures/placeholder.png"
 				},
 				{
 					"name": "NormalMap1",
+					"sampler": "RepeatBilinear",
 					"value": "resources/textures/placeholder.png"
 				},
 				{
 					"name": "NormalMap2",
+					"sampler": "RepeatBilinear",
 					"value": "resources/textures/placeholder.png"
 				},
 				{
 					"name": "SpecularMap0",
+					"sampler": "RepeatBilinear",
 					"value": "resources/textures/placeholder.png"
 				},
 				{
 					"name": "SpecularMap1",
+					"sampler": "RepeatBilinear",
 					"value": "resources/textures/placeholder.png"
 				},
 				{
 					"name": "SpecularMap2",
+					"sampler": "RepeatBilinear",
 					"value": "resources/textures/placeholder.png"
 				},
 				{
 					"name": "RoughnessMap0",
+					"sampler": "RepeatBilinear",
 					"value": "resources/textures/placeholder.png"
 				},
 				{
 					"name": "RoughnessMap1",
+					"sampler": "RepeatBilinear",
 					"value": "resources/textures/placeholder.png"
 				},
 				{
 					"name": "RoughnessMap2",
+					"sampler": "RepeatBilinear",
 					"value": "resources/textures/placeholder.png"
-				},
+				}
+			],
+			"Parameters": [
 				{
 					"name": "IBL",
 					"value": "true"
@@ -117,22 +137,32 @@
 					"shader": "defaultLitAlphaCutout"
 				}
 			],
-			"Parameters": [
+			"Textures":[
 				{
 					"name": "AlbedoMap",
+					"sampler": "RepeatBilinear",
 					"value": "resources/textures/placeholder.png"
 				},
 				{
 					"name": "NormalMap",
+					"sampler": "RepeatBilinear",
 					"value": "resources/textures/placeholder.png"
 				},
 				{
 					"name": "SpecularMap",
+					"sampler": "RepeatBilinear",
 					"value": "resources/textures/placeholder.png"
 				},
 				{
 					"name": "RoughnessMap",
+					"sampler": "RepeatBilinear",
 					"value": "resources/textures/placeholder.png"
+				}
+			],
+			"Parameters": [
+				{
+					"name": "IBL",
+					"value": "true"
 				}
 			]
 		}

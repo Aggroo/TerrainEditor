@@ -96,6 +96,15 @@ Ptr<Surface> ResourceServer::LoadSurface(const Util::String & filepath)
 		sur->name = filepath.ExtractFileName().AsCharPtr();
 		sur->filepath = filepath.AsCharPtr();
 
+		for (auto textures : surface.textures)
+		{
+			Util::Variant var = Util::Variant::FromString(textures.value.c_str());
+
+			sur->SetupTextureSampler(textures.sampler.c_str());
+
+			sur->AddParameter(textures.name.c_str(), var);
+		}
+
 		for (auto parameter : surface.param)
 		{
 			Util::Variant var = Util::Variant::FromString(parameter.value.c_str());
@@ -197,9 +206,16 @@ bool ResourceServer::SetupMaterials(const Util::String& filepath)
 		_assert(false);
 		return false;
 	}
-
 	nlohmann::json j;
-	i >> j;
+
+	try {
+		i >> j;
+	}
+	catch (json::parse_error & e)
+	{
+		printf("JSON ERROR: %s", e.what());
+		_assert(false);
+	}
 
 	this->materials.BeginBulkAdd();
 
@@ -219,6 +235,13 @@ bool ResourceServer::SetupMaterials(const Util::String& filepath)
 			for (auto pass : material.pass)
 			{
 				mat->SetFramePass(pass.name.c_str(), pass.shader.c_str());
+			}
+
+			for (auto textures : material.textures)
+			{
+				Util::Variant var = Util::Variant::FromString(textures.value.c_str());
+
+				mat->AddParameter(textures.name.c_str(), var);
 			}
 
 			for (auto parameter : material.parameter)

@@ -34,7 +34,7 @@ void TextureNode::UpdateTexture(TextureIndex index, const char* filename)
 {
 	if (this->textures.Contains(index))
 	{
-		this->textures[index]->LoadTextureFile(filename);
+		this->textures[index] = Render::ResourceServer::Instance()->LoadTexture(filename);
 	}
 	else
 	{

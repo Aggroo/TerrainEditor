@@ -96,6 +96,7 @@ void DepthPass::Execute()
 		
 		for (auto surface : material->SurfaceList())
 		{
+			//surface->GetTextureSamplers().BindSamplers();
 			//surface->GetTextureList()->BindTextures();
 			surface->BindUniformBuffer();
 			
@@ -111,6 +112,8 @@ void DepthPass::Execute()
 
 				modelNode->modelInstance->GetMesh()->Unbind();
 			}
+
+			//surface->GetTextureSamplers().UnbindSamplers();
 		}
 	}
 

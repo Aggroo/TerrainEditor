@@ -1,59 +1,74 @@
 {
 	"Surface": {
 		"material": "TerrainPBR",
-		"Parameters": [
+		"Textures": [
 			{
 				"name": "AlbedoMap0",
+				"sampler": "RepeatBilinear",
 				"value": "resources/textures/terrain_textures/mossy-ground/mixedmoss-albedo2.png"
 			},
 			{
 				"name": "AlbedoMap1",
+				"sampler": "RepeatBilinear",
 				"value": "resources/textures/terrain_textures/slate-cliff/slatecliffrock-albedo.png"
 			},
 			{
 				"name": "AlbedoMap2",
+				"sampler": "RepeatBilinear",
 				"value": "resources/textures/terrain_textures/Snow/snow-packed12-Base_Color.png"
 			},
 			{
 				"name": "NormalMap0",
+				"sampler": "RepeatBilinear",
 				"value": "resources/textures/terrain_textures/mossy-ground/mixedmoss-normal2.png"
 			},
 			{
 				"name": "NormalMap1",
+				"sampler": "RepeatBilinear",
 				"value": "resources/textures/terrain_textures/slate-cliff/slatecliffrock_Normal.jpg"
 			},
 			{
 				"name": "NormalMap2",
+				"sampler": "RepeatBilinear",
 				"value": "resources/textures/terrain_textures/Snow/snow-packed12-Normal-ogl.png"
 			},
 			{
 				"name": "SpecularMap0",
+				"sampler": "RepeatBilinear",
 				"value": "resources/textures/terrain_textures/mossy-ground/mixedmoss-metalness.png"
 			},
 			{
 				"name": "SpecularMap1",
+				"sampler": "RepeatBilinear",
 				"value": "resources/textures/terrain_textures/slate-cliff/slatecliffrock_Metallic.png"
 			},
 			{
 				"name": "SpecularMap2",
+				"sampler": "RepeatBilinear",
 				"value": "resources/textures/terrain_textures/Snow/snow-packed12-Metallic.png"
 			},
 			{
 				"name": "RoughnessMap0",
+				"sampler": "RepeatBilinear",
 				"value": "resources/textures/terrain_textures/mossy-ground/mixedmoss-roughness.png"
 			},
 			{
 				"name": "RoughnessMap1",
+				"sampler": "RepeatBilinear",
 				"value": "resources/textures/terrain_textures/slate-cliff/slatecliffrock_Roughness2.png"
 			},
 			{
 				"name": "RoughnessMap2",
+				"sampler": "RepeatBilinear",
 				"value": "resources/textures/terrain_textures/Snow/snow-packed12-Roughness.png"
 			},
 			{
 				"name": "heightmap",
-				"value": "resources/textures/terrain_textures/Snow/snow-packed12-Roughness.png"
-			},
+				"sampler": "ClampBorderBilinear",
+				"value": "resources/textures/heightmaps/test2.jpg"
+			}
+		],
+		"Parameters": [
 			{
 				"name": "IBL",
 				"value": "true"

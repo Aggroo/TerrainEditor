@@ -4,7 +4,7 @@
 
 namespace Render
 {
-class FlatGeometryLitPass : public DrawPass
+class FlatGeometryLitPass final : public DrawPass
 {
 __DeclareClass(FlatGeometryLitPass)
 public:
