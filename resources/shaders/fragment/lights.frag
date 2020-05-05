@@ -150,12 +150,20 @@ void CalculatePointLights(inout vec3 lo, vec3 V, vec3 N, vec3 F0, vec4 vTexColor
 		
 		if( lightDistance < lightRadius )
 		{
-			float x = lightDistance / lightRadius;
-            // fast inverse squared falloff for a bit more accurate falloff. This is only approximative though
-			//This is borrowed from AMD and their DX11 example of spotlights
-            // -(1/k)* (1-(k+1) / (1+k*x^2))
-            // k=20: -(1/20)*(1 - 21/(1+20*x^2))
-            float attenuation = -0.05 + 1.05/(1+20*x*x);
+			float attenuation;
+			if(lightRadius == 0.0)
+			{
+				attenuation = 1.0;
+			}
+			else
+			{
+				float x = lightDistance / lightRadius;
+				// fast inverse squared falloff for a bit more accurate falloff. This is only approximative though
+				//This is borrowed from AMD and their DX11 example of spotlights
+				// -(1/k)* (1-(k+1) / (1+k*x^2))
+				// k=20: -(1/20)*(1 - 21/(1+20*x^2))
+				attenuation = -0.05 + 1.05/(1+20*x*x);
+			}
 			
 			vec3 radiance = light.color.rgb * attenuation;
 			
