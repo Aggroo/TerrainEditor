@@ -64,7 +64,7 @@ public: //Functions
 	void UpdateSpotLightBuffer() const;
 
 	// Debug and Easier Access //
-	LightServer::PointLight& CreatePointLight(Math::vec4 position, Math::vec4 color, float radius);
+	LightServer::PointLight& CreatePointLight(Math::vec4 position, Math::vec4 color, const float& intensity, float radius);
 	LightServer::SpotLight& CreateSpotLight(Math::vec4 position, Math::vec4 direction, Math::vec4 color, float length, float angle);
 
 private:

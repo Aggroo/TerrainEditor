@@ -120,7 +120,7 @@ Application::Run()
 	Ptr<Game::Entity> helmet = Game::Entity::Create();
 	helmet->SetName("Helmet");
 	helmet->SetModel("resources/models/scifihelmet.mdl");
-	helmet->SetTransform(modelMat*Math::mat4::translationMatrix(Math::vec4(0.0f, 0.0f, 120.0f))*Math::mat4::rotY(Math::Deg2Rad(-180))*Math::mat4::vectorScaling(30.0f,30.0f,30.0f));
+	helmet->SetTransform(modelMat*Math::mat4::translationMatrix(Math::vec4(0.0f, 0.0f, 120.0f))*Math::mat4::rotY(Math::Deg2Rad(-180))*Math::mat4::Scale(30.0f));
 	helmet->Activate();
 	
 	Ptr<Game::Entity> gun = Game::Entity::Create();
@@ -133,7 +133,7 @@ Application::Run()
 
     std::chrono::high_resolution_clock::time_point before = std::chrono::high_resolution_clock::now();
 
-	//Render::LightServer::Instance()->CreatePointLight(Math::vec4(0, 800, 3), Math::vec4(0.3f, 0.3f, 0.3f), 10.0f);
+	Render::LightServer::Instance()->CreatePointLight(Math::vec4(0, 80, 3), Math::vec4(1.0f, 1.0f, 1.0f), 10.0f, 10.0f);
 
 	while (this->window->IsOpen())
 	{        

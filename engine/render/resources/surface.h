@@ -17,6 +17,7 @@ namespace Render
 {
 struct MaterialParameter;
 struct UBOInfo;
+struct SamplerParameters;
 class TextureNode;
 class Model;
 class ModelNode;
@@ -118,7 +119,7 @@ public:
 
 	void SetupShaderUniforms();
 	void BindUniformBuffer();
-	void SetupTextureSampler(const Util::String& sampler);
+	SamplerParameters SetupTextureSampler(const Util::String& sampler);
 
 	Render::MaterialParameter* GetParameterByName(const Util::String& name);
 	void UpdateParameterByName(const Util::String& name, const Util::Variant& newValue);
@@ -132,6 +133,7 @@ public:
 
 	void SetUniformBuffer(Render::UBOInfo* buffer);
 
+
 private:
 	friend class Material;
 	friend class ResourceServer;
@@ -139,6 +141,7 @@ private:
 	GLuint ubo[1];
 
 	void AddParameter(const Util::String &name, const Util::Variant &variable);
+	void AddTexture(const Util::String & name, const Util::Variant & variable, const Util::String & textureSample);
 
 	Util::String name;
 	Util::String filepath;

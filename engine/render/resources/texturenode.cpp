@@ -22,6 +22,13 @@ void TextureNode::AddTexture(TextureIndex index, const char* filename)
 	//this->textures[index]->LoadTextureFile(filename);
 }
 
+void TextureNode::AddTexture(TextureIndex index, const CreateTextureParameters& textureParams)
+{
+
+	this->textures.Add(index, Render::ResourceServer::Instance()->LoadTexture(textureParams));
+	//this->textures[index]->LoadTextureFile(filename);
+}
+
 void TextureNode::AddTexture(TextureIndex index, Ptr<TextureResource> texture)
 {
 	if (!this->textures.Contains(index))
@@ -34,7 +41,9 @@ void TextureNode::UpdateTexture(TextureIndex index, const char* filename)
 {
 	if (this->textures.Contains(index))
 	{
-		this->textures[index] = Render::ResourceServer::Instance()->LoadTexture(filename);
+		CreateTextureParameters param = this->textures[index]->textureParameters;
+		param.filename = filename;
+		this->textures[index] = Render::ResourceServer::Instance()->LoadTexture(param);
 	}
 	else
 	{

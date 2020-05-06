@@ -117,12 +117,13 @@ void LightServer::UpdateSpotLightBuffer() const
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 }
 
-LightServer::PointLight& LightServer::CreatePointLight(Math::vec4 position, Math::vec4 color, float radius)
+LightServer::PointLight& LightServer::CreatePointLight(Math::vec4 position, Math::vec4 color, const float& intensity, float radius)
 {
 	PointLight pLight;
 	pLight.position = position;
 	pLight.color = color;
 	pLight.radiusAndPadding[0] = radius;
+	pLight.radiusAndPadding[1] = intensity;
 	this->AddPointLight(pLight);
 	return this->pointLights[this->pointLights.Size() - 1];
 }

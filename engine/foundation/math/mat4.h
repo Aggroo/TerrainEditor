@@ -312,8 +312,16 @@ public:
 
 		return new_matrix;
 	}
+	inline static mat4 Scale(const float size)
+	{
+		mat4 scaleMatrix;
 
-	inline static mat4 vectorScaling(const float sX, const float sY, const float sZ)
+		scaleMatrix[0] = size; scaleMatrix[5] = size; scaleMatrix[10] = size;
+
+		return scaleMatrix;
+	}
+
+	inline static mat4 Scale(const float sX, const float sY, const float sZ)
 	{
 		mat4 scaleMatrix;
 
@@ -322,7 +330,7 @@ public:
 		return scaleMatrix;
 	}
 	
-	inline static mat4 vectorScaling(const vec4& vec)
+	inline static mat4 Scale(const vec4& vec)
 	{
 		mat4 scaleMatrix;
 

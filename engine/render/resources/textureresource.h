@@ -10,6 +10,7 @@ namespace Render
 enum TextureWrapMode
 {
 	ClampToEdge,
+	ClampToBorder,
 	Repeat,
 	MirroredRepeat
 };
@@ -24,12 +25,18 @@ enum TextureFilterMode
 	LinearMipmapLinear
 };
 
-struct TextureParameters
+struct SamplerParameters
 {
 	TextureWrapMode wrapU;
 	TextureWrapMode wrapV;
 	TextureFilterMode minFilter;
 	TextureFilterMode maxFilter;
+};
+
+struct CreateTextureParameters
+{
+	const char* filename;
+	SamplerParameters sampler;
 };
 
 struct textVert
@@ -51,6 +58,7 @@ public:
 	~TextureResource();
 
 	void LoadTextureFile(const char * filename);
+	void LoadTextureFile(const CreateTextureParameters& textureVariables);
 	void LoadCubemap(Util::Array<Util::String> texures);
 	void LoadFromRasterizer(Math::Rasterizer rast);
 	void WriteToJPG(const char * filename, int w, int h, void* data, int quality);
@@ -60,7 +68,7 @@ public:
 	void bindCubeTex(GLuint slot) const;
 	void unbindTex() const;
 
-	GLuint& GetTextureID() { return m_texture; }
+	GLuint& GetTextureID() { return textureID; }
 	int& GetWidth() { return width; }
 	int& GetHeight() { return height; }
 	int& GetChannels() { return channels; }
@@ -73,10 +81,11 @@ public:
 	}
 
 	
+	CreateTextureParameters textureParameters;
 
 private:
 
-	GLuint m_texture;
+	GLuint textureID;
 	bool isHDR;
 	int width, height, channels;
 	unsigned char* image;

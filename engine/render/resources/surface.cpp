@@ -80,32 +80,57 @@ void Surface::BindUniformBuffer()
 	
 }
 
-void Surface::SetupTextureSampler(const Util::String& sampler)
+SamplerParameters Surface::SetupTextureSampler(const Util::String& sampler)
 {
+	SamplerParameters samplerParam;
 	if (sampler == "ClampBorderBilinear")
 	{
-		this->textureSamplers.ClampBorderBilinear();
-	}
-	else if (sampler == "ClampEdgeBilinear")
-	{
-		this->textureSamplers.ClampEdgeBilinear();
+		samplerParam.minFilter = TextureFilterMode::LinearMipmapLinear;
+		samplerParam.maxFilter = TextureFilterMode::Linear;
+		samplerParam.wrapU = TextureWrapMode::ClampToBorder;
+		samplerParam.wrapV = TextureWrapMode::ClampToBorder;
 	}
 	else if (sampler == "ClampBorderPoint")
 	{
-		this->textureSamplers.ClampBorderPoint();
+		samplerParam.minFilter = TextureFilterMode::NearestMipmapNearest;
+		samplerParam.maxFilter = TextureFilterMode::Nearest;
+		samplerParam.wrapU = TextureWrapMode::ClampToBorder;
+		samplerParam.wrapV = TextureWrapMode::ClampToBorder;
+	}
+	else if (sampler == "ClampEdgeBilinear")
+	{
+		samplerParam.minFilter = TextureFilterMode::LinearMipmapLinear;
+		samplerParam.maxFilter = TextureFilterMode::Linear;
+		samplerParam.wrapU = TextureWrapMode::ClampToEdge;
+		samplerParam.wrapV = TextureWrapMode::ClampToEdge;
 	}
 	else if(sampler == "ClampEdgePoint")
 	{ 
-		this->textureSamplers.ClampEdgePoint();
+		samplerParam.minFilter = TextureFilterMode::NearestMipmapNearest;
+		samplerParam.maxFilter = TextureFilterMode::Nearest;
+		samplerParam.wrapU = TextureWrapMode::ClampToEdge;
+		samplerParam.wrapV = TextureWrapMode::ClampToEdge;
 	}
 	else if(sampler == "RepeatBilinear")
 	{ 
-		this->textureSamplers.RepeatBilinear();
+		samplerParam.minFilter = TextureFilterMode::LinearMipmapLinear;
+		samplerParam.maxFilter = TextureFilterMode::Linear;
+		samplerParam.wrapU = TextureWrapMode::Repeat;
+		samplerParam.wrapV = TextureWrapMode::Repeat;
 	}
 	else if (sampler == "RepeatPoint")
 	{
-		this->textureSamplers.RepeatPoint();
+		samplerParam.minFilter = TextureFilterMode::NearestMipmapNearest;
+		samplerParam.maxFilter = TextureFilterMode::Nearest;
+		samplerParam.wrapU = TextureWrapMode::Repeat;
+		samplerParam.wrapV = TextureWrapMode::Repeat;
 	}
+	else
+	{
+		printf("SAMPLER ERROR: The sampler name that was used does not exist");
+		_assert(false);
+	}
+	return samplerParam;
 }
 
 Render::MaterialParameter* Surface::GetParameterByName(const Util::String & name)
@@ -152,28 +177,30 @@ void Surface::SetUniformBuffer(Render::UBOInfo* buffer)
 	uniformBufferExist = true;
 }
 
+void Surface::AddTexture(const Util::String& name, const Util::Variant & variable, const Util::String& textureSample)
+{
+
+	CreateTextureParameters textureParam;
+	textureParam.filename = variable.GetString().AsCharPtr();
+	textureParam.sampler = SetupTextureSampler(textureSample);
+
+	this->textures->AddTexture(Material::TextureIndexFromString(name.AsCharPtr()), textureParam);
+
+	MaterialParameter* param = new MaterialParameter();
+	param->name = name;
+	param->var = variable;
+	this->parametersByName.Add(name, param);
+	parameters.Append(param);
+
+}
+
 void Surface::AddParameter(const Util::String & name, const Util::Variant & variable)
 {
-	if (variable.GetType() == Util::Variant::Type::String)
-	{
-		//HACK: Since we're loading a string, we're probably loading a texture
-		//This should probably be done in some other way
-		this->textures->AddTexture(Material::TextureIndexFromString(name.AsCharPtr()), variable.GetString().AsCharPtr());
-
-		MaterialParameter* param = new MaterialParameter();
-		param->name = name;
-		param->var = variable;
-		this->parametersByName.Add(name, param);
-		parameters.Append(param);
-	}
-	else
-	{
-		MaterialParameter* param = new MaterialParameter();
-		param->name = name;
-		param->var = variable;
-		this->parametersByName.Add(name, param);
-		parameters.Append(param);
-	}
+	MaterialParameter* param = new MaterialParameter();
+	param->name = name;
+	param->var = variable;
+	this->parametersByName.Add(name, param);
+	parameters.Append(param);
 }
 
 } // namespace Render

@@ -19,7 +19,7 @@ class Entity : public Game::EntityBase
 public:
 	struct transformGizmo
 	{
-		ImGuizmo::OPERATION mCurrentGizmoOperation = ImGuizmo::OPERATION::ROTATE;
+		ImGuizmo::OPERATION mCurrentGizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
 		ImGuizmo::MODE mCurrentGizmoMode = ImGuizmo::MODE::WORLD;
 		bool useSnap = false;
 		float snap[3] = { 1.f, 1.f, 1.f };

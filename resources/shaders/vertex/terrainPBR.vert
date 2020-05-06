@@ -36,8 +36,7 @@ uniform vec3 lightPosition;
 
 void main()
 {
-	vec2 uv =  vec2(inCoord.x, 1-inCoord.y);
-	float height = texture2D(heightmap, uv).r * heightScale;
+	float height = texture2D(heightmap, inCoord).r * heightScale;
 	
 	vec4 vertPos = pos;
 	vertPos.y = height;
@@ -55,7 +54,7 @@ void main()
 	o_normal = mat3(t,b,n);	
 	o_toLight = normalize(lightPosition - worldpos.xyz);
 	o_toCamera = normalize(CameraPosition.xyz - worldpos.xyz);
-	texCoord = uv;
+	texCoord = inCoord;
 	model33Out = model33;
 	
 	gl_Position = Projection*View*worldpos;

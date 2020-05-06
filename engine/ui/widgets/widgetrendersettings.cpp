@@ -106,8 +106,10 @@ void RenderSettings::Update()
 				ImGui::TreePop();
 			}
 
-			if (ImGui::CheckboxFlags("SSAO Enabled", Render::Renderer::Instance()->GetRenderFlags(), Render::RenderSSAO))
+			if (ImGui::CheckboxFlags("SSAO Enabled##ssaocheck", Render::Renderer::Instance()->GetRenderFlags(), Render::RenderSSAO))
+			{
 
+			}
 
 			ModalWindows();
 		}

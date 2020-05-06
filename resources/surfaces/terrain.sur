@@ -64,7 +64,7 @@
 			},
 			{
 				"name": "heightmap",
-				"sampler": "ClampBorderBilinear",
+				"sampler": "ClampEdgeBilinear",
 				"value": "resources/textures/heightmaps/test2.jpg"
 			}
 		],

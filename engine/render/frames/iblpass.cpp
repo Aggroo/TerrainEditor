@@ -61,7 +61,7 @@ void IBLPass::Setup()
 		glDispatchCompute(kEnvMapSize / 32, kEnvMapSize / 32, 6);
 
 		glDeleteTextures(1, &envTexEq->GetTextureID());
-		glDeleteProgram(eq2Cubemap->GetProgram());
+		//glDeleteProgram(eq2Cubemap->GetProgram());
 
 	}
 
@@ -100,7 +100,7 @@ void IBLPass::Setup()
 			glProgramUniform1f(spmap->GetProgram(), 0, level * deltaRoughness);
 			glDispatchCompute(numGroups, numGroups, 6);
 		}
-		glDeleteProgram(spmap->GetProgram());
+		//glDeleteProgram(spmap->GetProgram());
 	}
 	
 	{
@@ -117,7 +117,7 @@ void IBLPass::Setup()
 		glBindTextureUnit(0, sp->GetTextureID());
 		glBindImageTexture(0, ir->GetTextureID(), 0, GL_TRUE, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		glDispatchCompute(kIrradianceMapSize / 32, kIrradianceMapSize / 32, 6);
-		glDeleteProgram(irmap->GetProgram());
+		//glDeleteProgram(irmap->GetProgram());
 	}
 	
 	{
@@ -135,7 +135,7 @@ void IBLPass::Setup()
 		brdfmap->BindProgram();
 		glBindImageTexture(0, brdf->GetTextureID(), 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RG16F);
 		glDispatchCompute(kBRDF_LUT_Size / 32, kBRDF_LUT_Size / 32, 1);
-		glDeleteProgram(brdfmap->GetProgram());
+		//glDeleteProgram(brdfmap->GetProgram());
 	}
 	
 	FramePass::Setup();

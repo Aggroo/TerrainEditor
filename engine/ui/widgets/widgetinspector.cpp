@@ -3,6 +3,7 @@
 #include "application/basegamefeatures/entitymanager.h"
 #include "application/game/entitybase.h"
 #include "render/server/lightserver.h"
+#include "render/camera/camera.h"
 #include "IconsFontAwesome5_c.h"
 
 namespace UI
@@ -18,27 +19,59 @@ void Inspector::Update()
 {
 	if (Render::LightServer::Instance()->GetNumPointLights() > 0)
 	{
-		Render::LightServer::PointLight& light = Render::LightServer::Instance()->GetPointLightAtIndex(0);
-		this->light.pos = light.position;
-		this->light.col = light.color;
-		this->light.radius = light.radiusAndPadding.x();
+		for(int i = 0; i < Render::LightServer::Instance()->GetNumPointLights(); i++)
+		{			
+			Render::LightServer::PointLight& light = Render::LightServer::Instance()->GetPointLightAtIndex(i);
 
-		if (ImGui::CollapsingHeader("Light"))
-		{
-			if (ImGui::DragFloat4("Position", (float*)&this->light.pos))
+			if (ImGui::CollapsingHeader("Point Light##"+i))
 			{
-				light.position = this->light.pos;
-				Render::LightServer::Instance()->UpdatePointLightBuffer();
-			}
-			if (ImGui::DragFloat4("Color", (float*)&this->light.col, 0.01f))
-			{
-				light.color = this->light.col;
-				Render::LightServer::Instance()->UpdatePointLightBuffer();
-			}
-			if (ImGui::DragFloat("Radius", &this->light.radius, 0.1f))
-			{
-				light.radiusAndPadding[0] = this->light.radius;
-				Render::LightServer::Instance()->UpdatePointLightBuffer();
+
+				Math::mat4 mat = Math::mat4::Transpose(Math::mat4::translationMatrix(light.position));
+
+				float matrixTranslation[3], matrixRotation[3], matrixScale[3];
+				ImGuizmo::DecomposeMatrixToComponents(mat.getPointer(), matrixTranslation, matrixRotation, matrixScale);
+				ImGui::InputFloat3("Position##" + i, matrixTranslation, 3);
+				ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, mat.getPointer());
+
+				ImGui::Separator();
+
+				if (ImGui::ColorEdit4("Color##" + i, (float*)&light.color))
+				{
+					//light.color = this->light.col;
+					Render::LightServer::Instance()->UpdatePointLightBuffer();
+				}
+				if (ImGui::DragFloat("Intensity", (float*)&light.radiusAndPadding[1], 0.1f))
+				{
+					Render::LightServer::Instance()->UpdatePointLightBuffer();
+				}
+				if (ImGui::DragFloat("Radius##" + i, &light.radiusAndPadding[0], 1.0f))
+				{
+					//light.radiusAndPadding[0] = this->light.radius;
+					Render::LightServer::Instance()->UpdatePointLightBuffer();
+				}
+
+				Math::mat4 view = Graphics::MainCamera::Instance()->GetView();
+
+				///Invert the entire Y-Axis of the view matrix to work with ImGuizmo
+				view[4] = -view[4];
+				view[5] = -view[5];
+				view[6] = -view[6];
+				view[7] = -view[7];
+
+				ImGuizmo::Manipulate(Math::mat4::Transpose(view).getPointer(),
+					Math::mat4::Transpose(Graphics::MainCamera::Instance()->GetProjection()).getPointer(),
+					gizmo.mCurrentGizmoOperation,
+					gizmo.mCurrentGizmoMode,
+					mat.getPointer(),
+					NULL,
+					gizmo.useSnap ? &gizmo.snap[0] : NULL);
+
+				if (ImGuizmo::IsUsing())
+				{
+					light.position = Math::mat4::Transpose(mat).GetPosition();
+					Render::LightServer::Instance()->UpdatePointLightBuffer();
+				}
+				
 			}
 		}
 

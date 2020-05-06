@@ -116,7 +116,7 @@ bool Terrain::CreateTerrain(const char* filename, int size, float widthMultiplie
 		for (int x = 0; x < (this->terrainWidth); ++x)
 		{
 			i = (this->terrainHeight * y) + x;
-			this->vertices.Append(Render::Vertex(Math::vec3(x*this->sizeModifier, 0.0f, y*this->sizeModifier), Math::vec2(x*uDiv, -y * vDiv), Math::vec3()));
+			this->vertices.Append(Render::Vertex(Math::vec3(x*this->sizeModifier, 0.0f, y*this->sizeModifier), Math::vec2(x*uDiv, y * vDiv), Math::vec3()));
 		}
 	}
 

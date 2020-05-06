@@ -36,6 +36,25 @@ Ptr<TextureResource> ResourceServer::LoadTexture(const Util::String& filepath)
 //------------------------------------------------------------------------------
 /**
 */
+Ptr<TextureResource> ResourceServer::LoadTexture(const CreateTextureParameters& textureParams)
+{
+	if (!this->HasTextureNamed(textureParams.filename))
+	{
+		Ptr<TextureResource> texture = TextureResource::Create();
+		texture->LoadTextureFile(textureParams);
+		this->textures.Add(textureParams.filename, texture);
+
+		return texture;
+	}
+	else
+	{
+		return this->textures[textureParams.filename];
+	}
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
 bool ResourceServer::HasTextureNamed(const Util::String& name) const
 {
 	return this->textures.Contains(name);
@@ -100,9 +119,7 @@ Ptr<Surface> ResourceServer::LoadSurface(const Util::String & filepath)
 		{
 			Util::Variant var = Util::Variant::FromString(textures.value.c_str());
 
-			sur->SetupTextureSampler(textures.sampler.c_str());
-
-			sur->AddParameter(textures.name.c_str(), var);
+			sur->AddTexture(textures.name.c_str(), var, textures.sampler.c_str());
 		}
 
 		for (auto parameter : surface.param)
