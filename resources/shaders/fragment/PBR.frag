@@ -15,7 +15,6 @@ uniform sampler2D AlbedoMap;
 uniform sampler2D NormalMap;
 uniform sampler2D SpecularMap;
 uniform sampler2D RoughnessMap;
-//uniform sampler2D aoMap;
 uniform samplerCube environmentMap;
 uniform samplerCube irradianceMap;
 uniform sampler2D brdfLUT;
@@ -37,7 +36,6 @@ void main()
 	//vec3 spec = texture(SpecularMap, texCoord).rgb;
 	float metallic = texture(SpecularMap, texCoord).r;
 	float roughness = texture(RoughnessMap, texCoord).g;
-	//float ao = texture(aoMap, texCoord).r;
 
 	//vec3 Color = texture(AlbedoMap, vec2(uv.x,1.0-uv.y)).rgb;
 	
@@ -53,7 +51,7 @@ void main()
 	vec3 lo = vec3(0.0f);
 	
 	/// Loop for Point Lights
-	uint offset = index * tileLights;   
+	uint offset = index * tileLights;
 		//Calculate lights
 	CalculatePointLights(lo, V, N, F0, vec4(albedo.rgb, 1.0), metallic, roughness, offset, tileLights);
 	CalculateSpotLights(lo, V, N, F0, vec4(albedo.rgb, 1.0), metallic, roughness, offset, tileLights);
@@ -63,7 +61,8 @@ void main()
 	// ambient lighting (we now use IBL as the ambient term)
     vec3 F = fresnelSchlickRoughness(cosLo, F0, roughness);
 
-    vec3 kD = mix(vec3(1.0) - F, vec3(0.0), metallic);
+    vec3 kD = vec3(1.0) - F;
+	kD *= 1.0 - metallic;
 	
 	vec3 irradiance = texture(irradianceMap, N).rgb;
     vec3 diffuse = irradiance * albedo;

@@ -24,7 +24,7 @@ public: //Structures
 
 	struct DirectionalLight
 	{
-		Math::vec4 position;
+		Math::vec4 direction;
 		Math::vec4 color;
 	};
 

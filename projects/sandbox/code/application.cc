@@ -62,7 +62,7 @@ Application::Open()
 		Render::Renderer::Instance()->SetWindowResolution(1280, 900);
 		Render::Renderer::Instance()->SetRenderResolution(1280, 900);
 
-		shader = Render::ShaderServer::Instance()->GetShader("lightculling");
+		//shader = Render::ShaderServer::Instance()->GetShader("lightculling");
 
 		Input::InputManager::Instance()->Setup(window, &lNode);
 

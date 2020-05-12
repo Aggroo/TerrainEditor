@@ -164,7 +164,7 @@ void main()
 	float blendAmount = clamp(slopeBlend*(1-HeightBlending(height, heightFalloff)), 0.0, 1.0);
 	float blendAmount2 = clamp(slopeBlend2*HeightBlending(height2, heightFalloff2), 0.0, 1.0);
 
-	vec4 vTexColor = tex1 * (1-blendAmount) * (1-blendAmount2)+ tex0 * blendAmount + tex2 * blendAmount2;
+	vec4 albedoSum = tex1 * (1-blendAmount) * (1-blendAmount2)+ tex0 * blendAmount + tex2 * blendAmount2;
 	float specularSum = (SpecularMap1 * (1-blendAmount) * (1-blendAmount2) + SpecularMap0 * blendAmount + SpecularMap2 * blendAmount2).r;
 	float roughnessSum = (RoughnessMap1 * (1-blendAmount) * (1-blendAmount2) + RoughnessMap0 * blendAmount + RoughnessMap2 * blendAmount2).r;
 	vec3 normalSum = (normal1 * (1-blendAmount) * (1-blendAmount2) + normal0 * blendAmount + normal2 * blendAmount2);
@@ -177,7 +177,7 @@ void main()
 	//F0 as 0.04 will usually look good for all dielectric (non-metal) surfaces
 	vec3 F0 = vec3(0.04);
 	//for metallic surfaces we interpolate between F0 and the AlbedoMap value with metallic value as our lerp weight
-	F0 = mix(F0, vTexColor.rgb, specularSum);
+	F0 = mix(F0, albedoSum.rgb, specularSum);
 	
 	vec3 lo = vec3(0.0f, 0.0f, 0.0f);
 	
@@ -185,18 +185,19 @@ void main()
 	uint offset = index * tileLights;   
 	
 	//Calculate lights
-	CalculatePointLights(lo, V, N, F0, vTexColor, specularSum, roughnessSum, offset, tileLights);
-	CalculateSpotLights(lo, V, N, F0, vTexColor, specularSum, roughnessSum, offset, tileLights);
+	CalculatePointLights(lo, V, N, F0, albedoSum, specularSum, roughnessSum, offset, tileLights);
+	CalculateSpotLights(lo, V, N, F0, albedoSum, specularSum, roughnessSum, offset, tileLights);
 	
 	float cosLo = max(0.0, dot(N, V));
 	
 	// ambient lighting (we now use IBL as the ambient term)
     vec3 F = fresnelSchlickRoughness(cosLo, F0, roughnessSum);
 
-    vec3 kD = mix(vec3(1.0) - F, vec3(0.0), specularSum);
+    vec3 kD = vec3(1.0) - F;
+	kD *= 1.0 - specularSum;
 	
 	vec3 irradiance = texture(irradianceMap, N).rgb;
-    vec3 diffuse = irradiance * vTexColor.rgb;
+    vec3 diffuse = irradiance * albedoSum.rgb;
 	
 	const float MAX_REFLECTION_LOD = 4.0;
     vec3 prefilteredColor = textureLod(environmentMap, R,  roughnessSum * MAX_REFLECTION_LOD).rgb;   

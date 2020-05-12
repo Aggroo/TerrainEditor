@@ -27,10 +27,10 @@ void DepthPass::Setup()
 	const Resolution& res = Renderer::Instance()->GetRenderResolution();
 
 	//Generate framebuffer render buffer
-	glGenRenderbuffers(1, &this->buffer);
-	glBindRenderbuffer(GL_RENDERBUFFER, this->buffer);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, res.x, res.y);
-	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+	//glGenRenderbuffers(1, &this->buffer);
+	//glBindRenderbuffer(GL_RENDERBUFFER, this->buffer);
+	//glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, res.x, res.y);
+	//glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
 	//Generate position buffer texture
 	glGenTextures(1, &this->gPosition);
@@ -40,7 +40,6 @@ void DepthPass::Setup()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	//glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
 	// - normal color buffer
 	glGenTextures(1, &this->gNormal);
@@ -57,17 +56,25 @@ void DepthPass::Setup()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
+	glGenTextures(1, &this->buffer);
+	glBindTexture(GL_TEXTURE_2D, this->buffer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, res.x, res.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 	//Bind linear depth buffer to FBO
 	glBindFramebuffer(GL_FRAMEBUFFER, this->frameBufferObject);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, this->buffer);
+	//glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, this->buffer);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->gPosition, 0);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, this->gNormal, 0);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, this->gAlbedoSpec, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, this->buffer, 0);
 
 	const GLenum drawBuffers[3]{ GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
 	glDrawBuffers(3, &drawBuffers[0]);
-
+	
 	_assert2(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Depth Framebuffer Status Error!");
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -128,9 +135,9 @@ void DepthPass::UpdateResolution()
 	const Resolution& newRes = Renderer::Instance()->GetRenderResolution();
 
 	//Rebinds the framebuffer render buffer to the new resolution
-	glBindRenderbuffer(GL_RENDERBUFFER, this->buffer);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, newRes.x, newRes.y);
-	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+	//glBindRenderbuffer(GL_RENDERBUFFER, this->buffer);
+	//glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, newRes.x, newRes.y);
+	//glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
 	//Rebinds the depth buffer texture to the new resolution
 	glBindTexture(GL_TEXTURE_2D, this->gPosition);
@@ -141,6 +148,9 @@ void DepthPass::UpdateResolution()
 
 	glBindTexture(GL_TEXTURE_2D, this->gAlbedoSpec);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, newRes.x, newRes.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+
+	glBindTexture(GL_TEXTURE_2D, this->buffer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, newRes.x, newRes.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 }

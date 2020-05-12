@@ -9,6 +9,7 @@
 #include "application/basegamefeatures/entitymanager.h"
 #include "render/render/skybox.h"
 #include "render/server/shaderserver.h"
+#include "render/server/lightserver.h"
 #include "ui/uiserver.h"
 #include "ui/widgets/widgettoolbar.h"
 #include "ui/widgets/widgetinspector.h"
@@ -122,6 +123,7 @@ bool Application::IsInitializationFinished()
 void
 Application::Run()
 {
+	Render::LightServer::Instance()->CreatePointLight(Math::vec4(0, 80, 3), Math::vec4(1.0f, 1.0f, 1.0f), 10.0f, 10.0f);
 	while (this->window->IsOpen())
 	{
 		if(!IsInitializationFinished())

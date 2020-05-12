@@ -2,6 +2,7 @@
 #include "drawpass.h"
 #include "render/resources/material.h"
 #include "render/resources/model.h"
+#include "render/server/frameserver.h"
 
 namespace Render
 {

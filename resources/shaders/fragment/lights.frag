@@ -188,7 +188,7 @@ void CalculatePointLights(inout vec3 lo, vec3 V, vec3 N, vec3 F0, vec4 vTexColor
 			float denominator = 4 * NdotV * NdotL + 0.001f; //We add 0.001f in case dot ends up becoming zero.
 			vec3 brdf = nominator / denominator;
 			
-			lo += (kD * vTexColor.rgb / PI) * radiance * NdotL;
+			lo += (kD * vTexColor.rgb / PI + brdf) * radiance * NdotL;
 		}
 		
 	}

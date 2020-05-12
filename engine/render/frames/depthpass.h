@@ -20,13 +20,16 @@ public:
 	//Returns the handle of the position buffer
 	GLuint& GetPositionBuffer() { return this->gPosition; }
 
+	//Returns the handle of the depth buffer
+	GLuint& GetDepthBuffer() { return this->depthTexture; }
+
 	//Returns the handle of the normal buffer
 	GLuint& GetNormalBuffer() { return this->gNormal; }
 
 private:
 
 	//Linearized depth buffer. Used for various screen-space effects.
-	GLuint gPosition, gNormal, gAlbedoSpec;
+	GLuint gPosition, gNormal, gAlbedoSpec, depthTexture;
 
 };
 
