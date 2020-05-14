@@ -38,7 +38,7 @@ private:
 		float hardness1 = 10.0f;
 		float hardness2 = 10.0f;
 		float hardness3 = 4.0f;
-		float padding[3];
+		ImVec2 points[10];
 	};
 
 	///uniform buffer object

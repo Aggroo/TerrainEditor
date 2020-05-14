@@ -34,7 +34,10 @@ enum RendererOptions
 {
 	OptionTonemapping,
 	OptionExposure,
-	OptionGamma
+	OptionGamma,
+	OptionAOKernel,
+	OptionAORadius,
+	OptionAOBias
 };
 
 struct UBOInfo

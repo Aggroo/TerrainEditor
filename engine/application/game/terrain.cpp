@@ -89,6 +89,12 @@ bool Terrain::CreateTerrain(const char* filename, int size, float widthMultiplie
 	
 	tsVar.heightScale = heightMultiplier;
 
+	for (size_t i = 0; i < 10; i++)
+	{
+		tsVar.points[i] = points[i];
+	}
+	
+
 	this->terrainWidth = size;
 	this->terrainHeight = size;
 	this->sizeModifier = widthMultiplier;

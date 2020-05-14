@@ -41,7 +41,6 @@ struct HeightMapSettings
 	int size = 512;
 	float widthMultiplier = 1.f;
 	float heightMultiplier = 1.f;
-
 };
 
 class TerrainSettings : public Widget

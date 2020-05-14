@@ -29,6 +29,9 @@ void Renderer::Setup(Display::Window* window)
 	renderOptions.Add(OptionTonemapping, static_cast<float>(ToneMappingACES));
 	renderOptions.Add(OptionExposure, 0.0f);
 	renderOptions.Add(OptionGamma, 2.2f);
+	renderOptions.Add(OptionAOKernel, 64.0f);
+	renderOptions.Add(OptionAORadius, 0.5f);
+	renderOptions.Add(OptionAOBias, 0.025f);
 
 	Render::ShaderServer::Instance()->SetupShaders("resources/shaders/shaders.json");
 

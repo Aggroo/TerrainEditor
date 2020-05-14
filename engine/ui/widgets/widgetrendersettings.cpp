@@ -108,7 +108,17 @@ void RenderSettings::Update()
 
 			if (ImGui::CheckboxFlags("SSAO Enabled##ssaocheck", Render::Renderer::Instance()->GetRenderFlags(), Render::RenderSSAO))
 			{
+				
+			}
 
+			if (ImGui::TreeNode("SSAO##ssaovariables"))
+			{
+				renderOptionFunc("##ssao_option_1", "Kernel", Render::RendererOptions::OptionAOKernel, nullptr, 1.0f);
+				renderOptionFunc("##ssao_option_2", "Radius", Render::RendererOptions::OptionAORadius);
+				ImGui::SameLine();
+				renderOptionFunc("##ssao_option_3", "Bias", Render::RendererOptions::OptionAOBias, nullptr, 0.005f);
+				ImGui::Separator();
+				ImGui::TreePop();
 			}
 
 			ModalWindows();

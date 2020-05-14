@@ -7,6 +7,16 @@ namespace Render
 class SSAOPass : public DrawPass
 {
 __DeclareClass(SSAOPass)
+private:
+	struct SSAOOptions
+	{
+		int kernel;
+		float radius;
+		float bias;
+	};
+
+	///uniform buffer object
+	GLuint ubo[1];
 public:
 	SSAOPass();
 	~SSAOPass();
@@ -19,9 +29,14 @@ public:
 
 	Ptr<TextureResource> GetSSAOBuffer();
 
+	void UpdateUBOValues();
+
 private:
 
 	Ptr<TextureResource> ssaoColorBufferBlur, noiseTexture, ssaoColorBuffer, defaultAO;
+
+	///Shader Settings
+	SSAOOptions ssaoVar;
 
 	//The FBO of the Pass
 	GLuint ssaoFBO, ssaoBlurFBO;

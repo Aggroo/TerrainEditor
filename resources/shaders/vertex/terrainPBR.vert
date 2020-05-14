@@ -21,7 +21,7 @@ layout (std140, binding = 1) uniform TerrainVariables
 	float hardness1;
 	float hardness2;
 	float hardness3;
-	float padding[3];
+	vec2 points[10];
 };  
 
 out vec3 fragPos;
@@ -34,12 +34,30 @@ out mat3 model33Out;
 
 uniform vec3 lightPosition;
 
+float CurveValue(float p, int maxpoints, const vec2[10] points)
+{
+	if (maxpoints < 2 || points.length() == 0)
+		return 0;
+	if (p < 0) return points[0].y;
+
+	int left = 0;
+	while (left < maxpoints && points[left].x < p && points[left].x != -1) left++;
+	if (bool(left)) left--;
+
+	if (left == maxpoints-1)
+		return points[maxpoints - 1].y;
+
+	float d = (p - points[left].x) / (points[left + 1].x - points[left].x);
+
+	return points[left].y + (points[left + 1].y - points[left].y) * d;
+}
+
 void main()
 {
-	float height = texture2D(heightmap, inCoord).r * heightScale;
+	float height = texture2D(heightmap, inCoord).r;
 	
 	vec4 vertPos = pos;
-	vertPos.y = height;
+	vertPos.y = CurveValue(height, 10, points)* heightScale;
 	
 	vec4 worldpos = Model*vertPos;
 

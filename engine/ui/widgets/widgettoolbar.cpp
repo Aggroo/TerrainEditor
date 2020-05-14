@@ -16,16 +16,13 @@ Toolbar::Toolbar(Display::Window* app) : Widget(app)
 		ImGuiWindowFlags_NoTitleBar;
 
 	callbackBegin = [this]() {
-		const float toolbarHeight = 25.0f;
+		const float toolbarHeight = 23.0f;
 		ImGuiContext& g = *GImGui;
 		g.NextWindowData.MenuBarOffsetMinVal = ImVec2(g.Style.DisplaySafeAreaPadding.x, ImMax(g.Style.DisplaySafeAreaPadding.y - g.Style.FramePadding.y, 0.0f));
-		ImGui::SetNextWindowPos(ImVec2(g.Viewports[0]->Pos.x, g.Viewports[0]->Pos.y + 20.0f));
+		ImGui::SetNextWindowPos(ImVec2(g.Viewports[0]->Pos.x, g.Viewports[0]->Pos.y + 25.0f));
 		ImGui::SetNextWindowSize(ImVec2(g.Viewports[0]->Size.x, g.NextWindowData.MenuBarOffsetMinVal.y + g.FontBaseSize + g.Style.FramePadding.y + toolbarHeight)); 
 	};
-	
-
 }
-
 
 void Toolbar::Update()
 {
@@ -59,7 +56,5 @@ void Toolbar::Update()
 		switched = true;
 	}
 	RenderTooltip("Paint terrain");
-	
 }
-
 }

@@ -27,7 +27,7 @@ layout (std140, binding = 1) uniform TerrainVariables
 	float hardness1;
 	float hardness2;
 	float hardness3;
-	float padding[3];
+	vec2 points[10];
 };  
 
 uniform sampler2D AlbedoMap[3];
@@ -119,7 +119,6 @@ float overlayBlend(float value1, float value2, float opacity)
 	float blend = value1 < 0.5 ? 2*value1*value2 : 1 - 2*(1-value1)*(1-value2);     
 	return mix(value1, blend, opacity); 
 }
-
 
 void main()
 {

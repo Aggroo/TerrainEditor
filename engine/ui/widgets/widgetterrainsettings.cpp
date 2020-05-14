@@ -79,7 +79,7 @@ void TerrainSettings::Update()
 		ImGui::LabelText("##heightscale", "Height Scale");
 		if (ImGui::Curve("##heightscale", ImVec2(ImGui::GetWindowContentRegionWidth() - 10, 200), 10, curvePoints))
 		{
-			// curve changed
+
 		}
 
 	}
@@ -179,12 +179,12 @@ void TerrainSettings::Update()
 
 			ImGui::TreePop();
 		}
-		if (ImGui::TreeNode("Splatmap"))
-		{
-			GetImagePicker(texSettings.splatName, Render::TextureIndex::splat);
-
-			ImGui::TreePop();
-		}
+		//if (ImGui::TreeNode("Splatmap"))
+		//{
+		//	GetImagePicker(texSettings.splatName, Render::TextureIndex::splat);
+		//
+		//	ImGui::TreePop();
+		//}
 	}
 
 	ModalWindow();

@@ -149,6 +149,12 @@ void SSAOPass::Execute()
 		glBindTexture(GL_TEXTURE_2D, FrameServer::Instance()->GetDepthPass()->GetNormalBuffer());
 		this->noiseTexture->bindTex(2);
 
+		UpdateUBOValues();
+
+		glBindBuffer(GL_UNIFORM_BUFFER, this->ubo[0]);
+		glBindBufferBase(GL_UNIFORM_BUFFER, 1, this->ubo[0]);
+		glBufferData(GL_UNIFORM_BUFFER, sizeof(SSAOOptions), &ssaoVar, GL_STATIC_DRAW);
+
 		this->ssaoQuad->Draw();
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		
@@ -190,5 +196,12 @@ Ptr<TextureResource> SSAOPass::GetSSAOBuffer()
 	{
 		return this->defaultAO;
 	}
+}
+
+void SSAOPass::UpdateUBOValues()
+{
+	ssaoVar.kernel = (int) Render::Renderer::Instance()->GetRenderOption(Render::RendererOptions::OptionAOKernel);
+	ssaoVar.radius = Render::Renderer::Instance()->GetRenderOption(Render::RendererOptions::OptionAORadius);
+	ssaoVar.bias = Render::Renderer::Instance()->GetRenderOption(Render::RendererOptions::OptionAOBias);
 }
 }
