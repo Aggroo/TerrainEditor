@@ -63,7 +63,27 @@
 				"value": "resources/textures/terrain_textures/Snow/snow-packed12-Roughness.png"
 			},
 			{
-				"name": "heightmap",
+				"name": "HeightMap0",
+				"sampler": "ClampEdgeBilinear",
+				"value": "resources/textures/heightmaps/test2.jpg"
+			},
+			{
+				"name": "HeightMap1",
+				"sampler": "ClampEdgeBilinear",
+				"value": "resources/textures/heightmaps/test2.jpg"
+			},
+			{
+				"name": "HeightMap2",
+				"sampler": "ClampEdgeBilinear",
+				"value": "resources/textures/heightmaps/test2.jpg"
+			},
+			{
+				"name": "HeightMap3",
+				"sampler": "ClampEdgeBilinear",
+				"value": "resources/textures/heightmaps/test2.jpg"
+			},
+			{
+				"name": "HeightMap4",
 				"sampler": "ClampEdgeBilinear",
 				"value": "resources/textures/heightmaps/test2.jpg"
 			}

@@ -20,7 +20,7 @@ uniform samplerCube irradianceMap;
 uniform sampler2D brdfLUT;
 
 
-#include("lights.frag")
+#include("lights.glsl")
 
 void main()
 {

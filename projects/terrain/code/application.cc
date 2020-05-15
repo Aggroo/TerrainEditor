@@ -85,10 +85,10 @@ Application::Open()
 		UI::UIServer::Instance()->AddWidget(std::make_unique<UI::MenuBar>(this->window));
 		UI::UIServer::Instance()->AddWidget(std::make_unique<UI::View>(this->window));
 		UI::UIServer::Instance()->AddWidget(std::make_unique<UI::RenderSettings>(this->window));
+		UI::UIServer::Instance()->AddWidget(std::make_unique<UI::PerlinSettings>(this->window));
 		UI::UIServer::Instance()->AddWidget(std::make_unique<UI::TerrainSettings>(this->window));
 		UI::TerrainSettings* test = (UI::TerrainSettings*) UI::UIServer::Instance()->GetLastWidget();
 		test->SetTerrain(terrain);
-		UI::UIServer::Instance()->AddWidget(std::make_unique<UI::PerlinSettings>(this->window));
 		UI::UIServer::Instance()->AddWidget(std::make_unique<UI::Inspector>(this->window));
 
 		

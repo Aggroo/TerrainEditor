@@ -95,6 +95,7 @@ void FlatGeometryLitPass::Execute()
 
 	skybox->Update();
 
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	FramePass::Execute();
 }
 

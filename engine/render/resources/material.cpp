@@ -150,9 +150,25 @@ TextureIndex Material::TextureIndexFromString(const Util::String& parameter)
 	{
 		return TextureIndex::roughness2;
 	}
-	else if (parameter == TERRAIN_SEMANTIC_HEIGHTMAP)
+	else if (parameter == TERRAIN_SEMANTIC_HEIGHTMAP || parameter == TERRAIN_SEMANTIC_HEIGHTMAPS_MULTI(0))
 	{
-		return TextureIndex::heightmap;
+		return TextureIndex::heightmap0;
+	}
+	else if (parameter == TERRAIN_SEMANTIC_HEIGHTMAPS_MULTI(1))
+	{
+		return TextureIndex::heightmap1;
+	}
+	else if (parameter == TERRAIN_SEMANTIC_HEIGHTMAPS_MULTI(2))
+	{
+		return TextureIndex::heightmap2;
+	}
+	else if (parameter == TERRAIN_SEMANTIC_HEIGHTMAPS_MULTI(3))
+	{
+		return TextureIndex::heightmap3;
+	}
+	else if (parameter == TERRAIN_SEMANTIC_HEIGHTMAPS_MULTI(4))
+	{
+		return TextureIndex::heightmap4;
 	}
 	else if (parameter == TERRAIN_SEMANTIC_AO)
 	{
@@ -233,6 +249,26 @@ Util::String Material::UniformNameFromString(const Util::String& parameter)
 	else if (parameter == TERRAIN_SEMANTIC_ROUGHNESSMAP_MULTI(2))
 	{
 		return  TERRAIN_SEMANTIC_ROUGHNESSMAP_MULTI_STR("[2]");
+	}
+	else if (parameter == TERRAIN_SEMANTIC_HEIGHTMAPS_MULTI(0))
+	{
+		return TERRAIN_SEMANTIC_HEIGHTMAPS_MULTI_STR("[0]");
+	}
+	else if (parameter == TERRAIN_SEMANTIC_HEIGHTMAPS_MULTI(1))
+	{
+		return  TERRAIN_SEMANTIC_HEIGHTMAPS_MULTI_STR("[1]");
+	}
+	else if (parameter == TERRAIN_SEMANTIC_HEIGHTMAPS_MULTI(2))
+	{
+		return  TERRAIN_SEMANTIC_HEIGHTMAPS_MULTI_STR("[2]");
+	}
+	else if (parameter == TERRAIN_SEMANTIC_HEIGHTMAPS_MULTI(3))
+	{
+		return  TERRAIN_SEMANTIC_HEIGHTMAPS_MULTI_STR("[3]");
+	}
+	else if (parameter == TERRAIN_SEMANTIC_HEIGHTMAPS_MULTI(4))
+	{
+		return  TERRAIN_SEMANTIC_HEIGHTMAPS_MULTI_STR("[4]");
 	}
 	else if (parameter == TERRAIN_SEMANTIC_HEIGHTMAP)
 	{

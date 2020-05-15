@@ -27,7 +27,7 @@ layout (std140, binding = 1) uniform TerrainVariables
 	float hardness1;
 	float hardness2;
 	float hardness3;
-	vec2 points[10];
+	int numHeightmaps;
 };  
 
 uniform sampler2D AlbedoMap[3];
@@ -44,7 +44,7 @@ uniform float u_matShininess; // = 64;
 
 const float kPi = 3.14159265;
 
-#include("lights.frag")
+#include("lights.glsl")
 
 vec3 filterNormal(in vec2 uv, in float texelSize, in float texelAspect) 
 {     

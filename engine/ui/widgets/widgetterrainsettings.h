@@ -36,6 +36,8 @@ struct TextureSettings
 
 struct HeightMapSettings
 {
+	Util::Array<Util::String> texNames;
+	Util::Array<GLuint> textures;
 	Util::String texName;
 	GLuint texture;
 	int size = 512;
@@ -68,6 +70,8 @@ private:
 	UI::HeightMapSettings heightSettings;
 	UI::TextureSettings texSettings;
 
-	ImVec2 curvePoints[10];
+	//The number of heightmaps you want to blend with. One base and X "filters"
+	int numHeightmaps;
+	int chosenHeightmap;
 };
 }

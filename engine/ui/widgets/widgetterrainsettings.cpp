@@ -3,6 +3,7 @@
 #include "foundation/util/curve.hpp"
 #include "nfd.h"
 #include "render/server/resourceserver.h"
+#include "ui/imguiextra.h"
 #include "IconsFontAwesome5_c.h"
 
 namespace UI
@@ -14,75 +15,111 @@ TerrainSettings::TerrainSettings(Display::Window* app) : Widget(app), heightPopu
 	Util::String title = ICON_FA_MOUNTAIN;
 	title.Append(" Terrain Settings");
 	this->title = title;
-	this->heightSettings.texture = 0;
-	this->curvePoints[0].x = -1; // init data so editor knows to take it from here
+	this->heightSettings.textures.Append(0);
+	this->heightSettings.texNames.Append("");
+	this->numHeightmaps = 1;
 }
 
 void TerrainSettings::Update()
 {
-	if (heightSettings.texName.IsEmpty())
+	if (heightSettings.texNames[0].IsEmpty())
 	{
 		ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
 		ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
 	}
 	ImGui::Indent(10);
-	if (ImGui::Button("Generate##heightmap", ImVec2(ImGui::GetWindowContentRegionWidth() - 20, 25)))
+	if (ImGui::Button("Generate##heightmapgen", ImVec2(ImGui::GetWindowContentRegionWidth() - 20, 25)))
 	{
 		terrain->CreateTerrain(heightSettings.texName.AsCharPtr(), 
 								heightSettings.size,
 								heightSettings.widthMultiplier, 
-								heightSettings.heightMultiplier, 
-								curvePoints);
+								heightSettings.heightMultiplier);
 	}
 	ImGui::Unindent(10);
 
-	if (heightSettings.texName.IsEmpty())
+	if (heightSettings.texNames[0].IsEmpty())
 	{
 		ImGui::PopItemFlag();
 		ImGui::PopStyleVar();
 	}
 	ImGui::Separator();
 
-	if (ImGui::CollapsingHeader("Heightmap Image", ImGuiTreeNodeFlags_DefaultOpen))
+	ImGui::BeginGroupPanel("Heightmap Image", ImVec2(-1.0f, 0.0f));
+	
+	if (ImGui::Button("Add filter##heightmaps"))
 	{
-		if (!heightSettings.texName.IsEmpty())
-		{
-			Util::String s = heightSettings.texName.AsCharPtr();
-			Util::Array<Util::String> path;
+		numHeightmaps++;
+		heightSettings.texNames.Append("");
+		heightSettings.textures.Append(0);
+			
+		terrain->tsVar.numHeightmaps++;
 
-			s.Tokenize("/", path);
-
-			s = path[path.Size() - 2] + "/" + path[path.Size() - 1];
-
-			ImGui::LabelText("##texture", "Heightmap");
-			ImGui::InputText("##texture", (char*)s.AsCharPtr(), 256, ImGuiInputTextFlags_ReadOnly);
-		}
-		else
-		{
-			ImGui::LabelText("##texture", "Heightmap");
-			ImGui::InputText("##texture", (char*)heightSettings.texName.AsCharPtr(), 512, ImGuiInputTextFlags_ReadOnly);
-		}
-		ImGui::SameLine();
-		if (ImGui::ImageButton((void*)heightSettings.texture, ImVec2(ImGui::GetContentRegionAvailWidth() - 5, ImGui::GetContentRegionAvailWidth() - 5)))
-		{
-			this->heightPopup = true;
-		}
-
-		ImGui::LabelText("##terrainwidth", "Width");
-		ImGui::DragInt("##terrainwidth", &heightSettings.size, 1, 16, 16384);
-
-		ImGui::LabelText("##widthmult", "Width Multiplier");
-		ImGui::DragFloat("##widthmult", &heightSettings.widthMultiplier, 0.1f, 0.0f, 1000.f);
-		ImGui::LabelText("##heightmult", "Height Multiplier");
-		ImGui::DragFloat("##heightmult", &heightSettings.heightMultiplier, 0.01f, 0.0f, 1000.f);
-
-		ImGui::LabelText("##heightscale", "Height Scale");
-		if (ImGui::Curve("##heightscale", ImVec2(ImGui::GetWindowContentRegionWidth() - 10, 200), 10, curvePoints))
-		{
-
-		}
-
+		if (numHeightmaps > 5)
+			numHeightmaps = 5;
 	}
+	ImGui::SameLine();
+	if (ImGui::Button("Remove filter##heightmaps"))
+	{
+		numHeightmaps--;
+		heightSettings.texNames.EraseIndex(heightSettings.texNames.Size()-1);
+		heightSettings.textures.EraseIndex(heightSettings.textures.Size()-1);
+
+		terrain->tsVar.numHeightmaps--;
+
+		if (numHeightmaps < 1)
+			numHeightmaps = 1;
+	}
+	
+	for (int i = 0; i < this->numHeightmaps; i++)
+	{
+		Util::String nodeName = "Heightmap ";
+		nodeName.AppendInt(i+1);
+		nodeName.Append("##meshsettings");
+		if (ImGui::TreeNode(nodeName.AsCharPtr()))
+		{
+			nodeName = "##texture";
+			nodeName.AppendInt(i);
+			if (!heightSettings.texNames[i].IsEmpty())
+			{
+				Util::String s = heightSettings.texNames[i].AsCharPtr();
+				Util::Array<Util::String> path;
+
+				s.Tokenize("/", path);
+
+				s = path[path.Size() - 2] + "/" + path[path.Size() - 1];
+
+				ImGui::LabelText(nodeName.AsCharPtr(), "Filepath");
+				ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x - 50.0f);
+				ImGui::InputText(nodeName.AsCharPtr(), (char*)s.AsCharPtr(), 128, ImGuiInputTextFlags_ReadOnly);
+			}
+			else
+			{
+				ImGui::LabelText(nodeName.AsCharPtr(), "Filepath");
+				ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x - 50.0f);
+				ImGui::InputText(nodeName.AsCharPtr(), (char*)heightSettings.texNames[i].AsCharPtr(), 512, ImGuiInputTextFlags_ReadOnly);
+			}
+			ImGui::SameLine();
+			if (ImGui::ImageButton((void*)heightSettings.textures[i], ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().x)))
+			{
+				this->chosenHeightmap = i;
+				this->heightPopup = true;
+			}
+			ImGui::TreePop();
+		}
+	}
+	
+	ImGui::LabelText("##terrainwidth", "Width");
+	ImGui::DragInt("##terrainwidth", &heightSettings.size, 1, 16, 16384);
+
+	ImGui::LabelText("##widthmult", "Width Multiplier");
+	ImGui::DragFloat("##widthmult", &heightSettings.widthMultiplier, 0.1f, 0.0f, 1000.f);
+	ImGui::LabelText("##heightmult", "Height Multiplier");
+	ImGui::DragFloat("##heightmult", &heightSettings.heightMultiplier, 0.01f, 0.0f, 1000.f);
+
+	ImGui::LabelText("##heightscale", "Height Scale");
+
+	ImGui::EndGroupPanel();
+	
 	if (ImGui::CollapsingHeader("Texture Settings"))
 	{
 		if (ImGui::TreeNode("Procedural Texturing Settings"))
@@ -257,11 +294,22 @@ void TerrainSettings::ModalWindow()
 			Util::String s = outpath;
 			Util::Array<Util::String> path;
 			s.ConvertBackslashes();
-			heightSettings.texName = s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr();
+			heightSettings.texNames[chosenHeightmap] = s.ExtractToEnd(s.FindStringIndex("resources")).AsCharPtr();
 
+			Render::TextureIndex texIndx;
+			switch (chosenHeightmap)
+			{
+			case 0: texIndx = Render::TextureIndex::heightmap0; break;
+			case 1: texIndx = Render::TextureIndex::heightmap1; break;
+			case 2: texIndx = Render::TextureIndex::heightmap2; break;
+			case 3: texIndx = Render::TextureIndex::heightmap3; break;
+			case 4: texIndx = Render::TextureIndex::heightmap4; break;
+			default:
+				break;
+			}
 			
-			terrain->GetSurface()->GetTextureList()->UpdateTexture(Render::TextureIndex::heightmap, heightSettings.texName.AsCharPtr());
-			heightSettings.texture = terrain->GetSurface()->GetTextureList()->GetTexture(Render::TextureIndex::heightmap)->GetTextureID();
+			terrain->GetSurface()->GetTextureList()->UpdateTexture(texIndx, heightSettings.texNames[chosenHeightmap].AsCharPtr());
+			heightSettings.textures[chosenHeightmap] = terrain->GetSurface()->GetTextureList()->GetTexture(texIndx)->GetTextureID();
 
 			this->heightPopup = false;
 			free(outpath);

@@ -38,7 +38,7 @@ private:
 		float hardness1 = 10.0f;
 		float hardness2 = 10.0f;
 		float hardness3 = 4.0f;
-		ImVec2 points[10];
+		int numHeightmaps = 1;
 	};
 
 	///uniform buffer object
@@ -57,7 +57,7 @@ public:
 	virtual void OnUI();
 
 	///Generates the terrain from a Heightmap
-	bool CreateTerrain(const char* filename, int size, float widthMultiplier, float heightMultiplier, ImVec2* points);
+	bool CreateTerrain(const char* filename, int size, float widthMultiplier, float heightMultiplier);
 
 	HeightmapValues Average(int x, int y);
 

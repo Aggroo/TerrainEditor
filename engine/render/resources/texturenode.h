@@ -21,7 +21,11 @@ enum class TextureIndex
 	ao1,
 	ao2,
 	splat,
-	heightmap,
+	heightmap0,
+	heightmap1,
+	heightmap2,
+	heightmap3,
+	heightmap4,
 	environmentMap,
 	irradiance,
 	brdf

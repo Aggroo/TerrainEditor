@@ -87,7 +87,7 @@ void UIServer::ApplyStyle()
 	ImGui::StyleColorsDark();
 	ImGuiStyle& style = ImGui::GetStyle();
 
-	float fontSize = 15.0f;
+	float fontSize = 16.0f;
 	float roundness = 2.0f;
 	ImVec4 white = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
 	ImVec4 text = ImVec4(0.76f, 0.77f, 0.8f, 1.0f);
@@ -128,7 +128,7 @@ void UIServer::ApplyStyle()
 	//style.Colors[ImGuiCol_TextDisabled]			= ImVec4(0.86f, 0.93f, 0.89f, 0.28f);
 	style.Colors[ImGuiCol_WindowBg] = backgroundDark;
 	//style.Colors[ImGuiCol_ChildBg]				= ImVec4(0.20f, 0.22f, 0.27f, 0.58f);
-	style.Colors[ImGuiCol_Border] = black;
+	style.Colors[ImGuiCol_Border] = backgroundLight;
 	//style.Colors[ImGuiCol_BorderShadow]			= ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
 	style.Colors[ImGuiCol_FrameBg] = bar;
 	style.Colors[ImGuiCol_FrameBgHovered] = barActive;

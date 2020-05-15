@@ -80,7 +80,7 @@ void Terrain::OnUI()
 //------------------------------------------------------------------------------
 /**
 */
-bool Terrain::CreateTerrain(const char* filename, int size, float widthMultiplier, float heightMultiplier, ImVec2* points)
+bool Terrain::CreateTerrain(const char* filename, int size, float widthMultiplier, float heightMultiplier)
 {
 
 	this->vertices.Reset();
@@ -88,12 +88,6 @@ bool Terrain::CreateTerrain(const char* filename, int size, float widthMultiplie
 	this->mesh->GetMesh() = Render::MeshResources::Create();
 	
 	tsVar.heightScale = heightMultiplier;
-
-	for (size_t i = 0; i < 10; i++)
-	{
-		tsVar.points[i] = points[i];
-	}
-	
 
 	this->terrainWidth = size;
 	this->terrainHeight = size;

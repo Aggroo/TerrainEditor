@@ -4,7 +4,7 @@ layout(location=2) in vec3 inNormal;
 layout(location=3) in vec3 tangent;
 layout(location=4) in vec3 biNormal;
 
-uniform sampler2D heightmap;
+uniform sampler2D HeightMap[5];
 
 layout (std140, binding = 1) uniform TerrainVariables
 {
@@ -21,7 +21,7 @@ layout (std140, binding = 1) uniform TerrainVariables
 	float hardness1;
 	float hardness2;
 	float hardness3;
-	vec2 points[10];
+	int numHeightmaps;
 };  
 
 out vec3 fragPos;
@@ -34,30 +34,19 @@ out mat3 model33Out;
 
 uniform vec3 lightPosition;
 
-float CurveValue(float p, int maxpoints, const vec2[10] points)
-{
-	if (maxpoints < 2 || points.length() == 0)
-		return 0;
-	if (p < 0) return points[0].y;
-
-	int left = 0;
-	while (left < maxpoints && points[left].x < p && points[left].x != -1) left++;
-	if (bool(left)) left--;
-
-	if (left == maxpoints-1)
-		return points[maxpoints - 1].y;
-
-	float d = (p - points[left].x) / (points[left + 1].x - points[left].x);
-
-	return points[left].y + (points[left + 1].y - points[left].y) * d;
-}
+#include("blend.glsl")
 
 void main()
 {
-	float height = texture2D(heightmap, inCoord).r;
+	float height = texture2D(HeightMap[0], inCoord).r;
+	
+	for(int i = 1; i < numHeightmaps; i++)
+	{
+		height = ColorBurn(height, texture2D(HeightMap[i], inCoord).r);
+	}
 	
 	vec4 vertPos = pos;
-	vertPos.y = CurveValue(height, 10, points)* heightScale;
+	vertPos.y = height * heightScale;
 	
 	vec4 worldpos = Model*vertPos;
 
