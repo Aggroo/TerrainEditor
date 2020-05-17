@@ -12,6 +12,7 @@ public:
 	~Camera();
 
 	void LookAt(const Math::vec4& target, const Math::vec4& up);
+	void ResetPosition();
 
 	void SetViewMatrix(const Math::mat4& mat);
 	void UpdateProjectionMatrix();

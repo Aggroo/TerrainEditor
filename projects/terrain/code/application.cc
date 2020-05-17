@@ -66,7 +66,6 @@ Application::Open()
 		Input::InputManager::Instance()->Setup(window, &lNode);
 
 		Input::InputManager::Instance()->Initialization();
-	
 
 		// set clear color to gray
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -88,8 +87,8 @@ Application::Open()
 		UI::UIServer::Instance()->AddWidget(std::make_unique<UI::PerlinSettings>(this->window));
 		UI::UIServer::Instance()->AddWidget(std::make_unique<UI::TerrainSettings>(this->window));
 		UI::TerrainSettings* test = (UI::TerrainSettings*) UI::UIServer::Instance()->GetLastWidget();
-		test->SetTerrain(terrain);
-		UI::UIServer::Instance()->AddWidget(std::make_unique<UI::Inspector>(this->window));
+		//test->SetTerrain(terrain);
+		//UI::UIServer::Instance()->AddWidget(std::make_unique<UI::Inspector>(this->window));
 
 		
 		// set ui rendering function
@@ -123,7 +122,7 @@ bool Application::IsInitializationFinished()
 void
 Application::Run()
 {
-	Render::LightServer::Instance()->CreatePointLight(Math::vec4(0, 80, 3), Math::vec4(1.0f, 1.0f, 1.0f), 10.0f, 10.0f);
+	//Render::LightServer::Instance()->CreatePointLight(Math::vec4(0, 80, 3), Math::vec4(1.0f, 1.0f, 1.0f), 10.0f, 10.0f);
 	while (this->window->IsOpen())
 	{
 		if(!IsInitializationFinished())

@@ -144,6 +144,7 @@ public:
 
 	Math::vec4 GetMovement();
 	void CameraMovement();
+	void CameraReset();
 
 private:
 

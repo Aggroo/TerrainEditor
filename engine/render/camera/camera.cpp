@@ -1,3 +1,4 @@
+#include "camera.h"
 #include "config.h"
 #include "camera.h"
 #include "render/render/renderer.h"
@@ -24,6 +25,11 @@ Camera::~Camera()
 void Camera::LookAt(const Math::vec4& target, const Math::vec4& up)
 {
 	this->SetViewMatrix(Math::mat4::LookAt(view.GetPosition(), target, up));
+}
+
+void Camera::ResetPosition()
+{
+	this->SetViewMatrix(Math::mat4::LookAt(Math::vec4(0.0f, 0.0f, 0.0f), Math::vec4(0.0f, 0.0f, 1.0f), Math::vec4(0.0f, 1.0f, 0.0f)));
 }
 
 void Camera::SetViewMatrix(const Math::mat4& mat)

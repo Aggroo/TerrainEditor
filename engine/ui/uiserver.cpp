@@ -28,6 +28,8 @@ void UIServer::Setup(Display::Window* window)
 	cfg.GlyphMinAdvanceX = 14.0f;
 	static const ImWchar icon_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
 	io.Fonts->AddFontFromFileTTF("resources/fonts/fa-solid-900.ttf", 16.0f, &cfg, icon_ranges);
+	defaultFont = io.Fonts->AddFontFromFileTTF("resources/fonts/Roboto-Medium.ttf", 16.0f);
+	defaultFontLarge = io.Fonts->AddFontFromFileTTF("resources/fonts/Roboto-Medium.ttf", 18.0f);
 
 	ApplyStyle();
 }
@@ -82,6 +84,16 @@ void UIServer::SetWidgetVisibility(Util::String widgetName, bool visibility)
 	}
 }
 
+ImFont* UIServer::GetDefaultFont()
+{
+	return this->defaultFont;
+}
+
+ImFont* UIServer::GetLargeDefaultFont()
+{
+	return this->defaultFontLarge;
+}
+
 void UIServer::ApplyStyle()
 {
 	ImGui::StyleColorsDark();
@@ -113,7 +125,7 @@ void UIServer::ApplyStyle()
 	//style.ItemInnerSpacing	= ImVec2(6, 4);
 	style.Alpha = 1.0f;
 	style.WindowRounding = roundness;
-	style.FrameRounding = roundness;
+	style.FrameRounding = roundness+1.0f;
 	style.PopupRounding = roundness;
 	//style.IndentSpacing		= 6.0f;
 	//style.ItemInnerSpacing	= ImVec2(2, 4);
@@ -128,10 +140,10 @@ void UIServer::ApplyStyle()
 	//style.Colors[ImGuiCol_TextDisabled]			= ImVec4(0.86f, 0.93f, 0.89f, 0.28f);
 	style.Colors[ImGuiCol_WindowBg] = backgroundDark;
 	//style.Colors[ImGuiCol_ChildBg]				= ImVec4(0.20f, 0.22f, 0.27f, 0.58f);
-	style.Colors[ImGuiCol_Border] = backgroundLight;
+	style.Colors[ImGuiCol_Border] = bar;
 	//style.Colors[ImGuiCol_BorderShadow]			= ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
-	style.Colors[ImGuiCol_FrameBg] = bar;
-	style.Colors[ImGuiCol_FrameBgHovered] = barActive;
+	style.Colors[ImGuiCol_FrameBg] = backgroundVeryDark;
+	style.Colors[ImGuiCol_FrameBgHovered] = bar;
 	style.Colors[ImGuiCol_FrameBgActive] = backgroundMedium;
 	style.Colors[ImGuiCol_TitleBg] = backgroundVeryDark;
 	//style.Colors[ImGuiCol_TitleBgCollapsed]		= ImVec4(0.20f, 0.22f, 0.27f, 0.75f);
@@ -145,7 +157,7 @@ void UIServer::ApplyStyle()
 	style.Colors[ImGuiCol_SliderGrab] = bar;
 	style.Colors[ImGuiCol_SliderGrabActive] = barActive;
 	style.Colors[ImGuiCol_Button] = barActive;
-	style.Colors[ImGuiCol_ButtonHovered] = highlightBlueActive;
+	style.Colors[ImGuiCol_ButtonHovered] = bar;
 	style.Colors[ImGuiCol_ButtonActive] = backgroundMedium;
 	style.Colors[ImGuiCol_Header] = barActive; // selected items (tree, menu bar etc.)
 	style.Colors[ImGuiCol_HeaderHovered] = highlightBlueActive; // hovered items (tree, menu bar etc.)
@@ -163,7 +175,7 @@ void UIServer::ApplyStyle()
 	style.Colors[ImGuiCol_TextSelectedBg] = highlightBlue;
 	style.Colors[ImGuiCol_PopupBg] = backgroundVeryDark;
 	style.Colors[ImGuiCol_DragDropTarget] = backgroundLight;
-	style.Colors[ImGuiCol_Tab] = bar; 
+	style.Colors[ImGuiCol_Tab] = backgroundDark;
 	style.Colors[ImGuiCol_TabHovered] = highlightBlueActive; 
 	style.Colors[ImGuiCol_TabActive] = backgroundMedium;
 	style.Colors[ImGuiCol_TabUnfocused] = bar; 

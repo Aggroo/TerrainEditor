@@ -37,7 +37,26 @@ void InputManager::Setup(Display::Window* window, Render::LightNode* lNode)
 {
 	this->window = window;
 	this->lNode = lNode;
-	vec = Math::vec4(0, 0, 0);
+
+	vec = Math::vec4(-70, 180, 230);
+	rotX = 1560.0f;
+	rotY = 650.0f;
+	
+	Math::mat4 rotx = Math::mat4::rotX(rotY*0.001f);
+	Math::mat4 roty = Math::mat4::rotY(rotX*0.001f);
+
+	Math::mat4 rotation = (roty*rotx);
+
+	const Math::vec4 left = rotation.GetXAxis();
+	const Math::vec4 up = rotation.GetYAxis();
+	const Math::vec4 forward = rotation.GetZAxis();
+
+	vec = vec + (rotation * movement);
+
+	Graphics::MainCamera::Instance()->SetPosition(vec);
+
+	Graphics::MainCamera::Instance()->LookAt(vec + forward, up);
+
 }
 
 void InputManager::Initialization()
@@ -161,5 +180,11 @@ void InputManager::CameraMovement()
 	Graphics::MainCamera::Instance()->SetPosition(vec);
 
 	Graphics::MainCamera::Instance()->LookAt(vec + forward, up);
+}
+void InputManager::CameraReset()
+{
+	rotX = 0.0f;
+	rotY = 0.0f;
+	vec = Math::vec4(0.0f, 0.0f, 0.0f);
 }
 }

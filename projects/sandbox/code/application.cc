@@ -67,6 +67,7 @@ Application::Open()
 		Input::InputManager::Instance()->Setup(window, &lNode);
 
 		Input::InputManager::Instance()->Initialization();
+		Input::InputManager::Instance()->CameraReset();
 
 		// set clear color to gray
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);

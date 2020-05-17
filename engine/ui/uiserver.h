@@ -9,6 +9,8 @@ namespace Display
 	class Window;
 }
 
+struct ImFont;
+
 namespace UI
 {
 class Widget;
@@ -27,9 +29,15 @@ public:
 
 	void SetWidgetVisibility(Util::String widgetName, bool visibility);
 
+	ImFont* GetDefaultFont();
+	ImFont* GetLargeDefaultFont();
+
 private:
 
 	void ApplyStyle();
+
+	ImFont* defaultFont;
+	ImFont* defaultFontLarge;
 
 	Display::Window* window;
 	std::vector<std::unique_ptr<UI::Widget>> widgets;

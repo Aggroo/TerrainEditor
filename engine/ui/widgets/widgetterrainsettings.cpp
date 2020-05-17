@@ -18,109 +18,149 @@ TerrainSettings::TerrainSettings(Display::Window* app) : Widget(app), heightPopu
 	this->heightSettings.textures.Append(0);
 	this->heightSettings.texNames.Append("");
 	this->numHeightmaps = 1;
+
+	this->terrain = TerrainEditor::Terrain::Create();
+	this->terrain->Activate();
+	this->terrain->CreateTerrain(heightSettings.texName.AsCharPtr(),
+			heightSettings.size,
+			heightSettings.widthMultiplier,
+			heightSettings.heightMultiplier);
+
+	this->heightSettings.textures[0] = this->terrain->GetSurface()->GetTextureList()->GetTexture(Render::TextureIndex::heightmap0)->GetTextureID();
 }
 
 void TerrainSettings::Update()
 {
-	if (heightSettings.texNames[0].IsEmpty())
+	ImGui::BeginButtonStyle();
+	ImGui::BeginChild("##buttontabs", ImVec2(ImGui::GetContentRegionAvail().x, 28.0f), false, ImGuiWindowFlags_NoScrollbar);
+	if (ImGui::Button("Base map##heightmaps"))
 	{
-		ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
-		ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
-	}
-	ImGui::Indent(10);
-	if (ImGui::Button("Generate##heightmapgen", ImVec2(ImGui::GetWindowContentRegionWidth() - 20, 25)))
-	{
-		terrain->CreateTerrain(heightSettings.texName.AsCharPtr(), 
-								heightSettings.size,
-								heightSettings.widthMultiplier, 
-								heightSettings.heightMultiplier);
-	}
-	ImGui::Unindent(10);
 
-	if (heightSettings.texNames[0].IsEmpty())
-	{
-		ImGui::PopItemFlag();
-		ImGui::PopStyleVar();
-	}
-	ImGui::Separator();
-
-	ImGui::BeginGroupPanel("Heightmap Image", ImVec2(-1.0f, 0.0f));
-	
-	if (ImGui::Button("Add filter##heightmaps"))
-	{
-		numHeightmaps++;
-		heightSettings.texNames.Append("");
-		heightSettings.textures.Append(0);
-			
-		terrain->tsVar.numHeightmaps++;
-
-		if (numHeightmaps > 5)
-			numHeightmaps = 5;
 	}
 	ImGui::SameLine();
-	if (ImGui::Button("Remove filter##heightmaps"))
+	if (ImGui::Button("Extra heightmaps##heightmaps"))
 	{
-		numHeightmaps--;
-		heightSettings.texNames.EraseIndex(heightSettings.texNames.Size()-1);
-		heightSettings.textures.EraseIndex(heightSettings.textures.Size()-1);
 
-		terrain->tsVar.numHeightmaps--;
-
-		if (numHeightmaps < 1)
-			numHeightmaps = 1;
 	}
-	
-	for (int i = 0; i < this->numHeightmaps; i++)
+	ImGui::EndChild();
+	ImGui::EndButtonStyle();
+
+	//if (heightSettings.texNames[0].IsEmpty())
+	//{
+	//	ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
+	//	ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
+	//}
+	//ImGui::Indent(10);
+	//if (ImGui::Button("Generate##heightmapgen", ImVec2(ImGui::GetWindowContentRegionWidth() - 20, 25)))
+	//{
+	//
+	//}
+	//ImGui::Unindent(10);
+
+	//if (heightSettings.texNames[0].IsEmpty())
+	//{
+	//	ImGui::PopItemFlag();
+	//	ImGui::PopStyleVar();
+	//}
+
+	ImGui::Separator();
+
+	if (ImGui::CollapsingHeader("Heightmap Image", ImGuiTreeNodeFlags_Leaf))
 	{
-		Util::String nodeName = "Heightmap ";
-		nodeName.AppendInt(i+1);
-		nodeName.Append("##meshsettings");
-		if (ImGui::TreeNode(nodeName.AsCharPtr()))
+		
+		ImGui::BeginGroupPanel("Heightmap Image", ImVec2(-1.0f, -1.0f));
+
+		if (ImGui::Button("Add filter##heightmaps"))
 		{
-			nodeName = "##texture";
-			nodeName.AppendInt(i);
-			if (!heightSettings.texNames[i].IsEmpty())
-			{
-				Util::String s = heightSettings.texNames[i].AsCharPtr();
-				Util::Array<Util::String> path;
-
-				s.Tokenize("/", path);
-
-				s = path[path.Size() - 2] + "/" + path[path.Size() - 1];
-
-				ImGui::LabelText(nodeName.AsCharPtr(), "Filepath");
-				ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x - 50.0f);
-				ImGui::InputText(nodeName.AsCharPtr(), (char*)s.AsCharPtr(), 128, ImGuiInputTextFlags_ReadOnly);
-			}
-			else
-			{
-				ImGui::LabelText(nodeName.AsCharPtr(), "Filepath");
-				ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x - 50.0f);
-				ImGui::InputText(nodeName.AsCharPtr(), (char*)heightSettings.texNames[i].AsCharPtr(), 512, ImGuiInputTextFlags_ReadOnly);
-			}
-			ImGui::SameLine();
-			if (ImGui::ImageButton((void*)heightSettings.textures[i], ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().x)))
-			{
-				this->chosenHeightmap = i;
-				this->heightPopup = true;
-			}
-			ImGui::TreePop();
+			numHeightmaps++;
+			heightSettings.texNames.Append("");
+			heightSettings.textures.Append(0);
+		
+			terrain->tsVar.numHeightmaps++;
+		
+			if (numHeightmaps > 5)
+				numHeightmaps = 5;
 		}
+		ImGui::SameLine();
+		if (ImGui::Button("Remove filter##heightmaps"))
+		{
+			numHeightmaps--;
+			heightSettings.texNames.EraseIndex(heightSettings.texNames.Size() - 1);
+			heightSettings.textures.EraseIndex(heightSettings.textures.Size() - 1);
+		
+			terrain->tsVar.numHeightmaps--;
+		
+			if (numHeightmaps < 1)
+				numHeightmaps = 1;
+		}
+
+		for (int i = 0; i < this->numHeightmaps; i++)
+		{
+			Util::String nodeName = "Heightmap ";
+			nodeName.AppendInt(i + 1);
+			nodeName.Append("##meshsettings");
+
+			ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x - 30.0f);
+			if (ImGui::TreeNode(nodeName.AsCharPtr()))
+			{
+				nodeName = "##texture";
+				nodeName.AppendInt(i);
+				if (!heightSettings.texNames[i].IsEmpty())
+				{
+					Util::String s = heightSettings.texNames[i].AsCharPtr();
+					Util::Array<Util::String> path;
+
+					s.Tokenize("/", path);
+
+					s = path[path.Size() - 2] + "/" + path[path.Size() - 1];
+
+					ImGui::LabelText(nodeName.AsCharPtr(), "Filepath");
+					ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x - 70.0f);
+					ImGui::InputText(nodeName.AsCharPtr(), (char*)s.AsCharPtr(), 128, ImGuiInputTextFlags_ReadOnly);
+				}
+				else
+				{
+					ImGui::LabelText(nodeName.AsCharPtr(), "Filepath");
+					ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x - 70.0f);
+					ImGui::InputText(nodeName.AsCharPtr(), (char*)heightSettings.texNames[i].AsCharPtr(), 512, ImGuiInputTextFlags_ReadOnly);
+				}
+				ImGui::SameLine();
+				if (ImGui::ImageButton((void*)heightSettings.textures[i], ImVec2(ImGui::GetContentRegionAvail().x - 35.0f, ImGui::GetContentRegionAvail().x - 35.0f)))
+				{
+					this->chosenHeightmap = i;
+					this->heightPopup = true;
+				}
+				ImGui::TreePop();
+			}
+		}
+
+		ImGui::EndGroupPanel();
+		float total_w = ImGui::GetContentRegionAvail().x / 3.0f;
+
+		ImGui::SetNextItemWidth(total_w);
+		ImGui::LabelText("##terrainwidth", "Width");
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+		ImGui::DragInt("##terrainwidth", &heightSettings.size, 1, 16, 16384);
+
+		ImGui::SetNextItemWidth(total_w);
+		ImGui::LabelText("##widthmult", "Width Multiplier");
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+		ImGui::DragFloat("##widthmult", &heightSettings.widthMultiplier, 0.1f, 0.0f, 1000.f);
+
+		ImGui::SetNextItemWidth(total_w);
+		ImGui::LabelText("##heightmult", "Height Multiplier");
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+		if (ImGui::DragFloat("##heightmult", &heightSettings.heightMultiplier, 0.1f, 0.0f, 1000.f))
+		{
+			terrain->tsVar.heightScale = heightSettings.heightMultiplier;
+		}
+
 	}
 	
-	ImGui::LabelText("##terrainwidth", "Width");
-	ImGui::DragInt("##terrainwidth", &heightSettings.size, 1, 16, 16384);
-
-	ImGui::LabelText("##widthmult", "Width Multiplier");
-	ImGui::DragFloat("##widthmult", &heightSettings.widthMultiplier, 0.1f, 0.0f, 1000.f);
-	ImGui::LabelText("##heightmult", "Height Multiplier");
-	ImGui::DragFloat("##heightmult", &heightSettings.heightMultiplier, 0.01f, 0.0f, 1000.f);
-
-	ImGui::LabelText("##heightscale", "Height Scale");
-
-	ImGui::EndGroupPanel();
-	
-	if (ImGui::CollapsingHeader("Texture Settings"))
+	if (ImGui::CollapsingHeader("Texture Settings", ImGuiTreeNodeFlags_Leaf))
 	{
 		if (ImGui::TreeNode("Procedural Texturing Settings"))
 		{

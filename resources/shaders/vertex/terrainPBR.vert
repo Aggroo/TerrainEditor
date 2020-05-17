@@ -42,7 +42,7 @@ void main()
 	
 	for(int i = 1; i < numHeightmaps; i++)
 	{
-		height = ColorBurn(height, texture2D(HeightMap[i], inCoord).r);
+		height = Overlay(height, texture2D(HeightMap[i], inCoord).r);
 	}
 	
 	vec4 vertPos = pos;
