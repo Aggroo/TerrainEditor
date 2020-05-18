@@ -11,7 +11,7 @@ IBLPass::IBLPass()
 	ir = TextureResource::Create();
 	brdf = TextureResource::Create();
 	sp = TextureResource::Create();
-	hdrTexPath = "resources/textures/skyboxes/Tokyo_BigSight_3k.hdr";
+	hdrTexPath = "resources/textures/skyboxes/qwantani_2k.hdr";
 }
 
 IBLPass::~IBLPass()

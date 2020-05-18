@@ -107,12 +107,14 @@ void UIServer::ApplyStyle()
 	ImVec4 backgroundVeryDark = ImVec4(0.08f, 0.086f, 0.094f, 1.00f);
 	ImVec4 backgroundDark = ImVec4(0.141f, 0.141f, 0.141f, 1.00f);
 	ImVec4 backgroundMedium = ImVec4(0.25f, 0.25f, 0.25f, 1.0f);
-	ImVec4 backgroundLight = ImVec4(0.37f, 0.38f, 0.39f, 1.0f);
+	ImVec4 backgroundLight = ImVec4(0.3f, 0.3f, 0.3f, 1.0f);
+	ImVec4 backgroundLighter = ImVec4(0.37f, 0.38f, 0.39f, 1.0f);
 	ImVec4 highlightBlue = ImVec4(0.345f, 0.345f, 0.345f, 1.0f);
 	ImVec4 highlightBlueActive = ImVec4(0.5f, 0.5f, 0.5f, 1.0f);
 	ImVec4 highlightBlueHovered = ImVec4(0.345f, 0.345f, 0.345f, 1.0f);
 	ImVec4 barBackground = ImVec4(0.078f, 0.082f, 0.09f, 1.0f);
 	ImVec4 bar = ImVec4(0.2f, 0.2f, 0.2f, 1.0f);
+	ImVec4 barlighter = ImVec4(0.23f, 0.23f, 0.23f, 1.0f);
 	ImVec4 barHovered = ImVec4(0.411f, 0.411f, 0.411f, 1.0f);
 	ImVec4 barActive = ImVec4(0.345f, 0.345f, 0.345f, 1.0f);
 
@@ -143,7 +145,7 @@ void UIServer::ApplyStyle()
 	style.Colors[ImGuiCol_Border] = bar;
 	//style.Colors[ImGuiCol_BorderShadow]			= ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
 	style.Colors[ImGuiCol_FrameBg] = backgroundVeryDark;
-	style.Colors[ImGuiCol_FrameBgHovered] = bar;
+	style.Colors[ImGuiCol_FrameBgHovered] = backgroundDark;
 	style.Colors[ImGuiCol_FrameBgActive] = backgroundMedium;
 	style.Colors[ImGuiCol_TitleBg] = backgroundVeryDark;
 	//style.Colors[ImGuiCol_TitleBgCollapsed]		= ImVec4(0.20f, 0.22f, 0.27f, 0.75f);
@@ -156,13 +158,13 @@ void UIServer::ApplyStyle()
 	style.Colors[ImGuiCol_CheckMark] = white;
 	style.Colors[ImGuiCol_SliderGrab] = bar;
 	style.Colors[ImGuiCol_SliderGrabActive] = barActive;
-	style.Colors[ImGuiCol_Button] = barActive;
-	style.Colors[ImGuiCol_ButtonHovered] = bar;
-	style.Colors[ImGuiCol_ButtonActive] = backgroundMedium;
-	style.Colors[ImGuiCol_Header] = barActive; // selected items (tree, menu bar etc.)
-	style.Colors[ImGuiCol_HeaderHovered] = highlightBlueActive; // hovered items (tree, menu bar etc.)
+	style.Colors[ImGuiCol_Button] = bar;
+	style.Colors[ImGuiCol_ButtonHovered] = backgroundMedium;
+	style.Colors[ImGuiCol_ButtonActive] = backgroundDark;
+	style.Colors[ImGuiCol_Header] = backgroundMedium; // selected items (tree, menu bar etc.)
+	style.Colors[ImGuiCol_HeaderHovered] = bar; // hovered items (tree, menu bar etc.)
 	style.Colors[ImGuiCol_HeaderActive] = backgroundMedium;
-	style.Colors[ImGuiCol_Separator] = backgroundLight;
+	style.Colors[ImGuiCol_Separator] = backgroundLighter;
 	//style.Colors[ImGuiCol_SeparatorHovered]		= ImVec4(0.92f, 0.18f, 0.29f, 0.78f);
 	//style.Colors[ImGuiCol_SeparatorActive]		= ImVec4(0.92f, 0.18f, 0.29f, 1.00f);
 	style.Colors[ImGuiCol_ResizeGrip] = backgroundMedium;
@@ -174,9 +176,9 @@ void UIServer::ApplyStyle()
 	style.Colors[ImGuiCol_PlotHistogramHovered] = highlightBlueHovered;
 	style.Colors[ImGuiCol_TextSelectedBg] = highlightBlue;
 	style.Colors[ImGuiCol_PopupBg] = backgroundVeryDark;
-	style.Colors[ImGuiCol_DragDropTarget] = backgroundLight;
+	style.Colors[ImGuiCol_DragDropTarget] = backgroundLighter;
 	style.Colors[ImGuiCol_Tab] = backgroundDark;
-	style.Colors[ImGuiCol_TabHovered] = highlightBlueActive; 
+	style.Colors[ImGuiCol_TabHovered] = barlighter; 
 	style.Colors[ImGuiCol_TabActive] = backgroundMedium;
 	style.Colors[ImGuiCol_TabUnfocused] = bar; 
 	style.Colors[ImGuiCol_TabUnfocusedActive] = backgroundMedium;
@@ -184,7 +186,6 @@ void UIServer::ApplyStyle()
 	style.Colors[ImGuiCol_NavWindowingHighlight] = bar;
 	style.Colors[ImGuiCol_NavWindowingDimBg] = bar;
 	style.Colors[ImGuiCol_ModalWindowDimBg] = bar;
-
 
 	//style.Colors[ImGuiCol_ModalWindowDarkening]	= ImVec4(0.20f, 0.22f, 0.27f, 0.73f);
 }

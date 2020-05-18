@@ -73,25 +73,30 @@ void TerrainSettings::Update()
 		if (ImGui::Button("Add filter##heightmaps"))
 		{
 			numHeightmaps++;
-			heightSettings.texNames.Append("");
-			heightSettings.textures.Append(0);
-		
-			terrain->tsVar.numHeightmaps++;
-		
 			if (numHeightmaps > 5)
 				numHeightmaps = 5;
+			else
+			{
+				heightSettings.texNames.Append("");
+				heightSettings.textures.Append(0);
+
+				terrain->tsVar.numHeightmaps++;
+			}			
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Remove filter##heightmaps"))
 		{
 			numHeightmaps--;
-			heightSettings.texNames.EraseIndex(heightSettings.texNames.Size() - 1);
-			heightSettings.textures.EraseIndex(heightSettings.textures.Size() - 1);
-		
-			terrain->tsVar.numHeightmaps--;
-		
 			if (numHeightmaps < 1)
 				numHeightmaps = 1;
+			else
+			{
+				heightSettings.texNames.EraseIndex(heightSettings.texNames.Size() - 1);
+				heightSettings.textures.EraseIndex(heightSettings.textures.Size() - 1);
+
+				terrain->tsVar.numHeightmaps--;
+			}
+			
 		}
 
 		for (int i = 0; i < this->numHeightmaps; i++)
@@ -147,13 +152,13 @@ void TerrainSettings::Update()
 		ImGui::LabelText("##widthmult", "Width Multiplier");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-		ImGui::DragFloat("##widthmult", &heightSettings.widthMultiplier, 0.1f, 0.0f, 1000.f);
+		ImGui::SliderFloat("##widthmult", &heightSettings.widthMultiplier, 0.0f, 1000.f);
 
 		ImGui::SetNextItemWidth(total_w);
 		ImGui::LabelText("##heightmult", "Height Multiplier");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-		if (ImGui::DragFloat("##heightmult", &heightSettings.heightMultiplier, 0.1f, 0.0f, 1000.f))
+		if (ImGui::SliderFloat("##heightmult", &heightSettings.heightMultiplier, 0.0f, 500.0f))
 		{
 			terrain->tsVar.heightScale = heightSettings.heightMultiplier;
 		}
