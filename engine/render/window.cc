@@ -257,7 +257,7 @@ Window::Open()
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 	io.ConfigWindowsResizeFromEdges = true;
 
-	io.Fonts->AddFontFromFileTTF("resources/fonts/Roboto-Medium.ttf", 16.0f);
+	io.Fonts->AddFontFromFileTTF("resources/fonts/Roboto-Medium.ttf", 14.0f);
 
 	ImGui_ImplGlfw_InitForOpenGL(this->window, false);
 	ImGui_ImplOpenGL3_Init();

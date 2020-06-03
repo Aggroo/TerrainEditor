@@ -71,7 +71,7 @@ private:
 	Util::Array<ShaderInfo*> dirtyPrograms;
 
 	//Contains all current shader objects
-	//Key is filename and value is a shaderObject pointer
+	//Key is shader name and value is a shaderObject pointer
 	Util::Dictionary<Util::String, Ptr<ShaderObject>> shaderObjects;
 
 	//Contains all render states

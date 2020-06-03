@@ -25,7 +25,7 @@ Surface::Surface()
 
 Surface::~Surface()
 {
-	glDeleteSamplers(textureSamplers.samplerIDs.Size(), &textureSamplers.samplerIDs[0]);
+	
 }
 
 void Surface::SetupShaderUniforms()

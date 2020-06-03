@@ -58,6 +58,7 @@ Application::Open()
 
 		Render::Renderer::Instance()->SetWindowResolution(1280, 900);
 		Render::Renderer::Instance()->SetRenderResolution(1280, 900);
+		Render::Renderer::Instance()->UnsetRenderFlag(Render::RenderSSAO);
 
 		terrain = TerrainEditor::Terrain::Create();
 		terrain->Activate();

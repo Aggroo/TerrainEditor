@@ -22,93 +22,6 @@ class TextureNode;
 class Model;
 class ModelNode;
 
-struct Samplers
-{
-	inline void ClampBorderBilinear() 
-	{
-		GLuint samplerID;
-		glGenSamplers(1, &samplerID);
-		glSamplerParameteri(samplerID, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glSamplerParameteri(samplerID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glSamplerParameteri(samplerID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-		glSamplerParameteri(samplerID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-
-		float borderColor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-		glSamplerParameterfv(samplerID, GL_TEXTURE_BORDER_COLOR, borderColor);
-		samplerIDs.Append(samplerID);
-	};
-
-	inline void ClampEdgeBilinear()
-	{
-		GLuint samplerID;
-		glGenSamplers(1, &samplerID);
-		glSamplerParameteri(samplerID, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glSamplerParameteri(samplerID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glSamplerParameteri(samplerID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glSamplerParameteri(samplerID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		samplerIDs.Append(samplerID);
-	};
-
-	inline void ClampBorderPoint()
-	{
-		GLuint samplerID;
-		glGenSamplers(1, &samplerID);
-		glSamplerParameteri(samplerID, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
-		glSamplerParameteri(samplerID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glSamplerParameteri(samplerID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-		glSamplerParameteri(samplerID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-
-		float borderColor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-		glSamplerParameterfv(samplerID, GL_TEXTURE_BORDER_COLOR, borderColor);
-		samplerIDs.Append(samplerID);
-	};
-
-	inline void ClampEdgePoint()
-	{
-		GLuint samplerID;
-		glGenSamplers(1, &samplerID);
-		glSamplerParameteri(samplerID, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
-		glSamplerParameteri(samplerID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glSamplerParameteri(samplerID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glSamplerParameteri(samplerID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		samplerIDs.Append(samplerID);
-	};
-
-	inline void RepeatBilinear()
-	{
-		GLuint samplerID;
-		glGenSamplers(1, &samplerID);
-		glSamplerParameteri(samplerID, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glSamplerParameteri(samplerID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glSamplerParameteri(samplerID, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glSamplerParameteri(samplerID, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		samplerIDs.Append(samplerID);
-	};
-
-	inline void RepeatPoint() 
-	{
-		GLuint samplerID;
-		glGenSamplers(1, &samplerID);
-		glSamplerParameteri(samplerID, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
-		glSamplerParameteri(samplerID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glSamplerParameteri(samplerID, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glSamplerParameteri(samplerID, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		samplerIDs.Append(samplerID);
-	};
-
-	void BindSamplers()
-	{
-		glBindSamplers(0, samplerIDs.Size(), &samplerIDs[0]);
-	};
-
-	void UnbindSamplers()
-	{
-		glBindSamplers(0, samplerIDs.Size(), 0);
-	};
-
-	Util::Array<GLuint> samplerIDs;
-};
-
 class Surface : public Core::RefCounted
 {
 __DeclareClass(Surface);
@@ -125,7 +38,6 @@ public:
 	void UpdateParameterByName(const Util::String& name, const Util::Variant& newValue);
 
 	Ptr<Render::TextureNode> GetTextureList() { return textures; }
-	Render::Samplers& GetTextureSamplers() { return textureSamplers; }
 
 	void AddModelNode(ModelNode* node);
 	bool RemoveModelNode(ModelNode* node);
@@ -160,8 +72,6 @@ private:
 
 	Render::UBOInfo* uboBuffer;
 	bool uniformBufferExist;
-
-	Render::Samplers textureSamplers;
 
 };
 } // namespace Render
