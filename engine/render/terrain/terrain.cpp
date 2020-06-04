@@ -12,7 +12,7 @@
 
 namespace Terrain
 {
-__ImplementClass(Terrain::Terrain, 'TETY', Game::EntityBase);
+__ImplementClass(Terrain, 'TETY', Game::EntityBase);
 
 //------------------------------------------------------------------------------
 /**

@@ -39,10 +39,11 @@ uniform vec3 lightPosition;
 void main()
 {
 	float height = texture2D(HeightMap[0], inCoord).r;
+	float mask = height;
 	
 	for(int i = 1; i < numHeightmaps; i++)
 	{
-		height = Overlay(height, texture2D(HeightMap[i], inCoord).r);
+		height = Overlay(height, texture2D(HeightMap[i], inCoord).r) * mask;
 	}
 	
 	vec4 vertPos = pos;
