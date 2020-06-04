@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 #include "config.h"
 #include "application.h"
-#include "application/game/terrain.h"
+#include "render/terrain/terrain.h"
 #include "render/render/renderer.h"
 #include "application/basegamefeatures/entitymanager.h"
 #include "render/render/skybox.h"
@@ -60,7 +60,7 @@ Application::Open()
 		Render::Renderer::Instance()->SetRenderResolution(1280, 900);
 		Render::Renderer::Instance()->UnsetRenderFlag(Render::RenderSSAO);
 
-		terrain = TerrainEditor::Terrain::Create();
+		terrain = Terrain::Terrain::Create();
 		terrain->Activate();
 
 

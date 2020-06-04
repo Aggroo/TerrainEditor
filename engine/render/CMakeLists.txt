@@ -68,6 +68,10 @@ SET(files_render_frames
 SET(files_render_terrain
 	terrain/terrain.h
 	terrain/terrain.cpp
+	terrain/terrainheightpass.h
+	terrain/terrainheightpass.cpp
+	terrain/terrainsplatpass.h
+	terrain/terrainsplatpass.cpp
 	)
 
 SET(files_render_server

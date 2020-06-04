@@ -1,7 +1,7 @@
 #pragma once
 #include "widget.h"
 #include "render/resources/texturenode.h"
-#include "application/game/terrain.h"
+#include "render/terrain/terrain.h"
 
 namespace Render
 {
@@ -53,7 +53,7 @@ public:
 
 	void Update() override;
 
-	void SetTerrain(Ptr<TerrainEditor::Terrain> terrain) { this->terrain = terrain; }
+	void SetTerrain(Ptr<Terrain::Terrain> terrain) { this->terrain = terrain; }
 
 private:
 
@@ -62,7 +62,7 @@ private:
 
 	void ModalWindow();
 
-	Ptr<TerrainEditor::Terrain> terrain;
+	Ptr<Terrain::Terrain> terrain;
 
 	bool heightPopup;
 	bool texturesPopup;

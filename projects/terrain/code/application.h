@@ -15,6 +15,11 @@
 #include <chrono>
 #include "foundation/util/jobsystem.h"
 
+namespace Terrain
+{
+	class Terrain;
+}
+
 namespace Application
 {
 class Application : public Core::App
@@ -45,7 +50,7 @@ private:
 	Display::Window* window;
 	Render::LightNode lNode;
 
-	Ptr<TerrainEditor::Terrain> terrain;
+	Ptr<Terrain::Terrain> terrain;
 	Ptr<Render::ShaderObject> shader;
 
 	bool initializeStarted;

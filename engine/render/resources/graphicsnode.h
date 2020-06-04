@@ -6,7 +6,6 @@
 
 #include <memory>
 #include "texturenode.h"
-#include "application/game/terrain.h"
 
 namespace Render
 {

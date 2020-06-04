@@ -19,7 +19,7 @@ TerrainSettings::TerrainSettings(Display::Window* app) : Widget(app), heightPopu
 	this->heightSettings.texNames.Append("");
 	this->numHeightmaps = 1;
 
-	this->terrain = TerrainEditor::Terrain::Create();
+	this->terrain = Terrain::Terrain::Create();
 	this->terrain->Activate();
 	this->terrain->CreateTerrain(heightSettings.texName.AsCharPtr(),
 			heightSettings.size,

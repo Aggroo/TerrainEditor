@@ -27,7 +27,7 @@ void UIServer::Setup(Display::Window* window)
 	cfg.MergeMode = true;
 	cfg.GlyphMinAdvanceX = 14.0f;
 	static const ImWchar icon_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
-	io.Fonts->AddFontFromFileTTF("resources/fonts/fa-solid-900.ttf", 16.0f, &cfg, icon_ranges);
+	io.Fonts->AddFontFromFileTTF("resources/fonts/fa-solid-900.ttf", 14.0f, &cfg, icon_ranges);
 	defaultFont = io.Fonts->AddFontFromFileTTF("resources/fonts/Roboto-Medium.ttf", 16.0f);
 	defaultFontLarge = io.Fonts->AddFontFromFileTTF("resources/fonts/Roboto-Medium.ttf", 18.0f);
 
@@ -126,8 +126,8 @@ void UIServer::ApplyStyle()
 	style.ItemSpacing = ImVec2(6, 5);
 	//style.ItemInnerSpacing	= ImVec2(6, 4);
 	style.Alpha = 1.0f;
-	style.WindowRounding = roundness;
-	style.FrameRounding = roundness+1.0f;
+	style.WindowRounding = roundness-1.0f;
+	style.FrameRounding = roundness;
 	style.PopupRounding = roundness;
 	//style.IndentSpacing		= 6.0f;
 	//style.ItemInnerSpacing	= ImVec2(2, 4);

@@ -9,7 +9,7 @@
 #include "render/resources/Model.h"
 
 
-namespace TerrainEditor
+namespace Terrain
 {
 
 struct HeightmapValues
@@ -59,10 +59,6 @@ public:
 	///Generates the terrain from a Heightmap
 	bool CreateTerrain(const char* filename, int size, float widthMultiplier, float heightMultiplier);
 
-	HeightmapValues Average(int x, int y);
-
-	float GetSteepness(int x, int y);
-
 	float GetHeightScale();
 
 	Ptr<Render::Model> GetModel() { return mesh; }
@@ -100,9 +96,6 @@ private:
 	Util::Array<GLuint> indices;
 
 	Render::ModelNode* node;
-
-	bool generate;
-	JobSystem::Context ctx;
 };
 }
 

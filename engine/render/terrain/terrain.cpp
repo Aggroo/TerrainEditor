@@ -10,14 +10,14 @@
 #include "application/basegamefeatures/entitymanager.h"
 #include "render/resources/model.h"
 
-namespace TerrainEditor
+namespace Terrain
 {
-__ImplementClass(TerrainEditor::Terrain, 'TETY', Game::EntityBase);
+__ImplementClass(Terrain::Terrain, 'TETY', Game::EntityBase);
 
 //------------------------------------------------------------------------------
 /**
 */
-Terrain::Terrain() : terrainWidth(0), terrainHeight(0), heightMap(nullptr), generate(false), node(nullptr)
+Terrain::Terrain() : terrainWidth(0), terrainHeight(0), heightMap(nullptr), node(nullptr)
 {
 	mesh = Render::Model::Create();
 	this->surface = Render::Surface::Create();
@@ -92,8 +92,6 @@ bool Terrain::CreateTerrain(const char* filename, int size, float widthMultiplie
 	this->terrainWidth = size;
 	this->terrainHeight = size;
 	this->sizeModifier = widthMultiplier;
-	
-	generate = true;
 
 	this->vertexCount = this->terrainWidth * this->terrainHeight;
 	this->indexCount = vertexCount * 6;
@@ -176,75 +174,6 @@ bool Terrain::CreateTerrain(const char* filename, int size, float widthMultiplie
 	//this->mesh->GenerateBuffers();
 
 	return true;
-}
-
-//------------------------------------------------------------------------------
-/**
-*/
-void Terrain::SmoothenTerrain()
-{
-	HeightmapValues* dest = new HeightmapValues[terrainWidth*terrainHeight];
-
-	for (uint i = 0; i < terrainHeight; ++i)
-	{
-		for (uint j = 0; j < terrainWidth; ++j)
-		{
-			dest[i*terrainHeight + j] = Average(j, i);
-		}
-	}
-
-	for (uint i = 0; i < (terrainWidth*terrainHeight); ++i)
-	{
-		heightMap[i] = dest[i];
-	}
-
-	delete[] dest;
-}
-
-//------------------------------------------------------------------------------
-/**
-*/
-HeightmapValues Terrain::Average(int x, int y)
-{
-	HeightmapValues avg;
-	float num = 0;
-	for (int m = y - 1; m <= y + 1; ++m)
-	{
-		for (int n = x - 1; n <= x + 1; ++n)
-		{
-			if (inBounds(m, n))
-			{
-				avg.x += heightMap[m*terrainHeight + n].x;
-				avg.y += heightMap[m*terrainHeight + n].y;
-				avg.z += heightMap[m*terrainHeight + n].z;
-				num += 1.0f;
-			}
-		}
-	}
-	avg.x /= num;
-	avg.y /= num;
-	avg.z /= num;
-	return avg;
-}
-
-//------------------------------------------------------------------------------
-/**
-*/
-float Terrain::GetSteepness(int x, int y)
-{
-	float slopeX = GetHeight(x <  terrainWidth - 1 ? x + 1 : x, y) - GetHeight(x > 0 ? x - 1 : x, y);
-	float slopeZ = GetHeight(x, y <  terrainHeight - 1 ? y + 1 : y) - GetHeight(x, y > 0 ? y - 1 : y);
-
-	if (x == 0 || x == terrainWidth - 1)
-		slopeX *= 2;
-	if (y == 0 || y == terrainHeight - 1)
-		slopeZ *= 2;
-
-	// Heightmap width = heightmap height
-	Math::vec3 normal = Math::vec3(-slopeX * (terrainWidth - 1) / terrainWidth, (terrainWidth - 1) / highestPoint, slopeZ * (terrainHeight - 1) / terrainHeight);
-	normal = Math::vec3::Normalize(normal);
-
-	return acos(Math::vec3::Dot(normal, Math::vec3(0.f, 1.f, 0.f)));
 }
 
 //------------------------------------------------------------------------------

@@ -42,7 +42,7 @@ private:
 	Display::Window* window;
 	Render::LightNode lNode;
 
-	Ptr<TerrainEditor::Terrain> terrain;
+	Ptr<Terrain::Terrain> terrain;
 	Ptr<Render::ShaderObject> shader;
 
 	//GLuint shaderTransMatrix;
