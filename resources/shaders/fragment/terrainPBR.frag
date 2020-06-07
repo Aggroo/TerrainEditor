@@ -120,6 +120,20 @@ float overlayBlend(float value1, float value2, float opacity)
 	return mix(value1, blend, opacity); 
 }
 
+vec4 heightblend(vec4 input1, float height1, vec4 input2, float height2)
+{
+    float height_start = max(height1, height2) - 0.5f;
+    float level1 = max(height1 - height_start, 0);
+    float level2 = max(height2 - height_start, 0);
+    return ((input1 * level1) + (input2 * level2)) / (level1 + level2);
+}
+
+vec4 heightlerp(vec4 input1, float height1, vec4 input2, float height2, float t)
+{
+    t = clamp(t, 0, 1);
+    return heightblend(input1, height1 * (1 - t), input2, height2 * t);
+}
+
 void main()
 {
 	uint tileLights = 512;
