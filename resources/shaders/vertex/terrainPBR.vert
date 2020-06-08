@@ -4,7 +4,7 @@ layout(location=2) in vec3 inNormal;
 layout(location=3) in vec3 tangent;
 layout(location=4) in vec3 biNormal;
 
-uniform sampler2D HeightMap[5];
+uniform sampler2D HeightMap;
 
 layout (std140, binding = 1) uniform TerrainVariables
 {
@@ -34,20 +34,12 @@ out mat3 model33Out;
 
 uniform vec3 lightPosition;
 
-#include("blend.glsl")
-
 void main()
 {
-	float height = texture2D(HeightMap[0], inCoord).r;
-	float mask = height;
-	
-	for(int i = 1; i < numHeightmaps; i++)
-	{
-		height = Overlay(height, texture2D(HeightMap[i], inCoord).r) * mask;
-	}
-	
+	float height = texture2D(HeightMap, inCoord).r  * heightScale;
+
 	vec4 vertPos = pos;
-	vertPos.y = height * heightScale;
+	vertPos.y = height;
 	
 	vec4 worldpos = Model*vertPos;
 

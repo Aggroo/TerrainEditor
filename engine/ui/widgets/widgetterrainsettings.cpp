@@ -17,12 +17,10 @@ TerrainSettings::TerrainSettings(Display::Window* app) : Widget(app), heightPopu
 	this->title = title;
 	this->heightSettings.textures.Append(0);
 	this->heightSettings.texNames.Append("");
-	this->numHeightmaps = 1;
 
 	this->terrain = Terrain::Terrain::Create();
 	this->terrain->Activate();
-	this->terrain->CreateTerrain(heightSettings.texName.AsCharPtr(),
-			heightSettings.size,
+	this->terrain->CreateTerrain(heightSettings.size,
 			heightSettings.widthMultiplier,
 			heightSettings.heightMultiplier);
 
@@ -52,6 +50,16 @@ void TerrainSettings::Update()
 
 		ImGui::Separator();
 
+		ImGui::Indent(10);
+		if (ImGui::Button("Update##heightmapgen", ImVec2(ImGui::GetWindowContentRegionWidth() - 20, 25)))
+		{
+			this->terrain->CreateTerrain(heightSettings.size,
+					heightSettings.widthMultiplier,
+					heightSettings.heightMultiplier);
+		}
+		ImGui::Unindent(10);
+
+		ImGui::Separator();
 
 		if (ImGui::CollapsingHeader("Base Settings", ImGuiTreeNodeFlags_Leaf))
 		{
@@ -62,13 +70,17 @@ void TerrainSettings::Update()
 			ImGui::LabelText("##terrainwidth", "Width");
 			ImGui::SameLine();
 			ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-			ImGui::DragInt("##terrainwidth", &heightSettings.size, 1, 16, 16384);
+			if (ImGui::DragInt("##terrainwidth", &heightSettings.size, 16, 16, 16384))
+			{
+			}
 
 			ImGui::SetNextItemWidth(total_w);
 			ImGui::LabelText("##widthmult", "Width Multiplier");
 			ImGui::SameLine();
 			ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-			ImGui::SliderFloat("##widthmult", &heightSettings.widthMultiplier, 0.0f, 1000.f);
+			if (ImGui::SliderFloat("##widthmult", &heightSettings.widthMultiplier, 0.0f, 10.f))
+			{
+			}
 
 			ImGui::SetNextItemWidth(total_w);
 			ImGui::LabelText("##heightmult", "Height Multiplier");
@@ -246,34 +258,35 @@ void TerrainSettings::Update()
 
 			if (ImGui::Button("Add filter##heightmaps"))
 			{
-				numHeightmaps++;
-				if (numHeightmaps > 5)
-					numHeightmaps = 5;
+				terrain->heightPass->layerVars.numHeightmaps++;
+				if (terrain->heightPass->layerVars.numHeightmaps > 5)
+					terrain->heightPass->layerVars.numHeightmaps = 5;
 				else
 				{
 					heightSettings.texNames.Append("");
 					heightSettings.textures.Append(0);
 
-					terrain->tsVar.numHeightmaps++;
+					//terrain->tsVar.numHeightmaps++;
 				}
+				terrain->heightPass->Execute();
 			}
 			ImGui::SameLine();
 			if (ImGui::Button("Remove filter##heightmaps"))
 			{
-				numHeightmaps--;
-				if (numHeightmaps < 1)
-					numHeightmaps = 1;
+				terrain->heightPass->layerVars.numHeightmaps--;
+				if (terrain->heightPass->layerVars.numHeightmaps < 1)
+					terrain->heightPass->layerVars.numHeightmaps = 1;
 				else
 				{
 					heightSettings.texNames.EraseIndex(heightSettings.texNames.Size() - 1);
 					heightSettings.textures.EraseIndex(heightSettings.textures.Size() - 1);
 
-					terrain->tsVar.numHeightmaps--;
+					//terrain->tsVar.numHeightmaps--;
 				}
-
+				terrain->heightPass->Execute();
 			}
 
-			for (int i = 0; i < this->numHeightmaps; i++)
+			for (int i = 0; i < this->terrain->heightPass->layerVars.numHeightmaps; i++)
 			{
 				Util::String nodeName = "Heightmap ";
 				nodeName.AppendInt(i + 1);
@@ -312,23 +325,36 @@ void TerrainSettings::Update()
 
 					ImGui::Separator();
 
-					float total_w = ImGui::GetContentRegionAvail().x / 3.0f;
-
-					ImGui::SetNextItemWidth(total_w);
-					ImGui::LabelText("##masktext+i","First Layer Mask");
-					ImGui::SameLine();
-					ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-					if (ImGui::Checkbox("##mask" + i, &heightSettings.firstLayerAsMask))
+					if (i > 0)
 					{
-					}
+						float total_w = ImGui::GetContentRegionAvail().x / 3.0f;
 
-					ImGui::SetNextItemWidth(total_w);
-					ImGui::LabelText("##weighttext"+i,"Layer Weight");
-					ImGui::SameLine();
-					ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-					if (ImGui::SliderFloat("##weight" + i, &heightSettings.layerWeight, 0.0f, 1.0f))
-					{
+						nodeName = "##masktext";
+						nodeName.AppendInt(i);
+						ImGui::SetNextItemWidth(total_w);
+						ImGui::LabelText(nodeName.AsCharPtr(), "First Layer Mask");
+						ImGui::SameLine();
+						ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+						nodeName = "##mask";
+						nodeName.AppendInt(i);
+						if (ImGui::Checkbox(nodeName.AsCharPtr(), &heightSettings.useFirstLayerAsMask[i]))
+						{
+							terrain->heightPass->layerVars.useFirstLayerAsMask[i-1] = heightSettings.useFirstLayerAsMask[i] ? 1 : 0;
+							terrain->heightPass->Execute();
+						}
 
+						nodeName = "##weighttext";
+						nodeName.AppendInt(i);
+						ImGui::SetNextItemWidth(total_w);
+						ImGui::LabelText(nodeName.AsCharPtr(), "Layer Weight");
+						ImGui::SameLine();
+						ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+						nodeName = "##weight";
+						nodeName.AppendInt(i);
+						if (ImGui::SliderFloat(nodeName.AsCharPtr(), &terrain->heightPass->layerVars.layerStrength[i-1], 0.0f, 1.0f))
+						{
+							terrain->heightPass->Execute();
+						}
 					}
 
 					ImGui::TreePop();
@@ -346,12 +372,6 @@ void TerrainSettings::Update()
 	//	ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
 	//	ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
 	//}
-	//ImGui::Indent(10);
-	//if (ImGui::Button("Generate##heightmapgen", ImVec2(ImGui::GetWindowContentRegionWidth() - 20, 25)))
-	//{
-	//
-	//}
-	//ImGui::Unindent(10);
 
 	//if (heightSettings.texNames[0].IsEmpty())
 	//{
@@ -443,8 +463,8 @@ void TerrainSettings::ModalWindow()
 				break;
 			}
 			
-			terrain->GetSurface()->GetTextureList()->UpdateTexture(texIndx, heightSettings.texNames[chosenHeightmap].AsCharPtr());
-			heightSettings.textures[chosenHeightmap] = terrain->GetSurface()->GetTextureList()->GetTexture(texIndx)->GetTextureID();
+			terrain->heightPass->UpdateTexture(texIndx, heightSettings.texNames[chosenHeightmap].AsCharPtr());
+			heightSettings.textures[chosenHeightmap] = terrain->heightPass->GetHeightmaps()->GetTexture(texIndx)->GetTextureID();
 
 			this->heightPopup = false;
 			free(outpath);

@@ -21,6 +21,7 @@ Terrain::Terrain() : terrainWidth(0), terrainHeight(0), heightMap(nullptr), node
 {
 	mesh = Render::Model::Create();
 	this->surface = Render::Surface::Create();
+	this->heightPass = TerrainHeightPass::Create();
 
 	glGenBuffers(1, this->ubo);
 }
@@ -50,6 +51,11 @@ void Terrain::Activate()
 
 	this->surface->SetUniformBuffer(bufferInfo);
 
+	this->heightPass->Setup(this->surface->GetTextureList()->GetTexture(Render::TextureIndex::heightmap0));
+	this->heightPass->Execute();
+
+	this->surface->GetTextureList()->UpdateTexture(Render::TextureIndex::heightmap0, this->heightPass->GetFinalHeightmap());
+
 	EntityBase::Activate();
 }
 
@@ -66,6 +72,7 @@ void Terrain::Deactivate()
 */
 void Terrain::Update()
 {
+	//this->heightPass->Execute();
 	this->mesh->transform = this->transform;
 }
 
@@ -80,7 +87,7 @@ void Terrain::OnUI()
 //------------------------------------------------------------------------------
 /**
 */
-bool Terrain::CreateTerrain(const char* filename, int size, float widthMultiplier, float heightMultiplier)
+bool Terrain::CreateTerrain(int size, float widthMultiplier, float heightMultiplier)
 {
 
 	this->vertices.Reset();

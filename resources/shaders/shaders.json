@@ -87,6 +87,11 @@
 			"name": "spmap",
 			"desc": "Compute shader to calculate spmap for IBL",
 			"shader": "resources/shaders/compute/spmap.comp"
+		},
+		{
+			"name": "heightmap",
+			"desc": "Compute shader to merge heightmaps into a single one",
+			"shader": "resources/shaders/compute/heightmap.comp"
 		}
 	]
 }

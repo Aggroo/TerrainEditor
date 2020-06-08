@@ -1,11 +1,14 @@
-layout(binding=1, rgba16f) restrict writeonly uniform image2D heightmapOut;
 
-layout(std430, binding = 10) buffer LayerVariables
+
+layout(std140, binding = 14) uniform LayerVariables
 {
+    vec4 layerStrength;
+    uvec4 useFirstLayerAsMask;
+    vec4 padding;
     int numHeightmaps;
-    bool useFirstLayerAsMask[5];
-    float layerStrength[5];
 };
+
+layout(binding=1, rgba16f) restrict writeonly uniform image2D heightmapOut;
 
 uniform sampler2D heightmaps[5];
 
@@ -15,15 +18,16 @@ layout(local_size_x=TILE_SIZE, local_size_y=TILE_SIZE, local_size_z=1) in;
 void main(void)
 {
     // get index in global work group i.e x,y position
-	ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);
+	vec2 pixelCoords = gl_GlobalInvocationID.xy / vec2(imageSize(heightmapOut));
     float height = texture(heightmaps[0], pixelCoords).r;
 	float mask = height;
 	
-	for(int i = 1; i < numHeightmaps; i++)
+ 	for(int i = 1; i < numHeightmaps; i++)
 	{
-        float m = useFirstLayerAsMask[i] ? mask : 1;
-		height = Overlay(height, texture(heightmaps[i], inCoord)).r * m * layerStrength[i];
-	}
+        float m = useFirstLayerAsMask[i-1] == 1 ? mask : 1;
+		height += texture(heightmaps[i], pixelCoords).r * m * layerStrength[i-1];
+    }
 
-    imageStore(heightmapOut, pixelCoords, vec4(height, height, height, height));
+    vec4 pixel = vec4(height, height, height, 1.0);
+    imageStore(heightmapOut, ivec2(gl_GlobalInvocationID.xy), pixel);
 }

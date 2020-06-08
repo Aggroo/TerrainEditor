@@ -38,13 +38,10 @@ struct HeightMapSettings
 {
 	Util::Array<Util::String> texNames;
 	Util::Array<GLuint> textures;
-	Util::String texName;
-	GLuint texture;
 	int size = 512;
 	float widthMultiplier = 1.f;
 	float heightMultiplier = 1.f;
-	float layerWeight = 1.f;
-	bool firstLayerAsMask = false;
+	bool useFirstLayerAsMask[5] = { false, false, false, false, false };
 };
 
 class TerrainSettings : public Widget
@@ -74,7 +71,6 @@ private:
 	UI::TextureSettings texSettings;
 
 	//The number of heightmaps you want to blend with. One base and X "filters"
-	int numHeightmaps;
 	int chosenHeightmap;
 
 };

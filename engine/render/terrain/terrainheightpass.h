@@ -7,41 +7,62 @@
 */
 //------------------------------------------------------------------------------
 #include "core/refcounted.h"
+#include <gl/glew.h>
 
 namespace Render
 {
 class TextureNode;
 class TextureResource;
+enum class TextureIndex;
 }
 
 namespace Terrain
 {
-
-struct LayerVariables
-{
-	int numHeightmaps;
-	bool useFirstLayerAsMask[5];
-	float layerStrength[5];
-};
-
 class TerrainHeightPass : public Core::RefCounted
 {
     __DeclareClass(TerrainHeightPass);
+private:
+
+	struct Layer
+	{
+		
+	};
+
+	struct LayerVariables
+	{
+		float layerStrength[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+		uint useFirstLayerAsMask[4] = { 0,0,0,0 };
+		Math::vec4 padding;
+		int numHeightmaps = 1;
+	};
+
+	GLuint ubo[1];
+
 public:
     TerrainHeightPass();
     ~TerrainHeightPass();
 
-	void Setup();
+	void Setup(Ptr<Render::TextureResource> baseMap);
 	void Execute();
 
-	void UpdateVariables(const LayerVariables& updatedVars);
+	void UpdateTexture(Render::TextureIndex index, const char* filename);
+	//LayerVariables& GetLayerVariables() { return vars; }
 
+	Ptr<Render::TextureResource> GetFinalHeightmap() { return mergedHeightmap; }
+	Ptr<Render::TextureNode> GetHeightmaps() { return heightmaps; }
+
+	LayerVariables layerVars;
 private:
 
 	Ptr<Render::TextureNode> heightmaps;
 	Ptr<Render::TextureResource> mergedHeightmap;
 
-	LayerVariables vars;
+	//Work group dimensions for the heightmap compute shader
+	GLuint workGroupsX;
+	GLuint workGroupsY;
+
+	
+	GLuint heightmapProgram;
 
 };
 

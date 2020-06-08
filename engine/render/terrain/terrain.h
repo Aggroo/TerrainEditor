@@ -7,6 +7,7 @@
 #include "foundation/util/jobsystem.h"
 #include "render/resources/meshresource.h"
 #include "render/resources/Model.h"
+#include "terrainheightpass.h"
 
 
 namespace Terrain
@@ -57,7 +58,8 @@ public:
 	virtual void OnUI();
 
 	///Generates the terrain from a Heightmap
-	bool CreateTerrain(const char* filename, int size, float widthMultiplier, float heightMultiplier);
+	bool CreateTerrain(int size, float widthMultiplier, float heightMultiplier);
+	void UpdateTerrainWidth(float widthMultiplier);
 
 	float GetHeightScale();
 
@@ -66,6 +68,7 @@ public:
 
 	///Shader Settings
 	TerrainShaderVariables tsVar;
+	Ptr<TerrainHeightPass> heightPass;
 
 private:
 	void SmoothenTerrain();
@@ -96,6 +99,8 @@ private:
 	Util::Array<GLuint> indices;
 
 	Render::ModelNode* node;
+
+	
 };
 }
 

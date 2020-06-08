@@ -51,6 +51,11 @@ void TextureNode::UpdateTexture(TextureIndex index, const char* filename)
 	}
 }
 
+void TextureNode::UpdateTexture(TextureIndex index, Ptr<TextureResource> texture)
+{
+	this->textures[index] = texture;
+}
+
 Ptr<Render::TextureResource> TextureNode::GetTexture(TextureIndex index) const
 {
 	return this->textures[index];

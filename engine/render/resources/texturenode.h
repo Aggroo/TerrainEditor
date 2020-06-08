@@ -42,6 +42,7 @@ public:
 	void AddTexture(TextureIndex index, const CreateTextureParameters & textureParams);
 	void AddTexture(TextureIndex index, Ptr<TextureResource> texture);
 	void UpdateTexture(TextureIndex index, const char * filename);
+	void UpdateTexture(TextureIndex index, Ptr<TextureResource> texture);
 	Ptr<TextureResource> GetTexture(TextureIndex index) const;
 	void BindTextures() const;
 	void UnbindTextures() const;

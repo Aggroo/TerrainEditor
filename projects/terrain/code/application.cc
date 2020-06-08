@@ -60,10 +60,6 @@ Application::Open()
 		Render::Renderer::Instance()->SetRenderResolution(1280, 900);
 		Render::Renderer::Instance()->UnsetRenderFlag(Render::RenderSSAO);
 
-		terrain = Terrain::Terrain::Create();
-		terrain->Activate();
-
-
 		Input::InputManager::Instance()->Setup(window, &lNode);
 
 		Input::InputManager::Instance()->Initialization();
