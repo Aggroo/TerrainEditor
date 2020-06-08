@@ -25,11 +25,14 @@ struct ImGuiStyleColors
 
 };
 
-void BeginButtonStyle()
+void BeginButtonStyle(const bool& activeButton)
 {
 	ImGuiStyleColors colors;
 	ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 0.0f);
-	ImGui::PushStyleColor(ImGuiCol_Button, colors.backgroundVeryDark);
+	if(activeButton)
+		ImGui::PushStyleColor(ImGuiCol_Button, colors.backgroundMedium);
+	else
+		ImGui::PushStyleColor(ImGuiCol_Button, colors.backgroundVeryDark);
 	ImGui::PushStyleColor(ImGuiCol_Border, colors.backgroundVeryDark);
 	ImGui::PushStyleColor(ImGuiCol_ChildBg, colors.backgroundVeryDark);
 	ImGui::PushFont(UI::UIServer::Instance()->GetLargeDefaultFont());
@@ -66,8 +69,8 @@ void BeginGroupPanel(const char* name, const ImVec2& size = ImVec2(-1.0f, -1.0f)
 	ImGui::SameLine(0.0f, 0.0f);
 	ImGui::BeginGroup();
 	ImGui::Dummy(ImVec2(frameHeight * 0.5f, 0.0f));
-	ImGui::SameLine(0.0f, 0.0f);
-	ImGui::TextUnformatted(name);
+	//ImGui::SameLine(0.0f, 0.0f);
+	//ImGui::TextUnformatted(name);
 	ImGui::SameLine(0.0f, 0.0f);
 	ImGui::Dummy(ImVec2(0.0, frameHeight + itemSpacing.y));
 	ImGui::BeginGroup();

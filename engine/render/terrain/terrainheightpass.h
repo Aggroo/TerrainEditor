@@ -10,6 +10,7 @@
 
 namespace Render
 {
+class TextureNode;
 class TextureResource;
 }
 
@@ -33,11 +34,13 @@ public:
 	void Setup();
 	void Execute();
 
-	void UpdateVariables();
+	void UpdateVariables(const LayerVariables& updatedVars);
 
 private:
 
-	Ptr<Render::TextureResource> heightmap;
+	Ptr<Render::TextureNode> heightmaps;
+	Ptr<Render::TextureResource> mergedHeightmap;
+
 	LayerVariables vars;
 
 };

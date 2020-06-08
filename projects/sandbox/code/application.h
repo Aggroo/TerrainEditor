@@ -14,6 +14,11 @@
 #include "foundation/input/inputmanager.h"
 #include <chrono>
 
+namespace Terrain
+{
+	class Terrain;
+}
+
 namespace Application
 {
 class Application : public Core::App

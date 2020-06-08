@@ -4,11 +4,20 @@
 //------------------------------------------------------------------------------
 #include "config.h"
 #include "terrainheightpass.h"
-#include "render/resources/textureresource.h"
+#include "render/resources/texturenode.h"
 
 namespace Terrain
 {
 __ImplementClass(Terrain::TerrainHeightPass, 'TEHP', Core::RefCounted);
 
+
+TerrainHeightPass::TerrainHeightPass() : vars{ 1, {1,1,1,1,1}, {1.0f,1.0f,1.0f,1.0f,1.0f} }
+{
+}
+
+void TerrainHeightPass::UpdateVariables(const LayerVariables& updatedVars)
+{
+	this->vars = updatedVars;
+}
 
 } // namespace Terrain

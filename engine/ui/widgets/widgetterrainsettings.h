@@ -43,6 +43,8 @@ struct HeightMapSettings
 	int size = 512;
 	float widthMultiplier = 1.f;
 	float heightMultiplier = 1.f;
+	float layerWeight = 1.f;
+	bool firstLayerAsMask = false;
 };
 
 class TerrainSettings : public Widget
@@ -66,6 +68,7 @@ private:
 
 	bool heightPopup;
 	bool texturesPopup;
+	bool baseOrFilter;
 
 	UI::HeightMapSettings heightSettings;
 	UI::TextureSettings texSettings;
@@ -73,5 +76,6 @@ private:
 	//The number of heightmaps you want to blend with. One base and X "filters"
 	int numHeightmaps;
 	int chosenHeightmap;
+
 };
 }
