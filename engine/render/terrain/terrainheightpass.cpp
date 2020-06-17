@@ -47,9 +47,9 @@ void TerrainHeightPass::Setup(Ptr<Render::TextureResource> baseMap)
 	glTextureStorage2D(this->mergedHeightmap->GetTextureID(), 1, GL_RGBA16F, baseMap->GetWidth(), baseMap->GetHeight());
 	glTextureParameteri(this->mergedHeightmap->GetTextureID(), GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTextureParameteri(this->mergedHeightmap->GetTextureID(), GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTextureParameteri(this->mergedHeightmap->GetTextureID(), GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-	glTextureParameteri(this->mergedHeightmap->GetTextureID(), GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+	glTextureParameteri(this->mergedHeightmap->GetTextureID(), GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTextureParameteri(this->mergedHeightmap->GetTextureID(), GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	//glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
 	workGroupsX = (GLuint)(this->mergedHeightmap->GetWidth() + (this->mergedHeightmap->GetWidth() % 16)) / 16;
 	workGroupsY = (GLuint)(this->mergedHeightmap->GetHeight() + (this->mergedHeightmap->GetHeight() % 16)) / 16;
