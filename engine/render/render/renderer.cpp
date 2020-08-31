@@ -10,7 +10,7 @@
 
 namespace Render
 {
-Renderer::Renderer()
+	Renderer::Renderer() : ubo{ 0 }, renderResolution{800,600}
 {	
 }
 

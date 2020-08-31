@@ -22,10 +22,11 @@ Logger::~Logger()
 
 void Logger::Init()
 {
-	spdlog::set_pattern("%^[%T] %n: %v%$");
+	spdlog::set_pattern("%^[%T] [%n]: %v%$");
 	coreLogger = spdlog::stdout_color_mt("TERRAIN ENGINE");
 	coreLogger->set_level(spdlog::level::trace);
 	clientLogger = spdlog::stdout_color_mt("APP");
 	clientLogger->set_level(spdlog::level::trace);
+	
 }
 } // namespace IO

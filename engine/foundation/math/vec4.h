@@ -10,25 +10,24 @@ public:
 	inline vec4()
 	{
 
-		vec[0] = 0;
-		vec[1] = 0;
-		vec[2] = 0;
-
-		vec[3] = 1;
+		vec[0] = 0.0f;
+		vec[1] = 0.0f;
+		vec[2] = 0.0f;
+		vec[3] = 1.0f;
 	}
 	inline vec4(int x, int y, int z)
 	{
-		vec[0] = x;
-		vec[1] = y;
-		vec[2] = z;
-		vec[3] = 1;
+		vec[0] = float(x);
+		vec[1] = float(y);
+		vec[2] = float(z);
+		vec[3] = 1.0f;
 	}
 	inline vec4(float x, float y, float z)
 	{
 		vec[0] = x;
 		vec[1] = y;
 		vec[2] = z;
-		vec[3] = 1;
+		vec[3] = 1.0f;
 	}
 
 	inline vec4(vec3 v)
@@ -36,7 +35,7 @@ public:
 		vec[0] = v.x();
 		vec[1] = v.y();
 		vec[2] = v.z();
-		vec[3] = 1;
+		vec[3] = 1.0f;
 	}
 	inline vec4(float x, float y, float z , float w)
 	{

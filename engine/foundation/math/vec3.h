@@ -10,15 +10,15 @@ namespace Math
 		//Konstruktor
 		inline vec3()
 		{
-			vec[0] = 0.f;
-			vec[1] = 0.f;
-			vec[2] = 0.f;
+			vec[0] = 0.0f;
+			vec[1] = 0.0f;
+			vec[2] = 0.0f;
 		}
 		inline vec3(int x, int y, int z)
 		{
-			vec[0] = x;
-			vec[1] = y;
-			vec[2] = z;
+			vec[0] = float(x);
+			vec[1] = float(y);
+			vec[2] = float(z);
 		}
 
 		inline vec3(float x, float y, float z)

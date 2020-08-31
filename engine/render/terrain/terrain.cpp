@@ -257,7 +257,7 @@ void Terrain::GenerateNormals()
 */
 float Terrain::GetHeight(int x, int y) const
 {
-	return this->vertices[y*terrainWidth + x].pos.y();
+	return this->vertices[y * terrainWidth + x].pos.y();
 }
 
 //------------------------------------------------------------------------------

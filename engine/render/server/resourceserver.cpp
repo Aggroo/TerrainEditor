@@ -151,7 +151,7 @@ Ptr<Model> ResourceServer::LoadModel(const Util::String & filepath)
 	std::ifstream i(filepath.AsCharPtr());
 
 	if (!i) {
-		T_CORE_ERROR("MODEL LOAD Couldn't find {0}!", filepath);
+		T_CORE_ERROR("MODEL LOAD Couldn't find {0}!", filepath.AsCharPtr());
 		_assert(false);
 		return false;
 	}
@@ -163,7 +163,7 @@ Ptr<Model> ResourceServer::LoadModel(const Util::String & filepath)
 
 	if (this->HasModelNamed(filepath))
 	{
-		T_CORE_WARN("Duplicate model loaded: \" {0} \". Using previously loaded model...", filepath);
+		T_CORE_WARN("Duplicate model loaded: \" {0} \". Using previously loaded model...", filepath.AsCharPtr());
 	}
 	else
 	{

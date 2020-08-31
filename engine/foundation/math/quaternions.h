@@ -236,10 +236,10 @@ public:
 		}
 		// calculate final values
 		quaternions res;
-		res.x = scale0 * from->x + scale1 * to1[0];
-		res.y = scale0 * from->y + scale1 * to1[1];
-		res.z = scale0 * from->z + scale1 * to1[2];
-		res.w = scale0 * from->w + scale1 * to1[3];
+		res.x = static_cast<float>(scale0 * from->x + scale1 * to1[0]);
+		res.y = static_cast<float>(scale0 * from->y + scale1 * to1[1]);
+		res.z = static_cast<float>(scale0 * from->z + scale1 * to1[2]);
+		res.w = static_cast<float>(scale0 * from->w + scale1 * to1[3]);
 		return res;
 	}
 

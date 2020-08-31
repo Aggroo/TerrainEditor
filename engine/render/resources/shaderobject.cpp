@@ -69,7 +69,7 @@ void ShaderObject::LinkShaders()
 	{
 		GLchar* buf = new GLchar[shaderLogSize];
 		glGetProgramInfoLog(this->program, shaderLogSize, NULL, buf);
-		T_CORE_ERROR("[PROGRAM LINK ERROR]: %s", buf);
+		T_CORE_ERROR("[PROGRAM LINK ERROR]: {0}", buf);
 		delete[] buf;
 	}
 }

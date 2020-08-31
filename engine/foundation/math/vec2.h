@@ -10,15 +10,15 @@ namespace Math
 		inline vec2()
 		{
 
-			vec[0] = 0;
-			vec[1] = 1;
+			vec[0] = 0.0f;
+			vec[1] = 1.0f;
 
 		}
 
 		inline vec2(int x, int y)
 		{
-			vec[0] = x;
-			vec[1] = y;
+			vec[0] = float(x);
+			vec[1] = float(y);
 		}
 
 		inline vec2(float x, float y)

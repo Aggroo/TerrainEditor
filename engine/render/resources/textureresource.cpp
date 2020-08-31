@@ -12,7 +12,7 @@
 namespace Render
 {
 __ImplementClass(Render::TextureResource, 'TXTR', Core::RefCounted)
-TextureResource::TextureResource() : isHDR(false)
+TextureResource::TextureResource() : isHDR(false), channels(1), height(0), image(0) 
 {
 
 }

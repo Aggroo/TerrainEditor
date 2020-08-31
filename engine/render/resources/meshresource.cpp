@@ -58,7 +58,7 @@ bool MeshResources::LoadMesh(const char* filename)
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
-		T_CORE_ERROR("ERROR::ASSIMP::%s", import.GetErrorString());
+		T_CORE_ERROR("ERROR::ASSIMP::{0}", import.GetErrorString());
 		return false;
 	}
 

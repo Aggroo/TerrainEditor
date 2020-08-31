@@ -44,7 +44,7 @@ void Material::SetFramePass(const Util::String& framepass, const Util::String& s
 	}
 	else
 	{
-		T_CORE_ERROR("ERROR Material::SetFramePass : Cannot find pass named %s!\n", framepass.AsCharPtr());
+		T_CORE_ERROR("ERROR Material::SetFramePass : Cannot find pass named {0}!", framepass.AsCharPtr());
 		assert(false);
 	}
 }
@@ -60,7 +60,7 @@ MaterialParameter* Material::GetParameterByName(const Util::String& name)
 	}
 	else
 	{
-		T_CORE_ERROR("ERROR Material::GetParameterByName: Could not find parameter with name %s!", name.AsCharPtr());
+		T_CORE_ERROR("ERROR Material::GetParameterByName: Could not find parameter with name {0}!", name.AsCharPtr());
 
 	#ifdef _DEBUG
 		assert(false);
