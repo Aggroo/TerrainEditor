@@ -29,6 +29,7 @@ private:
 
 };
 } // namespace IO
+
 #define T_CORE_TRACE(...) ::IO::Logger::GetCoreLogger()->trace(__VA_ARGS__)
 #define T_CORE_INFO(...) ::IO::Logger::GetCoreLogger()->info(__VA_ARGS__)
 #define T_CORE_ERROR(...) ::IO::Logger::GetCoreLogger()->error(__VA_ARGS__)

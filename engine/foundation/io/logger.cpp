@@ -12,14 +12,23 @@ namespace IO
 std::shared_ptr<spdlog::logger> Logger::coreLogger;
 std::shared_ptr<spdlog::logger> Logger::clientLogger;
 
+//------------------------------------------------------------------------------
+/**
+*/
 Logger::Logger()
 {
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 Logger::~Logger()
 {
 }
 
+//------------------------------------------------------------------------------
+/**
+*/
 void Logger::Init()
 {
 	spdlog::set_pattern("%^[%T] [%n]: %v%$");
