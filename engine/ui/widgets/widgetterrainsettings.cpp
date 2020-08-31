@@ -443,7 +443,7 @@ void TerrainSettings::ModalWindow()
 
 		if (result == NFD_OKAY)
 		{
-			printf("path: %s\n", outpath);
+			T_CORE_INFO("Texture Path: {0}", outpath);
 
 			Util::String s = outpath;
 			Util::Array<Util::String> path;
@@ -474,7 +474,7 @@ void TerrainSettings::ModalWindow()
 		}
 		else
 		{
-			printf("Error: %s\n", NFD_GetError());
+			T_CORE_ERROR("Error: {0}", NFD_GetError());
 			assert(false);
 			this->heightPopup = false;
 		}
@@ -489,7 +489,7 @@ void TerrainSettings::ModalWindow()
 
 		if (result == NFD_OKAY)
 		{
-			printf("path: %s\n", outpath);
+			T_CORE_INFO("Texture Path: {0}", outpath);
 
 			Util::String s = outpath;
 			Util::Array<Util::String> path;
@@ -524,7 +524,7 @@ void TerrainSettings::ModalWindow()
 		}
 		else
 		{
-			printf("Error: %s\n", NFD_GetError());
+			T_CORE_ERROR("Error: {0}", NFD_GetError());
 			assert(false);
 			this->texturesPopup = false;
 		}

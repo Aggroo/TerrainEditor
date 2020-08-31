@@ -442,14 +442,14 @@ public:
 	inline static mat4 perspectiveMatrix(const float fovy, const float aspect, const float zn, const float zf)
 	{
 		mat4 fovMatrix;
-		const auto halfFov = 0.5f * fovy;
-		const auto sinfov = sinf(halfFov);
-		const auto cosfov = cosf(halfFov);
+		const float halfFov = 0.5f * fovy;
+		const float sinfov = sinf(halfFov);
+		const float cosfov = cosf(halfFov);
 
-		const auto height = cosfov / sinfov;
-		const auto width = height / aspect;
+		const float height = cosfov / sinfov;
+		const float width = height / aspect;
 
-		const auto dist = zf / (zn - zf);
+		const float dist = zf / (zn - zf);
 		fovMatrix[0] = width;
 		fovMatrix[5] = height;
 		fovMatrix[10] = dist;
