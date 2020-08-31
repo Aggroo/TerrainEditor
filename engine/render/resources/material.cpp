@@ -44,7 +44,7 @@ void Material::SetFramePass(const Util::String& framepass, const Util::String& s
 	}
 	else
 	{
-		printf("ERROR Material::SetFramePass : Cannot find pass named %s!\n", framepass.AsCharPtr());
+		T_CORE_ERROR("ERROR Material::SetFramePass : Cannot find pass named %s!\n", framepass.AsCharPtr());
 		assert(false);
 	}
 }
@@ -60,7 +60,7 @@ MaterialParameter* Material::GetParameterByName(const Util::String& name)
 	}
 	else
 	{
-		printf("ERROR Material::GetParameterByName: Could not find parameter with name %s!", name.AsCharPtr());
+		T_CORE_ERROR("ERROR Material::GetParameterByName: Could not find parameter with name %s!", name.AsCharPtr());
 
 	#ifdef _DEBUG
 		assert(false);
@@ -328,7 +328,7 @@ void Material::SetupUniformParameters()
 				}
 				break;
 			default:
-				printf("ERROR : Parameter might not be fully implemented! \n");
+				T_CORE_ERROR("ERROR : Parameter might not be fully implemented!");
 				assert(false);
 				break;
 			}

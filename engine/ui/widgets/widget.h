@@ -37,7 +37,10 @@ public:
 			PushStyleVar(ImGuiStyleVar_WindowPadding, padding);
 		}
 
-		ImGui::Begin(title.AsCharPtr(), &isVisible, flags);
+		Util::String iconAndTitle = icon;
+		iconAndTitle.Append(" " + title);
+
+		ImGui::Begin(iconAndTitle.AsCharPtr(), &isVisible, flags);
 		styleVarPushes = 0;
 
 		windowBegun = true;
@@ -75,6 +78,7 @@ public:
 protected:
 
 	Util::String title;
+	Util::String icon;
 	bool isVisible = true;
 	bool isWindow = true;
 	bool windowBegun = false;

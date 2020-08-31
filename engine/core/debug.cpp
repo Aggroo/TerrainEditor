@@ -78,6 +78,7 @@ _error(const char* msg, ...)
 	
 	Util::String str;
 	str.FormatArgList(msg, argList);
+	_printf(str.AsCharPtr());
 	//IO::Console::Instance()->Print(str, IO::ERROR);
 	
 	va_end(argList);
@@ -96,6 +97,7 @@ _warning(const char* msg, ...)
 
 	Util::String str;
 	str.FormatArgList(msg, argList);
+	_printf(str.AsCharPtr());
 	//IO::Console::Instance()->Print(str, IO::WARNING);
 
 	va_end(argList);
@@ -121,7 +123,7 @@ _confirm(const char* msg, ...)
 
 //------------------------------------------------------------------------------
 /**
-	Vortex's printf replacement. Will redirect the text to the console
+	Terrains's printf replacement. Will redirect the text to the console
 	and/or logfile.
 */
 void __cdecl
@@ -131,6 +133,7 @@ _printf(const char *msg, ...)
 	va_start(argList, msg);
 	Util::String s;
 	s.FormatArgList(msg, argList);
+	printf(s.AsCharPtr());
 	//IO::Console::Instance()->Print(s, IO::MESSAGE);
 	va_end(argList);
 }

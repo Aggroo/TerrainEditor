@@ -4,6 +4,7 @@
 //------------------------------------------------------------------------------
 #include "config.h"
 #include "application.h"
+#include "foundation/io/logger.h"
 #include "render/terrain/terrain.h"
 #include "render/render/renderer.h"
 #include "application/basegamefeatures/entitymanager.h"
@@ -53,8 +54,9 @@ Application::Open()
 	{
 		JobSystem::Initialize();
 
-		Render::Renderer::Instance()->Setup(this->window);
+		IO::Logger::Init();
 
+		Render::Renderer::Instance()->Setup(this->window);
 
 		Render::Renderer::Instance()->SetWindowResolution(1280, 900);
 		Render::Renderer::Instance()->SetRenderResolution(1280, 900);

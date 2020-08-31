@@ -9,9 +9,8 @@ namespace UI
 {
 View::View(Display::Window* app) : Widget(app)
 {
-	Util::String camera = ICON_FA_VIDEO;
-	camera.Append(" View");
-	this->title = camera;
+	this->icon = ICON_FA_VIDEO;
+	this->title = "View";
 	this->flags |= ImGuiWindowFlags_AlwaysAutoResize;
 }
 

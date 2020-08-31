@@ -77,7 +77,7 @@ Ptr<FramePass> FrameServer::GetFramePass(const Util::String& name)
 		return this->framePassByName[name];
 	else
 	{
-		printf("ERROR: No framepass named %s!\n", name.AsCharPtr());
+		T_CORE_ERROR("ERROR No framepass named {0}!", name.AsCharPtr());
 		assert(false);
 		return nullptr;
 	}

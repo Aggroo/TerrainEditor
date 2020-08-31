@@ -25,5 +25,7 @@ Not yet documented!
   
 # Third-party
 * [Imgui](https://github.com/ocornut/imgui)
+* [ImGuizmo] (https://github.com/CedricGuillemet/ImGuizmo)
 * [Native File Dialog](https://github.com/mlabbe/nativefiledialog)
 * [Assimp](https://github.com/assimp/assimp)
+* [spdlog] (https://github.com/gabime/spdlog)

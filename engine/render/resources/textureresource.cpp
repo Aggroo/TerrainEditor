@@ -42,7 +42,10 @@ void TextureResource::LoadTextureFile(const char * filename)
 	}
 
 	if (image == nullptr)
-		throw(std::string("Failed to load texture"));
+	{
+		T_CORE_ERROR("Couldn't load texture file {0}", filename);
+		assert(false);
+	}
 
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_2D, textureID);
@@ -87,7 +90,7 @@ void TextureResource::LoadTextureFile(const CreateTextureParameters& textureVari
 
 	if (image == nullptr)
 	{
-		printf("Failed to load texture");
+		T_CORE_ERROR("Failed to load texture {0}", textureVariables.filename);
 		_assert(false);
 	}
 
@@ -106,7 +109,7 @@ void TextureResource::LoadTextureFile(const CreateTextureParameters& textureVari
 	case TextureFilterMode::NearestMipmapLinear: glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR); break;
 	case TextureFilterMode::NearestMipmapNearest: glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST); break;
 	default:
-		printf("TEXTURE ERROR: Invalid min filter");
+		T_CORE_ERROR("TEXTURE ERROR: Invalid min filter");
 		_assert(false);
 	}
 
@@ -119,7 +122,7 @@ void TextureResource::LoadTextureFile(const CreateTextureParameters& textureVari
 	case TextureFilterMode::NearestMipmapLinear: glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_LINEAR); break;
 	case TextureFilterMode::NearestMipmapNearest: glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST); break;
 	default:
-		printf("TEXTURE ERROR: Invalid max filter");
+		T_CORE_ERROR("TEXTURE ERROR: Invalid max filter");
 		_assert(false);
 	}
 
@@ -132,7 +135,7 @@ void TextureResource::LoadTextureFile(const CreateTextureParameters& textureVari
 		glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 		break;
 	default:
-		printf("TEXTURE ERROR: Invalid wrap s filter");
+		T_CORE_ERROR("TEXTURE ERROR: Invalid wrap s filter");
 		_assert(false);
 	}
 
@@ -145,7 +148,7 @@ void TextureResource::LoadTextureFile(const CreateTextureParameters& textureVari
 		glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 		break;
 	default:
-		printf("TEXTURE ERROR: Invalid wrap t filter");
+		T_CORE_ERROR("TEXTURE ERROR: Invalid wrap t filter");
 		_assert(false);
 	}
 
@@ -180,7 +183,7 @@ void TextureResource::LoadCubemap(Util::Array<Util::String> textures)
 		}
 		else
 		{
-			printf("Cubemap texture failed to load at path: %s", textures[i].AsCharPtr());
+			T_CORE_ERROR("Cubemap texture failed to load at path: {0}", textures[i].AsCharPtr());
 			stbi_image_free(data);
 		}
 	}

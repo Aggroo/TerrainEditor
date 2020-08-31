@@ -7,3 +7,6 @@
 [submodule "exts/ImGuizmo"]
 	path = exts/ImGuizmo
 	url = git@github.com:CedricGuillemet/ImGuizmo.git
+[submodule "exts/spdlog"]
+	path = exts/spdlog
+	url = git@github.com:gabime/spdlog.git

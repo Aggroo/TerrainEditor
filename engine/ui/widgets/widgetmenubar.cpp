@@ -11,6 +11,7 @@ namespace UI
 MenuBar::MenuBar(Display::Window* app) : Widget(app)
 {
 	this->isWindow = false;
+	this->title = "Menubar";
 }
 
 void MenuBar::Update()

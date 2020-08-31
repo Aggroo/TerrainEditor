@@ -25,6 +25,7 @@
 #include "ui/widgets/widgetterrainsettings.h"
 #include "ui/widgets/widgetview.h"
 #include "ui/widgets/widgetrendersettings.h"
+#include "foundation/io/logger.h"
 
 using namespace Display;
 namespace Application
@@ -57,6 +58,7 @@ Application::Open()
 
 	if (this->window->Open())
 	{
+		IO::Logger::Init();
 
 		Render::Renderer::Instance()->Setup(this->window);
 		Render::Renderer::Instance()->SetWindowResolution(1280, 900);

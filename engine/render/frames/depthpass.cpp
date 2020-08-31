@@ -19,6 +19,8 @@ DepthPass::~DepthPass()
 
 void DepthPass::Setup()
 {
+
+	T_CORE_TRACE("DEPTH PASS Generating pass");
 	//Generate framebuffer
 	glGenFramebuffers(1, &this->frameBufferObject);
 

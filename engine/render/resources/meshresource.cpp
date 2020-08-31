@@ -58,7 +58,7 @@ bool MeshResources::LoadMesh(const char* filename)
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
-		printf("ERROR::ASSIMP::%s", import.GetErrorString());
+		T_CORE_ERROR("ERROR::ASSIMP::%s", import.GetErrorString());
 		return false;
 	}
 
@@ -226,12 +226,12 @@ bool MeshResources::LoadMesh(const char* filename)
 				}
 				else if (firstMesh->mFaces[j].mNumIndices == 2)
 				{
-					printf("ERROR: Meshloader does not support lines within meshes!");
+					T_CORE_ERROR("ERROR: Meshloader does not support lines within meshes!");
 					assert(false);
 				}
 				else if (firstMesh->mFaces[j].mNumIndices == 4)
 				{
-					printf("ERROR: Meshloader does not support quads within meshes!");
+					T_CORE_ERROR("ERROR: Meshloader does not support quads within meshes!");
 					assert(false);
 				}
 			}
@@ -267,7 +267,7 @@ bool MeshResources::CreateMesh(const Util::Array<Render::Vertex>& vertexData, co
 
 	if (numVertices == 0 || numIndices == 0)
 	{
-		printf("ERROR: the number of vertice or indices are 0 in CreateMesh!");
+		T_CORE_ERROR("ERROR: the number of vertice or indices are 0 in CreateMesh!");
 		return false;
 	}
 	if (compBits & VertexComponentBits::Coord)

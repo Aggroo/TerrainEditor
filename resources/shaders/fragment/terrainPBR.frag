@@ -173,7 +173,7 @@ void main()
 	//float RoughnessMapSum = (splatTex.r * RoughnessMap2 + splatTex.g * RoughnessMap1 + splatTex.b * RoughnessMap0).r;
 	
 	float slopeBlend = pow(SlopeBlending(slopeAngle, 1-(norm.y)), hardness1);
-	float slopeBlend2 = pow(overlayBlend(SlopeBlending(slopeAngle2, 1-(norm.y + normal1.y)), texture2D(RoughnessMap[1], texCoord*40.0).r, 0.8), hardness2);
+	float slopeBlend2 = pow(SlopeBlending(slopeAngle2, 1-(norm.y + normal1.y)), hardness2);
 	float blendAmount = clamp(slopeBlend*(1-HeightBlending(height, heightFalloff)), 0.0, 1.0);
 	float blendAmount2 = clamp(slopeBlend2*HeightBlending(height2, heightFalloff2), 0.0, 1.0);
 

@@ -12,9 +12,8 @@ namespace UI
 
 TerrainSettings::TerrainSettings(Display::Window* app) : Widget(app), heightPopup(false), texturesPopup(false), baseOrFilter(false)
 {
-	Util::String title = ICON_FA_MOUNTAIN;
-	title.Append(" Terrain Settings");
-	this->title = title;
+	this->icon = ICON_FA_MOUNTAIN;
+	this->title = "Terrain Settings";
 	this->heightSettings.textures.Append(0);
 	this->heightSettings.texNames.Append("");
 

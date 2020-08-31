@@ -21,6 +21,7 @@ LightCullingPass::~LightCullingPass()
 
 void LightCullingPass::Setup()
 {
+	T_CORE_TRACE("LIGHTCULLING PASS Generating pass");
 	this->lightCullingProgram = ShaderServer::Instance()->GetShader("lightculling")->GetProgram();
 
 	//glGenTextures(1, &this->buffer);

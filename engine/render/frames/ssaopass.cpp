@@ -27,7 +27,7 @@ SSAOPass::~SSAOPass()
 
 void SSAOPass::Setup()
 {
-
+	T_CORE_TRACE("SSAO PASS Generating pass");
 	//Texture border color
 	GLfloat borderColor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	const Resolution& res = Renderer::Instance()->GetRenderResolution();

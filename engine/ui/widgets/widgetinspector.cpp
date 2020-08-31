@@ -10,9 +10,8 @@ namespace UI
 {
 Inspector::Inspector(Display::Window* app) : Widget(app)
 {
-	Util::String title = ICON_FA_INFO_CIRCLE;
-	title.Append(" Inspector");
-	this->title = title;
+	this->icon = ICON_FA_INFO_CIRCLE;
+	this->title = "Inspector";
 }
 
 void Inspector::Update()

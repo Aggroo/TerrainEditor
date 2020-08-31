@@ -26,6 +26,8 @@ TerrainHeightPass::~TerrainHeightPass()
 
 void TerrainHeightPass::Setup(Ptr<Render::TextureResource> baseMap)
 {
+	T_CORE_TRACE("TERRAIN HEIGHT PASS Setup Terrain Height Pass");
+
 	Ptr<Render::ShaderObject> heightmapShader = Render::ShaderServer::Instance()->GetShader("heightmap");
 	this->heightmapProgram = heightmapShader->GetProgram();
 
@@ -83,6 +85,7 @@ void TerrainHeightPass::Execute()
 
 void TerrainHeightPass::UpdateTexture(Render::TextureIndex index, const char * filename)
 {
+	T_CORE_TRACE("TERRAIN HEIGHT PASS Update Terrain Height Textures");
 	this->heightmaps->UpdateTexture(index, filename);
 	Execute();
 }

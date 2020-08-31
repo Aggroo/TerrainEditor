@@ -23,6 +23,8 @@ Terrain::Terrain() : terrainWidth(0), terrainHeight(0), heightMap(nullptr), node
 	this->surface = Render::Surface::Create();
 	this->heightPass = TerrainHeightPass::Create();
 
+	T_CORE_TRACE("TERRAIN Terrain created");
+
 	glGenBuffers(1, this->ubo);
 }
 
@@ -44,6 +46,7 @@ Terrain::~Terrain()
 */
 void Terrain::Activate()
 {	
+	T_CORE_TRACE("TERRAIN Activating Terrain");
 
 	this->surface = Render::ResourceServer::Instance()->LoadSurface("resources/surfaces/terrain.sur");
 
@@ -64,6 +67,7 @@ void Terrain::Activate()
 */
 void Terrain::Deactivate()
 {
+	T_CORE_TRACE("TERRAIN Deactivating Terrain");
 	EntityBase::Deactivate();
 }
 
@@ -89,7 +93,7 @@ void Terrain::OnUI()
 */
 bool Terrain::CreateTerrain(int size, float widthMultiplier, float heightMultiplier)
 {
-
+	T_CORE_TRACE("TERRAIN Generating Terrain IN PROGRESS");
 	this->vertices.Reset();
 	this->indices.Reset();
 	this->mesh->GetMesh() = Render::MeshResources::Create();
@@ -179,7 +183,7 @@ bool Terrain::CreateTerrain(int size, float widthMultiplier, float heightMultipl
 	//GenerateNormals();
 
 	//this->mesh->GenerateBuffers();
-
+	T_CORE_INFO("TERRAIN Generating Terrain DONE");
 	return true;
 }
 

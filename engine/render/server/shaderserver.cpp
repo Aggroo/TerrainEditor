@@ -53,7 +53,7 @@ bool ShaderServer::SetupShaders(const Util::String & file)
 	std::ifstream i(file.AsCharPtr());
 
 	if (!i) {
-		printf("[SHADER LOAD ERROR]: Couldn't find shaders.json!");
+		T_CORE_ERROR("SHADER LOAD Couldn't find shaders.json!");
 		_assert(false);
 		return false;
 	}
@@ -69,7 +69,7 @@ bool ShaderServer::SetupShaders(const Util::String & file)
 
 		if (this->HasShaderNamed(shader.name.c_str()))
 		{
-			_warning("Duplicate shader loaded: \" %s \". Using previously loaded shader...", shader.name.c_str());
+			T_CORE_WARN("Duplicate shader loaded: \" {0} \". Using previously loaded shader...", shader.name.c_str());
 		}
 		else
 		{
@@ -91,7 +91,7 @@ bool ShaderServer::SetupShaders(const Util::String & file)
 
 		if (this->HasShaderNamed(shader.name.c_str()))
 		{
-			_warning("Duplicate shader loaded: \" %s \". Using previously loaded shader...", shader.name.c_str());
+			T_CORE_WARN("Duplicate shader loaded: \" {0} \". Using previously loaded shader...", shader.name.c_str());
 		}
 		else
 		{
@@ -126,14 +126,14 @@ GLuint ShaderServer::LoadVertexShader(const Util::String& file, bool reload)
 	{
 		if (!file.CheckFileExtension("vert"))
 		{
-			printf("[SHADER LOAD ERROR]: File is not a .vert file");
+			T_CORE_ERROR("SHADER LOAD File is not a .vert file");
 			return false;
 		}
 
 		Util::String fileContent = ReadFromFile(file);
 		if (fileContent.IsEmpty())
 		{
-			printf("[SHADER LOAD ERROR]: %s is empty", file.AsCharPtr());
+			T_CORE_ERROR("SHADER LOAD {0} is empty", file.AsCharPtr());
 			return false;
 		}
 
@@ -155,7 +155,7 @@ GLuint ShaderServer::LoadVertexShader(const Util::String& file, bool reload)
 		{
 			char* buf = new char[shaderLogSize];
 			glGetShaderInfoLog(vertexShader, shaderLogSize, NULL, buf);
-			printf("[VERTEX SHADER COMPILE ERROR]: %s", buf);
+			T_CORE_ERROR("VERTEX SHADER COMPILE {0}", buf);
 			delete[] buf;
 		}
 
@@ -198,14 +198,14 @@ GLuint ShaderServer::LoadFragmentShader(const Util::String& file, bool reload)
 
 		if (!file.CheckFileExtension("frag"))
 		{
-			printf("[SHADER LOAD ERROR]: File is not a .frag file");
+			T_CORE_ERROR("SHADER LOAD File is not a .frag file");
 			return false;
 		}
 
 		Util::String fileContent = ReadFromFile(file);
 		if (fileContent.IsEmpty())
 		{
-			printf("[SHADER LOAD ERROR]: %s is empty", file.AsCharPtr());
+			T_CORE_ERROR("SHADER LOAD {0} is empty", file.AsCharPtr());
 			return false;
 		}
 
@@ -227,7 +227,7 @@ GLuint ShaderServer::LoadFragmentShader(const Util::String& file, bool reload)
 		{
 			char* buf = new char[shaderLogSize];
 			glGetShaderInfoLog(fragmentShader, shaderLogSize, NULL, buf);
-			printf("[FRAGMENT SHADER COMPILE ERROR]: %s", buf);
+			T_CORE_ERROR("FRAGMENT SHADER COMPILE {0}", buf);
 			delete[] buf;
 		}
 
@@ -266,14 +266,14 @@ GLuint ShaderServer::LoadComputeShader(const Util::String& file, bool reload)
 	{
 		if (!file.CheckFileExtension("comp"))
 		{
-			printf("[SHADER LOAD ERROR]: File is not a .comp file");
+			T_CORE_ERROR("SHADER LOAD File is not a .comp file");
 			return false;
 		}
 
 		Util::String fileContent = ReadFromFile(file);
 		if (fileContent.IsEmpty())
 		{
-			printf("[SHADER LOAD ERROR]: %s is empty", file.AsCharPtr());
+			T_CORE_ERROR("SHADER LOAD {0} is empty", file.AsCharPtr());
 			return false;
 		}
 
@@ -294,7 +294,7 @@ GLuint ShaderServer::LoadComputeShader(const Util::String& file, bool reload)
 		{
 			char* buf = new char[shaderLogSize];
 			glGetShaderInfoLog(computeShader, shaderLogSize, NULL, buf);
-			printf("[COMPUTE SHADER COMPILE ERROR]: %s", buf);
+			T_CORE_ERROR("COMPUTE SHADER COMPILE {0}", buf);
 			delete[] buf;
 		}
 
@@ -338,7 +338,7 @@ Render::RenderState ShaderServer::LoadRenderState(const Util::String & file)
 	{
 		if (!file.CheckFileExtension("state"))
 		{
-			_error("[SHADER LOAD ERROR]: File is not a .state file!");
+			T_CORE_ERROR("SHADER LOAD File is not a .state file!");
 			_assert(false);
 			return RenderState();
 		}
@@ -568,7 +568,7 @@ void ShaderServer::ReloadShader(ShaderInfo* shader)
 	case GL_VERTEX_SHADER: LoadVertexShader(shader->filename, true); break;
 	case GL_FRAGMENT_SHADER: LoadFragmentShader(shader->filename, true); break;
 	case GL_COMPUTE_SHADER: LoadComputeShader(shader->filename, true); break;
-	default: printf("[SHADER RELOAD ERROR] Invalid shader type\n"); break;
+	default: T_CORE_ERROR("SHADER RELOAD Invalid shader type"); break;
 	}
 }
 
@@ -630,7 +630,7 @@ Util::String ShaderServer::ReadFromFile(const Util::String& filename) const
 
 	if(!fileStream.is_open())
 	{
-		printf("[SHADER LOAD ERROR]: Could not load file from directory");
+		T_CORE_ERROR("SHADER LOAD Could not load file from directory");
 		return "";
 	}
 

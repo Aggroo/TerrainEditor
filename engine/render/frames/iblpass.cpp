@@ -20,6 +20,7 @@ IBLPass::~IBLPass()
 
 void IBLPass::Setup()
 {
+	T_CORE_TRACE("IBL PASS Generating pass");
 	// Parameters
 	static constexpr int kEnvMapSize = 1024;
 	static constexpr int kIrradianceMapSize = 32;

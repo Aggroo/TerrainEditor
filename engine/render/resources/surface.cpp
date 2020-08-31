@@ -61,7 +61,7 @@ void Surface::SetupShaderUniforms()
 				}
 				break;
 			default:
-				printf("ERROR : Parameter might not be fully implemented! \n");
+				T_CORE_ERROR("ERROR: Parameter might not be fully implemented!");
 				assert(false);
 				break;
 			}
@@ -127,7 +127,7 @@ SamplerParameters Surface::SetupTextureSampler(const Util::String& sampler)
 	}
 	else
 	{
-		printf("SAMPLER ERROR: The sampler name that was used does not exist");
+		T_CORE_ERROR("SAMPLER ERROR: The sampler name that was used does not exist");
 		_assert(false);
 	}
 	return samplerParam;

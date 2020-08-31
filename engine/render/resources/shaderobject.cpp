@@ -69,7 +69,7 @@ void ShaderObject::LinkShaders()
 	{
 		GLchar* buf = new GLchar[shaderLogSize];
 		glGetProgramInfoLog(this->program, shaderLogSize, NULL, buf);
-		printf("[PROGRAM LINK ERROR]: %s", buf);
+		T_CORE_ERROR("[PROGRAM LINK ERROR]: %s", buf);
 		delete[] buf;
 	}
 }
@@ -343,7 +343,7 @@ void ShaderObject::ReloadUniforms(const char* name, Util::Variant variant)
 	case Util::Variant::Type::vec4Arrayt: break;
 	case Util::Variant::Type::StringArray: break;
 	case Util::Variant::Type::mat4Arrayt: break;
-	default: printf("[UNIFORM VARIANT ERROR] Incorrect variant type"); break;
+	default: T_CORE_ERROR("[UNIFORM VARIANT ERROR] Incorrect variant type"); break;
 	}
 }
 

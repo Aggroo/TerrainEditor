@@ -11,9 +11,8 @@ namespace UI
 {
 RenderSettings::RenderSettings(Display::Window* app) : Widget(app)
 {
-	Util::String title = ICON_FA_COGS;
-	title.Append(" Render Settings");
-	this->title = title;
+	this->icon = ICON_FA_COGS;
+	this->title = "Render Settings";
 
 	flags |= ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoScrollbar;
 	isVisible = false;

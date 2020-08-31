@@ -18,6 +18,7 @@ UIServer::UIServer()
 
 void UIServer::Setup(Display::Window* window)
 {
+	T_CORE_TRACE("UI SERVER Setup UI Server");
 	this->window = window;
 
 	ImGuiIO& io = ImGui::GetIO();
@@ -65,6 +66,7 @@ void UIServer::Update()
 
 void UIServer::AddWidget(std::unique_ptr<UI::Widget> widget)
 {
+	T_CORE_TRACE("UI SERVER Add widget {0}", widget->GetTitle().AsCharPtr());
 	this->widgets.emplace_back(std::move(widget));
 }
 

@@ -22,6 +22,7 @@ PostProcessingPass::~PostProcessingPass()
 
 void PostProcessingPass::Setup()
 {
+	T_CORE_TRACE("POST-PROCESS PASS", "Generating pass");
 	GLfloat borderColor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	const Resolution& res = Renderer::Instance()->GetRenderResolution();
 

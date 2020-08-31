@@ -82,7 +82,7 @@ SysFunc::Exit(int exitCode)
     Core::Factory::Destroy();
 
     // report mem leaks
-    #if VORTEX_MEMORY_ADVANCED_DEBUGGING
+    #if TERRAIN_MEMORY_ADVANCED_DEBUGGING
 	Memory::DumpMemoryLeaks();
     #endif   
 

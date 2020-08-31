@@ -122,3 +122,24 @@ TARGET_INCLUDE_DIRECTORIES(misc PUBLIC misc)
 SET_TARGET_PROPERTIES(misc PROPERTIES FOLDER "exts/misc")
 TARGET_LINK_LIBRARIES(exts INTERFACE misc)
 
+# Stand-alone build
+#if(NOT TARGET spdlog)
+#	set(spdlog_DIR spdlog/build)
+#	set(SPDLOG_ROOT )
+#	set(SPDLOG_BUILD_SHARED ON)
+#	set(SPDLOG_BUILD_EXAMPLE_HO ON)
+#	set(SPDLOG_FMT_EXTERNAL ON)
+#    # Stand-alone build
+#    find_package(spdlog REQUIRED)
+#endif()
+#
+#target_link_libraries(exts INTERFACE spdlog::spdlog)
+#
+#if(SPDLOG_BUILD_EXAMPLE_HO)
+#	TARGET_LINK_LIBRARIES(exts INTERFACE spdlog::spdlog_header_only)
+#endif()
+
+ADD_SUBDIRECTORY(spdlog)
+SET_TARGET_PROPERTIES(spdlog PROPERTIES FOLDER "exts/spdlog")
+TARGET_INCLUDE_DIRECTORIES(exts INTERFACE spdlog/include)
+

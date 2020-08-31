@@ -92,7 +92,7 @@ Ptr<Surface> ResourceServer::LoadSurface(const Util::String & filepath)
 	std::ifstream i(filepath.AsCharPtr());
 
 	if (!i) {
-		printf("[SHADER LOAD ERROR]: Couldn't find %s!", filepath.ExtractFileName().AsCharPtr());
+		T_CORE_ERROR("SHADER LOAD Couldn't find {0}!", filepath.ExtractFileName().AsCharPtr());
 		_assert(false);
 		return false;
 	}
@@ -104,7 +104,7 @@ Ptr<Surface> ResourceServer::LoadSurface(const Util::String & filepath)
 
 	if (!this->HasMaterialNamed(surface.material.c_str()))
 	{
-		_warning("[ERROR] No material with name: %s!", surface.material.c_str());
+		T_CORE_WARN("No material with name: {0}!", surface.material.c_str());
 	}
 	else
 	{
@@ -151,7 +151,7 @@ Ptr<Model> ResourceServer::LoadModel(const Util::String & filepath)
 	std::ifstream i(filepath.AsCharPtr());
 
 	if (!i) {
-		printf("[MODEL LOAD ERROR]: Couldn't find %s!", filepath);
+		T_CORE_ERROR("MODEL LOAD Couldn't find {0}!", filepath);
 		_assert(false);
 		return false;
 	}
@@ -163,7 +163,7 @@ Ptr<Model> ResourceServer::LoadModel(const Util::String & filepath)
 
 	if (this->HasModelNamed(filepath))
 	{
-		_warning("Duplicate model loaded: \" %s \". Using previously loaded model...", filepath);
+		T_CORE_WARN("Duplicate model loaded: \" {0} \". Using previously loaded model...", filepath);
 	}
 	else
 	{
@@ -208,7 +208,7 @@ Ptr<Material> ResourceServer::GetMaterial(const Util::String& name)
 	}
 	else
 	{
-		printf("[MATERIAL ERROR]: Could not retrieve material!");
+		T_CORE_ERROR("MATERIAL ERROR Could not retrieve material!");
 		_assert(false);
 		return nullptr;
 	}
@@ -219,7 +219,7 @@ bool ResourceServer::SetupMaterials(const Util::String& filepath)
 	std::ifstream i(filepath.AsCharPtr());
 
 	if (!i) {
-		printf("[SHADER LOAD ERROR]: Couldn't find shaders.json!");
+		T_CORE_ERROR("SHADER LOAD ERROR Couldn't find shaders.json!");
 		_assert(false);
 		return false;
 	}
@@ -230,7 +230,7 @@ bool ResourceServer::SetupMaterials(const Util::String& filepath)
 	}
 	catch (json::parse_error & e)
 	{
-		printf("JSON ERROR: %s", e.what());
+		T_CORE_ERROR("JSON ERROR {0}", e.what());
 		_assert(false);
 	}
 
@@ -242,7 +242,7 @@ bool ResourceServer::SetupMaterials(const Util::String& filepath)
 
 		if (this->HasMaterialNamed(material.name.c_str()))
 		{
-			_warning("Duplicate shader loaded: \" %s \". Using previously loaded shader...", material.name.c_str());
+			T_CORE_WARN("Duplicate shader loaded: \" {0} \". Using previously loaded shader...", material.name.c_str());
 		}
 		else
 		{

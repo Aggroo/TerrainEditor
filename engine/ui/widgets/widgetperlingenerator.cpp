@@ -7,9 +7,8 @@ namespace UI
 {
 PerlinSettings::PerlinSettings(Display::Window* app) : Widget(app), openPopup(false)
 {
-	Util::String title = ICON_FA_TOOLS;
-	title.Append(" Perlin Noise Settings");
-	this->title = title;
+	this->icon = ICON_FA_TOOLS;
+	this->title = "Perlin Noise Settings";
 }
 
 void PerlinSettings::Update()

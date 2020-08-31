@@ -35,6 +35,7 @@ InputManager::~InputManager()
 
 void InputManager::Setup(Display::Window* window, Render::LightNode* lNode)
 {
+	T_CORE_TRACE("INPUT MANAGER Setup Input Manager");
 	this->window = window;
 	this->lNode = lNode;
 
@@ -61,6 +62,7 @@ void InputManager::Setup(Display::Window* window, Render::LightNode* lNode)
 
 void InputManager::Initialization()
 {
+	T_CORE_TRACE("INPUT MANAGER Initialize Input functions");
 	window->SetKeyPressFunction([this](int32 key, int32 scancode, int32 action, int32 mods)
 	{
 		keyboardButtons[key] = action != GLFW_RELEASE;
