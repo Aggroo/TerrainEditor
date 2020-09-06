@@ -35,11 +35,8 @@ void MenuBar::Update()
 		}
 		if (ImGui::BeginMenu("Settings"))
 		{
-			Util::String terrainSettings = ICON_FA_MOUNTAIN;
-			terrainSettings.Append(" Terrain Settings");
-
-			Util::String renderSettings = ICON_FA_COGS;
-			renderSettings.Append(" Render Settings");
+			Util::String terrainSettings = "Terrain Settings";
+			Util::String renderSettings = "Render Settings";
 
 			if (ImGui::MenuItem("Terrain Settings", "P")) { UI::UIServer::Instance()->SetWidgetVisibility(terrainSettings, true); }
 			if (ImGui::MenuItem("Render Settings", "O")) { UI::UIServer::Instance()->SetWidgetVisibility(renderSettings, true); }
