@@ -20,16 +20,16 @@ Renderer::~Renderer()
 
 void Renderer::Setup(Display::Window* window)
 {
-	T_CORE_TRACE("RENDERER Setup Render Resolution");
+	T_CORE_TRACE("[RENDERER]: Setup Render Resolution");
 
 	this->window = window;
 	this->renderResolution = { window->GetWidth(), window->GetHeight() };
 	glGenBuffers(1, this->ubo);
 
-	T_CORE_TRACE("RENDERER Setup Render Flags");
+	T_CORE_TRACE("[RENDERER]: Setup Render Flags");
 	renderFlags |= RenderSSAO;
 
-	T_CORE_TRACE("RENDERER Setup Render Options");
+	T_CORE_TRACE("[RENDERER]: Setup Render Options");
 	renderOptions.Add(OptionTonemapping, static_cast<float>(ToneMappingACES));
 	renderOptions.Add(OptionExposure, 0.0f);
 	renderOptions.Add(OptionGamma, 2.2f);
@@ -37,14 +37,14 @@ void Renderer::Setup(Display::Window* window)
 	renderOptions.Add(OptionAORadius, 0.5f);
 	renderOptions.Add(OptionAOBias, 0.025f);
 
-	T_CORE_TRACE("RENDERER Setup Shaders");
+	T_CORE_TRACE("[RENDERER]: Setup Shaders");
 	Render::ShaderServer::Instance()->SetupShaders("resources/shaders/shaders.json");
 
-	T_CORE_TRACE("RENDERER Setup Frame passes");
+	T_CORE_TRACE("[RENDERER]: Setup Frame passes");
 	//Setup framepasses before materials
 	Render::FrameServer::Instance()->SetupFramePasses();
 
-	T_CORE_TRACE("RENDERER Setup Materials");
+	T_CORE_TRACE("[RENDERER]: Setup Materials");
 	Render::ResourceServer::Instance()->SetupMaterials("resources/materials.json");
 
 }
@@ -85,9 +85,14 @@ const Resolution& Renderer::GetRenderResolution() const
 	return this->renderResolution;
 }
 
+const Resolution& Renderer::GetWindowResolution() const
+{
+	return this->windowResolution;
+}
+
 void Renderer::SetRenderResolution(const Resolution& res)
 {
-	T_CORE_TRACE("RENDERER Set Render Resolutions");
+	T_CORE_TRACE("[RENDERER]: Set Render Resolutions");
 	this->renderResolution = res;
 	Graphics::MainCamera::Instance()->UpdateProjectionMatrix();
 	FrameServer::Instance()->UpdateResolutions();

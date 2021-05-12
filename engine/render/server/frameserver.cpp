@@ -107,6 +107,7 @@ Ptr<FlatGeometryLitPass> FrameServer::GetFlatGeometryLitPass()
 {
 	return this->FlatGeometryLit;
 }
+
 Ptr<SSAOPass> FrameServer::GetSSAOPass()
 {
 	return this->ssaoPass;

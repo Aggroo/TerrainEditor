@@ -65,6 +65,12 @@ void FlatGeometryLitPass::Setup()
 	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
+	glGenTextures(1, &this->uvBuffer);
+	glBindTexture(GL_TEXTURE_2D, this->uvBuffer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, res.x, res.y, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
 	//Generate color framebuffer object
 	glGenFramebuffers(1, &this->frameBufferObject);
 	glBindFramebuffer(GL_FRAMEBUFFER, this->frameBufferObject);
@@ -72,10 +78,11 @@ void FlatGeometryLitPass::Setup()
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, this->normalBuffer, 0);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, this->specularBuffer, 0);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, this->roughnessBuffer, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, this->uvBuffer, 0);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, FrameServer::Instance()->GetDepthPass()->GetTextureBuffer(), 0);
 
-	const GLenum drawBuffers[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
-	glDrawBuffers(4, &drawBuffers[0]);
+	const GLenum drawBuffers[5] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4 };
+	glDrawBuffers(5, &drawBuffers[0]);
 
 	_assert2(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "FlatGeometryLit Framebuffer Status Error!");
 	
@@ -114,6 +121,9 @@ void FlatGeometryLitPass::UpdateResolution()
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, newRes.x, newRes.y, 0, GL_RGB, GL_FLOAT, NULL);
 
 	glBindTexture(GL_TEXTURE_2D, this->roughnessBuffer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, newRes.x, newRes.y, 0, GL_RGB, GL_FLOAT, NULL);
+
+	glBindTexture(GL_TEXTURE_2D, this->uvBuffer);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, newRes.x, newRes.y, 0, GL_RGB, GL_FLOAT, NULL);
 
 	glBindTexture(GL_TEXTURE_2D, 0);

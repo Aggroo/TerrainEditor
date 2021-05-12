@@ -52,10 +52,10 @@ GLDebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei 
 	{
 	case GL_DEBUG_TYPE_ERROR:
 	case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
-		printf("Error: %s\n", msg.c_str());
+		T_CORE_WARN(msg.c_str());
 		break;
 	case GL_DEBUG_TYPE_PERFORMANCE:
-		printf("Performance issue: %s\n", msg.c_str());
+		T_CORE_WARN("Performance issue: %s\n", msg.c_str());
 		break;
 	default:		// Portability, Deprecated, Other
 		break;
@@ -209,7 +209,7 @@ Window::Open()
 		assert(res == GLEW_OK);
 		if (!(GLEW_VERSION_4_0))
 		{
-			printf("[WARNING]: OpenGL 4.0+ is not supported on this hardware!\n");
+			T_CORE_WARN("[WARNING]: OpenGL 4.0+ is not supported on this hardware!\n");
 			glfwDestroyWindow(this->window);
 			this->window = nullptr;
 			return false;

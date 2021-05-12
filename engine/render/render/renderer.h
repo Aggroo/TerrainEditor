@@ -79,6 +79,7 @@ public:
 	void SetRenderResolution(const Resolution& res);
 	void SetRenderResolution(const int& x, const int& y);
 
+	const Resolution& GetWindowResolution() const;
 	void SetWindowResolution(const int& x, const int& y);
 
 	void SetFinalColorBuffer(GLuint cbuffer) { this->finalColorBuffer = cbuffer; }

@@ -94,7 +94,7 @@ Ptr<Surface> ResourceServer::LoadSurface(const Util::String & filepath)
 	if (!i) {
 		T_CORE_ERROR("SHADER LOAD Couldn't find {0}!", filepath.ExtractFileName().AsCharPtr());
 		_assert(false);
-		return false;
+		return nullptr;
 	}
 
 	nlohmann::json j;
@@ -153,7 +153,7 @@ Ptr<Model> ResourceServer::LoadModel(const Util::String & filepath)
 	if (!i) {
 		T_CORE_ERROR("MODEL LOAD Couldn't find {0}!", filepath.AsCharPtr());
 		_assert(false);
-		return false;
+		return nullptr;
 	}
 
 	nlohmann::json j;

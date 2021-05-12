@@ -27,7 +27,7 @@ void RenderSettings::Update()
 		{
 			Util::String label = "##EnvTex";
 			Util::String dot = "..." + label;
-			static std::vector<char*> tonemappingOptions = { "Off", "ACES", "Uncharted 2", "Reinhard" };
+			static std::vector<const char*> tonemappingOptions = { "Off", "ACES", "Uncharted 2", "Reinhard" };
 			const char* tonemapping_selection = tonemappingOptions[static_cast<unsigned int>(Render::Renderer::Instance()->GetRenderOption(Render::RendererOptions::OptionTonemapping))];
 
 			const Util::String& texName = Render::FrameServer::Instance()->GetIBLPass()->GetHDRTexturePath();

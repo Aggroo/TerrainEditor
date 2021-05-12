@@ -23,10 +23,13 @@ public:
 
 	GLuint GetRoughnessBuffer() { return this->roughnessBuffer; }
 
+	GLuint GetUVBuffer() { return this->uvBuffer; }
+
 private:
 	GLuint normalBuffer;
 	GLuint specularBuffer;
 	GLuint roughnessBuffer;
+	GLuint uvBuffer;
 
 	Ptr<Render::Skybox> skybox;
 

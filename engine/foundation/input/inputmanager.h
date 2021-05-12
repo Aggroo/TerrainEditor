@@ -27,6 +27,19 @@ namespace Input
 
 #define MAX_KEYS 1024
 
+struct PixelInfo 
+{
+	float x;
+	float y;
+	float PrimID;
+
+	PixelInfo() {
+		x = 0.0f;
+		y = 0.0f;
+		PrimID = 0.0f;
+	}
+};
+
 enum MouseButton
 {
 	LEFT,
@@ -140,6 +153,11 @@ public:
 	bool GetButtonMouse(const MouseButton key) { return mouseButtons[key]; }
 	Math::vec2 GetMousePosition() { return mousePosition; }
 
+	inline void UpdateRelativeMousePosition(float x, float y) { 
+		relativeMousePosition[0] = mousePosition[0] - x; 
+		relativeMousePosition[1] = mousePosition[1] - y;
+	}
+
 	void Update();
 
 	Math::vec4 GetMovement();
@@ -164,6 +182,7 @@ private:
 	Math::vec4 vec;
 	float mouseX, mouseY;
 	Math::vec2 mousePosition;
+	Math::vec2 relativeMousePosition;
 
 	Math::vec4 movement;
 

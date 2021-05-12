@@ -4,6 +4,7 @@
 #include "ImGuizmo.h"
 #include "imgui_internal.h"
 #include "IconsFontAwesome5_c.h"
+#include "foundation/input/inputmanager.h"
 
 namespace UI
 {
@@ -29,6 +30,7 @@ void View::Update()
 
 	auto win = ImGui::GetCurrentWindowRead();
 	ImGuizmo::SetRect(win->Pos.x, win->Pos.y, win->Size.x, win->Size.y);
+	Input::InputManager::Instance()->UpdateRelativeMousePosition(win->Pos.x, win->Pos.y);
 }
 
 }

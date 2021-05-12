@@ -61,6 +61,7 @@ void MenuBar::Update()
 				if (ImGui::MenuItem("FlatGeometryLit Normals")) { Render::Renderer::Instance()->SetFinalColorBuffer(Render::FrameServer::Instance()->GetFlatGeometryLitPass()->GetNormalBuffer()); }
 				if (ImGui::MenuItem("FlatGeometryLit Specular")) { Render::Renderer::Instance()->SetFinalColorBuffer(Render::FrameServer::Instance()->GetFlatGeometryLitPass()->GetSpecularBuffer()); }
 				if (ImGui::MenuItem("FlatGeometryLit Roughness")) { Render::Renderer::Instance()->SetFinalColorBuffer(Render::FrameServer::Instance()->GetFlatGeometryLitPass()->GetRoughnessBuffer()); }
+				if (ImGui::MenuItem("FlatGeometryLit UVs")) { Render::Renderer::Instance()->SetFinalColorBuffer(Render::FrameServer::Instance()->GetFlatGeometryLitPass()->GetUVBuffer()); }
 				ImGui::EndMenu();
 			}
 			if (ImGui::MenuItem("SSAO")) { Render::Renderer::Instance()->SetFinalColorBuffer(Render::FrameServer::Instance()->GetSSAOPass()->GetSSAOBuffer()->GetTextureID()); }

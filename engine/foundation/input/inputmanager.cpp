@@ -7,6 +7,8 @@
 #include "render/render/renderer.h"
 #include "render/camera/camera.h"
 #include "render/resources/texturenode.h"
+#include "render/server/frameserver.h"
+#include "render/render/renderer.h"
 
 
 
@@ -149,7 +151,24 @@ void InputManager::Update()
 		wireframe = !wireframe;
 		wireframe ? glPolygonMode(GL_FRONT_AND_BACK, GL_LINE) : glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
-		
+	
+	if (GetButtonMouse(Input::MouseButton::LEFT) && GetButtonKeyboard(KeyCode::Alt_Left)) {
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, Render::FrameServer::Instance()->GetFlatGeometryLitPass()->GetFrameBufferObject());
+		glReadBuffer(GL_COLOR_ATTACHMENT4);
+
+		PixelInfo Pixel;
+		const Render::Resolution& res = Render::Renderer::Instance()->GetRenderResolution();
+		float xPos = relativeMousePosition[0];
+		float yPos = relativeMousePosition[1];
+		glReadPixels(xPos, yPos, 1, 1, GL_RGB, GL_FLOAT, &Pixel);
+
+		if(Pixel.PrimID != 0.0f)
+			T_CLIENT_INFO("UV X: {0} Y: {1} ID: {2}", xPos, yPos, Pixel.PrimID);
+
+		glReadBuffer(GL_NONE);
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+
+	}
 		
 
 	if (GetButtonKeyboard(KeyCode::Esc))

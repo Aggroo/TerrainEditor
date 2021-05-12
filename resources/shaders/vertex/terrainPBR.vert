@@ -1,8 +1,8 @@
-layout(location=0) in vec4 pos;
-layout(location=1) in vec2 inCoord;
-layout(location=2) in vec3 inNormal;
-layout(location=3) in vec3 tangent;
-layout(location=4) in vec3 biNormal;
+layout(location = 0) in vec4 pos;
+layout(location = 1) in vec2 inCoord;
+layout(location = 2) in vec3 inNormal;
+layout(location = 3) in vec3 tangent;
+layout(location = 4) in vec3 biNormal;
 
 uniform sampler2D HeightMap;
 
