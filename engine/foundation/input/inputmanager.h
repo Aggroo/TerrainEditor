@@ -10,10 +10,6 @@
 namespace Render 
 {
 class ShaderObject;
-}
-
-namespace Render
-{
 class LightNode;
 }
 
@@ -31,12 +27,12 @@ struct PixelInfo
 {
 	float x;
 	float y;
-	float PrimID;
+	float primID;
 
 	PixelInfo() {
 		x = 0.0f;
 		y = 0.0f;
-		PrimID = 0.0f;
+		primID = 0.0f;
 	}
 };
 
@@ -152,10 +148,11 @@ public:
 	bool GetButtonKeyboard(const KeyCode key) { return keyboardButtons[key]; }
 	bool GetButtonMouse(const MouseButton key) { return mouseButtons[key]; }
 	Math::vec2 GetMousePosition() { return mousePosition; }
+	Math::vec2 GetRelativeMousePosition() { return relativeMousePosition; }
 
 	inline void UpdateRelativeMousePosition(float x, float y) { 
-		relativeMousePosition[0] = mousePosition[0] - x; 
-		relativeMousePosition[1] = mousePosition[1] - y;
+		relativeMousePosition[0] =  x; 
+		relativeMousePosition[1] =  y;
 	}
 
 	void Update();

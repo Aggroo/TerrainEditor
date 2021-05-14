@@ -26,6 +26,8 @@ SET(files_ui_widgets
 	widgets/widgettoolbar.h
 	widgets/widgetview.cpp
 	widgets/widgetview.h
+	widgets/widgetdebugvars.h
+	widgets/widgetdebugvars.cpp
 	)
 
 SOURCE_GROUP("utilities" FILES ${files_ui_utilities})

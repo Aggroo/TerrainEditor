@@ -56,5 +56,6 @@ void Toolbar::Update()
 		switched = true;
 	}
 	RenderTooltip("Paint terrain");
+
 }
 }

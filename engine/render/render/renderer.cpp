@@ -47,6 +47,13 @@ void Renderer::Setup(Display::Window* window)
 	T_CORE_TRACE("[RENDERER]: Setup Materials");
 	Render::ResourceServer::Instance()->SetupMaterials("resources/materials.json");
 
+
+	window->SetWindowResizeFunction([this](int32 x, int32 y)
+	{
+		SetRenderResolution(x, y);
+		SetWindowResolution(x, y);
+	});
+
 }
 
 void Renderer::Render(bool drawToScreen)
@@ -92,7 +99,7 @@ const Resolution& Renderer::GetWindowResolution() const
 
 void Renderer::SetRenderResolution(const Resolution& res)
 {
-	T_CORE_TRACE("[RENDERER]: Set Render Resolutions");
+	//T_CORE_TRACE("[RENDERER]: Set Render Resolutions");
 	this->renderResolution = res;
 	Graphics::MainCamera::Instance()->UpdateProjectionMatrix();
 	FrameServer::Instance()->UpdateResolutions();
@@ -108,6 +115,7 @@ void Renderer::SetRenderResolution(const int& x, const int& y)
 
 void Renderer::SetWindowResolution(const int& x, const int& y)
 {
+	T_CORE_TRACE("[RENDERER]: Set Window Resolution");
 	this->windowResolution = { x, y };
 }
 

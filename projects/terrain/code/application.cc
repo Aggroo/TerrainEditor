@@ -17,6 +17,7 @@
 #include "ui/widgets/widgetmenubar.h"
 #include "ui/widgets/widgetperlingenerator.h"
 #include "ui/widgets/widgetterrainsettings.h"
+#include "ui/widgets/widgetdebugvars.h"
 #include "ui/widgets/widgetview.h"
 #include "ui/widgets/widgetrendersettings.h"
 
@@ -85,6 +86,7 @@ Application::Open()
 		UI::UIServer::Instance()->AddWidget(std::make_unique<UI::RenderSettings>(this->window));
 		UI::UIServer::Instance()->AddWidget(std::make_unique<UI::PerlinSettings>(this->window));
 		UI::UIServer::Instance()->AddWidget(std::make_unique<UI::TerrainSettings>(this->window));
+		UI::UIServer::Instance()->AddWidget(std::make_unique<UI::DebugVariables>(this->window));
 		UI::TerrainSettings* test = (UI::TerrainSettings*) UI::UIServer::Instance()->GetLastWidget();
 		//test->SetTerrain(terrain);
 		//UI::UIServer::Instance()->AddWidget(std::make_unique<UI::Inspector>(this->window));

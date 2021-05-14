@@ -1,3 +1,4 @@
+#include "inputmanager.h"
 #include "config.h"
 #include "inputmanager.h"
 #include "GLFW/glfw3.h"
@@ -105,12 +106,6 @@ void InputManager::Initialization()
 		}
 
 	});
-
-	window->SetWindowResizeFunction([this](int32 x, int32 y)
-	{
-		Render::Renderer::Instance()->SetRenderResolution(x, y);
-		Render::Renderer::Instance()->SetWindowResolution(x, y);
-	});
 }
 
 void InputManager::Update()
@@ -161,10 +156,7 @@ void InputManager::Update()
 		float xPos = relativeMousePosition[0];
 		float yPos = relativeMousePosition[1];
 		glReadPixels(xPos, yPos, 1, 1, GL_RGB, GL_FLOAT, &Pixel);
-
-		if(Pixel.PrimID != 0.0f)
-			T_CLIENT_INFO("UV X: {0} Y: {1} ID: {2}", xPos, yPos, Pixel.PrimID);
-
+		
 		glReadBuffer(GL_NONE);
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 
