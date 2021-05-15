@@ -156,6 +156,10 @@ void InputManager::Update()
 		float xPos = relativeMousePosition[0];
 		float yPos = relativeMousePosition[1];
 		glReadPixels(xPos, yPos, 1, 1, GL_RGB, GL_FLOAT, &Pixel);
+
+		glReadBuffer(GL_DEPTH_ATTACHMENT);
+		GLfloat depth = 0.0f;
+		glReadPixels(xPos, yPos, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
 		
 		glReadBuffer(GL_NONE);
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);

@@ -31,8 +31,7 @@ void DepthPass::Setup()
 	//Generate framebuffer render buffer
 	//glGenRenderbuffers(1, &this->buffer);
 	//glBindRenderbuffer(GL_RENDERBUFFER, this->buffer);
-	//glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, res.x, res.y);
-	//glBindRenderbuffer(GL_RENDERBUFFER, 0);
+	//glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT32, res.x, res.y);
 
 	//Generate position buffer texture
 	glGenTextures(1, &this->gPosition);
