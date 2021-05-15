@@ -26,6 +26,7 @@ enum class TextureIndex
 	heightmap2,
 	heightmap3,
 	heightmap4,
+	heightmap5,
 	environmentMap,
 	irradiance,
 	brdf

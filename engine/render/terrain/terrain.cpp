@@ -56,7 +56,6 @@ void Terrain::Activate()
 
 	this->heightPass->Setup(this->surface->GetTextureList()->GetTexture(Render::TextureIndex::heightmap0));
 	this->heightPass->Execute();
-
 	this->surface->GetTextureList()->UpdateTexture(Render::TextureIndex::heightmap0, this->heightPass->GetFinalHeightmap());
 
 	EntityBase::Activate();

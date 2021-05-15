@@ -32,11 +32,11 @@ void TerrainHeightPass::Setup(Ptr<Render::TextureResource> baseMap)
 	this->heightmapProgram = heightmapShader->GetProgram();
 
 	heightmapShader->BindProgram();
-	heightmapShader->setupUniformInt("heightmaps[0]", (GLuint)Render::TextureIndex::heightmap0);
-	heightmapShader->setupUniformInt("heightmaps[1]", (GLuint)Render::TextureIndex::heightmap1);
-	heightmapShader->setupUniformInt("heightmaps[2]", (GLuint)Render::TextureIndex::heightmap2);
-	heightmapShader->setupUniformInt("heightmaps[3]", (GLuint)Render::TextureIndex::heightmap3);
-	heightmapShader->setupUniformInt("heightmaps[4]", (GLuint)Render::TextureIndex::heightmap4);
+	heightmapShader->setupUniformInt("heightmaps[0]", (GLuint)Render::TextureIndex::heightmap1);
+	heightmapShader->setupUniformInt("heightmaps[1]", (GLuint)Render::TextureIndex::heightmap2);
+	heightmapShader->setupUniformInt("heightmaps[2]", (GLuint)Render::TextureIndex::heightmap3);
+	heightmapShader->setupUniformInt("heightmaps[3]", (GLuint)Render::TextureIndex::heightmap4);
+	heightmapShader->setupUniformInt("heightmaps[4]", (GLuint)Render::TextureIndex::heightmap5);
 
 	this->mergedHeightmap->GetWidth() = baseMap->GetWidth();
 	this->mergedHeightmap->GetHeight() = baseMap->GetHeight();
@@ -56,11 +56,11 @@ void TerrainHeightPass::Setup(Ptr<Render::TextureResource> baseMap)
 	workGroupsX = (GLuint)(this->mergedHeightmap->GetWidth() + (this->mergedHeightmap->GetWidth() % 16)) / 16;
 	workGroupsY = (GLuint)(this->mergedHeightmap->GetHeight() + (this->mergedHeightmap->GetHeight() % 16)) / 16;
 
-	this->heightmaps->AddTexture(Render::TextureIndex::heightmap0, baseMap);
 	this->heightmaps->AddTexture(Render::TextureIndex::heightmap1, baseMap);
 	this->heightmaps->AddTexture(Render::TextureIndex::heightmap2, baseMap);
 	this->heightmaps->AddTexture(Render::TextureIndex::heightmap3, baseMap);
 	this->heightmaps->AddTexture(Render::TextureIndex::heightmap4, baseMap);
+	this->heightmaps->AddTexture(Render::TextureIndex::heightmap5, baseMap);
 
 }
 

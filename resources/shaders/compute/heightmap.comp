@@ -4,8 +4,8 @@ layout(std140, binding = 14) uniform LayerVariables
 {
     vec4 layerStrength;
     uvec4 useFirstLayerAsMask;
-    vec4 padding;
-    int numHeightmaps;
+	uvec4 blendModes;
+	int numHeightmaps;
 };
 
 layout(binding=1, rgba16f) restrict writeonly uniform image2D heightmapOut;
@@ -25,7 +25,7 @@ void main(void)
  	for(int i = 1; i < numHeightmaps; i++)
 	{
         float m = useFirstLayerAsMask[i-1] == 1 ? mask : 1;
-		height += texture(heightmaps[i], pixelCoords).r * m * layerStrength[i-1];
+		height = BlendFunction(height, texture(heightmaps[i], pixelCoords).r, blendModes[i-1]) * m * layerStrength[i-1];
     }
 
     vec4 pixel = vec4(height, height, height, 1.0);

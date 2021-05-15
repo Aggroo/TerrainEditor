@@ -326,6 +326,22 @@ void TerrainSettings::Update()
 
 					if (i > 0)
 					{
+						static std::vector<const char*> blendModes = 
+						{ 
+							"Multiply",
+							"Darken",
+							"Lighten",
+							"Difference",
+							"ColorBurn",
+							"LinearBurn",
+							"Screen",
+							"ColorDodge",
+							"LinearDodge",
+							"SoftLight",
+							"Overlay"
+						};
+						const char* blendSelection = blendModes[static_cast<unsigned int>(terrain->heightPass->layerVars.blendModes[i-1])];
+
 						float total_w = ImGui::GetContentRegionAvail().x / 3.0f;
 
 						nodeName = "##masktext";
@@ -340,6 +356,26 @@ void TerrainSettings::Update()
 						{
 							terrain->heightPass->layerVars.useFirstLayerAsMask[i-1] = heightSettings.useFirstLayerAsMask[i] ? 1 : 0;
 							terrain->heightPass->Execute();
+						}
+						nodeName = "##blendModes";
+						nodeName.AppendInt(i);
+						if (ImGui::BeginCombo(nodeName.AsCharPtr(), blendSelection))
+						{
+							for (unsigned int j = 0; j < static_cast<unsigned int>(blendModes.size()); j++)
+							{
+								const auto is_selected = (blendSelection == blendModes[j]);
+								if (ImGui::Selectable(blendModes[j], is_selected))
+								{
+									blendSelection = blendModes[j];
+									terrain->heightPass->layerVars.blendModes[i - 1] = j;
+									terrain->heightPass->Execute();
+								}
+								if (is_selected)
+								{
+									ImGui::SetItemDefaultFocus();
+								}
+							}
+							ImGui::EndCombo();
 						}
 
 						nodeName = "##weighttext";

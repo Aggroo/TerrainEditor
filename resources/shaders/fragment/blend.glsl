@@ -1,3 +1,15 @@
+#define MULTIPLY 0
+#define DARKEN 1
+#define LIGHTEN 2
+#define DIFFERENCE 3
+#define COLORBURN 4
+#define LINEARBURN 5
+#define SCREEN 6
+#define COLORDODGE 7
+#define LINEARDODGE 8
+#define SOFTLIGHT 9
+#define OVERLAY 10
+
 float Multiply(float a, float b)
 {
 	return a*b;
@@ -59,4 +71,54 @@ float Overlay(float a, float b)
 		return 2.0*a*b;
 	}
 	return 1.0 - 2.0*(1.0-a)*(1.0-b);
+}
+
+float BlendFunction(float a, float b, uint blendMode) 
+{
+	if(blendMode == MULTIPLY)
+	{
+		return Multiply(a,b);
+	}
+	else if(blendMode == DARKEN)
+	{
+		return Darken(a,b);
+	}
+	else if(blendMode == LIGHTEN)
+	{
+		return Lighten(a,b);
+	}
+	else if(blendMode == DIFFERENCE)
+	{
+		return Difference(a,b);
+	}
+	else if(blendMode == COLORBURN)
+	{
+		return ColorBurn(a,b);
+	}
+	else if(blendMode == LINEARBURN)
+	{
+		return LinearBurn(a,b);
+	}
+	else if(blendMode == SCREEN)
+	{
+		return Screen(a,b);
+	}
+	else if(blendMode == COLORDODGE)
+	{
+		return ColorDodge(a,b);
+	}
+	else if(blendMode == LINEARDODGE)
+	{
+		return LinearDodge(a,b);
+	}
+	else if(blendMode == SOFTLIGHT)
+	{
+		return SoftLight(a,b);
+	}
+	else if(blendMode == OVERLAY)
+	{
+		return Overlay(a,b);
+	}
+	
+	return Multiply(a,b);
 }

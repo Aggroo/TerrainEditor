@@ -170,6 +170,10 @@ TextureIndex Material::TextureIndexFromString(const Util::String& parameter)
 	{
 		return TextureIndex::heightmap4;
 	}
+	else if (parameter == TERRAIN_SEMANTIC_HEIGHTMAPS_MULTI(5))
+	{
+		return TextureIndex::heightmap5;
+	}
 	else if (parameter == TERRAIN_SEMANTIC_AO)
 	{
 		return TextureIndex::ao0;
@@ -269,6 +273,10 @@ Util::String Material::UniformNameFromString(const Util::String& parameter)
 	else if (parameter == TERRAIN_SEMANTIC_HEIGHTMAPS_MULTI(4))
 	{
 		return  TERRAIN_SEMANTIC_HEIGHTMAPS_MULTI_STR("[4]");
+	}
+	else if (parameter == TERRAIN_SEMANTIC_HEIGHTMAPS_MULTI(5))
+	{
+		return TERRAIN_SEMANTIC_HEIGHTMAPS_MULTI_STR("[5]");
 	}
 	else if (parameter == TERRAIN_SEMANTIC_HEIGHTMAP)
 	{

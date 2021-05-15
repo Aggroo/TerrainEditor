@@ -28,11 +28,26 @@ private:
 		
 	};
 
+	enum BlendModes
+	{
+		MULTIPLY = 0,
+		DARKEN = 1,
+		LIGHTEN = 2,
+		DIFFERENCES = 3,
+		COLORBURN = 4,
+		LINEARBURN = 5,
+		SCREEN = 6,
+		COLORDODGE = 7,
+		LINEARDODGE = 8,
+		SOFTLIGHT = 9,
+		OVERLAY = 10
+	};
+
 	struct LayerVariables
 	{
 		float layerStrength[4] = {1.0f, 1.0f, 1.0f, 1.0f};
 		uint useFirstLayerAsMask[4] = { 0,0,0,0 };
-		Math::vec4 padding;
+		uint blendModes[4] = { 0,0,0,0 };
 		int numHeightmaps = 1;
 	};
 
