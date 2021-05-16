@@ -45,10 +45,10 @@ private:
 
 	struct LayerVariables
 	{
-		float layerStrength[4] = {1.0f, 1.0f, 1.0f, 1.0f};
-		uint useFirstLayerAsMask[4] = { 0,0,0,0 };
-		uint blendModes[4] = { 0,0,0,0 };
-		int numHeightmaps = 1;
+		GLfloat layerStrength[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+		GLuint useFirstLayerAsMask[4] = { 0,0,0,0 };
+		GLuint blendModes[4] = { 0,0,0,0 };
+		GLint numHeightmaps = 1;
 	};
 
 	GLuint ubo[1];

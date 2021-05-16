@@ -20,10 +20,10 @@ TerrainSettings::TerrainSettings(Display::Window* app) : Widget(app), heightPopu
 	this->terrain = Terrain::Terrain::Create();
 	this->terrain->Activate();
 	this->terrain->CreateTerrain(heightSettings.size,
-			heightSettings.widthMultiplier,
-			heightSettings.heightMultiplier);
+		heightSettings.widthMultiplier,
+		heightSettings.heightMultiplier);
 
-	this->heightSettings.textures[0] = this->terrain->GetSurface()->GetTextureList()->GetTexture(Render::TextureIndex::heightmap0)->GetTextureID();
+	this->heightSettings.textures[0] = this->terrain->heightPass->GetHeightmaps()->GetTexture(Render::TextureIndex::heightmap1)->GetTextureID();
 }
 
 void TerrainSettings::Update()
@@ -262,8 +262,19 @@ void TerrainSettings::Update()
 					terrain->heightPass->layerVars.numHeightmaps = 5;
 				else
 				{
+					Render::TextureIndex texIndx;
+					switch (terrain->heightPass->layerVars.numHeightmaps - 1)
+					{
+					case 0: texIndx = Render::TextureIndex::heightmap1; break;
+					case 1: texIndx = Render::TextureIndex::heightmap2; break;
+					case 2: texIndx = Render::TextureIndex::heightmap3; break;
+					case 3: texIndx = Render::TextureIndex::heightmap4; break;
+					case 4: texIndx = Render::TextureIndex::heightmap5; break;
+					default:
+						break;
+					}
 					heightSettings.texNames.Append("");
-					heightSettings.textures.Append(0);
+					heightSettings.textures.Append(this->terrain->heightPass->GetHeightmaps()->GetTexture(texIndx)->GetTextureID());
 
 					//terrain->tsVar.numHeightmaps++;
 				}
@@ -400,19 +411,6 @@ void TerrainSettings::Update()
 		}
 		
 	}
-	
-
-	//if (heightSettings.texNames[0].IsEmpty())
-	//{
-	//	ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
-	//	ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
-	//}
-
-	//if (heightSettings.texNames[0].IsEmpty())
-	//{
-	//	ImGui::PopItemFlag();
-	//	ImGui::PopStyleVar();
-	//}
 
 	ModalWindow();
 }
@@ -489,11 +487,11 @@ void TerrainSettings::ModalWindow()
 			Render::TextureIndex texIndx;
 			switch (chosenHeightmap)
 			{
-			case 0: texIndx = Render::TextureIndex::heightmap0; break;
-			case 1: texIndx = Render::TextureIndex::heightmap1; break;
-			case 2: texIndx = Render::TextureIndex::heightmap2; break;
-			case 3: texIndx = Render::TextureIndex::heightmap3; break;
-			case 4: texIndx = Render::TextureIndex::heightmap4; break;
+			case 0: texIndx = Render::TextureIndex::heightmap1; break;
+			case 1: texIndx = Render::TextureIndex::heightmap2; break;
+			case 2: texIndx = Render::TextureIndex::heightmap3; break;
+			case 3: texIndx = Render::TextureIndex::heightmap4; break;
+			case 4: texIndx = Render::TextureIndex::heightmap5; break;
 			default:
 				break;
 			}
