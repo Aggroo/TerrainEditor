@@ -2,7 +2,10 @@
 #include "widgetdebugvars.h"
 #include "foundation/input/inputmanager.h"
 #include "render/render/renderer.h"
+#include "render/server/pickingServer.h"
+#include "render/server/FrameServer.h"
 #include "IconsFontAwesome5_c.h"
+
 
 namespace UI
 {
@@ -18,9 +21,18 @@ void DebugVariables::Update()
 	position.Append(Util::String::FromVec2(Input::InputManager::Instance()->GetMousePosition()));
 	ImGui::Text(position.AsCharPtr());
 
+	Math::vec2 mousePos = Input::InputManager::Instance()->GetRelativeMousePosition();
 	position = "Relative Mouse pos:\n ";
-	position.Append(Util::String::FromVec2(Input::InputManager::Instance()->GetRelativeMousePosition()));
+	position.Append(Util::String::FromVec2(mousePos));
 	ImGui::Text(position.AsCharPtr());
+	
+	if (Input::InputManager::Instance()->GetButtonMouse(Input::MouseButton::LEFT))
+	{
+		Util::String worldSpace = "World Space Pos:\n ";
+		worldSpace.Append(Util::String::FromVec4(Render::PickingServer::Instance()->GetWorldSpacePosition(mousePos.x(), mousePos.y(), Render::FrameServer::Instance()->GetDepthPass()->GetFrameBufferObject())));
+		ImGui::Text(worldSpace.AsCharPtr());
+	}
+	
 
 	Util::String renderResolution = "Render Resolution:\n";
 	renderResolution.AppendInt(Render::Renderer::Instance()->GetRenderResolution().x);

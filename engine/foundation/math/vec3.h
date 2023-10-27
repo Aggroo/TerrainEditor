@@ -14,14 +14,14 @@ namespace Math
 			vec[1] = 0.0f;
 			vec[2] = 0.0f;
 		}
-		inline vec3(int x, int y, int z)
+		inline vec3(const int x, const int y, const int z)
 		{
 			vec[0] = float(x);
 			vec[1] = float(y);
 			vec[2] = float(z);
 		}
 
-		inline vec3(float x, float y, float z)
+		inline vec3(const float x, const float y, const float z)
 		{
 			vec[0] = x;
 			vec[1] = y;
@@ -64,7 +64,7 @@ namespace Math
 			return new_vec;
 		}
 
-		inline vec3 operator*(float constant) const
+		inline vec3 operator*(const float constant) const
 		{
 			vec3 new_vec;
 
@@ -76,7 +76,7 @@ namespace Math
 			return new_vec;
 		}
 
-		inline vec3 operator/(float constant) const
+		inline vec3 operator/(const float constant) const
 		{
 			vec3 new_vec; 
 
@@ -97,12 +97,12 @@ namespace Math
 			return *this;
 		}
 		
-		inline float &operator[](int pos)
+		inline float& operator[](const int pos)
 		{
 			return vec[pos];
 		}
 
-		inline float operator[](int pos) const
+		inline const float &operator[](const int pos) const
 		{
 			return vec[pos];
 		}
@@ -138,7 +138,7 @@ namespace Math
 			return vec3(-vec[0],-vec[1],-vec[2]);
 		}
 
-		inline vec3 vecMult(const float& constant)
+		inline vec3 vecMult(const float constant)
 		{
 			vec3 new_vec;
 
@@ -149,7 +149,7 @@ namespace Math
 			return new_vec;
 		}
 
-		inline float vecLength()
+		inline float vecLength() const
 		{
 			float length;
 			float tmp = 0;
@@ -164,7 +164,7 @@ namespace Math
 			return length;
 		}
 
-		inline static vec3 Normalize(vec3 v)
+		inline static vec3 Normalize(const vec3& v)
 		{
 			vec3 new_vec;
 			float norm = 1 / v.vecLength();
@@ -176,7 +176,7 @@ namespace Math
 			return new_vec;
 		}
 
-		inline static float Dot(vec3 vec,vec3 vect)
+		inline static float Dot(const vec3& vec, const vec3& vect)
 		{
 			float result = 0;
 
@@ -187,7 +187,7 @@ namespace Math
 			return result;
 		}
 
-		inline static vec3 Cross(vec3 vec, vec3 vect)
+		inline static vec3 Cross(const vec3& vec, const vec3& vect)
 		{
 			vec3 new_vec;
 

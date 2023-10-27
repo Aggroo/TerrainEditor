@@ -17,17 +17,17 @@ namespace Render
 		GraphicsNode();
 		~GraphicsNode();
 
-		void setShaders(Ptr<Render::ShaderObject> newShader);
-		Ptr<Render::ShaderObject> getShaders();
+		void SetShaders(Ptr<Render::ShaderObject> newShader);
+		Ptr<Render::ShaderObject> GetShaders();
 
-		void setMesh(std::shared_ptr<MeshResources> newMesh);
-		std::shared_ptr<MeshResources> getMesh();
+		void SetMesh(Ptr<MeshResources> newMesh);
+		Ptr<MeshResources> GetMesh();
 
-		void setTex(Ptr<Render::TextureNode> newTex);
-		Ptr<Render::TextureNode> getTex();
+		void SetTex(Ptr<Render::TextureNode> newTex);
+		Ptr<Render::TextureNode> GetTex();
 		
-		void setTransMat(Math::mat4 newTransMat);
-		Math::mat4 getTransMat();
+		void SetTransMat(Math::mat4 newTransMat);
+		Math::mat4 GetTransMat();
 
 		void SetViewMat(Math::mat4 newViewMat);
 		Math::mat4 GetViewMat();
@@ -35,12 +35,12 @@ namespace Render
 		void SetProjectionMat(Math::mat4 newProjectionMat);
 		Math::mat4 GetProjectionMat();
 
-		void draw();
-		void drawSkinned();
+		void Draw();
+		void DrawSkinned();
 		
 	private:
 		Ptr<Render::ShaderObject> shader;
-		std::shared_ptr<MeshResources> mesh;
+		Ptr<MeshResources> mesh;
 		Ptr<Render::TextureNode> tex;
 
 		Math::mat4 transMat;

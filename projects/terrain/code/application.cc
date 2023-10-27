@@ -11,6 +11,7 @@
 #include "render/render/skybox.h"
 #include "render/server/shaderserver.h"
 #include "render/server/lightserver.h"
+#include "application/game/entity.h"
 #include "ui/uiserver.h"
 #include "ui/widgets/widgettoolbar.h"
 #include "ui/widgets/widgetinspector.h"
@@ -87,7 +88,7 @@ Application::Open()
 		UI::UIServer::Instance()->AddWidget(std::make_unique<UI::PerlinSettings>(this->window));
 		UI::UIServer::Instance()->AddWidget(std::make_unique<UI::TerrainSettings>(this->window));
 		UI::UIServer::Instance()->AddWidget(std::make_unique<UI::DebugVariables>(this->window));
-		UI::TerrainSettings* test = (UI::TerrainSettings*) UI::UIServer::Instance()->GetLastWidget();
+		//UI::TerrainSettings* test = (UI::TerrainSettings*) UI::UIServer::Instance()->GetLastWidget();
 		//test->SetTerrain(terrain);
 		//UI::UIServer::Instance()->AddWidget(std::make_unique<UI::Inspector>(this->window));
 
@@ -112,7 +113,6 @@ void Application::RenderUI()
 	}
 }
 
-
 bool Application::IsInitializationFinished()
 {
 	return initializeStarted && !JobSystem::IsBusy(ctx);
@@ -123,6 +123,7 @@ bool Application::IsInitializationFinished()
 void
 Application::Run()
 {
+
 	//Render::LightServer::Instance()->CreatePointLight(Math::vec4(0, 80, 3), Math::vec4(1.0f, 1.0f, 1.0f), 10.0f, 10.0f);
 	while (this->window->IsOpen())
 	{

@@ -59,11 +59,15 @@ Application::Open()
 
 	if (this->window->Open())
 	{
+
+		JobSystem::Initialize();
+
 		IO::Logger::Init();
 
 		Render::Renderer::Instance()->Setup(this->window);
 		Render::Renderer::Instance()->SetWindowResolution(1280, 900);
 		Render::Renderer::Instance()->SetRenderResolution(1280, 900);
+		Render::Renderer::Instance()->UnsetRenderFlag(Render::RenderSSAO);
 
 		//shader = Render::ShaderServer::Instance()->GetShader("lightculling");
 
@@ -114,6 +118,12 @@ void Application::RenderUI()
 	}
 }
 
+bool Application::IsInitializationFinished()
+{
+	return initializeStarted && !JobSystem::IsBusy(ctx);
+}
+
+
 /**
 */
 void
@@ -122,43 +132,45 @@ Application::Run()
 
 	Math::mat4 modelMat = Math::mat4::translationMatrix(Math::vec4(0.0f, 0.0f, 0.0f));
 
-	Ptr<Game::Entity> helmet = Game::Entity::Create();
-	helmet->SetName("Helmet");
-	helmet->SetModel("resources/models/scifihelmet.mdl");
-	helmet->SetTransform(modelMat*Math::mat4::translationMatrix(Math::vec4(0.0f, 0.0f, 120.0f))*Math::mat4::rotY(Math::Deg2Rad(-180))*Math::mat4::Scale(30.0f));
-	helmet->Activate();
-	
-	Ptr<Game::Entity> gun = Game::Entity::Create();
-	gun->SetName("Gun");
-	gun->SetModel("resources/models/cerberus.mdl");
-	gun->SetTransform(modelMat*Math::mat4::translationMatrix(Math::vec4(0.0f, 50.0f, 0.0f))*Math::mat4::rotY(Math::Deg2Rad(-90))*Math::mat4::rotX(Math::Deg2Rad(-90)));
-	gun->Activate();
+	//Ptr<Game::Entity> helmet = Game::Entity::Create();
+	//helmet->SetName("Helmet");
+	//helmet->SetModel("resources/models/scifihelmet.mdl");
+	//helmet->SetTransform(modelMat*Math::mat4::translationMatrix(Math::vec4(0.0f, 0.0f, 120.0f))*Math::mat4::rotY(Math::Deg2Rad(-180))*Math::mat4::Scale(30.0f));
+	//helmet->Activate();
+	//
+	//Ptr<Game::Entity> gun = Game::Entity::Create();
+	//gun->SetName("Gun");
+	//gun->SetModel("resources/models/cerberus.mdl");
+	//gun->SetTransform(modelMat*Math::mat4::translationMatrix(Math::vec4(0.0f, 50.0f, 0.0f))*Math::mat4::rotY(Math::Deg2Rad(-90))*Math::mat4::rotX(Math::Deg2Rad(-90)));
+	//gun->Activate();
+
+	Ptr<Game::Entity> sponza = Game::Entity::Create();
+	sponza->SetName("Sponza");
+	sponza->SetModel("resources/models/sponza.mdl");
+	sponza->SetTransform(modelMat);
+	sponza->Activate();
 
 	//terrain->SetSkybox(skybox);
 
     std::chrono::high_resolution_clock::time_point before = std::chrono::high_resolution_clock::now();
 
-	Render::LightServer::Instance()->CreatePointLight(Math::vec4(0, 80, 3), Math::vec4(1.0f, 1.0f, 1.0f), 10.0f, 10.0f);
+	//Render::LightServer::Instance()->CreatePointLight(Math::vec4(0, 80, 3), Math::vec4(1.0f, 1.0f, 1.0f), 10.0f, 10.0f);
 
 	while (this->window->IsOpen())
 	{        
+
+		if (!IsInitializationFinished())
+			continue;
+
 		this->window->Update();
 		Input::InputManager::Instance()->Update();
-		
-		//float timeStamp = float(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - before).count() / 1000.0f);
-
-		Input::InputManager::Instance()->CameraMovement();
-
-		//gN.setTransMat(modelMat);
 
 		BaseGameFeature::EntityManager::Instance()->Update();
 
 		//Render the scene
 		Render::Renderer::Instance()->Render(false);
-		
-		//gN.draw();	
 
-        //glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 		this->window->SwapBuffers();
 	}

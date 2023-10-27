@@ -23,7 +23,7 @@ class Inspector : public Widget
 	} gizmo;
 
 public:
-	Inspector(Display::Window* app);
+	explicit Inspector(Display::Window* app);
 
 	void Update() override;
 

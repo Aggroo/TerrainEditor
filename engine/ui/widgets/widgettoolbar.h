@@ -25,7 +25,7 @@ class Toolbar : public Widget
 {
 public:
 
-	Toolbar(Display::Window* app);
+	explicit Toolbar(Display::Window* app);
 
 	void Update() override;
 private:

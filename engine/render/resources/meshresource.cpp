@@ -19,6 +19,7 @@ MeshResources::~MeshResources()
 	glDeleteVertexArrays(1, &vao[0]);
 	glDeleteBuffers(1, &vbo[0]);
 	glDeleteBuffers(1, &ibo[0]);
+
 }
 
 void MeshResources::GenerateBuffers()

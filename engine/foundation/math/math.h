@@ -8,7 +8,7 @@
 namespace Math
 {
 
-static float InverseLerp(float a, float b, float value)
+static float InverseLerp(const float a, const float b, const float value)
 {
 	if (a == b)
 	{
@@ -16,6 +16,7 @@ static float InverseLerp(float a, float b, float value)
 		{
 			return 0;
 		}
+
 		else
 		{
 			return 1;
@@ -27,7 +28,7 @@ static float InverseLerp(float a, float b, float value)
 	}
 }
 
-static float Lerp(float a, float b, float t)
+static float Lerp(const float a, const float b, const float t)
 {
 	return a + t * (b - a);
 }
@@ -84,7 +85,7 @@ static bool IsPowerOfTwo(int x)
 	return ((x & y) - (y >> 31) == 0);
 }
 
-static void barycentric(const vec4& p, const vec4& a, const vec4& b, const vec4& c, float& u, float& v, float& w)
+static void Barycentric(const vec4& p, const vec4& a, const vec4& b, const vec4& c, float& u, float& v, float& w)
 {
 	vec4 v0 = b - a;
 	vec4 v1 = c - a;
@@ -105,12 +106,12 @@ static void barycentric(const vec4& p, const vec4& a, const vec4& b, const vec4&
 }
 
 //returns a random float between zero and 1 
-inline float randFloat()
+inline float RandFloat()
 {
 	return ((rand()) / (RAND_MAX + 1.0f));
 }
 //returns a random float between a and b 
-inline float randFloat(float a, float b)
+inline float RandFloat(float a, float b)
 {
 	if (a > b)
 	{
@@ -124,20 +125,20 @@ inline float randFloat(float a, float b)
 }
 
 //returns a random float in the range -1 < n < 1 
-inline float randomClamped() { return randFloat() - randFloat(); }
+inline float randomClamped() { return RandFloat() - RandFloat(); }
 
 inline void RandomPointInCircle(const float& radius, float& x, float& y)
 {
-	float angle = randFloat() * (float)PI * 2;
-	float randRad = sqrtf(randFloat()) * radius;
+	float angle = RandFloat() * (float)PI * 2;
+	float randRad = sqrtf(RandFloat()) * radius;
 	x = randRad * cosf(angle);
 	y = randRad * sinf(angle);
 }
 
 inline void RandomPointInSphere(const float& radius, Math::vec4& vec, float degrees = PI * 2)
 {
-	float phi = randFloat(0, degrees);
-	float costheta = randFloat(-1, 1);
+	float phi = RandFloat(0, degrees);
+	float costheta = RandFloat(-1, 1);
 
 	float theta = acosf(costheta);
 	float rs = radius * sinf(theta);

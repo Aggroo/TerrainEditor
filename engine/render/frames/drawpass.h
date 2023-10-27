@@ -21,7 +21,7 @@ public:
 	//Get this framebuffer objects render texture
 	GLuint& GetTextureBuffer() { return this->buffer; }
 
-	void AddMaterial(Material* mat) { this->materials.Append(mat); }
+	void AddMaterial(Ptr<Material> mat) { this->materials.Append(mat); }
 
 	//Binds the Framebuffer object
 	void BindFrameBuffer();
@@ -43,7 +43,7 @@ protected:
 	//Texture buffer
 	GLuint buffer;
 
-	Util::Array<Material*> materials;
+	Util::Array<Ptr<Material>> materials;
 
 private:
 	//Ptr<Render::Skybox> skybox;

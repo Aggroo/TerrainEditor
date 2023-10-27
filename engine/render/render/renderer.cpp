@@ -31,7 +31,7 @@ void Renderer::Setup(Display::Window* window)
 
 	T_CORE_TRACE("[RENDERER]: Setup Render Options");
 	renderOptions.Add(OptionTonemapping, static_cast<float>(ToneMappingACES));
-	renderOptions.Add(OptionExposure, 0.0f);
+	renderOptions.Add(OptionExposure, 1.0f);
 	renderOptions.Add(OptionGamma, 2.2f);
 	renderOptions.Add(OptionAOKernel, 64.0f);
 	renderOptions.Add(OptionAORadius, 0.5f);

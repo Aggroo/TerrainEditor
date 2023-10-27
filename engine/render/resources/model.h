@@ -10,15 +10,18 @@ class Material;
 class Surface;
 class Model;
 
-struct ModelNode
+class ModelNode : public Core::RefCounted
 {
+__DeclareClass(ModelNode)
+
+public:
 	~ModelNode();
 	//index for the primitivegroup to render
 	uint primitiveGroup;
 	//pointer back to the surface
-	Surface* surface;
+	Ptr<Surface> surface;
 	//pointer to the modelinstance that own this modelnode
-	Model* modelInstance;
+	Ptr<Model> modelInstance;
 };
 
 class Model : public Core::RefCounted
@@ -30,9 +33,9 @@ public:
 
 	Ptr<MeshResources> GetMesh();
 
-	const Util::Array<ModelNode*>& GetModelNodes() { return this->nodes; }
+	const Util::Array<Ptr<ModelNode>>& GetModelNodes() { return this->nodes; }
 
-	void AddModelNode(ModelNode* node) { nodes.Append(node); }
+	void AddModelNode(Ptr<ModelNode> node) { nodes.Append(node); }
 
 	Math::mat4 transform;
 
@@ -43,7 +46,7 @@ private:
 	//Loaded mesh with primitives
 	Ptr<MeshResources> mesh;
 	//A list of model nodes with a surface and a index to it's primitive group
-	Util::Array<ModelNode*> nodes;
+	Util::Array<Ptr<ModelNode>> nodes;
 
 
 	Util::String directory;

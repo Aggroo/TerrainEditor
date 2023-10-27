@@ -25,7 +25,14 @@ Surface::Surface()
 
 Surface::~Surface()
 {
-	
+	uboBuffer = nullptr;
+
+	for (size_t i = 0; i < parameters.Size(); i++)
+	{
+		delete parameters[i];
+	}
+
+	parameters.Clear();
 }
 
 void Surface::SetupShaderUniforms()
@@ -150,12 +157,12 @@ void Surface::UpdateParameterByName(const Util::String & name, const Util::Varia
 	}
 }
 
-void Surface::AddModelNode(ModelNode* node)
+void Surface::AddModelNode(Ptr<ModelNode> node)
 {
 	this->modelNodes.Append(node);
 }
 
-bool Surface::RemoveModelNode(ModelNode* node)
+bool Surface::RemoveModelNode(Ptr<ModelNode> node)
 {
 	auto n = this->modelNodes.Find(node);
 	if (n != nullptr)
@@ -166,7 +173,7 @@ bool Surface::RemoveModelNode(ModelNode* node)
 	return false;
 }
 
-const Util::Array<ModelNode*>& Surface::GetModelNodes()
+const Util::Array<Ptr<ModelNode>>& Surface::GetModelNodes()
 {
 	return this->modelNodes;
 }

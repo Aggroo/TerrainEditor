@@ -17,7 +17,7 @@ struct PerlinNoiseSettings
 class PerlinSettings : public Widget
 {
 public:
-	PerlinSettings(Display::Window* app);
+	explicit PerlinSettings(Display::Window* app);
 
 	void Update() override;
 

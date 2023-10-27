@@ -1,0 +1,33 @@
+{
+	"Surface": {
+		"material": "PBR",
+		"Textures": [
+			{
+				"name": "AlbedoMap",
+				"sampler": "RepeatBilinear",
+				"value": "resources/assets/Sponza/background.tga"
+			},
+			{
+				"name": "NormalMap",
+				"sampler": "RepeatBilinear",
+				"value": "resources/assets/Sponza/background_ddn.tga"
+			},
+			{
+				"name": "SpecularMap",
+				"sampler": "RepeatBilinear",
+				"value": "resources/assets/Sponza/background_spec.tga"
+			},
+			{
+				"name": "RoughnessMap",
+				"sampler": "RepeatBilinear",
+				"value": "resources/assets/Sponza/background_roughness.tga"
+			}
+		],
+		"Parameters": [
+			{
+				"name": "IBL",
+				"value": "true"
+			}
+		]
+	}
+}

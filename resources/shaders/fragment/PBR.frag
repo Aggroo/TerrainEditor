@@ -30,12 +30,12 @@ void main()
 	ivec2 location = ivec2(gl_FragCoord.xy);
 	ivec2 tileID = location / ivec2(TILE_SIZE, TILE_SIZE);
 	uint index = tileID.y * LightTileWorkGroups.x + tileID.x;
-	
-	vec3 albedo = pow(texture(AlbedoMap,texCoord).rgb, vec3(GAMMA));
-	vec3 normal = texture(NormalMap, texCoord).rgb * 2.0f - 1.0f;
+	vec4 albedo = texture(AlbedoMap,texCoord);
+	albedo.rgb = pow(albedo.rgb, vec3(GAMMA));
+	vec3 normal = (texture(NormalMap, texCoord).rgb * 2.0f) - 1.0f;
 	//vec3 spec = texture(SpecularMap, texCoord).rgb;
 	float metallic = texture(SpecularMap, texCoord).r;
-	float roughness = texture(RoughnessMap, texCoord).g;
+	float roughness = texture(RoughnessMap, texCoord).r;
 
 	//vec3 Color = texture(AlbedoMap, vec2(uv.x,1.0-uv.y)).rgb;
 	
@@ -46,15 +46,15 @@ void main()
 	//F0 as 0.04 will usually look good for all dielectric (non-metal) surfaces
 	vec3 F0 = vec3(0.04);
 	//for metallic surfaces we interpolate between F0 and the albedo value with metallic value as our lerp weight
-	F0 = mix(F0, albedo, metallic);
+	F0 = mix(F0, albedo.rgb, metallic);
 	
 	vec3 lo = vec3(0.0f);
 	
 	/// Loop for Point Lights
 	uint offset = index * tileLights;
 		//Calculate lights
-	CalculatePointLights(lo, V, N, F0, vec4(albedo.rgb, 1.0), metallic, roughness, offset, tileLights);
-	CalculateSpotLights(lo, V, N, F0, vec4(albedo.rgb, 1.0), metallic, roughness, offset, tileLights);
+	//CalculatePointLights(lo, V, N, F0, vec4(albedo.rgb, 1.0), metallic, roughness, offset, tileLights);
+	//CalculateSpotLights(lo, V, N, F0, vec4(albedo.rgb, 1.0), metallic, roughness, offset, tileLights);
 	
 	float cosLo = max(0.0, dot(N, V));
 	
@@ -65,7 +65,7 @@ void main()
 	kD *= 1.0 - metallic;
 	
 	vec3 irradiance = texture(irradianceMap, N).rgb;
-    vec3 diffuse = irradiance * albedo;
+    vec3 diffuse = irradiance * albedo.rgb;
 	
 	const float MAX_REFLECTION_LOD = 4.0;
     vec3 prefilteredColor = textureLod(environmentMap, R,  roughness * MAX_REFLECTION_LOD).rgb;   
@@ -78,9 +78,12 @@ void main()
 
 	//color = color / (color + vec3(1.0f));
 	//color = pow(color, vec3(screenGamma));
+	
+	if(albedo.a < 0.5)
+		discard;
 
 	resColor = vec4(color, 1.0);
 	normalColor = N;
-	specularOut.rgb = prefilteredColor;
+	specularOut.rgb = vec3(metallic);
 	roughnessOut = vec3(roughness);
 }

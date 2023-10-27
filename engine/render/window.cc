@@ -252,17 +252,17 @@ Window::Open()
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
-
+	
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 	io.ConfigWindowsResizeFromEdges = true;
 
 	io.Fonts->AddFontFromFileTTF("resources/fonts/Roboto-Medium.ttf", 14.0f);
 
-	ImGui_ImplGlfw_InitForOpenGL(this->window, false);
+	ImGui_ImplGlfw_InitForOpenGL(this->window, true);
 	ImGui_ImplOpenGL3_Init();
 	glfwSetCharCallback(window, ImGui_ImplGlfw_CharCallback);
-
 
 	// increase window count and return result
 	Window::WindowCount++;

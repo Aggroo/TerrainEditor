@@ -11,7 +11,7 @@ IBLPass::IBLPass()
 	ir = TextureResource::Create();
 	brdf = TextureResource::Create();
 	sp = TextureResource::Create();
-	hdrTexPath = "resources/textures/skyboxes/qwantani_2k.hdr";
+	hdrTexPath = "resources/textures/skyboxes/lythwood_lounge.hdr";
 }
 
 IBLPass::~IBLPass()

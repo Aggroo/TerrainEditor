@@ -17,7 +17,7 @@ public:
 		this->w = 1.0f;
 	}
 
-	inline quaternions(float x, float y, float z, float w)
+	inline quaternions(const float x, const float y, const float z, const float w)
 	{
 		this->x = x;
 		this->y = y;
@@ -25,14 +25,14 @@ public:
 		this->w = w;
 	}
 
-	inline quaternions(float x, float y, float z)
+	inline quaternions(const float x, const float y, const float z)
 	{
-		set(x, y, z);
+		Set(x, y, z);
 	}
 
 	inline quaternions(const vec3& vec)
 	{
-		set(vec.x(), vec.y(), vec.z());
+		Set(vec.x(), vec.y(), vec.z());
 	}
 
 
@@ -97,7 +97,7 @@ public:
 	}
 
 	//! Multiplication operator with scalar
-	inline quaternions operator*(float s) const
+	inline quaternions operator*(const float s) const
 	{
 		return quaternions(s*this->x, s*this->y, s*this->z, s*this->w);
 	}
@@ -111,7 +111,7 @@ public:
 		return vec3(x, y, z);
 	}
 
-	void operator *=(const quaternions &multiplier)
+	void operator *=(const quaternions& multiplier)
 	{
 		quaternions q = *this;
 		w = q.W()*multiplier.W() - q.X()*multiplier.X() -
@@ -125,7 +125,7 @@ public:
 	}
 
 	// multiplication operator
-	inline quaternions& operator*=(float s)
+	inline quaternions& operator*=(const float s)
 	{
 		this->x *= s;
 		this->y *= s;
@@ -135,7 +135,7 @@ public:
 	}
 
 	//! Normalizes the quaternions
-	inline quaternions& normalize()
+	inline quaternions& Normalize()
 	{
 		float n = x*x + y*y + z*z + w*w;
 
@@ -146,7 +146,7 @@ public:
 		return (*this *= n);
 	}
 
-	inline void AddScaleVector(const vec4& vec, float scale)
+	inline void AddScaleVector(const vec4& vec, const float scale)
 	{
 		quaternions q(vec.x()*scale, vec.y()*scale, vec.z()*scale, 0);
 
@@ -158,7 +158,7 @@ public:
 	}
 
 	//! Sets new quaternions based on Euler angles (radians)
-	inline quaternions& set(float x, float y, float z)
+	inline quaternions& Set(const float x, const float y, const float z)
 	{
 		auto angle = x * 0.5;
 		const double sr = sin(angle);
@@ -182,41 +182,41 @@ public:
 		this->z = static_cast<float>(cr * cpsy - sr * spcy);
 		this->w = static_cast<float>(cr * cpcy + sr * spsy);
 
-		return normalize();
+		return Normalize();
 	}
 
 	//! Sets new quaternions based on Euler angles (radians)
-	inline quaternions& set(const vec3& vec)
+	inline quaternions& Set(const vec3& vec)
 	{
-		return set(vec.x(), vec.y(), vec.z());
+		return Set(vec.x(), vec.y(), vec.z());
 	}
 
 	//! Sets new quaternions from other quaternions
-	inline quaternions& set(const quaternions& quat)
+	inline quaternions& Set(const quaternions& quat)
 	{
 		return (*this = quat);
 	}
 
 	//quaternions slerp, float t is the interval
-	inline static quaternions QuatSlerp(quaternions* from, quaternions * to, float t)
+	inline static quaternions QuatSlerp(const quaternions& from, const quaternions& to, float t)
 	{
 		float           to1[4];
 		double scale0, scale1;
 		// calc cosine
-		double cosom = from->x * to->x + from->y * to->y + from->z * to->z + from->w * to->w;
+		double cosom = from.x * to.x + from.y * to.y + from.z * to.z + from.w * to.w;
 
 		// adjust signs (if necessary)
-		if (cosom <0.0){
-			cosom = -cosom; to1[0] = -to->x;
-			to1[1] = -to->y;
-			to1[2] = -to->z;
-			to1[3] = -to->w;
+		if (cosom < 0.0){
+			cosom = -cosom; to1[0] = -to.x;
+			to1[1] = -to.y;
+			to1[2] = -to.z;
+			to1[3] = -to.w;
 		}
 		else  {
-			to1[0] = to->x;
-			to1[1] = to->y;
-			to1[2] = to->z;
-			to1[3] = to->w;
+			to1[0] = to.x;
+			to1[1] = to.y;
+			to1[2] = to.z;
+			to1[3] = to.w;
 		}
 		// calculate coefficients
 		if ((1.0 - cosom) > 0.3f)
@@ -236,14 +236,14 @@ public:
 		}
 		// calculate final values
 		quaternions res;
-		res.x = static_cast<float>(scale0 * from->x + scale1 * to1[0]);
-		res.y = static_cast<float>(scale0 * from->y + scale1 * to1[1]);
-		res.z = static_cast<float>(scale0 * from->z + scale1 * to1[2]);
-		res.w = static_cast<float>(scale0 * from->w + scale1 * to1[3]);
+		res.x = static_cast<float>(scale0 * from.x + scale1 * to1[0]);
+		res.y = static_cast<float>(scale0 * from.y + scale1 * to1[1]);
+		res.z = static_cast<float>(scale0 * from.z + scale1 * to1[2]);
+		res.w = static_cast<float>(scale0 * from.w + scale1 * to1[3]);
 		return res;
 	}
 
-	inline static quaternions AxisRotation(float angle, vec3 vec)
+	inline static quaternions AxisRotation(const float angle, const vec3& vec)
 	{
 		quaternions q;
 		float a = angle*0.5f;
@@ -254,7 +254,7 @@ public:
 		return q;
 	}
 
-	inline static vec4 quaternionsToVec4(quaternions quat)
+	inline static vec4 QuaternionsToVec4(const quaternions& quat)
 	{
 		vec4 vec;
 		vec[0] = quat.x;
@@ -284,22 +284,22 @@ public:
 		return this->w;
 	}
 
-	inline void X(float val)
+	inline void X(const float val)
 	{
 		this->x = val;
 	}
 
-	inline void Y(float val)
+	inline void Y(const float val)
 	{
 		this->y = val;
 	}
 
-	inline void Z(float val)
+	inline void Z(const float val)
 	{
 		this->z = val;
 	}
 
-	inline void W(float val)
+	inline void W(const float val)
 	{
 		this->w = val;
 	}

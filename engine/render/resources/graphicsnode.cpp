@@ -21,43 +21,43 @@ namespace Render
 	}
 
 
-	void GraphicsNode::setShaders(Ptr<Render::ShaderObject> newShader)
+	void GraphicsNode::SetShaders(Ptr<Render::ShaderObject> newShader)
 	{
 		this->shader = newShader;
 	}
 
-	Ptr<Render::ShaderObject> GraphicsNode::getShaders()
+	Ptr<Render::ShaderObject> GraphicsNode::GetShaders()
 	{
 		return this->shader;
 	}
 
 
-	void GraphicsNode::setMesh(std::shared_ptr<MeshResources> newMesh)
+	void GraphicsNode::SetMesh(Ptr<MeshResources> newMesh)
 	{
 		this->mesh = newMesh;
 	}
 
-	std::shared_ptr<MeshResources> GraphicsNode::getMesh()
+	Ptr<MeshResources> GraphicsNode::GetMesh()
 	{
 		return this->mesh;
 	}
 
-	void GraphicsNode::setTex(Ptr<Render::TextureNode> newTex)
+	void GraphicsNode::SetTex(Ptr<Render::TextureNode> newTex)
 	{
 		this->tex = newTex;
 	}
 
-	Ptr<Render::TextureNode> GraphicsNode::getTex()
+	Ptr<Render::TextureNode> GraphicsNode::GetTex()
 	{
 		return this->tex;
 	}
 
-	void GraphicsNode::setTransMat(Math::mat4 newTransMat)
+	void GraphicsNode::SetTransMat(Math::mat4 newTransMat)
 	{
 		this->transMat = newTransMat;
 	}
 
-	Math::mat4 GraphicsNode::getTransMat()
+	Math::mat4 GraphicsNode::GetTransMat()
 	{
 		return this->transMat;
 	}
@@ -83,7 +83,7 @@ namespace Render
 	}
 
 
-	void GraphicsNode::draw()
+	void GraphicsNode::Draw()
 	{
 		this->shader->BindProgram();
 		this->tex->BindTextures();
@@ -94,7 +94,7 @@ namespace Render
 			this->mesh->Draw();
 	}
 
-	void GraphicsNode::drawSkinned()
+	void GraphicsNode::DrawSkinned()
 	{
 		this->shader->BindProgram();
 		this->tex->BindTextures();

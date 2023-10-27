@@ -7,7 +7,7 @@ class View : public Widget
 {
 public:
 
-	View(Display::Window* app);
+	explicit View(Display::Window* app);
 
 	void Update() override;
 	void UpdateRenderResolution(int width, int height);

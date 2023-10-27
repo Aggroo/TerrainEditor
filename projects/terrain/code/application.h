@@ -27,21 +27,16 @@ public:
 	~Application();
 
 	/// open app
-	bool Open();
+	bool Open() override;
 	void RenderUI();
 	/// run app
-	void Run();
+	void Run() override;
 
 	bool IsInitializationFinished();
 
 	Display::Window* GetWindow(){ return window; }
 
 private:
-
-	GLuint program;
-	GLuint vertexShader;
-	GLuint pixelShader;
-	Math::vec4 vec;
 
 	Display::Window* window;
 	Render::LightNode lNode;

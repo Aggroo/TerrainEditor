@@ -7,6 +7,7 @@
 namespace Render
 {
 __ImplementClass(Render::Model, 'MODL', Core::RefCounted);
+__ImplementClass(Render::ModelNode, 'MDLN', Core::RefCounted);
 
 ModelNode::~ModelNode()
 {

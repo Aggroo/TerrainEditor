@@ -20,46 +20,47 @@ struct HeightmapValues
 	HeightmapValues() : x(0), y(0), z(0) {}
 };
 
+struct TerrainShaderVariables
+{
+	float heightScale = 1.0f;
+	float texUv0Multiplier = 0.1f;
+	float texUv1Multiplier = 0.1f;
+	float texUv2Multiplier = 0.1f;
+	float slopeAngle = 0.8f;
+	float heightFalloff = 10.0f;
+	float height = 10.0f;
+	float slopeAngle2 = 0.8f;
+	float heightFalloff2 = 40.0f;
+	float height2 = 60.0f;
+	float hardness1 = 10.0f;
+	float hardness2 = 10.0f;
+	float hardness3 = 4.0f;
+	int numHeightmaps = 1;
+};
+
 class Terrain : public Game::EntityBase
 {
 	__DeclareClass(Terrain);
 private:
-	struct TerrainShaderVariables
-	{
-		float heightScale = 1.0f;
-		float texUv0Multiplier = 0.1f;
-		float texUv1Multiplier = 0.1f;
-		float texUv2Multiplier = 0.1f;
-		float slopeAngle = 0.8f;
-		float heightFalloff = 10.0f;
-		float height = 10.0f;
-		float slopeAngle2 = 0.8f;
-		float heightFalloff2 = 40.0f;
-		float height2 = 60.0f;
-		float hardness1 = 10.0f;
-		float hardness2 = 10.0f;
-		float hardness3 = 4.0f;
-		int numHeightmaps = 1;
-	};
 
 	///uniform buffer object
 	GLuint ubo[1];
 
 public:
+
 	Terrain();
 	~Terrain();
 
 	///Registers this entity to the Entity server
-	void Activate();
-	void Deactivate();
+	void Activate() override;
+	void Deactivate() override;
 
-	virtual void Update();
+	void Update() override;
 
-	virtual void OnUI();
+	void OnUI() override;
 
 	///Generates the terrain from a Heightmap
-	bool CreateTerrain(int size, float widthMultiplier, float heightMultiplier);
-	void UpdateTerrainWidth(float widthMultiplier);
+	bool CreateTerrain(const int size, const float widthMultiplier, const float heightMultiplier);
 
 	float GetHeightScale();
 
@@ -71,10 +72,10 @@ public:
 	Ptr<TerrainHeightPass> heightPass;
 
 private:
-	void SmoothenTerrain();
-	bool inBounds(int x, int y);
+	
+	bool inBounds(const int x, const int y);
 	void GenerateNormals();
-	float GetHeight(int x, int y) const;
+	float GetHeight(const int x, const int y) const;
 	void BindShaderVariables();
 
 	int terrainWidth;
@@ -98,8 +99,9 @@ private:
 	Util::Array<Render::Vertex> vertices;
 	Util::Array<GLuint> indices;
 
-	Render::ModelNode* node;
+	Ptr<Render::ModelNode> node;
 
+	Render::UBOInfo* bufferInfo;
 	
 };
 }

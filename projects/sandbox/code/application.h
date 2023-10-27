@@ -13,6 +13,7 @@
 #include "render/resources/shaderobject.h"
 #include "foundation/input/inputmanager.h"
 #include <chrono>
+#include "foundation/util/jobsystem.h"
 
 namespace Terrain
 {
@@ -35,20 +36,20 @@ public:
 	/// run app
 	void Run();
 
+	bool IsInitializationFinished();
+
 	Display::Window* GetWindow(){ return window; }
 
 private:
 
-	GLuint program;
-	GLuint vertexShader;
-	GLuint pixelShader;
-	Math::vec4 vec;
 
 	Display::Window* window;
 	Render::LightNode lNode;
 
-	Ptr<Terrain::Terrain> terrain;
 	Ptr<Render::ShaderObject> shader;
+
+	bool initializeStarted;
+	JobSystem::Context ctx;
 
 	//GLuint shaderTransMatrix;
 	

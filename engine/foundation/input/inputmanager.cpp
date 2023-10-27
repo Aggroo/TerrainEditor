@@ -10,8 +10,9 @@
 #include "render/resources/texturenode.h"
 #include "render/server/frameserver.h"
 #include "render/render/renderer.h"
-
-
+#include "imgui.h"
+#include "imgui_impl_glfw.cpp"
+#include "imgui_impl_opengl3.h"
 
 namespace Input
 {
@@ -60,7 +61,6 @@ void InputManager::Setup(Display::Window* window, Render::LightNode* lNode)
 	Graphics::MainCamera::Instance()->SetPosition(vec);
 
 	Graphics::MainCamera::Instance()->LookAt(vec + forward, up);
-
 }
 
 void InputManager::Initialization()
@@ -69,6 +69,13 @@ void InputManager::Initialization()
 	window->SetKeyPressFunction([this](int32 key, int32 scancode, int32 action, int32 mods)
 	{
 		keyboardButtons[key] = action != GLFW_RELEASE;
+
+		key = ImGui_ImplGlfw_TranslateUntranslatedKey(key, scancode);
+
+		ImGuiIO& io = ImGui::GetIO();
+		ImGuiKey imgui_key = ImGui_ImplGlfw_KeyToImGuiKey(key);
+		io.AddKeyEvent(imgui_key, (action == GLFW_PRESS));
+		io.SetKeyEventNativeData(imgui_key, key, scancode);
 
 	});
 
@@ -160,6 +167,8 @@ void InputManager::Update()
 		//glReadBuffer(GL_DEPTH_ATTACHMENT);
 		GLfloat depth = 0.0f;
 		glReadPixels(xPos, yPos, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
+
+		T_CORE_DEBUG("ID: {0}, Depth: {1}", Pixel.primID, depth);
 		
 		glReadBuffer(GL_NONE);
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);

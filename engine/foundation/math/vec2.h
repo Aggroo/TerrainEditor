@@ -46,7 +46,7 @@ namespace Math
 		}
 
 		//vector + vector operators �verlagring
-		inline vec2 operator+(vec2 vect)
+		inline vec2 operator+(vec2 vect) const
 		{
 			vec2 new_vec;
 
@@ -56,7 +56,7 @@ namespace Math
 			return new_vec;
 		}
 
-		inline vec2 operator-(vec2& vect)
+		inline vec2 operator-(vec2& vect) const
 		{
 			vec2 new_vec;
 
@@ -66,7 +66,7 @@ namespace Math
 			return new_vec;
 		}
 
-		inline vec2 operator*(const float& constant)
+		inline vec2 operator*(const float& constant) const
 		{
 			vec2 new_vec;
 
@@ -76,7 +76,7 @@ namespace Math
 			return new_vec;
 		}
 
-		inline vec2 operator/(const float& constant)
+		inline vec2 operator/(const float& constant) const
 		{
 			vec2 new_vec;
 
@@ -87,6 +87,11 @@ namespace Math
 		}
 
 		inline float &operator[](int pos)
+		{
+			return vec[pos];
+		}
+
+		inline const float &operator[](int pos) const
 		{
 			return vec[pos];
 		}

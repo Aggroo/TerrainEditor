@@ -10,7 +10,7 @@ class DebugVariables : public Widget
 
 
 public:
-	DebugVariables(Display::Window* app);
+	explicit DebugVariables(Display::Window* app);
 
 	void Update() override;
 

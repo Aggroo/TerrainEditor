@@ -48,7 +48,7 @@ class TerrainSettings : public Widget
 {
 public:
 
-	TerrainSettings(Display::Window* app);
+	explicit TerrainSettings(Display::Window* app);
 
 	void Update() override;
 

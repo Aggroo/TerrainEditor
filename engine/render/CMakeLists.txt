@@ -83,6 +83,8 @@ SET(files_render_server
 	server/shaderserver.cpp
 	server/lightserver.h
 	server/lightserver.cpp
+	server/pickingServer.h
+	server/pickingServer.cpp
 	)
 
 SOURCE_GROUP("display" FILES ${files_render_display})

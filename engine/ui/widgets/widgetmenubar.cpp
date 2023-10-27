@@ -25,8 +25,8 @@ void MenuBar::Update()
 		}
 		if (ImGui::BeginMenu("Edit"))
 		{
-			if (ImGui::MenuItem("Undo", "CTRL+Z")) { /*commandManager->Undo();*/ }
-			if (ImGui::MenuItem("Redo", "CTRL+Y")) { /*commandManager->Redo();*/ }  // Disabled item
+			if (ImGui::MenuItem("Undo", "CTRL+Z")) { CommandManager::Instance()->Undo(); }
+			if (ImGui::MenuItem("Redo", "CTRL+Y")) { CommandManager::Instance()->Redo(); }  // Disabled item
 			ImGui::Separator();
 			if (ImGui::MenuItem("Cut", "CTRL+X")) {}
 			if (ImGui::MenuItem("Copy", "CTRL+C")) {}

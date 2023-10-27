@@ -39,9 +39,9 @@ public:
 
 	Ptr<Render::TextureNode> GetTextureList() { return textures; }
 
-	void AddModelNode(ModelNode* node);
-	bool RemoveModelNode(ModelNode* node);
-	const Util::Array<ModelNode*>& GetModelNodes();
+	void AddModelNode(Ptr<ModelNode> node);
+	bool RemoveModelNode(Ptr<ModelNode> node);
+	const Util::Array<Ptr<ModelNode>>& GetModelNodes();
 
 	void SetUniformBuffer(Render::UBOInfo* buffer);
 
@@ -68,7 +68,7 @@ private:
 	Util::Dictionary<Util::String, MaterialParameter*> parametersByName;
 	Util::Array<MaterialParameter*> parameters;
 
-	Util::Array<ModelNode*> modelNodes;
+	Util::Array<Ptr<ModelNode>> modelNodes;
 
 	Render::UBOInfo* uboBuffer;
 	bool uniformBufferExist;

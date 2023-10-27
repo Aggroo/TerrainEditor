@@ -108,15 +108,15 @@ void ShaderObject::EnableRenderState()
 		glDisable(GL_BLEND);
 	}
 
-	if (this->renderState.alphatest == GL_TRUE)
-	{
-		glEnable(GL_ALPHA_TEST);
-		glAlphaFunc(this->renderState.alphafunc, this->renderState.alphaclamp);
-	}
-	else
-	{
-		glDisable(GL_ALPHA_TEST);
-	}
+	//if (this->renderState.alphatest == GL_TRUE)
+	//{
+	//	glEnable(GL_ALPHA_TEST);
+	//	glAlphaFunc(this->renderState.alphafunc, this->renderState.alphaclamp);
+	//}
+	//else
+	//{
+	//	glDisable(GL_ALPHA_TEST);
+	//}
 
 	if (this->renderState.depthtest == GL_TRUE)
 	{

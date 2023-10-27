@@ -1,0 +1,411 @@
+{
+	"Model": {
+		"mesh": "resources/assets/Sponza/Sponza.gltf",
+		"primitives": [
+			{
+			   "node": 0,
+			   "surface": "resources/surfaces/sponza/leaf.sur"
+			},
+			{
+			   "node": 1,
+			   "surface": "resources/surfaces/sponza/Material__57.sur"
+			},
+			{
+			   "node": 2,
+			   "surface": "resources/surfaces/sponza/vase_round.sur"
+			},
+			{
+			   "node": 3,
+			   "surface": "resources/surfaces/sponza/Material__298.sur"
+			},
+			{
+			   "node": 4,
+			   "surface": "resources/surfaces/sponza/bricks.sur"
+			},
+			{
+			   "node": 5,
+			   "surface": "resources/surfaces/sponza/bricks.sur"
+			},
+			{
+			   "node": 6,
+			   "surface": "resources/surfaces/sponza/ceiling.sur"
+			},
+			{
+			   "node": 7,
+			   "surface": "resources/surfaces/sponza/column_a.sur"
+			},
+			{
+			   "node": 8,
+			   "surface": "resources/surfaces/sponza/arch.sur"
+			},
+			{
+			   "node": 9,
+			   "surface": "resources/surfaces/sponza/floor.sur"
+			},
+			{
+			   "node": 10,
+			   "surface": "resources/surfaces/sponza/ceiling.sur"
+			},
+			{
+			   "node": 11,
+			   "surface": "resources/surfaces/sponza/arch.sur"
+			},
+			{
+			   "node": 12,
+			   "surface": "resources/surfaces/sponza/column_c.sur"
+			},
+			{
+			   "node": 13,
+			   "surface": "resources/surfaces/sponza/bricks.sur"
+			},
+			{
+			   "node": 14,
+			   "surface": "resources/surfaces/sponza/bricks.sur"
+			},
+			{
+			   "node": 15,
+			   "surface": "resources/surfaces/sponza/bricks.sur"
+			},
+			{
+			   "node": 16,
+			   "surface": "resources/surfaces/sponza/ceiling.sur"
+			},
+			{
+			   "node": 17,
+			   "surface": "resources/surfaces/sponza/ceiling.sur"
+			},
+			{
+			   "node": 18,
+			   "surface": "resources/surfaces/sponza/ceiling.sur"
+			},
+			{
+			   "node": 19,
+			   "surface": "resources/surfaces/sponza/ceiling.sur"
+			},
+			{
+			   "node": 20,
+			   "surface": "resources/surfaces/sponza/ceiling.sur"
+			},
+			{
+			   "node": 21,
+			   "surface": "resources/surfaces/sponza/ceiling.sur"
+			},
+			{
+			   "node": 22,
+			   "surface": "resources/surfaces/sponza/ceiling.sur"
+			},
+			{
+			   "node": 23,
+			   "surface": "resources/surfaces/sponza/ceiling.sur"
+			},
+			{
+			   "node": 24,
+			   "surface": "resources/surfaces/sponza/ceiling.sur"
+			},
+			{
+			   "node": 25,
+			   "surface": "resources/surfaces/sponza/ceiling.sur"
+			},
+			{
+			   "node": 26,
+			   "surface": "resources/surfaces/sponza/ceiling.sur"
+			},
+			{
+			   "node": 27,
+			   "surface": "resources/surfaces/sponza/ceiling.sur"
+			},
+			{
+			   "node": 28,
+			   "surface": "resources/surfaces/sponza/ceiling.sur"
+			},
+			{
+			   "node": 29,
+			   "surface": "resources/surfaces/sponza/ceiling.sur"
+			},
+			{
+			   "node": 30,
+			   "surface": "resources/surfaces/sponza/ceiling.sur"
+			},
+			{
+			   "node": 31,
+			   "surface": "resources/surfaces/sponza/ceiling.sur"
+			},
+			{
+			   "node": 32,
+			   "surface": "resources/surfaces/sponza/ceiling.sur"
+			},
+			{
+			   "node": 33,
+			   "surface": "resources/surfaces/sponza/ceiling.sur"
+			},
+			{
+			   "node": 34,
+			   "surface": "resources/surfaces/sponza/arch.sur"
+			},
+			{
+			   "node": 35,
+			   "surface": "resources/surfaces/sponza/bricks.sur"
+			},
+			{
+			   "node": 36,
+			   "surface": "resources/surfaces/sponza/arch.sur"
+			},
+			{
+			   "node": 37,
+			   "surface": "resources/surfaces/sponza/bricks.sur"
+			},
+			{
+			   "node": 38,
+			   "surface": "resources/surfaces/sponza/details.sur"
+			},
+			{
+			   "node": 39,
+			   "surface": "resources/surfaces/sponza/details.sur"
+			},
+			{
+			   "node": 40,
+			   "surface": "resources/surfaces/sponza/details.sur"
+			},
+			{
+			   "node": 41,
+			   "surface": "resources/surfaces/sponza/details.sur"
+			},
+			{
+			   "node": 42,
+			   "surface": "resources/surfaces/sponza/details.sur"
+			},
+			{
+			   "node": 43,
+			   "surface": "resources/surfaces/sponza/bricks.sur"
+			},
+			{
+			   "node": 44,
+			   "surface": "resources/surfaces/sponza/ceiling.sur"
+			},
+			{
+			   "node": 45,
+			   "surface": "resources/surfaces/sponza/bricks.sur"
+			},
+			{
+			   "node": 46,
+			   "surface": "resources/surfaces/sponza/floor.sur"
+			},
+			{
+			   "node": 47,
+			   "surface": "resources/surfaces/sponza/column_a.sur"
+			},
+			{
+			   "node": 48,
+			   "surface": "resources/surfaces/sponza/arch.sur"
+			},
+			{
+			   "node": 49,
+			   "surface": "resources/surfaces/sponza/column_b.sur"
+			},
+			{
+			   "node": 50,
+			   "surface": "resources/surfaces/sponza/ceiling.sur"
+			},
+			{
+			   "node": 51,
+			   "surface": "resources/surfaces/sponza/bricks.sur"
+			},
+			{
+			   "node": 52,
+			   "surface": "resources/surfaces/sponza/flagpole.sur"
+			},
+			{
+			   "node": 54,
+			   "surface": "resources/surfaces/sponza/fabric_d.sur"
+			},
+			{
+			   "node": 55,
+			   "surface": "resources/surfaces/sponza/fabric_e.sur"
+			},
+			{
+			   "node": 56,
+			   "surface": "resources/surfaces/sponza/fabric_a.sur"
+			},
+			{
+			   "node": 57,
+			   "surface": "resources/surfaces/sponza/fabric_d.sur"
+			},
+			{
+			   "node": 58,
+			   "surface": "resources/surfaces/sponza/fabric_a.sur"
+			},
+			{
+			   "node": 59,
+			   "surface": "resources/surfaces/sponza/fabric_d.sur"
+			},
+			{
+			   "node": 60,
+			   "surface": "resources/surfaces/sponza/fabric_e.sur"
+			},
+			{
+			   "node": 61,
+			   "surface": "resources/surfaces/sponza/fabric_a.sur"
+			},
+			{
+			   "node": 62,
+			   "surface": "resources/surfaces/sponza/flagpole.sur"
+			},
+			{
+			   "node": 63,
+			   "surface": "resources/surfaces/sponza/fabric_c.sur"
+			},
+			{
+			   "node": 64,
+			   "surface": "resources/surfaces/sponza/fabric_g.sur"
+			},
+			{
+			   "node": 65,
+			   "surface": "resources/surfaces/sponza/fabric_f.sur"
+			},
+			{
+			   "node": 66,
+			   "surface": "resources/surfaces/sponza/fabric_g.sur"
+			},
+			{
+			   "node": 67,
+			   "surface": "resources/surfaces/sponza/fabric_g.sur"
+			},
+			{
+			   "node": 68,
+			   "surface": "resources/surfaces/sponza/fabric_f.sur"
+			},
+			{
+			   "node": 69,
+			   "surface": "resources/surfaces/sponza/fabric_c.sur"
+			},
+			{
+			   "node": 70,
+			   "surface": "resources/surfaces/sponza/fabric_f.sur"
+			},
+			{
+			   "node": 71,
+			   "surface": "resources/surfaces/sponza/fabric_g.sur"
+			},
+			{
+			   "node": 72,
+			   "surface": "resources/surfaces/sponza/fabric_c.sur"
+			},
+			{
+			   "node": 73,
+			   "surface": "resources/surfaces/sponza/chain.sur"
+			},
+			{
+			   "node": 74,
+			   "surface": "resources/surfaces/sponza/vase_hanging.sur"
+			},
+			{
+			   "node": 75,
+			   "surface": "resources/surfaces/sponza/chain.sur"
+			},
+			{
+			   "node": 76,
+			   "surface": "resources/surfaces/sponza/vase_hanging.sur"
+			},
+			{
+			   "node": 78,
+			   "surface": "resources/surfaces/sponza/vase_hanging.sur"
+			},
+			{
+			   "node": 79,
+			   "surface": "resources/surfaces/sponza/chain.sur"
+			},
+			{
+			   "node": 80,
+			   "surface": "resources/surfaces/sponza/vase_hanging.sur"
+			},
+			{
+			   "node": 81,
+			   "surface": "resources/surfaces/sponza/Material__57.sur"
+			},
+			{
+			   "node": 82,
+			   "surface": "resources/surfaces/sponza/vase_round.sur"
+			},
+			{
+			   "node": 83,
+			   "surface": "resources/surfaces/sponza/Material__57.sur"
+			},
+			{
+			   "node": 84,
+			   "surface": "resources/surfaces/sponza/vase_round.sur"
+			},
+			{
+			   "node": 85,
+			   "surface": "resources/surfaces/sponza/Material__57.sur"
+			},
+			{
+			   "node": 86,
+			   "surface": "resources/surfaces/sponza/vase_round.sur"
+			},
+			{
+			   "node": 87,
+			   "surface": "resources/surfaces/sponza/Material__57.sur"
+			},
+			{
+			   "node": 88,
+			   "surface": "resources/surfaces/sponza/vase_round.sur"
+			},
+			{
+			   "node": 89,
+			   "surface": "resources/surfaces/sponza/Material__57.sur"
+			},
+			{
+			   "node": 90,
+			   "surface": "resources/surfaces/sponza/vase_round.sur"
+			},
+			{
+			   "node": 91,
+			   "surface": "resources/surfaces/sponza/Material__57.sur"
+			},
+			{
+			   "node": 92,
+			   "surface": "resources/surfaces/sponza/vase_round.sur"
+			},
+			{
+			   "node": 93,
+			   "surface": "resources/surfaces/sponza/Material__57.sur"
+			},
+			{
+			   "node": 94,
+			   "surface": "resources/surfaces/sponza/vase_round.sur"
+			},
+			{
+			   "node": 95,
+			   "surface": "resources/surfaces/sponza/vase.sur"
+			},
+			{
+			   "node": 96,
+			   "surface": "resources/surfaces/sponza/Material__25.sur"
+			},
+			{
+			   "node": 97,
+			   "surface": "resources/surfaces/sponza/Material__298.sur"
+			},
+			{
+			   "node": 98,
+			   "surface": "resources/surfaces/sponza/Material__25.sur"
+			},
+			{
+			   "node": 99,
+			   "surface": "resources/surfaces/sponza/Material__298.sur"
+			},
+			{
+			   "node": 100,
+			   "surface": "resources/surfaces/sponza/bricks.sur"
+			},
+			{
+			   "node": 101,
+			   "surface": "resources/surfaces/sponza/roof.sur"
+			},
+			{
+			   "node": 102,
+			   "surface": "resources/surfaces/sponza/bricks.sur"
+			}
+		]
+	}
+}

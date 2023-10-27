@@ -13,21 +13,25 @@ layout (std140, binding = 1) uniform PostProcessOptions
 uniform sampler2D hdrBuffer;
 uniform sampler2D AO;
 
-vec3 Reinhard(vec3 hdr, float k)
+vec3 Reinhard(in vec3 color) 
 {
-	return hdr / (hdr + k);
+	return color / (vec3(1) + color);
 }
 
-vec3 Uncharted2(vec3 x)
+const vec3 a = vec3(2.51);
+const vec3 b = vec3(0.03);
+const vec3 c = vec3(2.43);
+const vec3 d = vec3(0.59);
+const vec3 e = vec3(0.14);
+
+vec3 saturate(vec3 val) 
 {
-    float A = 0.15;
-	float B = 0.50;
-	float C = 0.10;
-	float D = 0.20;
-	float E = 0.02;
-	float F = 0.30;
-	float W = 11.2;
-    return ((x*(A*x+C*B)+D*E)/(x*(A*x+B)+D*F))-E/F;
+    return max(vec3(0), min(vec3(1), val));
+}
+
+vec3 Uncharted2(in vec3 color)
+{
+    return saturate((color * (a * color + b)) / (color * (c * color + d) + e));
 }
 
 //== ACESFitted ===========================
@@ -81,9 +85,9 @@ void main()
 	float ao = texture(AO, TexCoords).r;
     vec3 hdrColor = texture(hdrBuffer, TexCoords).rgb * ao;
 	
-	hdrColor = pow(abs(hdrColor), vec3(1.0f / gamma));
+	//hdrColor = pow(abs(hdrColor), vec3(1.0f / gamma));
 	
-	hdrColor *= exp(exposure);
+	hdrColor *= exposure;
   
 	if(toneMapping == 0.0)
 	{
@@ -104,8 +108,9 @@ void main()
 	else if(toneMapping == 3.0)
 	{
 		// Reinhard tone mapping
-		mapped = Reinhard(hdrColor, 1.0f);
+		mapped = Reinhard(hdrColor);
 	}
   
+    //resColor = vec4(pow(mapped, vec3(1.0/gamma)), 1.0);
     resColor = vec4(mapped, 1.0);
 }

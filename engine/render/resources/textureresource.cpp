@@ -157,7 +157,7 @@ void TextureResource::LoadTextureFile(const CreateTextureParameters& textureVari
 	else if (channels == 3)
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, pixels<unsigned char>());
 	else if (channels == 4)
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels<unsigned char>());
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels<unsigned char>());
 
 	glGenerateMipmap(GL_TEXTURE_2D);
 	glGenerateTextureMipmap(textureID);

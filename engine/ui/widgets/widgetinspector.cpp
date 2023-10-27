@@ -29,7 +29,7 @@ void Inspector::Update()
 
 				float matrixTranslation[3], matrixRotation[3], matrixScale[3];
 				ImGuizmo::DecomposeMatrixToComponents(mat.getPointer(), matrixTranslation, matrixRotation, matrixScale);
-				ImGui::InputFloat3("Position##" + i, matrixTranslation, 3);
+				ImGui::InputFloat3("Position##" + i, matrixTranslation);
 				ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, mat.getPointer());
 
 				ImGui::Separator();

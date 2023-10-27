@@ -20,7 +20,7 @@ namespace Math
 
 		}
 
-		inline mat3 operator*(mat3 rhs)
+		inline mat3 operator*(const mat3& rhs)
 		{
 			mat3 new_matrix;
 
@@ -38,7 +38,7 @@ namespace Math
 			return new_matrix;
 		}
 
-		inline vec3 operator*(vec3 rhs)
+		inline vec3 operator*(const vec3& rhs)
 		{
 			vec3 new_vec;
 
@@ -67,7 +67,12 @@ namespace Math
 			return new_matrix;
 		}
 
-		inline float &operator[](int pos)
+		inline float& operator[](const int pos)
+		{
+			return matrice[pos];
+		}
+
+		inline const float& operator[](const int pos) const
 		{
 			return matrice[pos];
 		}
@@ -117,7 +122,7 @@ namespace Math
 			return new_matrix;
 		}
 
-		inline static mat3 vectorScaling(float sX, float sY, float sZ)
+		inline static mat3 vectorScaling(const float sX, const float sY, const float sZ)
 		{
 			mat3 scaleMatrix;
 
@@ -126,7 +131,7 @@ namespace Math
 			return scaleMatrix;
 		}
 
-		inline static mat3 rotX(float angle)
+		inline static mat3 rotX(const float angle)
 		{
 			mat3 rotMatrix;
 			float c = cos(angle);
@@ -140,7 +145,7 @@ namespace Math
 
 		}
 
-		inline static mat3 rotY(float angle)
+		inline static mat3 rotY(const float angle)
 		{
 			mat3 rotMatrix;
 			float c = cos(angle);
@@ -153,7 +158,7 @@ namespace Math
 			return rotMatrix;
 		}
 
-		inline static mat3 rotZ(float angle)
+		inline static mat3 rotZ(const float angle)
 		{
 			mat3 rotMatrix;
 			float c = cos(angle);
@@ -166,7 +171,7 @@ namespace Math
 			return rotMatrix;
 		}
 
-		inline static mat3 vecRot(float angle, float vecX, float vecY, float vecZ)
+		inline static mat3 vecRot(const float angle, const float vecX, const float vecY, const float vecZ)
 		{
 			vec3 rotVec;
 			mat3 rotMatrix;
@@ -191,7 +196,7 @@ namespace Math
 			return rotMatrix;
 		}
 
-		inline static mat3 vecRot(float angle, vec3 rotVec)
+		inline static mat3 vecRot(const float angle, const vec3& rotVec)
 		{
 			mat3 rotMatrix;
 
@@ -211,7 +216,7 @@ namespace Math
 			return rotMatrix;
 		}
 
-		inline static mat3 Transpose(mat3 m)
+		inline static mat3 Transpose(const mat3& m)
 		{
 			mat3 mat;
 
@@ -226,7 +231,7 @@ namespace Math
 
 		}
 
-		inline static mat3 fromMatrix4D(mat4 mat4)
+		inline static mat3 fromMatrix4D(const mat4& mat4)
 		{
 			mat3 newMat;
 			newMat[0] = mat4[0]; 

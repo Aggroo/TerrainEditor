@@ -161,12 +161,12 @@ public:
 		return new_matrix;
 	}
 
-	inline float &operator[](int pos)
+	inline float& operator[](const int pos)
 	{
 		return matrice[pos];
 	}
 
-	inline float operator[](int pos) const
+	inline const float &operator[](const int pos) const
 	{
 		return matrice[pos];
 	}
@@ -493,7 +493,7 @@ public:
 		return vec;
 	}
 	
-	inline static mat4 Transpose(mat4 m)
+	inline static mat4 Transpose(const mat4& m)
 	{
 		mat4 mat;
 

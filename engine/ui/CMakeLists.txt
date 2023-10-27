@@ -29,13 +29,22 @@ SET(files_ui_widgets
 	widgets/widgetdebugvars.h
 	widgets/widgetdebugvars.cpp
 	)
+	
+SET(files_ui_commands
+	commands/commandbase.h
+	commands/commandmanager.h
+	commands/commandmanager.cpp
+	commands/changevaluecommand.h
+	)
 
 SOURCE_GROUP("utilities" FILES ${files_ui_utilities})
 SOURCE_GROUP("widgets" FILES ${files_ui_widgets})
+SOURCE_GROUP("commands" FILES ${files_ui_commands})
 
 
 SET(files_ui
 	${files_ui_utilities}
+	${files_ui_commands}
 	${files_ui_widgets})
 
 SET(files_pch ../config.h ../config.cc)

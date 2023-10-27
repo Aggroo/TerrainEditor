@@ -5,6 +5,8 @@
 #include "render/server/resourceserver.h"
 #include "ui/imguiextra.h"
 #include "IconsFontAwesome5_c.h"
+#include "ui/commands/commandmanager.h"
+#include "ui/commands/changevaluecommand.h"
 
 namespace UI
 {
@@ -105,6 +107,7 @@ void TerrainSettings::Update()
 					ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
 					if (ImGui::DragFloat("##slopeAngle", &terrain->tsVar.slopeAngle, 0.01f, 0.0f, 1.f))
 					{
+
 					}
 
 					ImGui::SetNextItemWidth(total_w);
@@ -438,7 +441,7 @@ void TerrainSettings::GetImagePicker(Util::String texName, Render::TextureIndex 
 	}
 	ImGui::SameLine();
 	Util::String dot = "..." + label;
-	if (ImGui::ImageButton((void*)terrain->GetSurface()->GetTextureList()->GetTexture(index)->GetTextureID(), ImVec2(ImGui::GetContentRegionAvailWidth() - 10, ImGui::GetContentRegionAvailWidth() - 10)))
+	if (ImGui::ImageButton((void*)terrain->GetSurface()->GetTextureList()->GetTexture(index)->GetTextureID(), ImVec2(ImGui::GetContentRegionAvail().x - 10, ImGui::GetContentRegionAvail().x - 10)))
 	{
 		texSettings.chosenIndex = index;
 		this->texturesPopup = true;

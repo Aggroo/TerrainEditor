@@ -9,7 +9,7 @@ class RenderSettings : public Widget
 {
 public:
 
-	RenderSettings(Display::Window* app);
+	explicit RenderSettings(Display::Window* app);
 
 	void Update() override;
 

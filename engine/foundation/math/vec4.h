@@ -15,14 +15,14 @@ public:
 		vec[2] = 0.0f;
 		vec[3] = 1.0f;
 	}
-	inline vec4(int x, int y, int z)
+	inline vec4(const int x, const int y, const int z)
 	{
 		vec[0] = float(x);
 		vec[1] = float(y);
 		vec[2] = float(z);
 		vec[3] = 1.0f;
 	}
-	inline vec4(float x, float y, float z)
+	inline vec4(const float x, const float y, const float z)
 	{
 		vec[0] = x;
 		vec[1] = y;
@@ -37,7 +37,7 @@ public:
 		vec[2] = v.z();
 		vec[3] = 1.0f;
 	}
-	inline vec4(float x, float y, float z , float w)
+	inline vec4(const float x, const  float y, const float z , const float w)
 	{
 		vec[0] = x;
 		vec[1] = y;
@@ -49,7 +49,7 @@ public:
 
 	}
 
-	inline vec4 operator+(vec4 vect)
+	inline vec4 operator+(const vec4& vect) const
 	{
 		vec4 new_vec;
 
@@ -60,14 +60,14 @@ public:
 		return new_vec;
 	}
 
-	inline void operator+=(vec4 vect)
+	inline void operator+=(const vec4& vect)
 	{
 		vec[0] += vect[0];
 		vec[1] += vect[1];
 		vec[2] += vect[2];
 	}
 
-    inline void operator=(vec3 vect)
+    inline void operator=(const vec3& vect)
     {
         vec[0] = vect[0];
         vec[1] = vect[1];
@@ -139,12 +139,12 @@ public:
         return false;
     }
 
-	inline float &operator[](int pos)
+	inline float &operator[](const int pos)
 	{
 		return vec[pos];
 	}
 
-	inline const float &operator[](int pos) const
+	inline const float &operator[](const int pos) const
 	{
 		return vec[pos];
 	}

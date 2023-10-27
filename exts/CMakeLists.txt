@@ -37,12 +37,13 @@ ADD_LIBRARY(imgui STATIC
 			imgui/imstb_rectpack.h
 			imgui/imstb_textedit.h
 			imgui/imstb_truetype.h
-			imgui/examples/imgui_impl_opengl3.h
-			imgui/examples/imgui_impl_opengl3.cpp
-			imgui/examples/imgui_impl_glfw.h
-			imgui/examples/imgui_impl_glfw.cpp
+			imgui/backends/imgui_impl_opengl3.h
+			imgui/backends/imgui_impl_opengl3.cpp
+			imgui/backends/imgui_impl_glfw.h
+			imgui/backends/imgui_impl_glfw.cpp
 			imgui/imconfig.h
 			imgui/imgui_widgets.cpp
+			imgui/imgui_tables.cpp
 			ImGuizmo/ImCurveEdit.cpp
 			ImGuizmo/ImCurveEdit.h
 			ImGuizmo/ImGradient.cpp
@@ -54,7 +55,7 @@ ADD_LIBRARY(imgui STATIC
 			)
 
 TARGET_LINK_LIBRARIES(imgui PUBLIC exts)
-TARGET_INCLUDE_DIRECTORIES(imgui PUBLIC imgui imgui/examples/)
+TARGET_INCLUDE_DIRECTORIES(imgui PUBLIC imgui imgui/backends/)
 SET_TARGET_PROPERTIES(imgui PROPERTIES FOLDER "exts/imgui")
 TARGET_LINK_LIBRARIES(exts INTERFACE imgui)
 

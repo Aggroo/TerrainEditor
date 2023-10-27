@@ -94,9 +94,9 @@ void Entity::OnUI()
 		float matrixTranslation[3], matrixRotation[3], matrixScale[3];
 		Math::mat4 mat = Math::mat4::Transpose(this->transform);
 		ImGuizmo::DecomposeMatrixToComponents(mat.getPointer(), matrixTranslation, matrixRotation, matrixScale);
-		ImGui::InputFloat3(tr.AsCharPtr(), matrixTranslation, 3);
-		ImGui::InputFloat3(rt.AsCharPtr(), matrixRotation, 3);
-		ImGui::InputFloat3(sc.AsCharPtr(), matrixScale, 3);
+		ImGui::InputFloat3(tr.AsCharPtr(), matrixTranslation);
+		ImGui::InputFloat3(rt.AsCharPtr(), matrixRotation);
+		ImGui::InputFloat3(sc.AsCharPtr(), matrixScale);
 		ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, mat.getPointer());
 
 		if (gizmo.mCurrentGizmoOperation != ImGuizmo::SCALE)
@@ -109,7 +109,7 @@ void Entity::OnUI()
 			if (ImGui::RadioButton(worldName.AsCharPtr(), gizmo.mCurrentGizmoMode == ImGuizmo::WORLD))
 				gizmo.mCurrentGizmoMode = ImGuizmo::WORLD;
 		}
-		if (ImGui::IsKeyPressed(83))
+		if (ImGui::IsKeyPressed(ImGuiKey_S))
 			gizmo.useSnap = !gizmo.useSnap;
 
 		const Util::String snapCheckName = "##Snap" + GetName();

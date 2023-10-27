@@ -119,9 +119,9 @@ vec3 GetNormal(int index, in vec3 uvwPos, in vec3 normal)
 
 float SlopeBlending(float angle, float worldNormal)
 {
-	return 1 - worldNormal;
+	//return 1 - worldNormal;
 	
-	//return 1 - (clamp(worldNormal - angle, 0.0, 1.0) * (1.0/(1 - angle)));
+	return 1 - (clamp(worldNormal - angle, 0.0, 1.0) * (1.0/(1 - angle)));
 }
 
 float HeightBlending(float height, float heightFalloff)
@@ -192,10 +192,14 @@ void main()
 	float blendAmount = clamp(slopeBlend*(1-HeightBlending(height, heightFalloff)), 0.0, 1.0);
 	float blendAmount2 = clamp(slopeBlend2*HeightBlending(height2, heightFalloff2), 0.0, 1.0);
 
-	vec4 albedoSum = tex1 * (1-blendAmount) * (1-blendAmount2)+ tex0 * blendAmount + tex2 * blendAmount2;
-	float specularSum = (SpecularMap1 * (1-blendAmount) * (1-blendAmount2) + SpecularMap0 * blendAmount + SpecularMap2 * blendAmount2).r;
-	float roughnessSum = (RoughnessMap1 * (1-blendAmount) * (1-blendAmount2) + RoughnessMap0 * blendAmount + RoughnessMap2 * blendAmount2).r;
-	vec3 normalSum = (normal1 * (1-blendAmount) * (1-blendAmount2) + normal0 * blendAmount + normal2 * blendAmount2);
+	//vec4 albedoSum = (tex1 * (1-blendAmount) * (1-blendAmount2))+ (tex0 * blendAmount) + (tex2 * blendAmount2);
+	vec4 albedoSum = (tex1)+ (tex0 * blendAmount) + (tex2 * blendAmount2) / 3.0;
+	//float specularSum = ((SpecularMap1 * (1-blendAmount) * (1-blendAmount2)) + (SpecularMap0 * blendAmount) + (SpecularMap2 * blendAmount2)).r / 3.0;
+	float specularSum = ((SpecularMap1) + (SpecularMap0 * blendAmount) + (SpecularMap2 * blendAmount2)).r;
+	//float roughnessSum = ((RoughnessMap1 * (1-blendAmount) * (1-blendAmount2)) + (RoughnessMap0 * blendAmount) + (RoughnessMap2 * blendAmount2)).r / 3.0;
+	float roughnessSum = ((RoughnessMap1) + (RoughnessMap0 * blendAmount) + (RoughnessMap2 * blendAmount2)).r;
+	//vec3 normalSum = (normal1 * (1-blendAmount) * (1-blendAmount2) + normal0 * blendAmount + normal2 * blendAmount2) / 3.0;
+	vec3 normalSum = (normal1) + (normal0 * blendAmount) + (normal2 * blendAmount2);
 	
 	vec3 L = normalize(o_toLight);
     vec3 V = normalize(o_toCamera);
@@ -208,7 +212,6 @@ void main()
 	F0 = mix(F0, albedoSum.rgb, specularSum);
 	
 	vec3 lo = vec3(0.0f, 0.0f, 0.0f);
-	
 	
 	uint offset = index * tileLights;   
 	

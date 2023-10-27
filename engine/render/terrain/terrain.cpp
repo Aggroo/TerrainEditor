@@ -38,6 +38,19 @@ Terrain::~Terrain()
 		delete[] heightMap;
 		heightMap = nullptr;
 	}
+
+	if (node)
+	{
+		delete node;
+		node = nullptr;
+	}
+
+	if (bufferInfo)
+	{
+		delete bufferInfo;
+		bufferInfo = nullptr;
+	}
+
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
@@ -50,7 +63,7 @@ void Terrain::Activate()
 
 	this->surface = Render::ResourceServer::Instance()->LoadSurface("resources/surfaces/terrain.sur");
 
-	Render::UBOInfo* bufferInfo = new Render::UBOInfo{ sizeof(TerrainShaderVariables), &tsVar };
+	bufferInfo = new Render::UBOInfo{ sizeof(TerrainShaderVariables), &tsVar };
 
 	this->surface->SetUniformBuffer(bufferInfo);
 
@@ -90,7 +103,7 @@ void Terrain::OnUI()
 //------------------------------------------------------------------------------
 /**
 */
-bool Terrain::CreateTerrain(int size, float widthMultiplier, float heightMultiplier)
+bool Terrain::CreateTerrain(const int size, const float widthMultiplier, const float heightMultiplier)
 {
 	T_CORE_TRACE("TERRAIN Generating Terrain IN PROGRESS");
 	this->vertices.Reset();
@@ -170,7 +183,7 @@ bool Terrain::CreateTerrain(int size, float widthMultiplier, float heightMultipl
 
 	if (this->node == NULL)
 	{
-		this->node = new Render::ModelNode;
+		this->node = Render::ModelNode::Create();
 		this->node->modelInstance = mesh;
 		this->node->primitiveGroup = 0;
 		this->node->surface = this->surface.get();
@@ -189,7 +202,7 @@ bool Terrain::CreateTerrain(int size, float widthMultiplier, float heightMultipl
 //------------------------------------------------------------------------------
 /**
 */
-bool Terrain::inBounds(int x, int y)
+bool Terrain::inBounds(const int x, const int y)
 {
 	return ((x >= 0 && x < this->terrainWidth) && (y >= 0 && y < this->terrainHeight));
 }
@@ -254,7 +267,7 @@ void Terrain::GenerateNormals()
 //------------------------------------------------------------------------------
 /**
 */
-float Terrain::GetHeight(int x, int y) const
+float Terrain::GetHeight(const int x, const int y) const
 {
 	return this->vertices[y * terrainWidth + x].pos.y();
 }
