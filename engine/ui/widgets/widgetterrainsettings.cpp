@@ -73,6 +73,8 @@ void TerrainSettings::Update()
 			ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
 			if (ImGui::DragInt("##terrainwidth", &heightSettings.size, 16, 16, 16384))
 			{
+				terrain->tsVar.worldSizeX = heightSettings.size;
+				terrain->tsVar.worldSizeZ = heightSettings.size;
 			}
 
 			ImGui::SetNextItemWidth(total_w);

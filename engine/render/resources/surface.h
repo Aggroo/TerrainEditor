@@ -59,7 +59,7 @@ private:
 	Util::String filepath;
 
 	///The material this surface is using
-	Ptr<Render::Material> material;
+	Ptr<Material> material;
 
 	///This surface loaded textures
     Ptr<Render::TextureNode> textures;

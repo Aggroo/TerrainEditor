@@ -16,6 +16,8 @@ public:
 	void Deactivate();
 	virtual void Update();
 
+	void DrawCube();
+
 	GLuint GetCubemapID() const { return cubemap->GetTextureID(); }
 	Ptr<TextureResource> GetCubemap() const { return cubemap; }
 

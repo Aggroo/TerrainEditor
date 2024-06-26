@@ -108,12 +108,12 @@ void Renderer::SetRenderResolution(const Resolution& res)
 	LightServer::Instance()->UpdateSpotLightBuffer();
 }
 
-void Renderer::SetRenderResolution(const int& x, const int& y)
+void Renderer::SetRenderResolution(const int x, const int y)
 {
 	SetRenderResolution({ x, y });
 }
 
-void Renderer::SetWindowResolution(const int& x, const int& y)
+void Renderer::SetWindowResolution(const int x, const int y)
 {
 	T_CORE_TRACE("[RENDERER]: Set Window Resolution");
 	this->windowResolution = { x, y };

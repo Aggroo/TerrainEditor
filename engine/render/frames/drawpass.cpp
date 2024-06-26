@@ -28,11 +28,16 @@ void DrawPass::Setup()
 	FramePass::Setup();
 }
 
+void DrawPass::AddMaterial(Ptr<Render::Material> mat) 
+{ 
+	this->materials.Append(mat); 
+}
+
 void DrawPass::Execute()
 {
 	GLuint currentProgram = 0;
 
-	for (Material* material : this->materials)
+	for (Render::Material* material : this->materials)
 	{
 		auto shader = material->GetShader(this->name);
 

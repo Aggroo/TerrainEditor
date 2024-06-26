@@ -13,6 +13,7 @@ public:
 
 	void Setup();
 
+
 	void Execute();
 
 	void UpdateResolution();
@@ -35,6 +36,11 @@ public:
 	}
 
 private:
+	
+	void ComputeShaderIBL();
+
+	void FrameBufferIBL();
+	
 	Ptr<TextureResource> ir, brdf, sp;
 
 	Util::String hdrTexPath;

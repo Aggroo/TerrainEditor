@@ -23,6 +23,8 @@ struct HeightmapValues
 struct TerrainShaderVariables
 {
 	float heightScale = 1.0f;
+	float worldSizeX = 512.f;
+	float worldSizeZ = 512.f;
 	float texUv0Multiplier = 0.1f;
 	float texUv1Multiplier = 0.1f;
 	float texUv2Multiplier = 0.1f;

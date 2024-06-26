@@ -48,6 +48,18 @@ void Skybox::Update()
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
 
+void Skybox::DrawCube()
+{
+	if (cubeVerts.IsEmpty())
+	{
+		GenerateCube();
+	}
+
+	glBindVertexArray(vao);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(0);
+}
+
 void Skybox::GenerateCube()
 {
 	float skyboxVertices[] = {

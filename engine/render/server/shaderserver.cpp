@@ -227,7 +227,7 @@ GLuint ShaderServer::LoadFragmentShader(const Util::String& file, bool reload)
 		{
 			char* buf = new char[shaderLogSize];
 			glGetShaderInfoLog(fragmentShader, shaderLogSize, NULL, buf);
-			T_CORE_ERROR("[FRAGMENT SHADER COMPILE]: {0}", buf);
+			T_CORE_ERROR("[FRAGMENT SHADER COMPILE]: ({0}), {1}", file.AsCharPtr(), buf);
 			delete[] buf;
 		}
 
@@ -646,7 +646,7 @@ Util::String ShaderServer::ReadFromFile(const Util::String& filename) const
 			if (tokens[0] == "#include")
 			{
 				Util::String filename = tokens[1].ExtractRange(1, tokens[1].Length()-3);
-				line = ReadFromFile("resources/shaders/fragment/"+ filename).AsCharPtr();
+				line = ReadFromFile("resources/shaders/"+ filename).AsCharPtr();
 			}
 		}
 		fileContent.Append(line.c_str() + Util::String("\n"));

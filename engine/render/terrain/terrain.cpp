@@ -111,6 +111,8 @@ bool Terrain::CreateTerrain(const int size, const float widthMultiplier, const f
 	this->mesh->GetMesh() = Render::MeshResources::Create();
 	
 	tsVar.heightScale = heightMultiplier;
+	tsVar.worldSizeX = size;
+	tsVar.worldSizeZ = size;
 
 	this->terrainWidth = size;
 	this->terrainHeight = size;
