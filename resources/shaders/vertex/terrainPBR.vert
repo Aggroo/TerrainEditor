@@ -9,6 +9,8 @@ uniform sampler2D HeightMap;
 layout (std140, binding = 1) uniform TerrainVariables
 {
 	float heightScale;
+	float worldSizeX;
+    float worldSizeZ;
 	float texUv0Multiplier;
 	float texUv1Multiplier;
 	float texUv2Multiplier;

@@ -16,6 +16,8 @@ layout(location = 4) out vec3 UVsOut;
 layout (std140, binding = 1) uniform TerrainVariables
 {
 	float heightScale;
+	float worldSizeX;
+    float worldSizeZ;
 	float texUv0Multiplier;
 	float texUv1Multiplier;
 	float texUv2Multiplier;
@@ -45,21 +47,20 @@ uniform float u_matShininess; // = 64;
 
 const float kPi = 3.14159265;
 
-#include("lights.glsl")
+#include("common/lights.glsl")
+#include("common/common.glsl")
 
-vec3 filterNormal(in vec2 uv, in float texelSize, in float texelAspect) 
+vec3 filterNormal(in vec2 uv, ivec3 offset, in float texelSize, in float texelAspect) 
 {     
-	vec4 h;
-	h[0] = texture2D(heightmap, uv + texelSize*vec2( 0,-1)).r * texelAspect;
-	h[1] = texture2D(heightmap, uv + texelSize*vec2(-1, 0)).r * texelAspect;
-	h[2] = texture2D(heightmap, uv + texelSize*vec2( 1, 0)).r * texelAspect;
-	h[3] = texture2D(heightmap, uv + texelSize*vec2( 0, 1)).r * texelAspect;
-	
-	vec3 n;
-	n.z = h[0] - h[3];
-	n.x = h[1] - h[2];
-	n.y = 2;
-	return normalize(n);
+	float hl = texture2D(heightmap, (uv + texelSize * offset.xz)).r * texelAspect;
+    float hr = texture2D(heightmap, (uv + texelSize * offset.yz)).r * texelAspect;
+    float ht = texture2D(heightmap, (uv + texelSize * offset.zx)).r * texelAspect;
+    float hb = texture2D(heightmap, (uv + texelSize * offset.zy)).r * texelAspect;
+    vec3 normal = vec3(0, 0, 0);
+    normal.x = (hl - hr);
+    normal.y = 2.0f;
+    normal.z = (ht - hb);
+	return normalize(normal);
 } 
 
 vec4 Biplanar( sampler2D sam, in vec3 p, in vec3 n, in float k )
@@ -120,8 +121,7 @@ vec3 GetNormal(int index, in vec3 uvwPos, in vec3 normal)
 float SlopeBlending(float angle, float worldNormal)
 {
 	//return 1 - worldNormal;
-	
-	return 1 - (clamp(worldNormal - angle, 0.0, 1.0) * (1.0/(1 - angle)));
+	return 1 - (clamp(worldNormal - angle, 0.0, 1.0) * (1.0/(1 - clamp(angle, 0.0, 0.99999))));
 }
 
 float HeightBlending(float height, float heightFalloff)
@@ -162,48 +162,93 @@ void main()
 	float reflectance = 0;
 
 	//vec3 splatTex = texture(splat, vec2(texCoord.x, 1.0-(texCoord.y))).rgb;
-	
-	float tSize = 1.0 / float(textureSize(heightmap,0));
-	vec3 norm = filterNormal(texCoord, tSize, heightScale);
+	float tSize = 1.0 / float(textureSize(heightmap, 0));
+	ivec3 normalOffset = ivec3(-1, 1, 0);
+	vec3 norm = filterNormal(texCoord, normalOffset, tSize, heightScale);
 	vec3 weights = norm*norm;
 	
-	vec4 tex0 = Biplanar(AlbedoMap[0], texUv0Multiplier * fragPos, norm, 8.0);		
-	vec4 tex1 = Biplanar(AlbedoMap[1], texUv1Multiplier * fragPos, norm, 8.0);
-	vec4 tex2 = Biplanar(AlbedoMap[2], texUv2Multiplier * fragPos, norm, 8.0);	
+	vec4 albedo0 = Biplanar(AlbedoMap[0], texUv0Multiplier * fragPos, norm, 8.0);		
+	vec4 albedo1 = Biplanar(AlbedoMap[1], texUv1Multiplier * fragPos, norm, 8.0);
+	vec4 albedo2 = Biplanar(AlbedoMap[2], texUv2Multiplier * fragPos, norm, 8.0);	
 	
 	vec3 normal0 = GetNormal(0, texUv0Multiplier * fragPos, weights);
 	vec3 normal1 = GetNormal(1, texUv1Multiplier * fragPos, weights);
 	vec3 normal2 = GetNormal(2, texUv2Multiplier * fragPos, weights);
 	
-	vec3 SpecularMap0 = Biplanar(SpecularMap[0], texUv0Multiplier * fragPos, norm, 8.0).xyz;
-	vec3 SpecularMap1 = Biplanar(SpecularMap[1], texUv1Multiplier * fragPos, norm, 8.0).xyz;
-	vec3 SpecularMap2 = Biplanar(SpecularMap[2], texUv2Multiplier * fragPos, norm, 8.0).xyz;
+	vec3 specularMap0 = Biplanar(SpecularMap[0], texUv0Multiplier * fragPos, norm, 8.0).xyz;
+	vec3 specularMap1 = Biplanar(SpecularMap[1], texUv1Multiplier * fragPos, norm, 8.0).xyz;
+	vec3 specularMap2 = Biplanar(SpecularMap[2], texUv2Multiplier * fragPos, norm, 8.0).xyz;
 	
-	vec3 RoughnessMap0 = Biplanar(RoughnessMap[0], texUv0Multiplier * fragPos, norm, 8.0).xyz;
-	vec3 RoughnessMap1 = Biplanar(RoughnessMap[1], texUv1Multiplier * fragPos, norm, 8.0).xyz;
-	vec3 RoughnessMap2 = Biplanar(RoughnessMap[2], texUv2Multiplier * fragPos, norm, 8.0).xyz;
+	vec3 roughnessMap0 = Biplanar(RoughnessMap[0], texUv0Multiplier * fragPos, norm, 8.0).xyz;
+	vec3 roughnessMap1 = Biplanar(RoughnessMap[1], texUv1Multiplier * fragPos, norm, 8.0).xyz;
+	vec3 roughnessMap2 = Biplanar(RoughnessMap[2], texUv2Multiplier * fragPos, norm, 8.0).xyz;
+	
+    mat3 tbn = PlaneTBN(norm);
 
-	//vec3 NormalMapum = splatTex.r * normal2 + splatTex.g * normal1 + splatTex.b * normal0;
-	//float SpecularMapSum = (splatTex.r * SpecularMap2 + splatTex.g * SpecularMap1 + splatTex.b * SpecularMap0).r;
-	//float RoughnessMapSum = (splatTex.r * RoughnessMap2 + splatTex.g * RoughnessMap1 + splatTex.b * RoughnessMap0).r;
+	float heightValue = texture2D(heightmap, texCoord + tSize).r;
+	float terrainHeight = heightValue * heightScale;
+	float heightCutoff = clamp(max(0, terrainHeight - height) / 25.0f, 0.0, 1.0);
 	
-	float slopeBlend = pow(SlopeBlending(slopeAngle, 1-norm.y), hardness1);
-	float slopeBlend2 = pow(SlopeBlending(slopeAngle2, 1-(norm.y + normal1.y)), hardness2);
-	float blendAmount = clamp(slopeBlend*(1-HeightBlending(height, heightFalloff)), 0.0, 1.0);
-	float blendAmount2 = clamp(slopeBlend2*HeightBlending(height2, heightFalloff2), 0.0, 1.0);
+	float slopeBlend = SlopeBlending(slopeAngle, dot(norm, vec3(0, 1, 0)));
+	float slopeBlend2 = SlopeBlending(slopeAngle2, dot(norm, vec3(0, 1, 0)));
+	vec4 albedoSum = vec4(0.0, 0.0, 0.0, 1.0);
+	float specularSum = 0.0;
+	float roughnessSum = 0.0;
+	vec3 normalSum = vec3(0.0, 0.0, 0.0);
+	
+	vec3 blendNormal = vec3(0.0);
+	
+	if(heightCutoff == 0.0f)
+	{
+		albedoSum = albedo0 * (1.0 - slopeBlend);
+		albedoSum += albedo1 * slopeBlend;
+		specularSum = specularMap0.r * (1.0 - slopeBlend);
+		specularSum += specularMap1.r * slopeBlend;
+		roughnessSum = roughnessMap0.r * (1.0 - slopeBlend);
+		roughnessSum += roughnessMap1.r * slopeBlend;
+		normalSum = normal0 * (1.0 - slopeBlend);
+		normalSum += normal1 * slopeBlend;
+		blendNormal += normalSum;
+		
+		blendNormal.xy = blendNormal.xy * 2.0f - 1.0f;
+		blendNormal.z = clamp(sqrt(1.0f - dot(blendNormal.xy, blendNormal.xy)), 0.0, 1.0);
+		normalSum = (tbn * blendNormal);
+	}
+	else
+	{
+		albedoSum = albedo2 * (1.0 - slopeBlend2) * heightCutoff;
+		albedoSum += albedo1 * slopeBlend2 * heightCutoff;
+		albedoSum += albedo0 * (1.0 - slopeBlend) * (1.0-heightCutoff); 
+		albedoSum += albedo1 * slopeBlend * (1.0-heightCutoff);
+		
+		specularSum = specularMap2.r * (1.0 - slopeBlend2) * heightCutoff;
+		specularSum += specularMap1.r * slopeBlend2 * heightCutoff;
+		specularSum += specularMap0.r * (1.0 - slopeBlend) * (1.0 - heightCutoff);
+		specularSum += specularMap1.r * slopeBlend * (1.0 - heightCutoff);
+		
+		roughnessSum = roughnessMap2.r * (1.0 - slopeBlend2) * heightCutoff;
+		roughnessSum += roughnessMap1.r * slopeBlend2 * heightCutoff;
+		roughnessSum += roughnessMap0.r * (1.0 - slopeBlend)* (1.0 - heightCutoff);
+		roughnessSum += roughnessMap1.r * slopeBlend * (1.0 - heightCutoff);
+		
+		normalSum = normal2 * (1.0 - slopeBlend2);
+		normalSum += normal1 * slopeBlend2;
+		blendNormal += normalSum * heightCutoff;
+		normalSum += normal0 * (1.0 - slopeBlend);
+		normalSum += normal1 * slopeBlend;
+		blendNormal += normalSum * (1.0 - heightCutoff);
+		
+		blendNormal.xy = blendNormal.xy * 2.0f - 1.0f;
+		blendNormal.z = clamp(sqrt(1.0f - dot(blendNormal.xy, blendNormal.xy)), 0.0, 1.0);
+		normalSum = (tbn * blendNormal);
+	}
+	
+	roughnessSum = 0;
+	albedoSum = vec4(1.0);
 
-	//vec4 albedoSum = (tex1 * (1-blendAmount) * (1-blendAmount2))+ (tex0 * blendAmount) + (tex2 * blendAmount2);
-	vec4 albedoSum = (tex1)+ (tex0 * blendAmount) + (tex2 * blendAmount2) / 3.0;
-	//float specularSum = ((SpecularMap1 * (1-blendAmount) * (1-blendAmount2)) + (SpecularMap0 * blendAmount) + (SpecularMap2 * blendAmount2)).r / 3.0;
-	float specularSum = ((SpecularMap1) + (SpecularMap0 * blendAmount) + (SpecularMap2 * blendAmount2)).r;
-	//float roughnessSum = ((RoughnessMap1 * (1-blendAmount) * (1-blendAmount2)) + (RoughnessMap0 * blendAmount) + (RoughnessMap2 * blendAmount2)).r / 3.0;
-	float roughnessSum = ((RoughnessMap1) + (RoughnessMap0 * blendAmount) + (RoughnessMap2 * blendAmount2)).r;
-	//vec3 normalSum = (normal1 * (1-blendAmount) * (1-blendAmount2) + normal0 * blendAmount + normal2 * blendAmount2) / 3.0;
-	vec3 normalSum = (normal1) + (normal0 * blendAmount) + (normal2 * blendAmount2);
-	
 	vec3 L = normalize(o_toLight);
     vec3 V = normalize(o_toCamera);
-    vec3 N = normalize(norm + normalSum);
+    vec3 N = normalize(normalSum);
 	vec3 R = reflect(-V, N); 
 	
 	//F0 as 0.04 will usually look good for all dielectric (non-metal) surfaces
@@ -222,7 +267,7 @@ void main()
 	float cosLo = max(0.0, dot(N, V));
 	
 	// ambient lighting (we now use IBL as the ambient term)
-    vec3 F = fresnelSchlickRoughness(cosLo, F0, roughnessSum);
+    vec3 F = fresnelSchlickRoughness(cosLo, F0,  roughnessSum);
 
     vec3 kD = vec3(1.0) - F;
 	kD *= 1.0 - specularSum;

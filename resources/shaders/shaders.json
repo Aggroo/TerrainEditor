@@ -55,6 +55,34 @@
 			"VertexShader": "resources/shaders/vertex/ssao.vert",
 			"FragmentShader": "resources/shaders/fragment/ssaoblur.frag",
 			"RenderState": "resources/shaders/state/opaque.state"
+		},
+		{
+			"name": "brdf",
+			"desc": "Compute shader to create a brdf lookup texture",
+			"VertexShader": "resources/shaders/vertex/brdf.vert",
+			"FragmentShader": "resources/shaders/fragment/brdf.frag",
+			"RenderState": "resources/shaders/state/opaque.state"
+		},
+		{
+			"name": "eq2cube",
+			"desc": "Compute shader to transform equirectangular to cubemap",
+			"VertexShader": "resources/shaders/vertex/cubemap.vert",
+			"FragmentShader": "resources/shaders/fragment/eq2cube.frag",
+			"RenderState": "resources/shaders/state/opaque.state"
+		},
+		{
+			"name": "irmap",
+			"desc": "Compute shader to create irradiance map",
+			"VertexShader": "resources/shaders/vertex/cubemap.vert",
+			"FragmentShader": "resources/shaders/fragment/irmap.frag",
+			"RenderState": "resources/shaders/state/opaque.state"
+		},
+		{
+			"name": "spmap",
+			"desc": "Compute shader to calculate spmap for IBL",
+			"VertexShader": "resources/shaders/vertex/cubemap.vert",
+			"FragmentShader": "resources/shaders/fragment/spmap.frag",
+			"RenderState": "resources/shaders/state/opaque.state"
 		}
 	],
 	"ComputeShaders": [
@@ -64,34 +92,34 @@
 			"shader": "resources/shaders/compute/lightculling.comp"
 		},
 		{
-			"name": "brdf",
-			"desc": "Compute shader to create a brdf lookup texture",
-			"shader": "resources/shaders/compute/brdf.comp"
-		},
-		{
-			"name": "eq2cube",
-			"desc": "Compute shader to transform equirectangular to cubemap",
-			"shader": "resources/shaders/compute/eq2cube.comp"
-		},
-		{
-			"name": "irmap",
-			"desc": "Compute shader to create irradiance map",
-			"shader": "resources/shaders/compute/irmap.comp"
-		},
-		{
 			"name": "perlinnoise",
 			"desc": "Compute shader to generate perlinnoise texture",
 			"shader": "resources/shaders/compute/perlinnoise.comp"
 		},
 		{
-			"name": "spmap",
-			"desc": "Compute shader to calculate spmap for IBL",
-			"shader": "resources/shaders/compute/spmap.comp"
-		},
-		{
 			"name": "heightmap",
 			"desc": "Compute shader to merge heightmaps into a single one",
 			"shader": "resources/shaders/compute/heightmap.comp"
+		},
+		{
+			"name": "brdf-cs",
+			"desc": "Compute shader to create a brdf lookup texture",
+			"shader": "resources/shaders/compute/brdf.comp"
+		},
+		{
+			"name": "eq2cube-cs",
+			"desc": "Compute shader to transform equirectangular to cubemap",
+			"shader": "resources/shaders/compute/eq2cube.comp"
+		},
+		{
+			"name": "irmap-cs",
+			"desc": "Compute shader to create irradiance map",
+			"shader": "resources/shaders/compute/irmap.comp"
+		},
+		{
+			"name": "spmap-cs",
+			"desc": "Compute shader to calculate spmap for IBL",
+			"shader": "resources/shaders/compute/spmap.comp"
 		}
 	]
 }

@@ -71,7 +71,9 @@ float attenuate(vec3 lightDirection, float radius)
 #define GAMMA 2.2f
 const float screenGamma = 1.0f / GAMMA;
 
-#define PI 3.14159265358979323846
+#ifndef PI
+#define PI 3.141592653589793
+#endif // PI
 
 //returns the ratio between specular and diffuse reflection or how much the surface reflects light versus how much it refracts light
 //creates a rim-lighting effect, as the closer we get to zero incidence, the more the light the material will reflect.

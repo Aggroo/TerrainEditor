@@ -19,8 +19,7 @@ uniform samplerCube environmentMap;
 uniform samplerCube irradianceMap;
 uniform sampler2D brdfLUT;
 
-
-#include("lights.glsl")
+#include("common/lights.glsl")
 
 void main()
 {
