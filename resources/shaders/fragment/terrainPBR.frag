@@ -72,6 +72,7 @@ vec3 filterNormal(in vec2 uv, ivec3 offset, in float texelSize, in float texelAs
 	return normalize(normal);
 } 
 
+// From https://iquilezles.org/articles/biplanar/
 vec4 Biplanar( sampler2D sam, in vec3 p, in vec3 n, in float k )
 {
     // grab coord derivatives for texturing
