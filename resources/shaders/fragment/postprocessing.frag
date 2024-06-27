@@ -81,7 +81,7 @@ vec3 ACESFitted(vec3 color)
 
 void main()
 {    
-	vec3 mapped;
+	vec3 mapped = vec3(0.0);
 	float ao = texture(AO, TexCoords).r;
     vec3 hdrColor = texture(hdrBuffer, TexCoords).rgb * ao;
 	

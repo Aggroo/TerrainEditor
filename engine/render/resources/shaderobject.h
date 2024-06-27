@@ -21,6 +21,7 @@ public:
 	void ReloadShaders(const GLuint& oldProgram, const GLuint& newProgram);
 
 	//Attach shader to shader program
+	void AddShader(const Util::String& shaderName, const GLuint& shaderProgram);
 	void AddShader(const GLuint& shaderProgram);
 	//Link the shader program 
 	void LinkShaders();
@@ -55,6 +56,8 @@ private:
 	//Util::Dictionary<Util::String, Util::Variant> uMap;
 
 	GLuint program;
+
+	Util::String shaderName;
 
 	bool reloading;
 

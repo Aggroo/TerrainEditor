@@ -22,8 +22,6 @@ void IBLPass::Setup()
 {
 	T_CORE_TRACE("IBL PASS Generating pass");
 
-	
-
 	ComputeShaderIBL();
 
 	//FrameBufferIBL();
@@ -33,6 +31,7 @@ void IBLPass::Setup()
 
 void IBLPass::ComputeShaderIBL()
 {
+	// Parameters
 	static constexpr int kEnvMapSize = 1024;
 	static constexpr int kIrradianceMapSize = 32;
 	static constexpr int kBRDF_LUT_Size = 256;

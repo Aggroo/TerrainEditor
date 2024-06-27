@@ -15,12 +15,12 @@
 			{
 				"name": "SpecularMap",
 				"sampler": "RepeatBilinear",
-				"value": "resources/assets/SciFiHelmet/SciFiHelmet_MetallicRoughness.png"
+				"value": "resources/assets/SciFiHelmet/SciFiHelmet_Metallic.png"
 			},
 			{
 				"name": "RoughnessMap",
 				"sampler": "RepeatBilinear",
-				"value": "resources/assets/SciFiHelmet/SciFiHelmet_MetallicRoughness.png"
+				"value": "resources/assets/SciFiHelmet/SciFiHelmet_Roughness.png"
 			}
 		],
 		"Parameters": [

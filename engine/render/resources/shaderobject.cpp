@@ -44,6 +44,12 @@ void ShaderObject::ReloadShaders(const GLuint& oldProgram, const GLuint& newProg
 	}	
 }
 
+void ShaderObject::AddShader(const Util::String& shaderName, const GLuint& shaderProgram)
+{
+	this->shaderName = shaderName;
+	AddShader(shaderProgram);
+}
+
 //------------------------------------------------------------------------------
 /**
 */
@@ -69,7 +75,7 @@ void ShaderObject::LinkShaders()
 	{
 		GLchar* buf = new GLchar[shaderLogSize];
 		glGetProgramInfoLog(this->program, shaderLogSize, NULL, buf);
-		T_CORE_ERROR("[PROGRAM LINK ERROR]: {0}", buf);
+		T_CORE_ERROR("[PROGRAM LINK ERROR]: ({0}) {1}", shaderName.AsCharPtr(), buf);
 		delete[] buf;
 	}
 }

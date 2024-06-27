@@ -132,23 +132,23 @@ Application::Run()
 
 	Math::mat4 modelMat = Math::mat4::translationMatrix(Math::vec4(0.0f, 0.0f, 0.0f));
 
-	//Ptr<Game::Entity> helmet = Game::Entity::Create();
-	//helmet->SetName("Helmet");
-	//helmet->SetModel("resources/models/scifihelmet.mdl");
-	//helmet->SetTransform(modelMat*Math::mat4::translationMatrix(Math::vec4(0.0f, 0.0f, 120.0f))*Math::mat4::rotY(Math::Deg2Rad(-180))*Math::mat4::Scale(30.0f));
-	//helmet->Activate();
-	//
-	//Ptr<Game::Entity> gun = Game::Entity::Create();
-	//gun->SetName("Gun");
-	//gun->SetModel("resources/models/cerberus.mdl");
-	//gun->SetTransform(modelMat*Math::mat4::translationMatrix(Math::vec4(0.0f, 50.0f, 0.0f))*Math::mat4::rotY(Math::Deg2Rad(-90))*Math::mat4::rotX(Math::Deg2Rad(-90)));
-	//gun->Activate();
+	Ptr<Game::Entity> helmet = Game::Entity::Create();
+	helmet->SetName("Helmet");
+	helmet->SetModel("resources/models/scifihelmet.mdl");
+	helmet->SetTransform(modelMat*Math::mat4::translationMatrix(Math::vec4(0.0f, 0.0f, 120.0f))*Math::mat4::rotY(Math::Deg2Rad(-180))*Math::mat4::Scale(30.0f));
+	helmet->Activate();
+	
+	Ptr<Game::Entity> gun = Game::Entity::Create();
+	gun->SetName("Gun");
+	gun->SetModel("resources/models/cerberus.mdl");
+	gun->SetTransform(modelMat*Math::mat4::translationMatrix(Math::vec4(0.0f, 50.0f, 0.0f))*Math::mat4::rotY(Math::Deg2Rad(-90))*Math::mat4::rotX(Math::Deg2Rad(-90)));
+	gun->Activate();
 
-	Ptr<Game::Entity> sponza = Game::Entity::Create();
-	sponza->SetName("Sponza");
-	sponza->SetModel("resources/models/sponza.mdl");
-	sponza->SetTransform(modelMat);
-	sponza->Activate();
+	//Ptr<Game::Entity> sponza = Game::Entity::Create();
+	//sponza->SetName("Sponza");
+	//sponza->SetModel("resources/models/sponza.mdl");
+	//sponza->SetTransform(modelMat);
+	//sponza->Activate();
 
 	//terrain->SetSkybox(skybox);
 

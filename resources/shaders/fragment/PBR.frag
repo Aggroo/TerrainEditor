@@ -30,10 +30,9 @@ void main()
 	ivec2 tileID = location / ivec2(TILE_SIZE, TILE_SIZE);
 	uint index = tileID.y * LightTileWorkGroups.x + tileID.x;
 	vec4 albedo = texture(AlbedoMap,texCoord);
-	albedo.rgb = pow(albedo.rgb, vec3(GAMMA));
 	vec3 normal = (texture(NormalMap, texCoord).rgb * 2.0f) - 1.0f;
 	//vec3 spec = texture(SpecularMap, texCoord).rgb;
-	float metallic = texture(SpecularMap, texCoord).r;
+	float metallic = 1.0 - texture(SpecularMap, texCoord).r;
 	float roughness = texture(RoughnessMap, texCoord).r;
 
 	//vec3 Color = texture(AlbedoMap, vec2(uv.x,1.0-uv.y)).rgb;
@@ -66,7 +65,7 @@ void main()
 	vec3 irradiance = texture(irradianceMap, N).rgb;
     vec3 diffuse = irradiance * albedo.rgb;
 	
-	const float MAX_REFLECTION_LOD = 4.0;
+	const float MAX_REFLECTION_LOD = 8.0;
     vec3 prefilteredColor = textureLod(environmentMap, R,  roughness * MAX_REFLECTION_LOD).rgb;   
 	vec2 envBRDF  = texture(brdfLUT, vec2(cosLo, roughness)).rg;	
     vec3 specular = prefilteredColor * (F * envBRDF.x + envBRDF.y);

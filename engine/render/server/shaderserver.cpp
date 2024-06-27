@@ -77,7 +77,7 @@ bool ShaderServer::SetupShaders(const Util::String & file)
 
 			GLuint comp = LoadComputeShader(shader.shader.c_str());
 
-			shd->AddShader(comp);
+			shd->AddShader(shader.shader.c_str(), comp);
 
 			shd->LinkShaders();
 
@@ -100,8 +100,8 @@ bool ShaderServer::SetupShaders(const Util::String & file)
 			GLuint vert = LoadVertexShader(shader.vertexShader.c_str());
 			GLuint frag = LoadFragmentShader(shader.fragmentShader.c_str());
 
-			shd->AddShader(vert);
-			shd->AddShader(frag);
+			shd->AddShader(shader.vertexShader.c_str(), vert);
+			shd->AddShader(shader.fragmentShader.c_str(), frag);
 
 			Render::RenderState states = LoadRenderState(shader.renderState.c_str());
 			shd->SetRenderState(states);
@@ -266,7 +266,7 @@ GLuint ShaderServer::LoadComputeShader(const Util::String& file, bool reload)
 	{
 		if (!file.CheckFileExtension("comp"))
 		{
-			T_CORE_ERROR("[SHADER LOAD]: File is not a .comp file");
+			T_CORE_ERROR("[SHADER LOAD]: {0} is not a .comp file", file.AsCharPtr());
 			return false;
 		}
 
@@ -294,7 +294,7 @@ GLuint ShaderServer::LoadComputeShader(const Util::String& file, bool reload)
 		{
 			char* buf = new char[shaderLogSize];
 			glGetShaderInfoLog(computeShader, shaderLogSize, NULL, buf);
-			T_CORE_ERROR("[COMPUTE SHADER COMPILE]: {0}", buf);
+			T_CORE_ERROR("[COMPUTE SHADER COMPILE]: ({0}) {1}", file.AsCharPtr(), buf);
 			delete[] buf;
 		}
 
@@ -338,7 +338,7 @@ Render::RenderState ShaderServer::LoadRenderState(const Util::String & file)
 	{
 		if (!file.CheckFileExtension("state"))
 		{
-			T_CORE_ERROR("[SHADER LOAD]: File is not a .state file!");
+			T_CORE_ERROR("[SHADER LOAD]: {0} is not a .state file!", file.AsCharPtr());
 			_assert(false);
 			return RenderState();
 		}
@@ -628,7 +628,7 @@ Util::String ShaderServer::ReadFromFile(const Util::String& filename) const
 	Util::String fileContent;
 	std::ifstream fileStream(filename.AsCharPtr(), std::ios::in);
 
-	if(!fileStream.is_open())
+	if (!fileStream.is_open())
 	{
 		T_CORE_ERROR("[SHADER LOAD]: Could not load file from directory");
 		return "";
@@ -639,9 +639,9 @@ Util::String ShaderServer::ReadFromFile(const Util::String& filename) const
 	while (!fileStream.eof())
 	{
 		std::getline(fileStream, line);
-		checkInclude = line.c_str();
-		if (checkInclude.ContainsCharFromSet("#"))
+		if (line.find("#include") != std::string::npos)
 		{
+			checkInclude = line.c_str();
 			Util::Array<Util::String> tokens = checkInclude.Tokenize("(");
 			if (tokens[0] == "#include")
 			{
