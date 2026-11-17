@@ -36,6 +36,7 @@ public:
 	bool Open();
 	/// close window
 	void Close();
+	void RequestClose();
 	/// returns true if window is open
 	const bool IsOpen() const;
 
@@ -134,7 +135,7 @@ Window::SetTitle(const std::string& title)
 inline const bool
 Window::IsOpen() const
 {
-	return nullptr != this->window;
+	return nullptr != this->window && !glfwWindowShouldClose(this->window);
 }
 
 //------------------------------------------------------------------------------

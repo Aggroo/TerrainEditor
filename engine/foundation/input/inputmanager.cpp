@@ -1,4 +1,3 @@
-#include "inputmanager.h"
 #include "config.h"
 #include "inputmanager.h"
 #include "GLFW/glfw3.h"
@@ -9,7 +8,6 @@
 #include "render/camera/camera.h"
 #include "render/resources/texturenode.h"
 #include "render/server/frameserver.h"
-#include "render/render/renderer.h"
 #include "imgui.h"
 #include "imgui_impl_glfw.cpp"
 #include "imgui_impl_opengl3.h"
@@ -177,7 +175,7 @@ void InputManager::Update()
 		
 
 	if (GetButtonKeyboard(KeyCode::Esc))
-		window->Close();
+		window->RequestClose();
 
 	CameraMovement();
 }

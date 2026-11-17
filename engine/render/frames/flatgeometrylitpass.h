@@ -31,6 +31,8 @@ private:
 	GLuint roughnessBuffer;
 	GLuint uvBuffer;
 
+	static constexpr GLenum drawBuffers[5] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4 };
+
 	Ptr<Render::Skybox> skybox;
 
 };

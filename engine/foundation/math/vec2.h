@@ -11,7 +11,7 @@ namespace Math
 		{
 
 			vec[0] = 0.0f;
-			vec[1] = 1.0f;
+			vec[1] = 0.0f;
 
 		}
 

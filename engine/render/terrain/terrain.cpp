@@ -17,7 +17,7 @@ __ImplementClass(Terrain, 'TETY', Game::EntityBase);
 //------------------------------------------------------------------------------
 /**
 */
-Terrain::Terrain() : terrainWidth(0), terrainHeight(0), heightMap(nullptr), node(nullptr)
+Terrain::Terrain() : terrainWidth(0), terrainHeight(0), heightMap(nullptr), node(nullptr), bufferInfo(nullptr)
 {
 	mesh = Render::Model::Create();
 	this->surface = Render::Surface::Create();
@@ -37,12 +37,6 @@ Terrain::~Terrain()
 	{
 		delete[] heightMap;
 		heightMap = nullptr;
-	}
-
-	if (node)
-	{
-		delete node;
-		node = nullptr;
 	}
 
 	if (bufferInfo)

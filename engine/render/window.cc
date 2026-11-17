@@ -275,7 +275,11 @@ Window::Open()
 void
 Window::Close()
 {
-	if (nullptr != this->window) glfwDestroyWindow(this->window);
+	if (this->window == nullptr)
+		return;
+
+	if (nullptr != this->window) 
+		glfwDestroyWindow(this->window);
 	this->window = nullptr;
 	Window::WindowCount--;
 	if (Window::WindowCount == 0)
@@ -285,6 +289,15 @@ Window::Close()
 		ImGui::DestroyContext();
 		glfwTerminate();
 	}
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+void
+Window::RequestClose()
+{
+	glfwSetWindowShouldClose(this->window, GLFW_TRUE);
 }
 
 //------------------------------------------------------------------------------

@@ -5,6 +5,7 @@
 #include "render/server/pickingServer.h"
 #include "render/server/FrameServer.h"
 #include "IconsFontAwesome5_c.h"
+#include "render/server/pickingServer.h"
 
 
 namespace UI
@@ -29,8 +30,12 @@ void DebugVariables::Update()
 	if (Input::InputManager::Instance()->GetButtonMouse(Input::MouseButton::LEFT))
 	{
 		Util::String worldSpace = "World Space Pos:\n ";
-		worldSpace.Append(Util::String::FromVec4(Render::PickingServer::Instance()->GetWorldSpacePosition(mousePos.x(), mousePos.y(), Render::FrameServer::Instance()->GetDepthPass()->GetFrameBufferObject())));
-		ImGui::Text(worldSpace.AsCharPtr());
+		Render::PickResult result = Render::PickingServer::Instance()->PickTerrain(mousePos);
+		if (result.hit)
+		{
+			worldSpace.Append(Util::String::FromVec4(result.HitPosition));
+			ImGui::Text(worldSpace.AsCharPtr());
+		}
 	}
 	
 

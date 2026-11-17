@@ -81,7 +81,6 @@ void FlatGeometryLitPass::Setup()
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, this->uvBuffer, 0);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, FrameServer::Instance()->GetDepthPass()->GetTextureBuffer(), 0);
 
-	const GLenum drawBuffers[5] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4 };
 	glDrawBuffers(5, &drawBuffers[0]);
 
 	_assert2(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "FlatGeometryLit Framebuffer Status Error!");
@@ -98,10 +97,15 @@ void FlatGeometryLitPass::Execute()
 {
 	this->BindFrameBuffer();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	const float zero[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	glClearBufferfv(GL_COLOR, 4, zero);
 
 	DrawPass::Execute();
 
+	const GLenum colorOnly = GL_COLOR_ATTACHMENT0;
+	glDrawBuffers(1, &colorOnly);
 	skybox->Update();
+	glDrawBuffers(5, drawBuffers);
 
 	//glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	FramePass::Execute();
@@ -124,7 +128,7 @@ void FlatGeometryLitPass::UpdateResolution()
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, newRes.x, newRes.y, 0, GL_RGB, GL_FLOAT, NULL);
 
 	glBindTexture(GL_TEXTURE_2D, this->uvBuffer);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, newRes.x, newRes.y, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, newRes.x, newRes.y, 0, GL_RGB, GL_FLOAT, NULL);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
