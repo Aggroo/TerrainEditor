@@ -2,7 +2,7 @@
 # gscept laboration environment
 #--------------------------------------------------------------------------
 PROJECT(terrain_editor)
-CMAKE_MINIMUM_REQUIRED(VERSION 3.2)
+CMAKE_MINIMUM_REQUIRED(VERSION 4.0)
 
 MACRO(TARGET_PCH target path)
 IF(WIN32)

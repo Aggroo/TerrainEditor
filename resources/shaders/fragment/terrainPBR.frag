@@ -295,6 +295,12 @@ void main()
 	specularSum = materialSum.x;
 	roughnessSum = materialSum.y;
 
+	// Blend the already triplanar-projected detail normals per material layer and
+	// combine them with the large-scale normal derived from the heightmap.
+	vec3 lowDetailNormal = mix(normal0, normal1, slopeBlend);
+	vec3 highDetailNormal = mix(normal2, normal1, slopeBlend2);
+	finalNormal = normalize(norm + mix(lowDetailNormal, highDetailNormal, heightCutoff));
+
 	vec3 L = normalize(o_toLight);
     vec3 V = normalize(o_toCamera);
     vec3 N = normalize(finalNormal);

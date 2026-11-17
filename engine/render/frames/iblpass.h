@@ -41,7 +41,7 @@ private:
 
 	void FrameBufferIBL();
 	
-	Ptr<TextureResource> ir, brdf, sp;
+	Ptr<TextureResource> env, ir, brdf, sp;
 
 	Util::String hdrTexPath;
 };

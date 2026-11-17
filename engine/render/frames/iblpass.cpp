@@ -8,6 +8,7 @@ namespace Render
 __ImplementClass(Render::IBLPass, 'REIB', Render::DrawPass)
 	IBLPass::IBLPass()
 {
+	env = TextureResource::Create();
 	ir = TextureResource::Create();
 	brdf = TextureResource::Create();
 	sp = TextureResource::Create();
@@ -35,17 +36,19 @@ void IBLPass::ComputeShaderIBL()
 	static constexpr int kEnvMapSize = 1024;
 	static constexpr int kIrradianceMapSize = 32;
 	static constexpr int kBRDF_LUT_Size = 256;
+	static constexpr GLuint kCubemapGroupSize = 32;
+	static constexpr GLuint kIrradianceGroupSize = 8;
+	static constexpr GLuint kBrdfGroupSize = 32;
 	float maxAnisotropy;
 
 	glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy);
 
-	Ptr<TextureResource> envMap = TextureResource::Create();
-	glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &envMap->GetTextureID());
+	glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &env->GetTextureID());
 	int mipLevels = numMipMapLevels(kEnvMapSize, kEnvMapSize);
-	glTextureStorage2D(envMap->GetTextureID(), mipLevels, GL_RGBA16F, kEnvMapSize, kEnvMapSize);
-	glTextureParameteri(envMap->GetTextureID(), GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTextureParameteri(envMap->GetTextureID(), GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTextureParameterf(envMap->GetTextureID(), GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy);
+	glTextureStorage2D(env->GetTextureID(), mipLevels, GL_RGBA16F, kEnvMapSize, kEnvMapSize);
+	glTextureParameteri(env->GetTextureID(), GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTextureParameteri(env->GetTextureID(), GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTextureParameterf(env->GetTextureID(), GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy);
 
 	{
 		Ptr<ShaderObject> eq2Cubemap = Render::ShaderServer::Instance()->GetShader("eq2cube-cs");
@@ -68,8 +71,9 @@ void IBLPass::ComputeShaderIBL()
 
 		eq2Cubemap->BindProgram();
 		glBindTextureUnit(0, envTexEq->GetTextureID());
-		glBindImageTexture(0, envMap->GetTextureID(), 0, GL_TRUE, 0, GL_WRITE_ONLY, GL_RGBA16F);
-		glDispatchCompute(kEnvMapSize / 32, kEnvMapSize / 32, 6);
+		glBindImageTexture(0, env->GetTextureID(), 0, GL_TRUE, 0, GL_WRITE_ONLY, GL_RGBA16F);
+		glDispatchCompute(kEnvMapSize / kCubemapGroupSize, kEnvMapSize / kCubemapGroupSize, 6);
+		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT | GL_TEXTURE_FETCH_BARRIER_BIT | GL_TEXTURE_UPDATE_BARRIER_BIT);
 
 		glDeleteTextures(1, &envTexEq->GetTextureID());
 		//glDeleteProgram(eq2Cubemap->GetProgram());
@@ -78,7 +82,7 @@ void IBLPass::ComputeShaderIBL()
 
 	if (mipLevels > 1)
 	{
-		glGenerateTextureMipmap(envMap->GetTextureID());
+		glGenerateTextureMipmap(env->GetTextureID());
 	}
 
 	{
@@ -97,23 +101,24 @@ void IBLPass::ComputeShaderIBL()
 		glTextureParameterf(sp->GetTextureID(), GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy);
 
 
-		glCopyImageSubData(envMap->GetTextureID(), GL_TEXTURE_CUBE_MAP, 0, 0, 0, 0,
+		glCopyImageSubData(env->GetTextureID(), GL_TEXTURE_CUBE_MAP, 0, 0, 0, 0,
 			sp->GetTextureID(), GL_TEXTURE_CUBE_MAP, 0, 0, 0, 0,
 			kEnvMapSize, kEnvMapSize, 6);
 
 
 		spmap->BindProgram();
-		glBindTextureUnit(0, envMap->GetTextureID());
+		glBindTextureUnit(0, env->GetTextureID());
 
 		// Pre-filter rest of the mip chain.
 		const float deltaRoughness = 1.0f / Math::Max(float(levels - 1), 1.0f);
-		for (int level = 1, size = kEnvMapSize / 2; level <= levels; ++level, size /= 2)
+		for (int level = 1, size = kEnvMapSize / 2; level < levels; ++level, size /= 2)
 		{
-			const GLuint numGroups = Math::Max(1, size / 32);
+			const GLuint numGroups = Math::Max<GLuint>(1u, static_cast<GLuint>(size / int(kCubemapGroupSize)));
 			glBindImageTexture(0, sp->GetTextureID(), level, GL_TRUE, 0, GL_WRITE_ONLY, GL_RGBA16F);
 			glProgramUniform1f(spmap->GetProgram(), 0, level * deltaRoughness);
 			glDispatchCompute(numGroups, numGroups, 6);
 		}
+		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT | GL_TEXTURE_FETCH_BARRIER_BIT);
 		//glDeleteProgram(spmap->GetProgram());
 	}
 
@@ -128,9 +133,10 @@ void IBLPass::ComputeShaderIBL()
 		glTextureParameterf(ir->GetTextureID(), GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy);
 
 		irmap->BindProgram();
-		glBindTextureUnit(0, sp->GetTextureID());
+		glBindTextureUnit(0, env->GetTextureID());
 		glBindImageTexture(0, ir->GetTextureID(), 0, GL_TRUE, 0, GL_WRITE_ONLY, GL_RGBA16F);
-		glDispatchCompute(kIrradianceMapSize / 32, kIrradianceMapSize / 32, 6);
+		glDispatchCompute(kIrradianceMapSize / kIrradianceGroupSize, kIrradianceMapSize / kIrradianceGroupSize, 6);
+		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT | GL_TEXTURE_FETCH_BARRIER_BIT);
 		//glDeleteProgram(irmap->GetProgram());
 	}
 
@@ -148,7 +154,8 @@ void IBLPass::ComputeShaderIBL()
 
 		brdfmap->BindProgram();
 		glBindImageTexture(0, brdf->GetTextureID(), 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RG16F);
-		glDispatchCompute(kBRDF_LUT_Size / 32, kBRDF_LUT_Size / 32, 1);
+		glDispatchCompute(kBRDF_LUT_Size / kBrdfGroupSize, kBRDF_LUT_Size / kBrdfGroupSize, 1);
+		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT | GL_TEXTURE_FETCH_BARRIER_BIT);
 		//glDeleteProgram(brdfmap->GetProgram());
 	}
 }
