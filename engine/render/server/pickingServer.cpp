@@ -58,8 +58,6 @@ bool PickingServer::ReadTerrainUV(int x, int glY, Math::vec2& outUV)
     glReadBuffer(GL_COLOR_ATTACHMENT0);
     glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 
-    T_CORE_DEBUG("RGB: {0} {1} {2}", rgb[0], rgb[1], rgb[2]);
-
     if (rgb[2] > 0.5f)
     {
         outUV = Math::vec2(rgb[0], rgb[1]);
