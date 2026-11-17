@@ -15,7 +15,7 @@
 			{
 				"name": "SpecularMap",
 				"sampler": "RepeatBilinear",
-				"value": "resources/assets/Sponza/vase_plant_spec.tga"
+				"value": "resources/textures/black.png"
 			},
 			{
 				"name": "RoughnessMap",

@@ -38,17 +38,25 @@ Ptr<TextureResource> ResourceServer::LoadTexture(const Util::String& filepath)
 */
 Ptr<TextureResource> ResourceServer::LoadTexture(const CreateTextureParameters& textureParams)
 {
-	if (!this->HasTextureNamed(textureParams.filename))
+	// The same file can be used both as sRGB colour (albedo) and as linear data, which need
+	// different GL formats, so the colour space is part of the cache key.
+	Util::String key = textureParams.filename;
+	if (textureParams.sRGB)
+	{
+		key.Append("#srgb");
+	}
+
+	if (!this->HasTextureNamed(key))
 	{
 		Ptr<TextureResource> texture = TextureResource::Create();
 		texture->LoadTextureFile(textureParams);
-		this->textures.Add(textureParams.filename, texture);
+		this->textures.Add(key, texture);
 
 		return texture;
 	}
 	else
 	{
-		return this->textures[textureParams.filename];
+		return this->textures[key];
 	}
 }
 

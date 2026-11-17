@@ -39,9 +39,9 @@ uniform sampler2D SpecularMap[3];
 uniform sampler2D RoughnessMap[3];
 layout(binding = 15) uniform sampler2D splat;
 layout(binding = 16) uniform sampler2D heightmap;
-layout(binding = 17) uniform samplerCube environmentMap;
-layout(binding = 18) uniform samplerCube irradianceMap;
-layout(binding = 19) uniform sampler2D brdfLUT;
+layout(binding = 22) uniform samplerCube environmentMap;
+layout(binding = 23) uniform samplerCube irradianceMap;
+layout(binding = 24) uniform sampler2D brdfLUT;
 
 uniform float u_matShininess; // = 64;
 
@@ -58,19 +58,18 @@ mat3 PlaneTBN(vec3 normal)
     return mat3(tangent, binormal, normal.xyz);
 }
 
-vec3 filterNormal(in vec2 uv, ivec3 offset, in float texelSize, in float texelAspect) 
-{     
+// Central-difference normal from the heightmap. uv.x maps to +X and uv.y to +Z,
+// and texelWorldSize is the world-space distance between two heightmap texels.
+vec3 filterNormal(in vec2 uv, ivec3 offset, in vec2 texelSize, in float heightScale, in vec2 texelWorldSize)
+{
 	float hl = texture2D(heightmap, (uv + texelSize * offset.xz)).r;
     float hr = texture2D(heightmap, (uv + texelSize * offset.yz)).r;
     float ht = texture2D(heightmap, (uv + texelSize * offset.zx)).r;
     float hb = texture2D(heightmap, (uv + texelSize * offset.zy)).r;
-    vec3 normal = vec3(0, 0, 0);
-    normal.x = (hl - hr);
-    normal.y = 2.0f;
-    normal.z = (ht - hb);
-	normal *= vec3(texelAspect, 1, texelAspect);
-	return normalize(normal);
-} 
+	float dhdx = (hr - hl) * heightScale / (2.0 * texelWorldSize.x);
+	float dhdz = (hb - ht) * heightScale / (2.0 * texelWorldSize.y);
+	return normalize(vec3(-dhdx, 1.0, -dhdz));
+}
 
 // From https://iquilezles.org/articles/biplanar/
 vec4 Biplanar( sampler2D sam, in vec3 p, in vec3 n, in float k )
@@ -116,11 +115,13 @@ vec3 GetNormal(int index, in vec3 uvwPos, in vec3 normal)
 	blend_weights = max(blend_weights, 0);      // Force weights to sum to 1.0 (very important!)
 	blend_weights /= (blend_weights.x + blend_weights.y + blend_weights.z ).xxx;
 	
+	// Each projection must use the same UV orientation as the albedo in SampleSlopeRules
+	// (yz, xz, xy), otherwise the lit bumps don't line up with the colour detail.
 	vec2 bumpFetch0 = texture2D(NormalMap[index], uvwPos.yz).xy - 0.5;
-	vec2 bumpFetch1 = texture2D(NormalMap[index], uvwPos.zx).xy - 0.5;
+	vec2 bumpFetch1 = texture2D(NormalMap[index], uvwPos.xz).xy - 0.5;
 	vec2 bumpFetch2 = texture2D(NormalMap[index], uvwPos.xy).xy - 0.5;
 	vec3 bump1 = vec3(0, bumpFetch0.x, bumpFetch0.y);
-	vec3 bump2 = vec3(bumpFetch1.y, 0, bumpFetch1.x);
+	vec3 bump2 = vec3(bumpFetch1.x, 0, bumpFetch1.y);
 	vec3 bump3 = vec3(bumpFetch2.x, bumpFetch2.y, 0);
 	
 	return vec3(bump1.xyz * blend_weights.xxx +
@@ -139,12 +140,19 @@ float HeightBlending(float height, float heightFalloff)
 	return clamp((fragPos.y - (height - (heightFalloff * 0.5))) / heightFalloff, 0.0, 1.0);
 }
 
+// Albedo textures are uploaded as GL_SRGB8(_ALPHA8), so the hardware already returns linear colour.
+vec4 SampleAlbedo(sampler2D sam, vec2 uv)
+{
+	return texture2D(sam, uv);
+}
+
 void SampleSlopeRules(in uint i, in float uvMultiplier, in vec2 uv, in float angle, out vec4 outAlbedo, out vec2 outMaterial, out vec3 outNormal)
 {
-	outAlbedo = texture2D(AlbedoMap[i], uv * uvMultiplier) * (1.0 - angle);
-	outAlbedo += texture2D(AlbedoMap[1], uv * texUv1Multiplier) * angle;
-	outMaterial.x = (1.0 - texture2D(SpecularMap[i], uv * uvMultiplier).r) * (1.0 - angle);
-	outMaterial.x += (1.0 - texture2D(SpecularMap[1], uv * texUv1Multiplier).r) * angle;
+	outAlbedo = SampleAlbedo(AlbedoMap[i], uv * uvMultiplier) * (1.0 - angle);
+	outAlbedo += SampleAlbedo(AlbedoMap[1], uv * texUv1Multiplier) * angle;
+	// SpecularMap holds metalness (1 = metal), not an inverted specular mask
+	outMaterial.x = texture2D(SpecularMap[i], uv * uvMultiplier).r * (1.0 - angle);
+	outMaterial.x += texture2D(SpecularMap[1], uv * texUv1Multiplier).r * angle;
 	outMaterial.y = texture2D(RoughnessMap[i], uv * uvMultiplier).r * (1.0 - angle);
 	outMaterial.y += texture2D(RoughnessMap[1], uv * texUv1Multiplier).r * angle;
 	outNormal = texture2D(NormalMap[i], uv * uvMultiplier).rgb * (1.0 - angle);
@@ -162,9 +170,12 @@ void main()
 	vec3 color = vec3(0.0, 0.0, 0.0);
 
 	//vec3 splatTex = texture(splat, vec2(texCoord.x, 1.0-(texCoord.y))).rgb;
-	float tSize = 1.0 / float(textureSize(heightmap, 0));
+	vec2 texelUV = 1.0 / vec2(textureSize(heightmap, 0));
+	float tSize = texelUV.x;
+	// worldSizeX/Z is the world extent covered by uv 0..1 (size * widthMultiplier)
+	vec2 texelWorldSize = vec2(worldSizeX, worldSizeZ) * texelUV;
 	ivec3 normalOffset = ivec3(-1, 1, 0);
-	vec3 norm = filterNormal(texCoord, normalOffset, tSize, heightScale);
+	vec3 norm = filterNormal(texCoord, normalOffset, texelUV, heightScale, texelWorldSize);
 	vec3 weights = norm*norm;
 	
 	vec4 albedo0 = Biplanar(AlbedoMap[0], texUv0Multiplier * fragPos, norm, 8.0);		
@@ -175,9 +186,9 @@ void main()
 	vec3 normal1 = GetNormal(1, texUv1Multiplier * fragPos, weights).rgb;
 	vec3 normal2 = GetNormal(2, texUv2Multiplier * fragPos, weights).rgb;
 	
-	vec3 specularMap0 = 1.0 - Biplanar(SpecularMap[0], texUv0Multiplier * fragPos, norm, 8.0).xyz;
-	vec3 specularMap1 = 1.0 - Biplanar(SpecularMap[1], texUv1Multiplier * fragPos, norm, 8.0).xyz;
-	vec3 specularMap2 = 1.0 - Biplanar(SpecularMap[2], texUv2Multiplier * fragPos, norm, 8.0).xyz;
+	vec3 specularMap0 = Biplanar(SpecularMap[0], texUv0Multiplier * fragPos, norm, 8.0).xyz;
+	vec3 specularMap1 = Biplanar(SpecularMap[1], texUv1Multiplier * fragPos, norm, 8.0).xyz;
+	vec3 specularMap2 = Biplanar(SpecularMap[2], texUv2Multiplier * fragPos, norm, 8.0).xyz;
 	
 	vec3 roughnessMap0 = Biplanar(RoughnessMap[0], texUv0Multiplier * fragPos, norm, 8.0).xyz;
 	vec3 roughnessMap1 = Biplanar(RoughnessMap[1], texUv1Multiplier * fragPos, norm, 8.0).xyz;
@@ -201,7 +212,10 @@ void main()
 	
 	vec3 blendNormal = vec3(0.0);
 	
-	vec3 triplanarWeights = abs(norm.xyz);
+	// Sharpen the triplanar weights so each projection only contributes where it faces the surface.
+	// Linear abs(n) weights blend heavily stretched side projections into gently sloped ground,
+	// which smears the textures into a blotchy "plasma" look.
+	vec3 triplanarWeights = pow(abs(norm.xyz), vec3(8.0));
     triplanarWeights /= (triplanarWeights.x + triplanarWeights.y + triplanarWeights.z);
 	
 	if(heightCutoff == 0.0f)
@@ -330,7 +344,8 @@ void main()
 	vec3 irradiance = texture(irradianceMap, N).rgb;
     vec3 diffuse = irradiance * albedoSum.rgb;
 	
-	const float MAX_REFLECTION_LOD = 8.0;
+	// The prefiltered map stores roughness = level / (levels - 1), so map roughness onto the full chain
+	float MAX_REFLECTION_LOD = float(textureQueryLevels(environmentMap) - 1);
     vec3 prefilteredColor = textureLod(environmentMap, R, roughnessSum * MAX_REFLECTION_LOD).rgb;   
 	vec2 envBRDF  = texture(brdfLUT, vec2(cosLo, roughnessSum)).rg;	
     vec3 specular = prefilteredColor * (F * envBRDF.x + envBRDF.y);
@@ -338,7 +353,7 @@ void main()
 	vec3 ambient = (kD * diffuse + specular);
 	
 	color.rgb = ambient + lo;
-	
+
 	resColor.xyz = color.rgb;
 	resColor.a = 1.0;
 	normalColor = N;

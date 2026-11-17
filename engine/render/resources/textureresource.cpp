@@ -152,12 +152,13 @@ void TextureResource::LoadTextureFile(const CreateTextureParameters& textureVari
 		_assert(false);
 	}
 
+	const bool srgb = textureVariables.sRGB && !isHDR;
 	if (channels == 1)
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, pixels<unsigned char>());
 	else if (channels == 3)
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, pixels<unsigned char>());
+		glTexImage2D(GL_TEXTURE_2D, 0, srgb ? GL_SRGB8 : GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, pixels<unsigned char>());
 	else if (channels == 4)
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels<unsigned char>());
+		glTexImage2D(GL_TEXTURE_2D, 0, srgb ? GL_SRGB8_ALPHA8 : GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels<unsigned char>());
 
 	glGenerateMipmap(GL_TEXTURE_2D);
 	glGenerateTextureMipmap(textureID);

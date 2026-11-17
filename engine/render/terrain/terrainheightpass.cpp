@@ -53,8 +53,9 @@ void TerrainHeightPass::Setup(Ptr<Render::TextureResource> baseMap)
 	glTextureParameteri(this->mergedHeightmap->GetTextureID(), GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	//glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
-	workGroupsX = (GLuint)(this->mergedHeightmap->GetWidth() + (this->mergedHeightmap->GetWidth() % 16)) / 16;
-	workGroupsY = (GLuint)(this->mergedHeightmap->GetHeight() + (this->mergedHeightmap->GetHeight() % 16)) / 16;
+	// Round up so every texel is covered (local size is TILE_SIZE = 16)
+	workGroupsX = (GLuint)(this->mergedHeightmap->GetWidth() + 15) / 16;
+	workGroupsY = (GLuint)(this->mergedHeightmap->GetHeight() + 15) / 16;
 
 	this->heightmaps->AddTexture(Render::TextureIndex::heightmap1, baseMap);
 	this->heightmaps->AddTexture(Render::TextureIndex::heightmap2, baseMap);
@@ -78,6 +79,8 @@ void TerrainHeightPass::Execute()
 	glBindImageTexture(1, this->mergedHeightmap->GetTextureID(), 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA16F);
 	
 	glDispatchCompute(workGroupsX, workGroupsY, 1);
+	// The terrain samples the merged map as a texture right after this
+	glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT | GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
 	this->heightmaps->UnbindTextures();
 

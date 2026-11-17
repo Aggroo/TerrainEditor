@@ -52,7 +52,7 @@ GLDebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei 
 	{
 	case GL_DEBUG_TYPE_ERROR:
 	case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
-		T_CORE_WARN(msg.c_str());
+		T_CORE_WARN("{}", msg);
 		break;
 	case GL_DEBUG_TYPE_PERFORMANCE:
 		T_CORE_WARN("Performance issue: %s\n", msg.c_str());

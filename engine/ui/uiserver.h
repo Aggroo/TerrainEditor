@@ -19,6 +19,8 @@ class UIServer
 {
 __DeclareSingleton(UIServer)
 public:
+	// Defined out-of-line so UI::Widget is complete when the unique_ptrs are destroyed
+	~UIServer();
 
 	void Setup(Display::Window* window);
 

@@ -13,8 +13,10 @@ namespace UI
 {
 UIServer::UIServer()
 {
-	
+
 }
+
+UIServer::~UIServer() = default;
 
 void UIServer::Setup(Display::Window* window)
 {

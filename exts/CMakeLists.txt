@@ -142,5 +142,7 @@ TARGET_LINK_LIBRARIES(exts INTERFACE misc)
 
 ADD_SUBDIRECTORY(spdlog)
 SET_TARGET_PROPERTIES(spdlog PROPERTIES FOLDER "exts/spdlog")
-TARGET_INCLUDE_DIRECTORIES(exts INTERFACE spdlog/include)
+# Link the header-only target so its usage requirements propagate
+# (include dir, Threads, and the /utf-8 flag that fmt requires on MSVC).
+TARGET_LINK_LIBRARIES(exts INTERFACE spdlog::spdlog_header_only)
 

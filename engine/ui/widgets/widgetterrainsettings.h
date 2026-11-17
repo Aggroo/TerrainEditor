@@ -40,7 +40,7 @@ struct HeightMapSettings
 	Util::Array<GLuint> textures;
 	int size = 512;
 	float widthMultiplier = 1.f;
-	float heightMultiplier = 1.f;
+	float heightMultiplier = 65.f;
 	bool useFirstLayerAsMask[5] = { false, false, false, false, false };
 };
 

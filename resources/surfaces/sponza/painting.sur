@@ -15,7 +15,7 @@
 			{
 				"name": "SpecularMap",
 				"sampler": "RepeatBilinear",
-				"value": "resources/textures/placeholder_specular.png"
+				"value": "resources/textures/black.png"
 			},
 			{
 				"name": "RoughnessMap",

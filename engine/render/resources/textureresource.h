@@ -37,6 +37,7 @@ struct CreateTextureParameters
 {
 	const char* filename;
 	SamplerParameters sampler;
+	bool sRGB = false;
 };
 
 struct textVert

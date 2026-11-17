@@ -68,12 +68,16 @@ void main(void)
     uint sampleCount = 0u;
     float deltaPhi = TwoPI / 360.0;
     float deltaTheta = HalfPI / 90.0;
+
+    float texelAngle = HalfPI / float(textureSize(inputTexture, 0).x);
+    float sampleLod = max(log2(deltaTheta / texelAngle) + 1.0, 0.0);
+
     for (float phi = 0.0; phi < TwoPI; phi += deltaPhi) {
         for (float theta = 0.0; theta < HalfPI; theta += deltaTheta) {
             // Spherical to World Space in two steps...
             vec3 tempVec = cos(phi) * right + sin(phi) * up;
             vec3 sampleVector = cos(theta) * N + sin(theta) * tempVec;
-            color += textureLod(inputTexture, sampleVector, 0).rgb * cos(theta) * sin(theta);
+            color += textureLod(inputTexture, sampleVector, sampleLod).rgb * cos(theta) * sin(theta);
             sampleCount++;
         }
     }

@@ -15,7 +15,7 @@
 			{
 				"name": "SpecularMap",
 				"sampler": "RepeatBilinear",
-				"value": "resources/assets/Sponza/sponza_ceiling_a_spec.tga"
+				"value": "resources/textures/black.png"
 			},
 			{
 				"name": "RoughnessMap",

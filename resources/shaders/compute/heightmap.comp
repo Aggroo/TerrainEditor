@@ -18,7 +18,7 @@ layout(local_size_x=TILE_SIZE, local_size_y=TILE_SIZE, local_size_z=1) in;
 void main(void)
 {
     // get index in global work group i.e x,y position
-	vec2 pixelCoords = gl_GlobalInvocationID.xy / vec2(imageSize(heightmapOut));
+	vec2 pixelCoords = (vec2(gl_GlobalInvocationID.xy) + 0.5) / vec2(imageSize(heightmapOut));
     float height = texture(heightmaps[0], pixelCoords).r;
 	float mask = height;
 	

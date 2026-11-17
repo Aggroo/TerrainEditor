@@ -187,11 +187,14 @@ void Surface::SetUniformBuffer(Render::UBOInfo* buffer)
 void Surface::AddTexture(const Util::String& name, const Util::Variant & variable, const Util::String& textureSample)
 {
 
+	const TextureIndex index = Material::TextureIndexFromString(name.AsCharPtr());
+
 	CreateTextureParameters textureParam;
 	textureParam.filename = variable.GetString().AsCharPtr();
 	textureParam.sampler = SetupTextureSampler(textureSample);
+	textureParam.sRGB = (index == TextureIndex::albedo0 || index == TextureIndex::albedo1 || index == TextureIndex::albedo2);
 
-	this->textures->AddTexture(Material::TextureIndexFromString(name.AsCharPtr()), textureParam);
+	this->textures->AddTexture(index, textureParam);
 
 	MaterialParameter* param = new MaterialParameter();
 	param->name = name;

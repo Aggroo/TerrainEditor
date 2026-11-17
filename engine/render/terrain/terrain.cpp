@@ -111,8 +111,9 @@ bool Terrain::CreateTerrain(const int size, const float widthMultiplier, const f
 	this->mesh->GetMesh() = Render::MeshResources::Create();
 	
 	tsVar.heightScale = heightMultiplier;
-	tsVar.worldSizeX = size;
-	tsVar.worldSizeZ = size;
+	// World-space extent covered by uv 0..1; the terrain shader uses it to compute heightmap normals
+	tsVar.worldSizeX = size * widthMultiplier;
+	tsVar.worldSizeZ = size * widthMultiplier;
 
 	this->terrainWidth = size;
 	this->terrainHeight = size;

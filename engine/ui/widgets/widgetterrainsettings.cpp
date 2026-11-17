@@ -71,11 +71,7 @@ void TerrainSettings::Update()
 			ImGui::LabelText("##terrainwidth", "Width");
 			ImGui::SameLine();
 			ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-			if (ImGui::DragInt("##terrainwidth", &heightSettings.size, 16, 16, 16384))
-			{
-				terrain->tsVar.worldSizeX = heightSettings.size;
-				terrain->tsVar.worldSizeZ = heightSettings.size;
-			}
+			ImGui::DragInt("##terrainwidth", &heightSettings.size, 16, 16, 16384);
 
 			ImGui::SetNextItemWidth(total_w);
 			ImGui::LabelText("##widthmult", "Width Multiplier");
@@ -99,6 +95,7 @@ void TerrainSettings::Update()
 		if (ImGui::CollapsingHeader("Texture Settings", ImGuiTreeNodeFlags_Leaf))
 		{
 			float total_w = ImGui::GetContentRegionAvail().x / 3.0f;
+
 			if (ImGui::TreeNode("Procedural Texturing Settings"))
 			{
 				if (ImGui::TreeNode("Blend 1"))
