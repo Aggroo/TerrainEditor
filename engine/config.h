@@ -6,6 +6,7 @@
 	
 	(C) 2015 See the LICENSE file.
 */
+#pragma once
 
 #ifdef __WIN32__
 #undef __WIN32__

@@ -1,49 +1,54 @@
 #--------------------------------------------------------------------------
-# gscept laboration environment
+# Terrain Editor
 #--------------------------------------------------------------------------
-PROJECT(terrain_editor)
-CMAKE_MINIMUM_REQUIRED(VERSION 4.0)
+cmake_minimum_required(VERSION 3.21)
+project(terrain_editor LANGUAGES C CXX)
 
-MACRO(TARGET_PCH target path)
-IF(WIN32)
-	IF(MSVC)
-		SET_TARGET_PROPERTIES(${target}
-			PROPERTIES 
-			COMPILE_FLAGS "/Yuconfig.h /Fp${CMAKE_CFG_INTDIR}/${target}.pch")
-		SET_SOURCE_FILES_PROPERTIES(${path}config.cc
-            PROPERTIES
-            COMPILE_FLAGS "/Ycconfig.h")
-	ENDIF()
-ENDIF()
-ENDMACRO(TARGET_PCH)
+# Language standard for every target in the project
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
-IF(CMAKE_COMPILER_IS_GNUCXX)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-ENDIF()
+# Group targets into folders in the Visual Studio solution
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-IF (MSVC_VERSION GREATER_EQUAL "1900")
-	include(CheckCXXCompilerFlag)
-	CHECK_CXX_COMPILER_FLAG("/std:c++latest" _cpp_latest_flag_supported)
-	IF (_cpp_latest_flag_supported)
-		add_compile_options("/std:c++latest")
-	ENDIF()
-ENDIF()
+if(MSVC)
+	# Compile the files within a project in parallel
+	add_compile_options(/MP)
+	# Silence warnings about "unsafe" C functions like fopen/sprintf
+	add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
+endif()
 
-IF(MSVC)
-    SET(OPENGL_LIBS opengl32.lib)
-ELSE()
-    SET(OPENGL_LIBS GL GLU X11 Xxf86vm pthread Xrandr Xi Xinerama Xcursor)
-ENDIF()
+find_package(OpenGL REQUIRED)
 
-SET(TERRAIN_EDITOR_ENV_ROOT ${CMAKE_CURRENT_DIR})
+# collect_sources(<out_var> <dir>)
+#
+# Finds every .h/.hpp/.inl/.c/.cc/.cpp file under <dir> (including
+# subfolders) and stores the list in <out_var>.
+#  - CONFIGURE_DEPENDS makes CMake re-check the folder on every build, so a
+#    file you add or delete is picked up automatically on the next build.
+#  - Files in folders named "windows" or "linux" are only included when
+#    building for that platform.
+function(collect_sources out_var dir)
+	file(GLOB_RECURSE files CONFIGURE_DEPENDS
+		"${dir}/*.h"
+		"${dir}/*.hpp"
+		"${dir}/*.inl"
+		"${dir}/*.c"
+		"${dir}/*.cc"
+		"${dir}/*.cpp"
+		)
+	if(WIN32)
+		list(FILTER files EXCLUDE REGEX "/linux/")
+	else()
+		list(FILTER files EXCLUDE REGEX "/windows/")
+	endif()
+	set(${out_var} ${files} PARENT_SCOPE)
+endfunction()
 
-IF(MSVC)
-	SET_PROPERTY(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS GLEW_STATIC _CRT_SECURE_NO_WARNINGS)
-ELSE()
-	SET_PROPERTY(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS GLEW_STATIC)
-ENDIF()
+add_subdirectory(exts)
+add_subdirectory(engine)
+add_subdirectory(projects)
 
-ADD_SUBDIRECTORY(exts)
-ADD_SUBDIRECTORY(engine)
-ADD_SUBDIRECTORY(projects)
-
+# Must be set on the top-level directory to take effect
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT terrain)

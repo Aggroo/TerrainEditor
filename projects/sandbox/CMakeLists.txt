@@ -1,19 +1,16 @@
 #--------------------------------------------------------------------------
-# terrain project
+# sandbox project
+#
+# All .h/.cpp files in the code/ folder are found automatically.
 #--------------------------------------------------------------------------
+collect_sources(sources ${CMAKE_CURRENT_SOURCE_DIR}/code)
+add_executable(sandbox ${sources})
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${sources})
 
-PROJECT(sandbox)
+target_link_libraries(sandbox PRIVATE core foundation render application ui)
 
-SET(files_sandbox 
-code/application.cc 
-code/application.h
-code/main.cc
-)
-SOURCE_GROUP("sandbox" FILES ${files_sandbox})
-
-ADD_EXECUTABLE(sandbox ${files_sandbox})
-TARGET_LINK_LIBRARIES(sandbox core render foundation application ui)
-ADD_DEPENDENCIES(sandbox core render foundation application ui)
-
-SET_TARGET_PROPERTIES(sandbox PROPERTIES FOLDER "terraineditor/projects")
-set_target_properties(sandbox PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
+set_target_properties(sandbox PROPERTIES
+	FOLDER "terraineditor/projects"
+	# Run from the repo root so relative paths like "resources/..." resolve
+	VS_DEBUGGER_WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
+	)

@@ -1,3 +1,5 @@
 /TerrainOut
 /out
 *.hdr
+CMakeUserPresets.json
+/.vs

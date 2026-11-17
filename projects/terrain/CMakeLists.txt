@@ -1,21 +1,16 @@
 #--------------------------------------------------------------------------
 # terrain project
+#
+# All .h/.cpp files in the code/ folder are found automatically.
 #--------------------------------------------------------------------------
+collect_sources(sources ${CMAKE_CURRENT_SOURCE_DIR}/code)
+add_executable(terrain ${sources})
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${sources})
 
-PROJECT(terrain)
+target_link_libraries(terrain PRIVATE core foundation render application ui)
 
-SET(files_terrain 
-code/application.cc 
-code/application.h
-code/main.cc
-)
-SOURCE_GROUP("terraineditor" FILES ${files_terrain})
-
-ADD_EXECUTABLE(terrain ${files_terrain})
-set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT terrain)
-TARGET_LINK_LIBRARIES(terrain core render foundation application ui)
-ADD_DEPENDENCIES(terrain core render foundation application ui)
-
-SET_TARGET_PROPERTIES(terrain PROPERTIES FOLDER "terraineditor/projects")
-set_target_properties(terrain PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
-set_property(TARGET terrain PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
+set_target_properties(terrain PROPERTIES
+	FOLDER "terraineditor/projects"
+	# Run from the repo root so relative paths like "resources/..." resolve
+	VS_DEBUGGER_WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
+	)

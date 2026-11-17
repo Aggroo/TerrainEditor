@@ -1,73 +1,8 @@
-#--------------------
-#	Foundation
-#-----------------
-SET(files_foundation_input
-	input/inputmanager.h
-	input/inputmanager.cpp
-	)
-	
-SET(files_foundation_math
-	math/mat3.h	
-	math/mat4.h	
-	math/vec2.h
-	math/vec3.h
-	math/vec4.h
-	math/quaternions.h
-	math/math.h
-	)
+#--------------------------------------------------------------------------
+# foundation
+#
+# All .h/.cpp files in this folder are found automatically.
+#--------------------------------------------------------------------------
+engine_library(foundation)
 
-SET(files_foundation_io
-	io/logger.h
-	io/logger.cpp
-	)
-
-SET(files_foundation_util
-	util/threadsaferingbuffer.h
-	util/jsonparser.h
-	util/jsonparser.cpp
-	util/string.h
-	util/string.cpp
-	util/array.h
-	util/hashtable.h
-	util/dictionary.h
-	util/fourcc.h
-	util/pair.h
-	util/fixedarray.h
-	util/list.h
-	util/curve.hpp
-	util/jobsystem.cpp
-	util/jobsystem.h
-	util/variant.h
-	)
-	
-IF(WIN32)
-	SET(files_foundation_memory_OS
-		memory/windows/winmemory.h
-		memory/windows/winmemoryconfig.h
-		memory/windows/winmemoryconfig.cpp
-		)
-ELSE(WIN32)
-	SET(files_foundation_memory_OS
-		memory/linux/linuxmemory.h
-		memory/linux/linuxmemoryconfig.h
-		memory/linux/linuxmemoryconfig.cpp
-		)
-ENDIF(WIN32)
-
-SET(files_foundation_memory_base
-	memory/memory.h
-	${files_foundation_memory_OS}
-)
-	
-SOURCE_GROUP("input" FILES ${files_foundation_input})
-SOURCE_GROUP("math" FILES ${files_foundation_math})
-SOURCE_GROUP("io" FILES ${files_foundation_io})
-SOURCE_GROUP("util" FILES ${files_foundation_util})
-SOURCE_GROUP("memory" FILES ${files_foundation_memory_base})
-
-SET(files_pch ../config.h ../config.cc)
-SOURCE_GROUP("pch" FILES ${files_pch})
-ADD_LIBRARY(foundation STATIC ${files_foundation_input} ${files_foundation_math} ${files_foundation_io} ${files_foundation_util} ${files_foundation_memory_base} ${files_pch})
-TARGET_PCH(foundation ../)
-ADD_DEPENDENCIES(foundation glew misc core)
-TARGET_LINK_LIBRARIES(foundation PUBLIC engine exts glew misc core)
+target_link_libraries(foundation PUBLIC core glfw imgui misc)

@@ -2,17 +2,25 @@
 # engine
 #--------------------------------------------------------------------------
 
-ADD_LIBRARY(engine INTERFACE)
-TARGET_INCLUDE_DIRECTORIES(engine INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
-TARGET_LINK_LIBRARIES(engine INTERFACE ${OPENGL_LIBS})
-ADD_SUBDIRECTORY(core)
-ADD_SUBDIRECTORY(foundation)
-ADD_SUBDIRECTORY(render)
-ADD_SUBDIRECTORY(application)
-ADD_SUBDIRECTORY(ui)
+add_library(engine INTERFACE)
+target_include_directories(engine INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(engine INTERFACE
+	glew
+	OpenGL::GL
+	spdlog::spdlog_header_only
+	)
 
-SET_TARGET_PROPERTIES(core PROPERTIES FOLDER "terraineditor/engine")
-SET_TARGET_PROPERTIES(foundation PROPERTIES FOLDER "terraineditor/engine")
-SET_TARGET_PROPERTIES(render PROPERTIES FOLDER "terraineditor/engine")
-SET_TARGET_PROPERTIES(application PROPERTIES FOLDER "terraineditor/engine")
-SET_TARGET_PROPERTIES(ui PROPERTIES FOLDER "terraineditor/engine")
+function(engine_library name)
+	collect_sources(sources ${CMAKE_CURRENT_SOURCE_DIR})
+	add_library(${name} STATIC ${sources})
+	target_link_libraries(${name} PUBLIC engine)
+	target_precompile_headers(${name} PRIVATE ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/config.h)
+	source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${sources})
+	set_target_properties(${name} PROPERTIES FOLDER "terraineditor/engine")
+endfunction()
+
+add_subdirectory(core)
+add_subdirectory(foundation)
+add_subdirectory(render)
+add_subdirectory(application)
+add_subdirectory(ui)
