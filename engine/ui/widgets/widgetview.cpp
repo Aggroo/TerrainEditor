@@ -1,6 +1,7 @@
 #include "config.h"
 #include "widgetview.h"
 #include "render/render/renderer.h"
+#include "imgui.h"
 #include "ImGuizmo.h"
 #include "imgui_internal.h"
 #include "IconsFontAwesome5_c.h"
@@ -20,14 +21,17 @@ View::View(Display::Window* app) : Widget(app)
 
 void View::Update()
 {
-	int currWidth = (int)(ImGui::GetWindowContentRegionMax().x - ImGui::GetWindowContentRegionMin().x);
-	int currHeight = (int)(ImGui::GetWindowContentRegionMax().y - ImGui::GetWindowContentRegionMin().y);
+	int currWidth = (int)ImGui::GetContentRegionAvail().x;
+	int currHeight = (int)ImGui::GetContentRegionAvail().y;
 
 	// Make sure we are pixel perfect
 	currWidth -= (currWidth % 2 != 0) ? 1 : 0;
 	currHeight -= (currHeight % 2 != 0) ? 1 : 0;
 
-	if (width != currWidth || height != currHeight)
+	// Skip resizing while the view has no content area (collapsed, hidden or not
+	// laid out yet), otherwise the renderer would get a 0x0 resolution.
+	const bool hasArea = currWidth > 0 && currHeight > 0;
+	if (hasArea && (width != currWidth || height != currHeight))
 		UpdateRenderResolution(currWidth, currHeight);
 
 	ImVec2 test = {ImGui::GetMousePos().x - ImGui::GetCursorScreenPos().x, ImGui::GetMousePos().y - ImGui::GetCursorScreenPos().y};

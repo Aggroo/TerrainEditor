@@ -35,7 +35,8 @@ void BeginButtonStyle(const bool& activeButton)
 		ImGui::PushStyleColor(ImGuiCol_Button, colors.backgroundVeryDark);
 	ImGui::PushStyleColor(ImGuiCol_Border, colors.backgroundVeryDark);
 	ImGui::PushStyleColor(ImGuiCol_ChildBg, colors.backgroundVeryDark);
-	ImGui::PushFont(UI::UIServer::Instance()->GetLargeDefaultFont());
+	ImFont* largeFont = UI::UIServer::Instance()->GetLargeDefaultFont();
+	ImGui::PushFont(largeFont, largeFont ? largeFont->LegacySize : 0.0f);
 	
 }
 

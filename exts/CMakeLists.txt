@@ -64,24 +64,31 @@ add_library(imgui STATIC
 	imgui/imstb_truetype.h
 	imgui/backends/imgui_impl_opengl3.h
 	imgui/backends/imgui_impl_opengl3.cpp
+	imgui/backends/imgui_impl_opengl3_loader.h
 	imgui/backends/imgui_impl_glfw.h
 	imgui/backends/imgui_impl_glfw.cpp
 	)
 target_include_directories(imgui PUBLIC imgui imgui/backends)
+# IMGUI_DEFINE_MATH_OPERATORS: enable ImVec2/ImVec4 math operators for everything
+# that uses imgui. Must be defined before the first imgui.h include, so it is set
+# project wide.
+# IMGUI_USE_LEGACY_CRC32_ADLER: imgui 1.91.6 changed the ID hash, which would
+# invalidate the docking layout saved in imgui.ini. Keep the old hash.
+target_compile_definitions(imgui PUBLIC IMGUI_DEFINE_MATH_OPERATORS IMGUI_USE_LEGACY_CRC32_ADLER)
 target_link_libraries(imgui PRIVATE glfw)
 
 # ImGuizmo
 add_library(imguizmo STATIC
-	ImGuizmo/ImCurveEdit.cpp
-	ImGuizmo/ImCurveEdit.h
-	ImGuizmo/ImGradient.cpp
-	ImGuizmo/ImGradient.h
-	ImGuizmo/ImGuizmo.cpp
-	ImGuizmo/ImGuizmo.h
-	ImGuizmo/ImSequencer.cpp
-	ImGuizmo/ImSequencer.h
+	ImGuizmo/src/ImCurveEdit.cpp
+	ImGuizmo/src/ImCurveEdit.h
+	ImGuizmo/src/ImGradient.cpp
+	ImGuizmo/src/ImGradient.h
+	ImGuizmo/src/ImGuizmo.cpp
+	ImGuizmo/src/ImGuizmo.h
+	ImGuizmo/src/ImSequencer.cpp
+	ImGuizmo/src/ImSequencer.h
 	)
-target_include_directories(imguizmo PUBLIC ImGuizmo)
+target_include_directories(imguizmo PUBLIC ImGuizmo/src)
 target_link_libraries(imguizmo PUBLIC imgui)
 
 # nativefiledialog

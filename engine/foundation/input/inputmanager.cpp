@@ -8,9 +8,6 @@
 #include "render/camera/camera.h"
 #include "render/resources/texturenode.h"
 #include "render/server/frameserver.h"
-#include "imgui.h"
-#include "imgui_impl_glfw.cpp"
-#include "imgui_impl_opengl3.h"
 
 namespace Input
 {
@@ -66,15 +63,11 @@ void InputManager::Initialization()
 	T_CORE_TRACE("INPUT MANAGER Initialize Input functions");
 	window->SetKeyPressFunction([this](int32 key, int32 scancode, int32 action, int32 mods)
 	{
-		keyboardButtons[key] = action != GLFW_RELEASE;
-
-		key = ImGui_ImplGlfw_TranslateUntranslatedKey(key, scancode);
-
-		ImGuiIO& io = ImGui::GetIO();
-		ImGuiKey imgui_key = ImGui_ImplGlfw_KeyToImGuiKey(key);
-		io.AddKeyEvent(imgui_key, (action == GLFW_PRESS));
-		io.SetKeyEventNativeData(imgui_key, key, scancode);
-
+		// ImGui receives key events through its own GLFW callback (installed by
+		// ImGui_ImplGlfw_InitForOpenGL), which chains into this one.
+		// GLFW_KEY_UNKNOWN is -1, so bounds check before indexing.
+		if (key >= 0 && key < MAX_KEYS)
+			keyboardButtons[key] = action != GLFW_RELEASE;
 	});
 
 	window->SetMouseMoveFunction([this](float64 x, float64 y)

@@ -52,7 +52,7 @@ void TerrainSettings::Update()
 		ImGui::Separator();
 
 		ImGui::Indent(10);
-		if (ImGui::Button("Update##heightmapgen", ImVec2(ImGui::GetWindowContentRegionWidth() - 20, 25)))
+		if (ImGui::Button("Update##heightmapgen", ImVec2(ImGui::GetContentRegionAvail().x - 20, 25)))
 		{
 			this->terrain->CreateTerrain(heightSettings.size,
 					heightSettings.widthMultiplier,
@@ -329,7 +329,9 @@ void TerrainSettings::Update()
 						ImGui::InputText(nodeName.AsCharPtr(), (char*)heightSettings.texNames[i].AsCharPtr(), 512, ImGuiInputTextFlags_ReadOnly);
 					}
 					ImGui::SameLine();
-					if (ImGui::ImageButton((void*)heightSettings.textures[i], ImVec2(ImGui::GetContentRegionAvail().x - 35.0f, ImGui::GetContentRegionAvail().x - 35.0f)))
+					Util::String buttonId = "##heightmapbutton";
+					buttonId.AppendInt(i);
+					if (ImGui::ImageButton(buttonId.AsCharPtr(), (ImTextureID)heightSettings.textures[i], ImVec2(ImGui::GetContentRegionAvail().x - 35.0f, ImGui::GetContentRegionAvail().x - 35.0f)))
 					{
 						this->chosenHeightmap = i;
 						this->heightPopup = true;
@@ -440,7 +442,7 @@ void TerrainSettings::GetImagePicker(Util::String texName, Render::TextureIndex 
 	}
 	ImGui::SameLine();
 	Util::String dot = "..." + label;
-	if (ImGui::ImageButton((void*)terrain->GetSurface()->GetTextureList()->GetTexture(index)->GetTextureID(), ImVec2(ImGui::GetContentRegionAvail().x - 10, ImGui::GetContentRegionAvail().x - 10)))
+	if (ImGui::ImageButton(dot.AsCharPtr(), (ImTextureID)terrain->GetSurface()->GetTextureList()->GetTexture(index)->GetTextureID(), ImVec2(ImGui::GetContentRegionAvail().x - 10, ImGui::GetContentRegionAvail().x - 10)))
 	{
 		texSettings.chosenIndex = index;
 		this->texturesPopup = true;

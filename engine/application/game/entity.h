@@ -3,6 +3,7 @@
 #include "render/resources/texturenode.h"
 #include "render/resources/shaderobject.h"
 #include "render/resources/model.h"
+#include "imgui.h"
 #include "ImGuizmo.h"
 
 namespace Render

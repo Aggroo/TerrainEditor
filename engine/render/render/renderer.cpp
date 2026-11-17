@@ -100,6 +100,11 @@ const Resolution& Renderer::GetWindowResolution() const
 void Renderer::SetRenderResolution(const Resolution& res)
 {
 	//T_CORE_TRACE("[RENDERER]: Set Render Resolutions");
+	// A zero sized resolution (minimized window, collapsed or empty view) would
+	// create incomplete framebuffers, so keep the current resolution instead.
+	if (res.x <= 0 || res.y <= 0)
+		return;
+
 	this->renderResolution = res;
 	Graphics::MainCamera::Instance()->UpdateProjectionMatrix();
 	FrameServer::Instance()->UpdateResolutions();

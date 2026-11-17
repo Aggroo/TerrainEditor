@@ -6,6 +6,7 @@
 #include "ui/widgets/widgetperlingenerator.h"
 #include "ui/widgets/widgetterrainsettings.h"
 #include "ui/widgets/widgetview.h"
+#include "imgui.h"
 #include "ImGuizmo.h"
 #include "IconsFontAwesome5_c.h"
 
@@ -183,10 +184,10 @@ void UIServer::ApplyStyle()
 	style.Colors[ImGuiCol_DragDropTarget] = backgroundLighter;
 	style.Colors[ImGuiCol_Tab] = backgroundDark;
 	style.Colors[ImGuiCol_TabHovered] = barlighter; 
-	style.Colors[ImGuiCol_TabActive] = backgroundMedium;
-	style.Colors[ImGuiCol_TabUnfocused] = bar; 
-	style.Colors[ImGuiCol_TabUnfocusedActive] = backgroundMedium;
-	style.Colors[ImGuiCol_NavHighlight] = bar;
+	style.Colors[ImGuiCol_TabSelected] = backgroundMedium;
+	style.Colors[ImGuiCol_TabDimmed] = bar; 
+	style.Colors[ImGuiCol_TabDimmedSelected] = backgroundMedium;
+	style.Colors[ImGuiCol_NavCursor] = bar;
 	style.Colors[ImGuiCol_NavWindowingHighlight] = bar;
 	style.Colors[ImGuiCol_NavWindowingDimBg] = bar;
 	style.Colors[ImGuiCol_ModalWindowDimBg] = bar;

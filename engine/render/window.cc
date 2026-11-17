@@ -262,7 +262,6 @@ Window::Open()
 
 	ImGui_ImplGlfw_InitForOpenGL(this->window, true);
 	ImGui_ImplOpenGL3_Init();
-	glfwSetCharCallback(window, ImGui_ImplGlfw_CharCallback);
 
 	// increase window count and return result
 	Window::WindowCount++;

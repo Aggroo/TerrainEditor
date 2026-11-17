@@ -13,14 +13,14 @@ PerlinSettings::PerlinSettings(Display::Window* app) : Widget(app), openPopup(fa
 
 void PerlinSettings::Update()
 {
-	if (ImGui::Button("Generate##Perlin", ImVec2(ImGui::GetWindowContentRegionWidth() - 20, 25)))
+	if (ImGui::Button("Generate##Perlin", ImVec2(ImGui::GetContentRegionAvail().x - 20, 25)))
 	{
 		this->openPopup = true;
 	}
 	ImGui::Separator();
 	if (ImGui::CollapsingHeader("Perlin Texture"))
 	{
-		ImGui::Image((void*)p.GetTexture()->GetTextureID(), ImVec2(ImGui::GetWindowContentRegionWidth() - 5, ImGui::GetWindowContentRegionWidth() - 20));
+		ImGui::Image((ImTextureID)p.GetTexture()->GetTextureID(), ImVec2(ImGui::GetContentRegionAvail().x - 5, ImGui::GetContentRegionAvail().x - 20));
 	}
 	if (ImGui::CollapsingHeader("Generation Settings"))
 	{
